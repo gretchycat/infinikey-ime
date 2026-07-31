@@ -1,0 +1,169 @@
+{
+  "id": "main",
+  "name": "Full Programmer Baseline Layout",
+  "version": "2.0",
+  "author": "Programmer Keyboard Team",
+  "description": "Comprehensive 5-row desktop programmer keyboard layout with function row, modifier toggles, long-press popups, and multi-touch geometry gestures.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30
+  },
+  "theme": {
+    "fontFamily": "Monospace"
+  },
+  "styles": {
+    "alphaKey": { "cornerRadius": 8 },
+    "numberKey": { "cornerRadius": 8 },
+    "modifierKey": { "cornerRadius": 8 },
+    "functionKey": { "cornerRadius": 6 },
+    "actionKey": { "cornerRadius": 8 },
+    "arrowKey": { "cornerRadius": 8 },
+    "navigationKey": { "cornerRadius": 8 }
+  },
+  "gestures": {
+    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "DOCK_LEFT" },
+    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "DOCK_RIGHT" },
+    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOAT" },
+    "onTwoFingerSwipeDown": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" },
+    "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" },
+    "onTwoFingerPinchIn": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "hidden": true,
+      "splitIndex": 8,
+      "keys": [
+        { "label": "Esc", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 111 } },
+        { "label": "", "spacer": true, "weight": 0.5 },
+        { "label": "F1", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 131 } },
+        { "label": "F2", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 132 } },
+        { "label": "F3", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 133 } },
+        { "label": "F4", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 134 } },
+        { "label": "F5", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 135 } },
+        { "label": "F6", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 136 } },
+        { "label": "F7", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 137 } },
+        { "label": "F8", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 138 } },
+        { "label": "F9", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 139 } },
+        { "label": "F10", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 140 } },
+        { "label": "F11", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 141 } },
+        { "label": "F12", "style": "functionKey", "onPress": { "type": "SEND_CODE", "code": 142 } }
+      ]
+    },
+    {
+      "id": 2,
+      "splitIndex": 7,
+      "keys": [
+        { "label": "`", "secondaryLabel": "~", "alternates": ["~"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "`" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "~" } },
+        { "label": "1", "secondaryLabel": "!", "alternates": ["!", "¹", "½", "⅓", "¼"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "1" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "!" } },
+        { "label": "2", "secondaryLabel": "@", "alternates": ["@", "²", "⅔"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "2" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "@" } },
+        { "label": "3", "secondaryLabel": "#", "alternates": ["#", "³", "¾", "⅜"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "3" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "#" } },
+        { "label": "4", "secondaryLabel": "$", "alternates": ["$", "¢", "£", "€", "¥", "₹", "¤"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "4" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "$" } },
+        { "label": "5", "secondaryLabel": "%", "alternates": ["%", "‰", "⅝"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "5" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "%" } },
+        { "label": "6", "secondaryLabel": "^", "alternates": ["^", "↑", "↖", "↗"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "6" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "^" } },
+        { "label": "7", "secondaryLabel": "&", "alternates": ["&", "⅞"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "7" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "&" } },
+        { "label": "8", "secondaryLabel": "*", "alternates": ["*", "∞", "°", "×"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "8" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "*" } },
+        { "label": "9", "secondaryLabel": "(", "alternates": ["(", "[", "{", "<"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "9" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "(" } },
+        { "label": "0", "secondaryLabel": ")", "alternates": [")", "]", "}", ">"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "0" }, "onSwipeUp": { "type": "SEND_TEXT", "text": ")" } },
+        { "label": "-", "secondaryLabel": "_", "alternates": ["_", "–", "—", "±"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "-" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "_" } },
+        { "label": "=", "secondaryLabel": "+", "alternates": ["+", "≠", "≈", "≡"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "=" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "+" } },
+        {
+          "label": "⌫",
+          "style": "actionKey",
+          "flexible": true,
+          "onPress": { "type": "SEND_CODE", "code": 67 },
+          "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "splitIndex": 6,
+      "keys": [
+        { "label": "↹", "style": "modifierKey", "flexible": true, "onPress": { "type": "SEND_CODE", "code": 61 } },
+        { "label": "q", "alternates": ["θ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "q" } },
+        { "label": "w", "alternates": ["ω"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "w" } },
+        { "label": "e", "secondaryLabel": "é", "alternates": ["é", "è", "ë", "ê", "€", "ε"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "e" } },
+        { "label": "r", "alternates": ["®", "ρ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "r" } },
+        { "label": "t", "alternates": ["þ", "τ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "t" } },
+        { "label": "y", "alternates": ["ý", "ÿ", "¥"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "y" } },
+        { "label": "u", "secondaryLabel": "ú", "alternates": ["ú", "ù", "ü", "û", "υ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "u" } },
+        { "label": "i", "secondaryLabel": "í", "alternates": ["í", "ì", "ï", "î", "ı", "ι"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "i" } },
+        { "label": "o", "secondaryLabel": "ó", "alternates": ["ó", "ò", "ö", "ô", "ø", "œ", "õ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "o" } },
+        { "label": "p", "alternates": ["π", "Π", "ψ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "p" } },
+        { "label": "[", "secondaryLabel": "{", "alternates": ["{", "⟨", "⊂"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "[" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "{" } },
+        { "label": "]", "secondaryLabel": "}", "alternates": ["}", "⟩", "⊃"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "]" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "}" } },
+        { "label": "\\", "secondaryLabel": "|", "alternates": ["|"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "\\" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "|" } }
+      ]
+    },
+    {
+      "id": 4,
+      "splitIndex": 6,
+      "keys": [
+        { "label": "Ctrl", "style": "modifierKey", "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "CTRL" } },
+        { "label": "a", "secondaryLabel": "á", "alternates": ["á", "à", "ä", "â", "å", "æ", "ã", "α"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "a" } },
+        { "label": "s", "secondaryLabel": "ß", "alternates": ["ß", "§", "σ", "Σ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "s" } },
+        { "label": "d", "alternates": ["ð", "δ", "Δ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "d" } },
+        { "label": "f", "alternates": ["ƒ", "φ", "Φ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "f" } },
+        { "label": "g", "alternates": ["γ", "Γ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "g" } },
+        { "label": "h", "alternates": ["θ", "Θ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "h" } },
+        { "label": "j", "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "j" } },
+        { "label": "k", "alternates": ["κ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "k" } },
+        { "label": "l", "alternates": ["ł", "λ", "Λ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "l" } },
+        { "label": ";", "secondaryLabel": ":", "alternates": [":"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": ";" }, "onSwipeUp": { "type": "SEND_TEXT", "text": ":" } },
+        { "label": "'", "secondaryLabel": "\"", "alternates": ["\"", "’", "‘"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "'" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "\"" } },
+        { "label": "↵", "style": "actionKey", "flexible": true, "onPress": { "type": "SEND_CODE", "code": 66 } }
+      ]
+    },
+    {
+      "id": 5,
+      "splitIndex": 6,
+      "keys": [
+        { "label": "⇧", "style": "modifierKey", "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
+        { "label": "z", "alternates": ["ź", "ż", "ž"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "z" } },
+        { "label": "x", "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "x" } },
+        { "label": "c", "secondaryLabel": "ç", "alternates": ["ç", "¢", "©", "χ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "c" } },
+        { "label": "v", "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "v" } },
+        { "label": "b", "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "b" } },
+        { "label": "n", "secondaryLabel": "ñ", "alternates": ["ñ", "ν"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "n" } },
+        { "label": "m", "alternates": ["µ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "m" } },
+        { "label": ",", "secondaryLabel": "<", "alternates": ["<", "«", "‹", "≤"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "," }, "onSwipeUp": { "type": "SEND_TEXT", "text": "<" } },
+        { "label": ".", "secondaryLabel": ">", "alternates": [">", "»", "›", "≥", "…"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "." }, "onSwipeUp": { "type": "SEND_TEXT", "text": ">" } },
+        { "label": "/", "secondaryLabel": "?", "alternates": ["?", "¿", "‽", "÷"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "/" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "?" } },
+        {
+          "label": "↑",
+          "style": "navigationKey",
+          "onPress": { "type": "SEND_CODE", "code": 19 },
+          "onLongPress": { "type": "AUTO_REPEAT", "code": 19, "intervalMs": 50 }
+        },
+        { "label": "⇧", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } }
+      ]
+    },
+    {
+      "id": 6,
+      "splitIndex": 5,
+      "splitKey": true,
+      "keys": [
+        { "label": "⌨", "style": "functionKey", "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
+        { "label": "", "spacer": true, "weight": 1.0 },
+        { "label": "🎙", "style": "functionKey", "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
+        { "label": "Alt", "style": "modifierKey", "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" } },
+        { "label": "❖", "style": "modifierKey", "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" } },
+        { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " } },
+        {
+          "label": "Fn",
+          "style": "modifierKey",
+          "weight": 1.0,
+          "onPress": { "type": "SWITCH_LAYOUT", "target": "function" },
+          "onLongPress": { "type": "TOGGLE_ROW", "rowId": 1 }
+        },
+        { "label": "😀", "style": "modifierKey", "onPress": { "type": "SHOW_WIDGET", "widget": "EMOJI_PICKER" } },
+        { "label": "←", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 21 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 21, "intervalMs": 50 } },
+        { "label": "↓", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 20 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 20, "intervalMs": 50 } },
+        { "label": "→", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 22 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 22, "intervalMs": 50 } }
+      ]
+    }
+  ]
+}

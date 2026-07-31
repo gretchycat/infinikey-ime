@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✏️ Edit Key Properties"
+            android:textColor="@color/settings_text_header"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Primary Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Key Primary Label (Required)"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeyPrimaryLabel"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Label (e.g. A, Shift, F1)"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Secondary Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Secondary / Swipe-Up Label (Optional)"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeySecondaryLabel"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Secondary (e.g. @, #, $)"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Key Category / Group -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Key Group Category Style"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeyCategoryStyle"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Width Weight (Default 1.0) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Width Weight (Default 1.0)"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeyWidthWeight"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="1.0"
+            android:inputType="numberDecimal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Action Type -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Key Action Type"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeyActionType"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Action Parameter -->
+        <TextView
+            android:id="@+id/tvEditKeyActionParamLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Action Parameter Value"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeyActionParam"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Value (e.g. text string or code number)"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Delete Key Button -->
+        <Button
+            android:id="@+id/btnDeleteKey"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:backgroundTint="#7F1D1D"
+            android:text="🗑️ Delete Key from Layout"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

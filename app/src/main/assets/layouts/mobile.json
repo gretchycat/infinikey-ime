@@ -1,0 +1,84 @@
+{
+  "id": "mobile",
+  "name": "Standard Mobile Layout",
+  "version": "1.0",
+  "author": "Programmer Keyboard Team",
+  "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30
+  },
+  "theme": {
+    "fontFamily": "Monospace"
+  },
+  "styles": {
+    "alphaKey": { "cornerRadius": 8 },
+    "modifierKey": { "cornerRadius": 8 },
+    "actionKey": { "cornerRadius": 8 },
+    "functionKey": { "cornerRadius": 6 }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "q", "alternates": ["1", "θ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "q" } },
+        { "label": "w", "alternates": ["2", "ω"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "w" } },
+        { "label": "e", "alternates": ["3", "é", "è", "ë", "ê", "€", "ε"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "e" } },
+        { "label": "r", "alternates": ["4", "®", "ρ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "r" } },
+        { "label": "t", "alternates": ["5", "þ", "τ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "t" } },
+        { "label": "y", "alternates": ["6", "ý", "ÿ", "¥"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "y" } },
+        { "label": "u", "alternates": ["7", "ú", "ù", "ü", "û", "υ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "u" } },
+        { "label": "i", "alternates": ["8", "í", "ì", "ï", "î", "ı", "ι"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "i" } },
+        { "label": "o", "alternates": ["9", "ó", "ò", "ö", "ô", "ø", "œ", "õ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "o" } },
+        { "label": "p", "alternates": ["0", "π", "Π", "ψ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "p" } }
+      ]
+    },
+    {
+      "id": 2,
+      "splitIndex": 6,
+      "keys": [
+        { "label": "", "spacer": true, "weight": 0.5 },
+        { "label": "a", "alternates": ["@", "á", "à", "ä", "â", "å", "æ", "ã", "α"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "a" } },
+        { "label": "s", "alternates": ["#", "ß", "§", "σ", "Σ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "s" } },
+        { "label": "d", "alternates": ["$", "ð", "δ", "Δ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "d" } },
+        { "label": "f", "alternates": ["%", "ƒ", "φ", "Φ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "f" } },
+        { "label": "g", "alternates": ["&", "γ", "Γ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "g" } },
+        { "label": "h", "alternates": ["*", "θ", "Θ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "h" } },
+        { "label": "j", "alternates": ["-"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "j" } },
+        { "label": "k", "alternates": ["+", "κ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "k" } },
+        { "label": "l", "alternates": ["/", "ł", "λ", "Λ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "l" } },
+        { "label": "", "spacer": true, "weight": 0.5 }
+      ]
+    },
+    {
+      "id": 3,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "⇧", "style": "modifierKey", "weight": 1.25, "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
+        { "label": "z", "alternates": ["_"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "z" } },
+        { "label": "x", "alternates": ["="], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "x" } },
+        { "label": "c", "alternates": ["ç", "¢", "©", "χ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "c" } },
+        { "label": "v", "alternates": ["<"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "v" } },
+        { "label": "b", "alternates": [">"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "b" } },
+        { "label": "n", "alternates": ["ñ", "ν"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "n" } },
+        { "label": "m", "alternates": ["µ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "m" } },
+        { "label": "⌫", "style": "actionKey", "weight": 1.25, "flexible": true, "onPress": { "type": "SEND_CODE", "code": 67 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 } }
+      ]
+    },
+    {
+      "id": 4,
+      "splitIndex": 2,
+      "splitKey": true,
+      "keys": [
+        { "label": "💻", "style": "functionKey", "onPress": { "type": "SWITCH_LAYOUT", "target": "main" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
+        { "label": "?123", "style": "modifierKey", "weight": 1.5, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile_number" } },
+        { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " } },
+        { "label": ".", "alternates": [",", "!", "?", ":", ";", "-"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "." } },
+        { "label": "↵", "style": "actionKey", "weight": 1.5, "onPress": { "type": "SEND_CODE", "code": 66 } }
+      ]
+    }
+  ]
+}

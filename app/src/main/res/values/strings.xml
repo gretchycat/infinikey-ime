@@ -1,0 +1,85 @@
+<resources>
+    <string name="app_name">Programmer Keyboard</string>
+    <string name="ime_name">Programmer Keyboard IME</string>
+    <string name="subtype_en_us">English (US) - Programmer Layout</string>
+    <string name="settings_title">Programmer Keyboard Settings</string>
+    
+    <!-- Settings labels -->
+    <string name="setting_geometry_title">Geometry &amp; Alignment</string>
+    <string name="setting_staggered">Staggered (QWERTY default)</string>
+    <string name="setting_ortholinear">Rectangular (Ortholinear grid)</string>
+    
+    <string name="setting_form_factor_title">Form Factor</string>
+    <string name="setting_docked">Full-Width Docked</string>
+    <string name="setting_split">Split Mode (Thumb clusters + Trackpads)</string>
+    <string name="setting_left_docked">Left-Docked Mode</string>
+    <string name="setting_right_docked">Right-Docked Mode</string>
+    <string name="setting_side_docked">Side-Docked Mode</string>
+    <string name="setting_floating">Floating Window Mode</string>
+
+    <string name="setting_shift_double_tap_title">Shift Double-Tap Lock Mode</string>
+    <string name="setting_caps_lock">Caps Lock (Letters capitalized only)</string>
+    <string name="setting_shift_lock">Shift Lock (All keys shifted)</string>
+
+    <string name="setting_height_title">Keyboard Height (% of screen height)</string>
+    <string name="setting_height_20">20% (Compact)</string>
+    <string name="setting_height_25">25% (Small)</string>
+    <string name="setting_height_30">30% (Standard default)</string>
+    <string name="setting_height_35">35% (Medium)</string>
+    <string name="setting_height_40">40% (Large / Extended)</string>
+
+    <string name="setting_long_press_title">Long Press Timeout</string>
+    <string name="setting_long_press_200">200 ms (Fast)</string>
+    <string name="setting_long_press_300">300 ms</string>
+    <string name="setting_long_press_350">350 ms (Standard default)</string>
+    <string name="setting_long_press_450">450 ms</string>
+    <string name="setting_long_press_600">600 ms (Relaxed)</string>
+    <string name="setting_auto_repeat_title">Key Auto-Repeat Interval</string>
+    <string name="setting_aspect_ratio_title">Aspect Ratio (Split / Docked)</string>
+    <string name="setting_haptic_feedback">Haptic feedback (vibrate on keypress)</string>
+    <string name="setting_vibration_duration_title">Custom Pulse Duration (ms)</string>
+    <string name="setting_vibration_intensity_title">Custom Pulse Intensity (%)</string>
+    <string name="setting_vibration_style_title">Vibration Haptic Style</string>
+    <string name="setting_vib_sharp_click">Sharp Click (System tuned - Recommended)</string>
+    <string name="setting_vib_heavy_click">Heavy Click (Strong Haptic Bump)</string>
+    <string name="setting_vib_crisp_tick">Crisp Tick (Light Haptic Tick)</string>
+    <string name="setting_vib_double_click">Double Click (Dual Pulse)</string>
+    <string name="setting_vib_custom_pulse">Custom Timed Pulse (Use sliders below)</string>
+    <string name="setting_key_click_sound">Mechanical key click sound (Audio switch feedback)</string>
+    <string name="setting_key_click_volume_title">Mechanical Click Volume (%)</string>
+    <string name="setting_switch_type_title">Mechanical Switch Type</string>
+
+    <!-- Recorded Mechvibes Audio Sound Packs -->
+    <string name="setting_switch_rec_blue_pbt">Recorded - Blue Switch (PBT Keycaps)</string>
+    <string name="setting_switch_rec_blue_abs">Recorded - Blue Switch (ABS Keycaps)</string>
+    <string name="setting_switch_rec_brown_pbt">Recorded - Brown Switch (PBT Keycaps)</string>
+    <string name="setting_switch_rec_brown_abs">Recorded - Brown Switch (ABS Keycaps)</string>
+    <string name="setting_switch_rec_red_pbt">Recorded - Red Switch (PBT Keycaps)</string>
+    <string name="setting_switch_rec_red_abs">Recorded - Red Switch (ABS Keycaps)</string>
+    <string name="setting_switch_rec_black_pbt">Recorded - Black Switch (PBT Keycaps)</string>
+    <string name="setting_switch_rec_black_abs">Recorded - Black Switch (ABS Keycaps)</string>
+    <string name="setting_switch_rec_nk_cream">Recorded - NovelKeys Cream</string>
+    <string name="setting_switch_rec_eg_oreo">Recorded - Everglide Oreo</string>
+    <string name="setting_switch_rec_eg_purple">Recorded - Everglide Crystal Purple</string>
+    <string name="setting_switch_rec_topre">Recorded - Topre Silent Purple</string>
+
+    <!-- Synthesized / Generated Audio Sounds -->
+    <string name="setting_switch_synth_clicky">Synthesized - Sharp Clicky (Generated Audio)</string>
+    <string name="setting_switch_synth_tactile">Synthesized - Tactile Snap (Generated Audio)</string>
+    <string name="setting_switch_synth_linear">Synthesized - Smooth Linear (Generated Audio)</string>
+    <string name="setting_switch_synth_thock">Synthesized - Deep Thock (Generated Audio)</string>
+    <string name="setting_switch_synth_spring">Synthesized - Buckling Spring (Generated Audio)</string>
+
+    <!-- Theme & Color Customization Strings -->
+    <string name="setting_theme_preset_title">Theme Profile</string>
+    <string name="setting_theme_system_auto">System Dynamic (Follow Light / Dark Mode)</string>
+    <string name="setting_theme_slate">Slate Dark (Classic Default)</string>
+    <string name="setting_theme_cyberpunk">Cyberpunk Neon (Violet / Cyan)</string>
+    <string name="setting_theme_oled">OLED True Black (Pitch Black)</string>
+    <string name="setting_theme_matrix">Matrix Terminal (Dark Green)</string>
+    <string name="setting_theme_retro">Retro Vintage (Classic Beige)</string>
+    <string name="setting_theme_muted_slate">Low Saturation Slate (Muted Monochromatic)</string>
+    <string name="setting_theme_custom">Custom Theme (JSON / Editor)</string>
+    <string name="setting_export_theme">Export Theme JSON</string>
+    <string name="setting_import_theme">Import Theme JSON</string>
+</resources>

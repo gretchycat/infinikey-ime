@@ -1,0 +1,114 @@
+{
+  "slate": {
+    "theme": {
+      "backgroundColor": "#0F172A",
+      "modifierLatchedDotColor": "#38BDF8",
+      "modifierLockedDotColor": "#EF4444"
+    },
+    "styles": {
+      "alphaKey": { "bgColor": "#161923", "fgColor": "#F8FAFC", "pressedBgColor": "#252B3C" },
+      "numberKey": { "bgColor": "#141722", "fgColor": "#38BDF8", "pressedBgColor": "#222736" },
+      "modifierKey": { "bgColor": "#1D212F", "fgColor": "#F59E0B", "activeBgColor": "#1E3A5F" },
+      "functionKey": { "bgColor": "#1B2030", "fgColor": "#A855F7", "pressedBgColor": "#2A324B" },
+      "actionKey": { "bgColor": "#1E293B", "fgColor": "#38BDF8", "pressedBgColor": "#334155" },
+      "navigationKey": { "bgColor": "#1E2638", "fgColor": "#34D399", "pressedBgColor": "#2D374D" },
+      "editingKey": { "bgColor": "#221D36", "fgColor": "#F472B6", "pressedBgColor": "#362C54" }
+    }
+  },
+  "cyberpunk": {
+    "theme": {
+      "backgroundColor": "#120924",
+      "modifierLatchedDotColor": "#00FFC8",
+      "modifierLockedDotColor": "#FF0055"
+    },
+    "styles": {
+      "alphaKey": { "bgColor": "#21103E", "fgColor": "#00FFC8", "pressedBgColor": "#3B1C6E" },
+      "numberKey": { "bgColor": "#2D0A4E", "fgColor": "#FF007F", "pressedBgColor": "#4A127F" },
+      "modifierKey": { "bgColor": "#390050", "fgColor": "#FFE600", "activeBgColor": "#FF007F" },
+      "functionKey": { "bgColor": "#1E0D36", "fgColor": "#9D00FF", "pressedBgColor": "#3A1B63" },
+      "actionKey": { "bgColor": "#2A0B42", "fgColor": "#00FFC8", "pressedBgColor": "#4A1570" },
+      "navigationKey": { "bgColor": "#142544", "fgColor": "#00E5FF", "pressedBgColor": "#203A6B" },
+      "editingKey": { "bgColor": "#3D002B", "fgColor": "#FF00AA", "pressedBgColor": "#660048" }
+    }
+  },
+  "oled": {
+    "theme": {
+      "backgroundColor": "#000000",
+      "modifierLatchedDotColor": "#3B82F6",
+      "modifierLockedDotColor": "#F43F5E"
+    },
+    "styles": {
+      "alphaKey": { "bgColor": "#121212", "fgColor": "#FFFFFF", "pressedBgColor": "#242424" },
+      "numberKey": { "bgColor": "#1A1A1A", "fgColor": "#60A5FA", "pressedBgColor": "#2E2E2E" },
+      "modifierKey": { "bgColor": "#1E1E1E", "fgColor": "#FBBF24", "activeBgColor": "#2563EB" },
+      "functionKey": { "bgColor": "#181818", "fgColor": "#C084FC", "pressedBgColor": "#2D2D2D" },
+      "actionKey": { "bgColor": "#222222", "fgColor": "#38BDF8", "pressedBgColor": "#383838" },
+      "navigationKey": { "bgColor": "#151F28", "fgColor": "#34D399", "pressedBgColor": "#253444" },
+      "editingKey": { "bgColor": "#241824", "fgColor": "#F472B6", "pressedBgColor": "#3B283B" }
+    }
+  },
+  "matrix": {
+    "theme": {
+      "backgroundColor": "#041408",
+      "modifierLatchedDotColor": "#00FF66",
+      "modifierLockedDotColor": "#FF3300"
+    },
+    "styles": {
+      "alphaKey": { "bgColor": "#0A2610", "fgColor": "#00FF66", "pressedBgColor": "#13421C" },
+      "numberKey": { "bgColor": "#083013", "fgColor": "#33FF88", "pressedBgColor": "#105221" },
+      "modifierKey": { "bgColor": "#0F401A", "fgColor": "#CCFF00", "activeBgColor": "#009933" },
+      "functionKey": { "bgColor": "#06210D", "fgColor": "#66FF99", "pressedBgColor": "#113B1B" },
+      "actionKey": { "bgColor": "#0B3315", "fgColor": "#00FF66", "pressedBgColor": "#185425" },
+      "navigationKey": { "bgColor": "#072D1B", "fgColor": "#00FFB3", "pressedBgColor": "#124B2F" },
+      "editingKey": { "bgColor": "#143008", "fgColor": "#B8FF00", "pressedBgColor": "#255210" }
+    }
+  },
+  "retro": {
+    "theme": {
+      "backgroundColor": "#6E6454",
+      "modifierLatchedDotColor": "#10B981",
+      "modifierLockedDotColor": "#EF4444"
+    },
+    "styles": {
+      "alphaKey": { "bgColor": "#B8AD9C", "fgColor": "#1C1917", "pressedBgColor": "#9E9382" },
+      "numberKey": { "bgColor": "#ADA291", "fgColor": "#0F2B5C", "pressedBgColor": "#938877" },
+      "modifierKey": { "bgColor": "#948978", "fgColor": "#1C1917", "activeBgColor": "#695F4F" },
+      "functionKey": { "bgColor": "#8B806F", "fgColor": "#1C1917", "pressedBgColor": "#695F4F" },
+      "actionKey": { "bgColor": "#837867", "fgColor": "#1C1917", "pressedBgColor": "#615646" },
+      "navigationKey": { "bgColor": "#8B806F", "fgColor": "#1C1917", "pressedBgColor": "#695F4F" },
+      "editingKey": { "bgColor": "#8B806F", "fgColor": "#1C1917", "pressedBgColor": "#695F4F" }
+    }
+  },
+  "muted_slate": {
+    "theme": {
+      "backgroundColor": "#181B20",
+      "modifierLatchedDotColor": "#64748B",
+      "modifierLockedDotColor": "#94A3B8"
+    },
+    "styles": {
+      "alphaKey": { "bgColor": "#22262E", "fgColor": "#E2E8F0", "pressedBgColor": "#2D323E" },
+      "numberKey": { "bgColor": "#1F232B", "fgColor": "#94A3B8", "pressedBgColor": "#2A2F3A" },
+      "modifierKey": { "bgColor": "#262B34", "fgColor": "#CBD5E1", "activeBgColor": "#334155" },
+      "functionKey": { "bgColor": "#242932", "fgColor": "#A1A1AA", "pressedBgColor": "#2F3542" },
+      "actionKey": { "bgColor": "#282D39", "fgColor": "#E2E8F0", "pressedBgColor": "#363C4B" },
+      "navigationKey": { "bgColor": "#222732", "fgColor": "#9CA3AF", "pressedBgColor": "#2C3340" },
+      "editingKey": { "bgColor": "#222732", "fgColor": "#9CA3AF", "pressedBgColor": "#2C3340" }
+    }
+  },
+  "system_light": {
+    "theme": {
+      "backgroundColor": "#F1F5F9",
+      "modifierLatchedDotColor": "#0284C7",
+      "modifierLockedDotColor": "#DC2626"
+    },
+    "styles": {
+      "alphaKey": { "bgColor": "#FFFFFF", "fgColor": "#0F172A", "pressedBgColor": "#E2E8F0" },
+      "numberKey": { "bgColor": "#F8FAFC", "fgColor": "#0284C7", "pressedBgColor": "#E2E8F0" },
+      "modifierKey": { "bgColor": "#E2E8F0", "fgColor": "#D97706", "activeBgColor": "#BAE6FD" },
+      "functionKey": { "bgColor": "#E2E8F0", "fgColor": "#7C3AED", "pressedBgColor": "#CBD5E1" },
+      "actionKey": { "bgColor": "#CBD5E1", "fgColor": "#0284C7", "pressedBgColor": "#94A3B8" },
+      "navigationKey": { "bgColor": "#E2E8F0", "fgColor": "#059669", "pressedBgColor": "#CBD5E1" },
+      "editingKey": { "bgColor": "#E2E8F0", "fgColor": "#DC2626", "pressedBgColor": "#CBD5E1" }
+    }
+  }
+}

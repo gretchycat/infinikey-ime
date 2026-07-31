@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night / Dark Mode UI Palette -->
+    <color name="settings_bg">#0F172A</color>
+    <color name="settings_card_bg">#161923</color>
+    <color name="settings_card_border">#334155</color>
+    <color name="settings_text_header">#F8FAFC</color>
+    <color name="settings_text_sub">#94A3B8</color>
+    <color name="settings_text_primary">#E2E8F0</color>
+    <color name="settings_divider">#1E293B</color>
+
+    <color name="keyboard_background">#0B0E14</color>
+    <color name="key_background">#161B26</color>
+    <color name="key_background_pressed">#2B3448</color>
+    <color name="key_background_modifier">#1E2433</color>
+    <color name="key_background_modifier_active">#1E3A5F</color>
+    <color name="key_text_primary">#F8FAFC</color>
+    <color name="key_text_secondary">#94A3B8</color>
+    <color name="key_text_accent">#38BDF8</color>
+    <color name="key_border">#242B3F</color>
+
+    <color name="trackpad_background">#0F172A</color>
+    <color name="trackpad_border">#242B3F</color>
+    <color name="trackpad_ripple">#334155</color>
+</resources>

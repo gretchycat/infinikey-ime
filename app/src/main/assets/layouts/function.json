@@ -1,0 +1,124 @@
+{
+  "id": "function",
+  "name": "Function & Utility Layer",
+  "version": "2.0",
+  "author": "Programmer Keyboard Team",
+  "description": "Utility layout with expanded function keys, dedicated numeric keypad, and navigation controls on a uniform 12-column rectangular grid.",
+  "metadata": {
+    "alignment": "RECTANGULAR",
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30
+  },
+  "theme": {
+    "fontFamily": "Monospace"
+  },
+  "styles": {
+    "alphaKey": { "cornerRadius": 6 },
+    "numberKey": { "cornerRadius": 6 },
+    "modifierKey": { "cornerRadius": 6 },
+    "functionKey": { "cornerRadius": 6 },
+    "actionKey": { "cornerRadius": 6 },
+    "clipboardKey": { "cornerRadius": 6 },
+    "editingKey": { "cornerRadius": 6 },
+    "pagingKey": { "cornerRadius": 6 },
+    "homeEndKey": { "cornerRadius": 6 },
+    "arrowKey": { "cornerRadius": 6 }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "Esc", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 111 } },
+        { "label": "F1", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 131 } },
+        { "label": "F2", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 132 } },
+        { "label": "F3", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 133 } },
+        { "label": "F4", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 134 } },
+        { "label": "7", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "7" } },
+        { "label": "8", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "8" } },
+        { "label": "9", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "9" } },
+        { "label": "/", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "/" } },
+        { "label": "Home", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 122 } },
+        { "label": "⌫", "style": "actionKey", "weight": 2.0, "onPress": { "type": "SEND_CODE", "code": 67 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 } }
+      ]
+    },
+    {
+      "id": 2,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "↹", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 61 } },
+        { "label": "F5", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 135 } },
+        { "label": "F6", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 136 } },
+        { "label": "F7", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 137 } },
+        { "label": "F8", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 138 } },
+        { "label": "4", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "4" } },
+        { "label": "5", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "5" } },
+        { "label": "6", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "6" } },
+        { "label": "*", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "*" } },
+        { "label": "End", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 123 } },
+        { "label": "Ins", "style": "editingKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 124 } },
+        { "label": "Del", "style": "editingKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 112 } }
+      ]
+    },
+    {
+      "id": 3,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "Ctrl", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "CTRL" } },
+        { "label": "F9", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 139 } },
+        { "label": "F10", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 140 } },
+        { "label": "F11", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 141 } },
+        { "label": "F12", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 142 } },
+        { "label": "1", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "1" } },
+        { "label": "2", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "2" } },
+        { "label": "3", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "3" } },
+        { "label": "-", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "-" } },
+        { "label": "PgUp", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 92 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 92, "intervalMs": 50 } },
+        { "label": "↵", "style": "actionKey", "weight": 2.0, "onPress": { "type": "SEND_CODE", "code": 66 } }
+      ]
+    },
+    {
+      "id": 4,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "⇧", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
+        { "label": "SelAll", "style": "editingKey", "weight": 1.0, "onPress": { "type": "SELECT_ALL" } },
+        { "label": "Copy", "style": "editingKey", "weight": 1.0, "onPress": { "type": "COPY" } },
+        { "label": "Cut", "style": "editingKey", "weight": 1.0, "onPress": { "type": "CUT" } },
+        { "label": "Paste", "style": "editingKey", "weight": 1.0, "onPress": { "type": "PASTE" } },
+        { "label": "0", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "0" } },
+        { "label": ",", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "," } },
+        { "label": ".", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "." } },
+        { "label": "+", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "+" } },
+        { "label": "PgDn", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 93 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 93, "intervalMs": 50 } },
+        { "label": "↑", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 19 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 19, "intervalMs": 50 } },
+        { "label": "🌐", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SWITCH_IME" } }
+      ]
+    },
+    {
+      "id": 5,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "⌨", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
+        { "label": "", "spacer": true, "weight": 1.0 },
+        { "label": "🎙", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
+        { "label": "Alt", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" } },
+        { "label": "❖", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" } },
+        { "label": "␣", "style": "alphaKey", "weight": 2.0, "isSplitKey": false, "onPress": { "type": "SEND_TEXT", "text": " " } },
+        {
+          "label": "Fn",
+          "style": "modifierKey",
+          "weight": 1.0,
+          "onPress": { "type": "SWITCH_LAYOUT", "target": "main" },
+          "onLongPress": { "type": "TOGGLE_ROW", "rowId": 1 }
+        },
+        { "label": "😀", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "EMOJI_PICKER" } },
+        { "label": "←", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 21 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 21, "intervalMs": 50 } },
+        { "label": "↓", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 20 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 20, "intervalMs": 50 } },
+        { "label": "→", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 22 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 22, "intervalMs": 50 } }
+      ]
+    }
+  ]
+}

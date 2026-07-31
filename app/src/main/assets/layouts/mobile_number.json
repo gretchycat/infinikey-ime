@@ -1,0 +1,96 @@
+{
+  "id": "mobile_number",
+  "name": "Mobile Numeric & Symbols",
+  "version": "2.0",
+  "author": "Programmer Keyboard Team",
+  "description": "Gboard-style mobile numeric and symbols layout.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30,
+    "showKeyPreview": false
+  },
+  "theme": {
+    "fontFamily": "Monospace"
+  },
+  "styles": {
+    "numberKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    },
+    "alphaKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    },
+    "modifierKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    },
+    "actionKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "1", "alternates": ["!", "¹", "½", "⅓", "¼"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "1" } },
+        { "label": "2", "alternates": ["@", "²", "⅔"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "2" } },
+        { "label": "3", "alternates": ["#", "³", "¾", "⅜"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "3" } },
+        { "label": "4", "alternates": ["$", "¢", "£", "€", "¥", "₹", "¤"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "4" } },
+        { "label": "5", "alternates": ["%", "‰", "⅝"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "5" } },
+        { "label": "6", "alternates": ["^", "↑", "↖", "↗"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "6" } },
+        { "label": "7", "alternates": ["&", "⅞"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "7" } },
+        { "label": "8", "alternates": ["*", "∞", "°", "×"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "8" } },
+        { "label": "9", "alternates": ["(", "[", "{", "<"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "9" } },
+        { "label": "0", "alternates": [")", "]", "}", ">"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "0" } }
+      ]
+    },
+    {
+      "id": 2,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "@", "alternates": ["a", "α"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "@" } },
+        { "label": "#", "alternates": ["s", "§"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "#" } },
+        { "label": "$", "alternates": ["¢", "£", "€", "¥", "₹"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "$" } },
+        { "label": "_", "alternates": ["-", "–", "—"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "_" } },
+        { "label": "&", "alternates": ["g"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "&" } },
+        { "label": "-", "alternates": ["_", "–", "—", "±"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "-" } },
+        { "label": "+", "alternates": ["±", "≠", "†", "‡"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "+" } },
+        { "label": "(", "alternates": ["[", "{", "<", "«"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "(" } },
+        { "label": ")", "alternates": ["]", "}", ">", "»"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": ")" } },
+        { "label": "/", "alternates": ["?", "¿", "‽", "÷", "╲"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "/" } }
+      ]
+    },
+    {
+      "id": 3,
+      "splitIndex": 5,
+      "keys": [
+        { "label": "=\\<", "style": "modifierKey", "weight": 1.25, "onPress": { "type": "SEND_TEXT", "text": "=" } },
+        { "label": "*", "alternates": ["×", "⋅", "°", "∞", "•"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "*" } },
+        { "label": "\"", "alternates": ["'", "’", "‘", "“", "”"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "\"" } },
+        { "label": "'", "alternates": ["\"", "’", "‘"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "'" } },
+        { "label": ":", "alternates": [";", "·", "…"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": ":" } },
+        { "label": ";", "alternates": [":", "⁏"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": ";" } },
+        { "label": "!", "alternates": ["¡", "‽", "⸘"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "!" } },
+        { "label": "?", "alternates": ["¿", "‽", "⸘"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "?" } },
+        { "label": "⌫", "style": "actionKey", "flexible": true, "onPress": { "type": "SEND_CODE", "code": 67 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 } }
+      ]
+    },
+    {
+      "id": 4,
+      "splitIndex": 2,
+      "splitKey": true,
+      "keys": [
+        { "label": "ABC", "style": "modifierKey", "weight": 1.5, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
+        { "label": ",", "alternates": ["<", "«", "‹", "≤"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "," } },
+        { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " } },
+        { "label": ".", "alternates": [">", "»", "›", "≥", "…"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "." } },
+        { "label": "↵", "style": "actionKey", "weight": 1.5, "onPress": { "type": "SEND_CODE", "code": 66 } }
+      ]
+    }
+  ]
+}

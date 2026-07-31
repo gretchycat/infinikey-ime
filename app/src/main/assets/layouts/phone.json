@@ -1,0 +1,84 @@
+{
+  "id": "phone",
+  "name": "Phone Dialer Layout",
+  "version": "1.0",
+  "author": "Programmer Keyboard Team",
+  "description": "Traditional 3x4 phone dialpad for telephone and PIN input.",
+  "metadata": {
+    "horizontalSpacing": 6,
+    "verticalSpacing": 6,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 32,
+    "showKeyPreview": false,
+    "allowSplit": false,
+    "maxFontSize": 18
+  },
+  "theme": {},
+  "styles": {
+    "dialKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    },
+    "actionKey": {
+      "borderWidth": 1,
+      "cornerRadius": 8,
+      "showPreview": false
+    },
+    "modifierKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "keys": [
+        { "label": "", "spacer": true, "weight": 0.5 },
+        { "label": "1", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "1" } },
+        { "label": "2", "topRightLabel": "ABC", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "2" } },
+        { "label": "3", "topRightLabel": "DEF", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "3" } },
+        { "label": "", "spacer": true, "weight": 0.5 }
+      ]
+    },
+    {
+      "id": 2,
+      "keys": [
+        { "label": "", "spacer": true, "weight": 0.5 },
+        { "label": "4", "topRightLabel": "GHI", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "4" } },
+        { "label": "5", "topRightLabel": "JKL", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "5" } },
+        { "label": "6", "topRightLabel": "MNO", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "6" } },
+        { "label": "", "spacer": true, "weight": 0.5 }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
+        { "label": "", "spacer": true, "weight": 0.5 },
+        { "label": "7", "topRightLabel": "PQRS", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "7" } },
+        { "label": "8", "topRightLabel": "TUV", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "8" } },
+        { "label": "9", "topRightLabel": "WXYZ", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "9" } },
+        { "label": "", "spacer": true, "weight": 0.5 }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
+        { "label": "", "spacer": true, "weight": 0.5 },
+        { "label": "*", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "*" } },
+        { "label": "0", "topRightLabel": "+", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "0" } },
+        { "label": "#", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "#" } },
+        { "label": "", "spacer": true, "weight": 0.5 }
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
+        { "label": "⌨", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
+        { "label": "+", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "+" } },
+        { "label": ",", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "," } },
+        { "label": "⌫", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 67 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 } },
+        { "label": "↵", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 66 } }
+      ]
+    }
+  ]
+}
