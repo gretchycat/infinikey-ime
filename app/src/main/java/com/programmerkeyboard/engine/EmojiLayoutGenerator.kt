@@ -64,6 +64,7 @@ object EmojiLayoutGenerator {
                 KeyDefinition(
                     primaryLabel = emoji,
                     styleName = "alphaKey",
+                    fontSize = DimensionValue.Absolute(28),
                     onPressAction = KeyAction.SendText(emoji)
                 )
             }.toMutableList()
@@ -76,6 +77,7 @@ object EmojiLayoutGenerator {
             catRowKeys.add(KeyDefinition(
                 primaryLabel = pair.first,
                 styleName = if (idx == categoryIndex) "actionKey" else "functionKey",
+                fontSize = DimensionValue.Absolute(24),
                 widthWeight = DimensionValue.Ratio(1.0f),
                 onPressAction = KeyAction.SwitchLayout("emoji_auto_$idx")
             ))

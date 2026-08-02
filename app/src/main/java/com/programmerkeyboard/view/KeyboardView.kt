@@ -1351,6 +1351,18 @@ class KeyboardView @JvmOverloads constructor(
         }
     }
 
+    private fun findHitKeyBounds(x: Float, y: Float): KeyBounds? {
+        val isVerticalScroll = layoutDefinition?.metadata?.scrollDirection.equals("VERTICAL", ignoreCase = true)
+        if (isVerticalScroll && scrollViewportHeight > 0f) {
+            if (y >= scrollViewportHeight - 4f) {
+                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.top >= (scrollViewportHeight - 10f) && it.rect.contains(x, y) }
+            } else {
+                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.bottom <= (scrollViewportHeight + 10f) && it.rect.contains(x, y) }
+            }
+        }
+        return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(x, y) }
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         // Multi-touch two-finger surface gesture
         if (event.pointerCount > 1) {
@@ -1462,7 +1474,7 @@ class KeyboardView @JvmOverloads constructor(
                     return true
                 }
 
-                pressedKeyBounds = keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(event.x, event.y) }
+                pressedKeyBounds = findHitKeyBounds(event.x, event.y)
                 if (pressedKeyBounds != null) {
                     performKeypressHapticFeedback()
                     playKeyClickSound()
@@ -1491,7 +1503,7 @@ class KeyboardView @JvmOverloads constructor(
                 if (pressedKeyBounds != null && pressedKeyBounds!!.rect.contains(event.x, event.y)) {
                     return true
                 }
-                val hoveredBounds = keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(event.x, event.y) }
+                val hoveredBounds = findHitKeyBounds(event.x, event.y)
                 if (hoveredBounds != pressedKeyBounds) {
                     dismissKeyPreview()
                     handler.removeCallbacks(longPressRunnable)
@@ -1527,7 +1539,7 @@ class KeyboardView @JvmOverloads constructor(
                     }
                 }
 
-                val releasedBounds = keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(event.x, event.y) } ?: pressedKeyBounds
+                val releasedBounds = findHitKeyBounds(event.x, event.y) ?: pressedKeyBounds
 
                 if (!isLongPressTriggered) {
                     releasedBounds?.key?.let { key ->
