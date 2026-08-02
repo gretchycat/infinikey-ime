@@ -635,8 +635,15 @@ object LayoutParser {
 
     private fun parseColorHex(colorStr: String?): Int? {
         if (colorStr.isNullOrEmpty()) return null
+        var hex = colorStr.trim()
+        if (hex.startsWith("#") && hex.length == 4) {
+            val r = hex[1]
+            val g = hex[2]
+            val b = hex[3]
+            hex = "#$r$r$g$g$b$b"
+        }
         return try {
-            Color.parseColor(colorStr)
+            Color.parseColor(hex)
         } catch (e: Exception) {
             null
         }
