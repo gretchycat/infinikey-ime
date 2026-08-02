@@ -114,7 +114,7 @@
           "onPress": { "type": "SWITCH_LAYOUT", "target": "main" },
           "onLongPress": { "type": "TOGGLE_ROW", "rowId": 1 }
         },
-        { "label": "😀", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "EMOJI_PICKER" } },
+        { "label": "😀", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "emoji_auto" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "EMOJI_PICKER" } },
         { "label": "←", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 21 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 21, "intervalMs": 50 } },
         { "label": "↓", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 20 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 20, "intervalMs": 50 } },
         { "label": "→", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 22 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 22, "intervalMs": 50 } }
