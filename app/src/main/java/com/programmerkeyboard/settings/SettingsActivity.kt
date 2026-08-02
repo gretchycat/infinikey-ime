@@ -102,17 +102,18 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        // 1. Keyboard Height Slider + Editable Text Input (15% - 60%)
+        // 1. Keyboard Height Slider + Editable Text Input (20% - 35%)
         val sbHeight = findViewById<SeekBar>(R.id.sbHeight)
         val etHeightValue = findViewById<EditText>(R.id.etHeightValue)
-        val currentHeight = prefs.getInt("pref_keyboard_height_percent", 30).coerceIn(15, 60)
+        val currentHeight = prefs.getInt("pref_keyboard_height_percent", 30).coerceIn(20, 35)
 
-        sbHeight.progress = currentHeight - 15
+        sbHeight.max = 15
+        sbHeight.progress = currentHeight - 20
         etHeightValue.setText("$currentHeight")
 
         sbHeight.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val heightPct = 15 + progress
+                val heightPct = 20 + progress
                 if (fromUser) {
                     isUpdatingHeightFromText = true
                     etHeightValue.setText("$heightPct")
@@ -132,8 +133,8 @@ class SettingsActivity : AppCompatActivity() {
                 val inputStr = s?.toString() ?: ""
                 val inputVal = inputStr.toIntOrNull()
                 if (inputVal != null) {
-                    val clamped = inputVal.coerceIn(15, 60)
-                    sbHeight.progress = clamped - 15
+                    val clamped = inputVal.coerceIn(20, 35)
+                    sbHeight.progress = clamped - 20
                     prefs.edit().putInt("pref_keyboard_height_percent", clamped).apply()
                 }
             }

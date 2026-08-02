@@ -52,7 +52,7 @@ class ProgrammerInputMethodService : InputMethodService() {
         if (::keyboardView.isInitialized) {
             val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
 
-            val newHeightPercent = prefs.getInt("pref_keyboard_height_percent", 30)
+            val newHeightPercent = prefs.getInt("pref_keyboard_height_percent", 30).coerceIn(20, 35)
             keyboardView.heightPercentage = newHeightPercent
 
             val formFactorStr = prefs.getString("pref_form_factor", null)

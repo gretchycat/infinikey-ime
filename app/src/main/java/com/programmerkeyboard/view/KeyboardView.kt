@@ -90,7 +90,7 @@ class KeyboardView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val displayMetrics = context.resources.displayMetrics
-        val effectiveHeightPercent = heightPercentage.coerceIn(15, 60)
+        val effectiveHeightPercent = heightPercentage.coerceIn(20, 35)
 
         val calculatedHeight = if (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
             (displayMetrics.heightPixels * 0.45f).toInt()
