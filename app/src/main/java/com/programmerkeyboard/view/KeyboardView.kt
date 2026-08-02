@@ -726,6 +726,11 @@ class KeyboardView @JvmOverloads constructor(
         val themeBg = layoutDefinition?.theme?.backgroundColor
         val bgColor = themeBg ?: ContextCompat.getColor(context, R.color.keyboard_background)
 
+        val cardBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = bgColor
+            style = Paint.Style.FILL
+        }
+
         when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.FLOATING -> {
                 val baseStartX = (w - activeWidth) / 2f
@@ -736,6 +741,7 @@ class KeyboardView @JvmOverloads constructor(
                 val cardBottom = cardTop + floatCardHeight
 
                 val cardRect = RectF(startX + 4f, cardTop, startX + activeWidth - 4f, cardBottom)
+                canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBgPaint)
 
                 val handleWidth = 40f * density
                 val handleX = cardRect.centerX() - handleWidth / 2f
@@ -748,7 +754,8 @@ class KeyboardView @JvmOverloads constructor(
                 canvas.drawRoundRect(handleRect, 2f * density, 2f * density, handlePaint)
             }
             else -> {
-                // Completely transparent keyboard background box and outline
+                // Draw full unsplit background box across the entire keyboard area
+                canvas.drawRect(0f, 0f, w, h, cardBgPaint)
             }
         }
 
