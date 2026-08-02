@@ -1062,9 +1062,58 @@ class KeyboardView @JvmOverloads constructor(
         canvas.restoreToCount(saveCount)
     }
 
+    private fun drawSvgTtsIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconH = minOf(rect.width(), rect.height()) * 0.52f
+        val scale = iconH / 120f
+        val iconW = 100f * scale
+        val offsetX = rect.centerX() - (iconW / 2f)
+        val offsetY = rect.centerY() - (iconH / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 3f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        // Profile Silhouette
+        val pathProfile = android.graphics.Path().apply {
+            moveTo(30f, 5f)
+            cubicTo(50f, 5f, 65f, 15f, 65f, 30f)
+            cubicTo(65f, 38f, 72f, 42f, 75f, 46f)
+            cubicTo(78f, 50f, 71f, 54f, 68f, 54f)
+            cubicTo(67f, 56f, 68f, 58f, 69f, 60f)
+            cubicTo(70f, 62f, 66f, 63f, 63f, 61f)
+            cubicTo(61f, 63f, 64f, 66f, 65f, 69f)
+            cubicTo(66f, 72f, 63f, 74f, 63f, 77f)
+            cubicTo(62f, 80f, 50f, 85f, 40f, 92f)
+            cubicTo(32f, 97f, 31f, 105f, 31f, 115f)
+        }
+        canvas.drawPath(pathProfile, strokePaint)
+
+        // Sound Waves
+        val wave1Paint = Paint(strokePaint).apply { strokeWidth = 3.5f }
+        val wave1Rect = RectF(73f, 60f, 79f, 64f)
+        canvas.drawArc(wave1Rect, 270f, 180f, false, wave1Paint)
+
+        val wave2Rect = RectF(73f, 54f, 93f, 70f)
+        canvas.drawArc(wave2Rect, 270f, 180f, false, strokePaint)
+
+        val wave3Rect = RectF(73f, 48f, 109f, 76f)
+        canvas.drawArc(wave3Rect, 270f, 180f, false, strokePaint)
+
+        canvas.restoreToCount(saveCount)
+    }
+
     private fun drawKeyIconOrLabel(canvas: Canvas, key: KeyDefinition, displayLabel: String, rect: RectF, paint: Paint) {
         val iconType = key.iconName?.lowercase() ?: when (displayLabel.trim()) {
             "🎙", "🎙️", "🎤" -> "mic"
+            "🗣", "🗣️", "🔊" -> "tts"
             else -> null
         }
 
@@ -1076,6 +1125,10 @@ class KeyboardView @JvmOverloads constructor(
             when (iconType) {
                 "mic", "microphone", "voice", "mic.svg", "assets/images/mic.svg" -> {
                     drawSvgMicIcon(canvas, rect, paint)
+                    return
+                }
+                "tts", "read_text", "speech", "tts.svg", "assets/images/tts.svg" -> {
+                    drawSvgTtsIcon(canvas, rect, paint)
                     return
                 }
                 "keyboard" -> {
