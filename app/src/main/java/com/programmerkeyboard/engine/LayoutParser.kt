@@ -24,12 +24,12 @@ object LayoutParser {
 
     private val gson = Gson()
 
-    fun loadLayoutFromAsset(context: Context, fileName: String = "mobile.json", previousLayoutId: String = "mobile"): LayoutDefinition {
+    fun loadLayoutFromAsset(context: Context, fileName: String = "main.json", previousLayoutId: String = "main"): LayoutDefinition {
         val cleanName = fileName.removePrefix("layouts/").removeSuffix(".json")
         if (cleanName.equals("meta", ignoreCase = true)) {
             return createMetaLayout(context, previousLayoutId)
         }
-        if (cleanName.startsWith("emoji_auto")) {
+        if (cleanName.startsWith("emoji_auto") || cleanName.equals("emoji", ignoreCase = true) || cleanName.equals("emoji_picker", ignoreCase = true)) {
             val catIdx = cleanName.removePrefix("emoji_auto_").removePrefix("emoji_auto").toIntOrNull() ?: 0
             val rawEmojiLayout = EmojiLayoutGenerator.generateSupportedEmojiLayout(context, catIdx)
             return applyThemeOverrides(context, rawEmojiLayout)
@@ -42,7 +42,7 @@ object LayoutParser {
             applyThemeOverrides(context, parsed)
         } catch (e: Exception) {
             e.printStackTrace()
-            fallbackSimpleLayout()
+            fallbackSimpleLayout(context)
         }
         return ensureNavigationKey(layout)
     }
@@ -165,29 +165,6 @@ object LayoutParser {
     }
 
     fun ensureNavigationKey(layout: LayoutDefinition): LayoutDefinition {
-        if (layout.id == "meta" || layout.id == "emoji_auto") return layout
-        val hasSwitchKey = layout.rows.any { row ->
-            row.keys.any { key ->
-                key.onPressAction is KeyAction.SwitchLayout ||
-                key.onLongPressAction is KeyAction.SwitchLayout ||
-                key.onSwipeUpAction is KeyAction.SwitchLayout ||
-                key.onSwipeDownAction is KeyAction.SwitchLayout ||
-                key.onSwipeLeftAction is KeyAction.SwitchLayout ||
-                key.onSwipeRightAction is KeyAction.SwitchLayout
-            }
-        }
-        if (!hasSwitchKey && layout.rows.isNotEmpty()) {
-            val backKey = KeyDefinition(
-                primaryLabel = "🌐 Layouts",
-                styleName = "modifierKey",
-                widthWeight = DimensionValue.Ratio(1.2f),
-                showPreview = false,
-                onPressAction = KeyAction.SwitchLayout("meta")
-            )
-            val lastRow = layout.rows.last()
-            val newRow = lastRow.copy(keys = listOf(backKey) + lastRow.keys)
-            return layout.copy(rows = layout.rows.dropLast(1) + newRow)
-        }
         return layout
     }
 
@@ -785,13 +762,18 @@ object LayoutParser {
         return "alphaKey"
     }
 
-    private fun fallbackSimpleLayout(): LayoutDefinition {
-        val defaultKeys = listOf("q", "w", "e", "r", "t", "y").map { createKeyDefinitionFromLabel(it) }
-        return LayoutDefinition(
-            id = "fallback",
-            name = "Fallback Layout",
-            version = "1.0",
-            rows = listOf(KeyRow(id = 1, keys = defaultKeys))
-        )
+    private fun fallbackSimpleLayout(context: Context): LayoutDefinition {
+        return try {
+            val jsonString = context.assets.open("layouts/main.json").bufferedReader().use { it.readText() }
+            val parsed = parseJsonLayoutDescriptor(jsonString)
+            applyThemeOverrides(context, parsed)
+        } catch (_: Exception) {
+            LayoutDefinition(
+                id = "main",
+                name = "Full Programmer Keyboard",
+                version = "1.0",
+                rows = emptyList()
+            )
+        }
     }
 }
