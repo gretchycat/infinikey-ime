@@ -1872,17 +1872,6 @@ class SettingsActivity : AppCompatActivity() {
         if (key.isFlexible) obj.addProperty("flexible", true)
         if (key.isSpacer) obj.addProperty("spacer", true)
 
-        fun formatColor(colorInt: Int?): String? {
-            return colorInt?.let { String.format("#%06X", (0xFFFFFF and it)) }
-        }
-
-        key.bgColor?.let { obj.addProperty("bgColor", formatColor(it)) }
-        key.fgColor?.let { obj.addProperty("fgColor", formatColor(it)) }
-        key.pressedBgColor?.let { obj.addProperty("pressedBgColor", formatColor(it)) }
-        key.activeBgColor?.let { obj.addProperty("activeBgColor", formatColor(it)) }
-        key.secondaryFgColor?.let { obj.addProperty("secondaryFgColor", formatColor(it)) }
-        key.borderColor?.let { obj.addProperty("borderColor", formatColor(it)) }
-
         if (key.onPressAction !is KeyAction.None) obj.add("onPress", serializeAction(key.onPressAction))
         if (key.onLongPressAction !is KeyAction.None) obj.add("onLongPress", serializeAction(key.onLongPressAction))
         if (key.onSwipeUpAction !is KeyAction.None) obj.add("onSwipeUp", serializeAction(key.onSwipeUpAction))
