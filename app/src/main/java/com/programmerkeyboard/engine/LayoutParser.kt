@@ -29,6 +29,11 @@ object LayoutParser {
         if (cleanName.equals("meta", ignoreCase = true)) {
             return createMetaLayout(context, previousLayoutId)
         }
+        if (cleanName.startsWith("emoji_auto")) {
+            val catIdx = cleanName.removePrefix("emoji_auto_").removePrefix("emoji_auto").toIntOrNull() ?: 0
+            val rawEmojiLayout = EmojiLayoutGenerator.generateSupportedEmojiLayout(context, catIdx)
+            return applyThemeOverrides(context, rawEmojiLayout)
+        }
         val layout = try {
             val assetPath = if (fileName.startsWith("layouts/")) fileName else "layouts/$fileName"
             val jsonString = context.assets.open(assetPath)

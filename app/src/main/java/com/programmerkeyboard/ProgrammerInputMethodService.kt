@@ -391,7 +391,8 @@ class ProgrammerInputMethodService : InputMethodService() {
                         }
 
                         if (!switchedToEmojiIme) {
-                            keyboardView.showEmojiPicker()
+                            val autoEmojiLayout = LayoutParser.loadLayoutFromAsset(this, "emoji_auto_0")
+                            keyboardView.layoutDefinition = LayoutParser.applyThemeOverrides(this, autoEmojiLayout)
                         }
                     }
                     "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL" -> {
