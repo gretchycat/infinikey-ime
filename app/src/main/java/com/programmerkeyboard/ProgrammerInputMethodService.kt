@@ -155,16 +155,19 @@ class ProgrammerInputMethodService : InputMethodService() {
         val inputType = info?.inputType ?: 0
         val inputClass = inputType and android.text.InputType.TYPE_MASK_CLASS
 
+        val activeTarget = prefs.getString("pref_keyboard_layout_target", "mobile") ?: "mobile"
         val targetLayout = when (inputClass) {
             android.text.InputType.TYPE_CLASS_PHONE -> "phone"
             android.text.InputType.TYPE_CLASS_NUMBER,
             android.text.InputType.TYPE_CLASS_DATETIME -> "mobile_number"
-            else -> profile.layoutTarget
+            else -> activeTarget
         }
 
         val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
-        val customLayoutJson = prefs.getString("pref_custom_layout_json", null)
-        val rawLayout = if (targetLayout == "main" && !customLayoutJson.isNullOrEmpty()) {
+        val customLayoutJson = prefs.getString("pref_custom_layout_json_$targetLayout", null)
+            ?: if (targetLayout == "main") prefs.getString("pref_custom_layout_json", null) else null
+
+        val rawLayout = if (!customLayoutJson.isNullOrEmpty()) {
             try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile) }
         } else {
             LayoutParser.loadLayoutFromAsset(this, layoutFile)

@@ -1165,34 +1165,47 @@ class SettingsActivity : AppCompatActivity() {
         val layoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, layoutOptions)
         spEditorLayoutSelector.adapter = layoutAdapter
 
-        val customLayoutJson = prefs.getString("pref_custom_layout_json", null)
-        editingLayout = if (!customLayoutJson.isNullOrEmpty()) {
-            try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json") }
-        } else {
-            com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
+        val activeTarget = prefs.getString("pref_keyboard_layout_target", "main")
+        val initialPosition = when (activeTarget) {
+            "main" -> 0
+            "mobile" -> 1
+            "mobile_number" -> 2
+            "mobile_symbol" -> 3
+            "function" -> 4
+            else -> 0
         }
+        spEditorLayoutSelector.setSelection(initialPosition)
 
         spEditorLayoutSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val targetFile = when (position) {
-                    0 -> "main.json"
-                    1 -> "mobile.json"
-                    2 -> "mobile_number.json"
-                    3 -> "mobile_symbol.json"
-                    4 -> "function.json"
-                    else -> null
+                val (targetId, targetFile) = when (position) {
+                    0 -> Pair("main", "main.json")
+                    1 -> Pair("mobile", "mobile.json")
+                    2 -> Pair("mobile_number", "mobile_number.json")
+                    3 -> Pair("mobile_symbol", "mobile_symbol.json")
+                    4 -> Pair("function", "function.json")
+                    else -> Pair("custom", null)
                 }
-                editingLayout = if (targetFile != null) {
-                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile)
+
+                if (targetId != "custom") {
+                    prefs.edit().putString("pref_keyboard_layout_target", targetId).apply()
+                }
+
+                val customJson = if (targetId != "custom") {
+                    prefs.getString("pref_custom_layout_json_$targetId", null)
+                        ?: if (targetId == "main") prefs.getString("pref_custom_layout_json", null) else null
                 } else {
-                    val customJson = prefs.getString("pref_custom_layout_json", null)
-                    if (!customJson.isNullOrEmpty()) {
-                        try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJson) }
-                        catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, "main.json") }
-                    } else {
-                        com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, "main.json")
-                    }
+                    prefs.getString("pref_custom_layout_json", null)
                 }
+
+                val rawLayout = if (!customJson.isNullOrEmpty()) {
+                    try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJson) }
+                    catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "main.json") }
+                } else {
+                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "main.json")
+                }
+                editingLayout = com.programmerkeyboard.engine.LayoutParser.applyThemeOverrides(this@SettingsActivity, rawLayout)
+
                 undoStack.clear()
                 redoStack.clear()
                 updateUndoRedoButtons()
@@ -1276,8 +1289,13 @@ class SettingsActivity : AppCompatActivity() {
             editingLayout?.let { layout ->
                 try {
                     val jsonStr = serializeLayoutToJson(layout)
-                    prefs.edit().putString("pref_custom_layout_json", jsonStr).apply()
-                    Toast.makeText(this, "Layout configuration saved successfully!", Toast.LENGTH_SHORT).show()
+                    val targetId = layout.id
+                    prefs.edit()
+                        .putString("pref_custom_layout_json_$targetId", jsonStr)
+                        .putString("pref_custom_layout_json", jsonStr)
+                        .putString("pref_keyboard_layout_target", targetId)
+                        .apply()
+                    Toast.makeText(this, "Layout configuration for '${layout.name}' saved & set active!", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(this, "Failed to save layout: ${e.message}", Toast.LENGTH_LONG).show()
