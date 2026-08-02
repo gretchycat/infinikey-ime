@@ -119,11 +119,11 @@ class ProgrammerInputMethodService : InputMethodService() {
             onKeyActionListener = { action -> handleKeyAction(action) }
             onLayoutChangeListener = { targetLayout ->
                 val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                if (!currentId.equals("meta", ignoreCase = true) && !currentId.equals("emoji_auto", ignoreCase = true)) {
+                if (!currentId.equals("meta", ignoreCase = true) && !currentId.startsWith("emoji_auto", ignoreCase = true)) {
                     lastNonMetaLayout = currentId
                 }
 
-                val isActualLayout = !targetLayout.equals("meta", ignoreCase = true) && !targetLayout.equals("emoji_auto", ignoreCase = true)
+                val isActualLayout = !targetLayout.equals("meta", ignoreCase = true) && !targetLayout.startsWith("emoji_auto", ignoreCase = true)
 
                 if (isActualLayout) {
                     val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
@@ -328,7 +328,7 @@ class ProgrammerInputMethodService : InputMethodService() {
             }
             is KeyAction.SwitchLayout -> {
                 val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                if (!currentId.equals("meta", ignoreCase = true) && !currentId.equals("emoji_auto", ignoreCase = true)) {
+                if (!currentId.equals("meta", ignoreCase = true) && !currentId.startsWith("emoji_auto", ignoreCase = true)) {
                     lastNonMetaLayout = currentId
                 }
 
@@ -337,7 +337,7 @@ class ProgrammerInputMethodService : InputMethodService() {
                     ?: "main"
 
                 val target = if (action.target == "previous" || action.target == "back") {
-                    if (lastNonMetaLayout.isNotBlank() && !lastNonMetaLayout.equals("meta", ignoreCase = true) && !lastNonMetaLayout.equals("emoji_auto", ignoreCase = true)) {
+                    if (lastNonMetaLayout.isNotBlank() && !lastNonMetaLayout.equals("meta", ignoreCase = true) && !lastNonMetaLayout.startsWith("emoji_auto", ignoreCase = true)) {
                         lastNonMetaLayout
                     } else {
                         savedLastActual
@@ -354,7 +354,7 @@ class ProgrammerInputMethodService : InputMethodService() {
                     return
                 }
 
-                if (!target.equals("emoji_auto", ignoreCase = true) && !target.equals("meta", ignoreCase = true)) {
+                if (!target.startsWith("emoji_auto", ignoreCase = true) && !target.equals("meta", ignoreCase = true)) {
                     lastNonMetaLayout = target
                     prefs.edit()
                         .putString("pref_last_actual_layout", target)
@@ -368,9 +368,9 @@ class ProgrammerInputMethodService : InputMethodService() {
                 val rawLayout = if (target == "meta") {
                     LayoutParser.createMetaLayout(this, lastNonMetaLayout.ifBlank { "main" })
                 } else if (!customLayoutJson.isNullOrEmpty()) {
-                    try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile) }
+                    try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile, lastNonMetaLayout) }
                 } else {
-                    LayoutParser.loadLayoutFromAsset(this, layoutFile)
+                    LayoutParser.loadLayoutFromAsset(this, layoutFile, lastNonMetaLayout)
                 }
                 keyboardView.layoutDefinition = LayoutParser.applyThemeOverrides(this, rawLayout)
             }
@@ -411,7 +411,7 @@ class ProgrammerInputMethodService : InputMethodService() {
                     }
                     "EMOJI_PICKER", "EMOJI", "EMOJI_KEYBOARD" -> {
                         val currentTarget = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                        if (!currentTarget.equals("meta", ignoreCase = true) && !currentTarget.equals("emoji_auto", ignoreCase = true)) {
+                        if (!currentTarget.equals("meta", ignoreCase = true) && !currentTarget.startsWith("emoji_auto", ignoreCase = true)) {
                             lastNonMetaLayout = currentTarget
                             prefs.edit()
                                 .putString("pref_last_actual_layout", currentTarget)
