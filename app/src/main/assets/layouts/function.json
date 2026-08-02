@@ -2,7 +2,7 @@
   "id": "function",
   "name": "Function & Utility Layer",
   "version": "2.0",
-  "author": "Infinikey IME Team",
+  "author": "Gretchen Maculo",
   "description": "Utility layout with expanded function keys, dedicated numeric keypad, and navigation controls on a uniform 12-column rectangular grid.",
   "metadata": {
     "alignment": "RECTANGULAR",

@@ -2,7 +2,7 @@
   "id": "mobile",
   "name": "Standard Mobile Layout",
   "version": "1.0",
-  "author": "Infinikey IME Team",
+  "author": "Gretchen Maculo",
   "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",
   "metadata": {
     "horizontalSpacing": 4,

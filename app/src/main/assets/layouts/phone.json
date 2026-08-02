@@ -2,7 +2,7 @@
   "id": "phone",
   "name": "Phone Dialer Layout",
   "version": "1.0",
-  "author": "Infinikey IME Team",
+  "author": "Gretchen Maculo",
   "description": "Traditional 3x4 phone dialpad for telephone and PIN input.",
   "metadata": {
     "horizontalSpacing": 6,
