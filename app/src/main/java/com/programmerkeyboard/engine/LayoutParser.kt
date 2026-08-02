@@ -173,11 +173,9 @@ object LayoutParser {
         val assetManager = context.assets
 
         val layoutFiles = try {
-            (assetManager.list("layouts") ?: emptyArray()).filter { 
-                it.endsWith(".json") && !it.equals("mobile.json", ignoreCase = true) 
-            }
+            (assetManager.list("layouts") ?: emptyArray()).filter { it.endsWith(".json") }
         } catch (e: Exception) {
-            listOf("main.json", "function.json", "mobile_number.json", "mobile_symbol.json", "phone.json")
+            listOf("main.json", "mobile.json", "function.json", "mobile_number.json", "mobile_symbol.json", "phone.json")
         }
 
         val layoutMap = mutableMapOf<String, LayoutDefinition>()
@@ -198,7 +196,7 @@ object LayoutParser {
         for (key in allPrefKeys) {
             if (key.startsWith("pref_custom_layout_json_")) {
                 val id = key.removePrefix("pref_custom_layout_json_")
-                if (id != "mobile" && !layoutMap.containsKey(id)) {
+                if (!layoutMap.containsKey(id)) {
                     val customJson = prefs.getString(key, null)
                     if (!customJson.isNullOrEmpty()) {
                         try {
@@ -214,6 +212,7 @@ object LayoutParser {
         val previousDisplayName = prevLayoutDef?.name?.takeIf { it.isNotBlank() }
             ?: when (previousLayoutId) {
                 "main" -> "Full Programmer Keyboard"
+                "mobile" -> "Standard Mobile Layout"
                 "function" -> "Function & Nav"
                 "mobile_number" -> "Numeric Keypad"
                 "mobile_symbol" -> "Symbols & Math"
@@ -244,6 +243,7 @@ object LayoutParser {
         val layoutItems = layoutMap.map { (id, def) ->
             val icon = when (id) {
                 "main" -> "⌨ "
+                "mobile" -> "📱 "
                 "function" -> "⚡ "
                 "mobile_number" -> "🔢 "
                 "mobile_symbol" -> "🔣 "
