@@ -160,7 +160,7 @@ class KeyboardView @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
 
-    data class KeyBounds(val key: KeyDefinition, val rect: RectF)
+    data class KeyBounds(val key: KeyDefinition, val rect: RectF, val rowIndex: Int = 0, val isFixedRow: Boolean = false)
 
     private val keyBoundsList = mutableListOf<KeyBounds>()
     private var pressedKeyBounds: KeyBounds? = null
@@ -457,8 +457,9 @@ class KeyboardView @JvmOverloads constructor(
                             is DimensionValue.Ratio -> (globalBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
                             is DimensionValue.Absolute -> key.widthWeight.value * density
                         }
+                        val isFixed = isVerticalScroll && (rowIndex == 0 || rowIndex == currentRows.lastIndex)
                         val rect = RectF(currentX, currentY, currentX + keyWidth, currentY + curRowHeight)
-                        keyBoundsList.add(KeyBounds(key, rect))
+                        keyBoundsList.add(KeyBounds(key, rect, rowIndex, isFixed))
                         currentX += keyWidth + hSpacingPx
                     }
                 }
@@ -1381,8 +1382,9 @@ class KeyboardView @JvmOverloads constructor(
     private fun findHitKeyBounds(x: Float, y: Float): KeyBounds? {
         val isVerticalScroll = layoutDefinition?.metadata?.scrollDirection.equals("VERTICAL", ignoreCase = true)
         if (isVerticalScroll) {
-            val allRows = layoutDefinition?.rows ?: emptyList()
-            val currentRows = allRows.filter { isRowVisible(it) }
+            val fixedHit = keyBoundsList.firstOrNull { it.isFixedRow && !it.key.isSpacer && it.rect.contains(x, y) }
+            if (fixedHit != null) return fixedHit
+
             val density = context.resources.displayMetrics.density
             val h = height.toFloat()
             val vSpacingPx = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
@@ -1394,13 +1396,10 @@ class KeyboardView @JvmOverloads constructor(
             val topBarBottom = vSpacingPx + rowHeight + (vSpacingPx / 2f)
             val bottomNavTop = h - rowHeight - (vSpacingPx * 1.5f)
 
-            if (y <= topBarBottom) {
-                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.top < topBarBottom && it.rect.contains(x, y) }
-            } else if (y >= bottomNavTop) {
-                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.bottom > bottomNavTop && it.rect.contains(x, y) }
-            } else {
-                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.top >= (topBarBottom - 5f) && it.rect.bottom <= (bottomNavTop + 5f) && it.rect.contains(x, y) }
+            if (y >= topBarBottom && y <= bottomNavTop) {
+                return keyBoundsList.firstOrNull { !it.isFixedRow && !it.key.isSpacer && it.rect.contains(x, y) }
             }
+            return null
         }
         return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(x, y) }
     }
@@ -1528,8 +1527,19 @@ class KeyboardView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_MOVE -> {
                 if (maxScrollOffsetY > 0f) {
+                    val density = context.resources.displayMetrics.density
+                    val h = height.toFloat()
+                    val vSpacingPx = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
+                    val maxVisRows = layoutDefinition?.metadata?.maxVisibleRows ?: 4
+                    val effectiveRowCount = maxVisRows + 2
+                    val availableHeight = h - (vSpacingPx * (effectiveRowCount + 1))
+                    val rowHeight = availableHeight / effectiveRowCount
+
+                    val topBarBottom = vSpacingPx + rowHeight + (vSpacingPx / 2f)
+                    val bottomNavTop = h - rowHeight - (vSpacingPx * 1.5f)
+
                     val dy = lastScrollTouchY - event.y
-                    if (kotlin.math.abs(dy) > 12f || isScrollDragging) {
+                    if (event.y >= topBarBottom && event.y <= bottomNavTop && (kotlin.math.abs(dy) > 12f || isScrollDragging)) {
                         isScrollDragging = true
                         scrollOffsetY = (scrollOffsetY + dy).coerceIn(0f, maxScrollOffsetY)
                         lastScrollTouchY = event.y
