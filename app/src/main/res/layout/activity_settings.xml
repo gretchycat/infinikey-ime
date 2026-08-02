@@ -1609,6 +1609,7 @@
 
                 <!-- Card 3: Import & Export Suite -->
                 <LinearLayout
+                    android:id="@+id/cardThemeImportExport"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_settings_card"

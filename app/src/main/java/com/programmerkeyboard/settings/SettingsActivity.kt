@@ -56,6 +56,15 @@ class SettingsActivity : AppCompatActivity() {
         val panelAudio = findViewById<View>(R.id.panelAudio)
         val panelThemes = findViewById<View>(R.id.panelThemes)
 
+        val cardThemeImportExport = findViewById<View>(R.id.cardThemeImportExport)
+
+        if (!com.programmerkeyboard.BuildConfig.DEBUG) {
+            cardThemeImportExport?.visibility = View.GONE
+            if (tabLayout.tabCount > 5) {
+                tabLayout.removeTabAt(5)
+            }
+        }
+
         tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
                 val position = tab?.position ?: 0
