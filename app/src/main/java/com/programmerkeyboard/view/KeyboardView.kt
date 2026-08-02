@@ -1063,11 +1063,10 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun drawSvgTtsIcon(canvas: Canvas, rect: RectF, paint: Paint) {
-        val iconH = minOf(rect.width(), rect.height()) * 0.52f
-        val scale = iconH / 120f
-        val iconW = 100f * scale
-        val offsetX = rect.centerX() - (iconW / 2f)
-        val offsetY = rect.centerY() - (iconH / 2f)
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 100f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
 
         val saveCount = canvas.save()
         canvas.translate(offsetX, offsetY)
@@ -1081,31 +1080,22 @@ class KeyboardView @JvmOverloads constructor(
             strokeJoin = Paint.Join.ROUND
         }
 
-        // Profile Silhouette
-        val pathProfile = android.graphics.Path().apply {
-            moveTo(30f, 5f)
-            cubicTo(50f, 5f, 65f, 15f, 65f, 30f)
-            cubicTo(65f, 38f, 72f, 42f, 75f, 46f)
-            cubicTo(78f, 50f, 71f, 54f, 68f, 54f)
-            cubicTo(67f, 56f, 68f, 58f, 69f, 60f)
-            cubicTo(70f, 62f, 66f, 63f, 63f, 61f)
-            cubicTo(61f, 63f, 64f, 66f, 65f, 69f)
-            cubicTo(66f, 72f, 63f, 74f, 63f, 77f)
-            cubicTo(62f, 80f, 50f, 85f, 40f, 92f)
-            cubicTo(32f, 97f, 31f, 105f, 31f, 115f)
+        val ttsPath = android.graphics.Path().apply {
+            moveTo(25f, 85f)
+            lineTo(25f, 62f)
+            cubicTo(10f, 48f, 10f, 22f, 28f, 12f)
+            cubicTo(48f, 2f, 67f, 16f, 67f, 35f)
+            lineTo(72f, 50f)
+            lineTo(64f, 50f)
+            lineTo(64f, 56f)
+            lineTo(52f, 56f)
+            lineTo(64f, 69f)
+            lineTo(64f, 75f)
+            lineTo(50f, 75f)
+            lineTo(50f, 85f)
+            close()
         }
-        canvas.drawPath(pathProfile, strokePaint)
-
-        // Sound Waves
-        val wave1Paint = Paint(strokePaint).apply { strokeWidth = 9f }
-        val wave1Rect = RectF(73f, 60f, 79f, 64f)
-        canvas.drawArc(wave1Rect, 270f, 180f, false, wave1Paint)
-
-        val wave2Rect = RectF(73f, 54f, 93f, 70f)
-        canvas.drawArc(wave2Rect, 270f, 180f, false, strokePaint)
-
-        val wave3Rect = RectF(73f, 48f, 109f, 76f)
-        canvas.drawArc(wave3Rect, 270f, 180f, false, strokePaint)
+        canvas.drawPath(ttsPath, strokePaint)
 
         canvas.restoreToCount(saveCount)
     }
