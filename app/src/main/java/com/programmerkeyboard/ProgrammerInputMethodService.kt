@@ -34,6 +34,19 @@ class ProgrammerInputMethodService : InputMethodService() {
     private var currentPackageName: String = "default"
 
     private var lastNonMetaLayout: String = "main"
+    private val layoutStack = java.util.ArrayDeque<String>()
+
+    private fun isGeneratedLayoutId(layoutId: String): Boolean {
+        val clean = layoutId.removePrefix("layouts/").removeSuffix(".json")
+        return clean.equals("meta", ignoreCase = true) || clean.startsWith("emoji_auto", ignoreCase = true)
+    }
+
+    private fun pushCurrentLayoutToStack() {
+        val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
+        if (!isGeneratedLayoutId(currentId)) {
+            layoutStack.push(currentId)
+        }
+    }
 
     private val prefChangeListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == "pref_custom_theme_json" ||
@@ -327,23 +340,17 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
             }
             is KeyAction.SwitchLayout -> {
-                val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                if (!currentId.equals("meta", ignoreCase = true) && !currentId.startsWith("emoji_auto", ignoreCase = true)) {
-                    lastNonMetaLayout = currentId
-                }
+                val actionTarget = action.target
+                val isPopAction = actionTarget == "[last]" || actionTarget == "last" || actionTarget == "previous" || actionTarget == "back"
 
-                val savedLastActual = prefs.getString("pref_last_actual_layout", null)
-                    ?: prefs.getString("pref_last_primary_layout_target", "main")
-                    ?: "main"
-
-                val target = if (action.target == "previous" || action.target == "back") {
-                    if (lastNonMetaLayout.isNotBlank() && !lastNonMetaLayout.equals("meta", ignoreCase = true) && !lastNonMetaLayout.startsWith("emoji_auto", ignoreCase = true)) {
-                        lastNonMetaLayout
+                val target = if (isPopAction) {
+                    if (layoutStack.isNotEmpty()) {
+                        layoutStack.pop()
                     } else {
-                        savedLastActual
+                        prefs.getString("pref_last_actual_layout", "main") ?: "main"
                     }
                 } else {
-                    action.target
+                    actionTarget
                 }
 
                 if (target.equals("settings", ignoreCase = true)) {
@@ -354,23 +361,30 @@ class ProgrammerInputMethodService : InputMethodService() {
                     return
                 }
 
-                if (!target.startsWith("emoji_auto", ignoreCase = true) && !target.equals("meta", ignoreCase = true)) {
-                    lastNonMetaLayout = target
+                val isNextGenerated = isGeneratedLayoutId(target)
+
+                if (isNextGenerated) {
+                    pushCurrentLayoutToStack()
+                } else {
+                    layoutStack.clear()
                     prefs.edit()
                         .putString("pref_last_actual_layout", target)
-                        .putString("pref_last_primary_layout_target", target)
+                        .putString("pref_keyboard_layout_target", target)
                         .apply()
                 }
 
                 val layoutFile = if (target.endsWith(".json")) target else "${target}.json"
                 val customLayoutJson = prefs.getString("pref_custom_layout_json_$target", null)
                     ?: if (target == "main") prefs.getString("pref_custom_layout_json", null) else null
+
+                val lastLayoutForHeader = if (layoutStack.isNotEmpty()) layoutStack.peek() else (prefs.getString("pref_last_actual_layout", "main") ?: "main")
+
                 val rawLayout = if (target == "meta") {
-                    LayoutParser.createMetaLayout(this, lastNonMetaLayout.ifBlank { "main" })
+                    LayoutParser.createMetaLayout(this, lastLayoutForHeader)
                 } else if (!customLayoutJson.isNullOrEmpty()) {
-                    try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile, lastNonMetaLayout) }
+                    try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile, lastLayoutForHeader) }
                 } else {
-                    LayoutParser.loadLayoutFromAsset(this, layoutFile, lastNonMetaLayout)
+                    LayoutParser.loadLayoutFromAsset(this, layoutFile, lastLayoutForHeader)
                 }
                 keyboardView.layoutDefinition = LayoutParser.applyThemeOverrides(this, rawLayout)
             }
@@ -410,16 +424,9 @@ class ProgrammerInputMethodService : InputMethodService() {
                         startActivity(intent)
                     }
                     "EMOJI_PICKER", "EMOJI", "EMOJI_KEYBOARD" -> {
-                        val currentTarget = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                        if (!currentTarget.equals("meta", ignoreCase = true) && !currentTarget.startsWith("emoji_auto", ignoreCase = true)) {
-                            lastNonMetaLayout = currentTarget
-                            prefs.edit()
-                                .putString("pref_last_actual_layout", currentTarget)
-                                .putString("pref_last_primary_layout_target", currentTarget)
-                                .apply()
-                        }
-
-                        val autoEmojiLayout = LayoutParser.loadLayoutFromAsset(this, "emoji_auto_0", lastNonMetaLayout)
+                        pushCurrentLayoutToStack()
+                        val lastLayoutForHeader = if (layoutStack.isNotEmpty()) layoutStack.peek() else (prefs.getString("pref_last_actual_layout", "main") ?: "main")
+                        val autoEmojiLayout = LayoutParser.loadLayoutFromAsset(this, "emoji_auto_0", lastLayoutForHeader)
                         keyboardView.layoutDefinition = LayoutParser.applyThemeOverrides(this, autoEmojiLayout)
                     }
                     "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL" -> {

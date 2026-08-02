@@ -91,7 +91,7 @@ object EmojiLayoutGenerator {
             primaryLabel = "⌨ ABC",
             styleName = "modifierKey",
             widthWeight = DimensionValue.Ratio(1.5f),
-            onPressAction = KeyAction.SwitchLayout("previous")
+            onPressAction = KeyAction.SwitchLayout("[last]")
         ))
 
         bottomRowKeys.add(KeyDefinition(

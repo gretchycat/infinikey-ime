@@ -234,7 +234,7 @@ object LayoutParser {
                         widthWeight = DimensionValue.Ratio(1.0f),
                         isFlexible = true,
                         showPreview = false,
-                        onPressAction = KeyAction.SwitchLayout(previousLayoutId)
+                        onPressAction = KeyAction.SwitchLayout("[last]")
                     )
                 )
             )
