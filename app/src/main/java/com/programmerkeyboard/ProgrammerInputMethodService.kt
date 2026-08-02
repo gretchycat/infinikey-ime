@@ -321,6 +321,23 @@ class ProgrammerInputMethodService : InputMethodService() {
     private var oneShotRecognizer: android.speech.SpeechRecognizer? = null
 
     private fun toggleOneShotVoiceRecognition() {
+        if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            keyboardView.activeListeningStatus = "🎙 Requesting mic permission..."
+            PermissionRequestActivity.onPermissionResultListener = { granted ->
+                if (granted) {
+                    toggleOneShotVoiceRecognition()
+                } else {
+                    keyboardView.activeListeningStatus = null
+                    android.widget.Toast.makeText(this, "Microphone permission is required for speech-to-text!", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+            val intent = Intent(this, PermissionRequestActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
+            return
+        }
+
         if (android.speech.SpeechRecognizer.isRecognitionAvailable(this)) {
             try {
                 oneShotRecognizer?.destroy()
@@ -344,6 +361,19 @@ class ProgrammerInputMethodService : InputMethodService() {
                         }
 
                         override fun onError(error: Int) {
+                            if (error == android.speech.SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS) {
+                                PermissionRequestActivity.onPermissionResultListener = { granted ->
+                                    if (granted) {
+                                        toggleOneShotVoiceRecognition()
+                                    }
+                                }
+                                val intent = Intent(this@ProgrammerInputMethodService, PermissionRequestActivity::class.java).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                                startActivity(intent)
+                                keyboardView.activeListeningStatus = null
+                                return
+                            }
                             val errorMsg = when (error) {
                                 android.speech.SpeechRecognizer.ERROR_NO_MATCH -> "No speech recognized"
                                 android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Speech timed out"
