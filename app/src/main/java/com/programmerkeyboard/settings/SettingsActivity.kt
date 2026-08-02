@@ -301,15 +301,6 @@ class SettingsActivity : AppCompatActivity() {
                 if (mode == "FLOATING") {
                     if (!com.programmerkeyboard.util.OverlayPermissionUtil.hasOverlayPermission(this@SettingsActivity)) {
                         com.programmerkeyboard.util.OverlayPermissionUtil.requestOverlayPermission(this@SettingsActivity)
-                        val prevMode = prefs.getString("pref_form_factor", "FULL_WIDTH_DOCKED")
-                        val prevIdx = when (prevMode) {
-                            "SPLIT" -> 1
-                            "LEFT_DOCKED" -> 2
-                            "RIGHT_DOCKED" -> 3
-                            else -> 0
-                        }
-                        spFormFactor.setSelection(prevIdx)
-                        return
                     }
                 }
 

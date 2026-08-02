@@ -143,26 +143,20 @@ class ProgrammerInputMethodService : InputMethodService() {
                 if (mode == "FLOATING") {
                     if (!com.programmerkeyboard.util.OverlayPermissionUtil.hasOverlayPermission(this@ProgrammerInputMethodService)) {
                         com.programmerkeyboard.util.OverlayPermissionUtil.requestOverlayPermission(this@ProgrammerInputMethodService)
-                    } else {
-                        prefs.edit().putString("pref_form_factor", "FLOATING").apply()
-                        keyboardView.keyboardState.formFactorMode = com.programmerkeyboard.model.FormFactorMode.FLOATING
-                        keyboardView.recalculateKeyBounds()
-                        keyboardView.requestLayout()
-                        keyboardView.invalidate()
                     }
-                } else {
-                    prefs.edit().putString("pref_form_factor", mode).apply()
-                    val newMode = when (mode) {
-                        "SPLIT" -> com.programmerkeyboard.model.FormFactorMode.SPLIT
-                        "LEFT_DOCKED", "SIDE_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED
-                        "RIGHT_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED
-                        else -> com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED
-                    }
-                    keyboardView.keyboardState.formFactorMode = newMode
-                    keyboardView.recalculateKeyBounds()
-                    keyboardView.requestLayout()
-                    keyboardView.invalidate()
                 }
+                prefs.edit().putString("pref_form_factor", mode).apply()
+                val newMode = when (mode) {
+                    "SPLIT" -> com.programmerkeyboard.model.FormFactorMode.SPLIT
+                    "LEFT_DOCKED", "SIDE_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED
+                    "RIGHT_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED
+                    "FLOATING" -> com.programmerkeyboard.model.FormFactorMode.FLOATING
+                    else -> com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED
+                }
+                keyboardView.keyboardState.formFactorMode = newMode
+                keyboardView.recalculateKeyBounds()
+                keyboardView.requestLayout()
+                keyboardView.invalidate()
             }
         }
 
@@ -257,14 +251,7 @@ class ProgrammerInputMethodService : InputMethodService() {
             "SPLIT" -> com.programmerkeyboard.model.FormFactorMode.SPLIT
             "LEFT_DOCKED", "SIDE_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED
             "RIGHT_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED
-            "FLOATING" -> {
-                if (com.programmerkeyboard.util.OverlayPermissionUtil.hasOverlayPermission(this)) {
-                    com.programmerkeyboard.model.FormFactorMode.FLOATING
-                } else {
-                    com.programmerkeyboard.util.OverlayPermissionUtil.requestOverlayPermission(this)
-                    com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED
-                }
-            }
+            "FLOATING" -> com.programmerkeyboard.model.FormFactorMode.FLOATING
             else -> com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED
         }
 
@@ -453,7 +440,6 @@ class ProgrammerInputMethodService : InputMethodService() {
                 if (mode == "FLOATING") {
                     if (!com.programmerkeyboard.util.OverlayPermissionUtil.hasOverlayPermission(this)) {
                         com.programmerkeyboard.util.OverlayPermissionUtil.requestOverlayPermission(this)
-                        return
                     }
                 }
                 prefs.edit().putString("pref_form_factor", mode).apply()
