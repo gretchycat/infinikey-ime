@@ -305,25 +305,29 @@ class ProgrammerInputMethodService : InputMethodService() {
                     "EMOJI_PICKER", "EMOJI", "EMOJI_KEYBOARD" -> {
                         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
                         val token = window?.window?.attributes?.token
-                        var switchedToGboard = false
+                        var switchedToEmojiIme = false
 
                         if (imm != null && token != null) {
                             val enabledImes = imm.enabledInputMethodList
-                            val gboardIme = enabledImes.firstOrNull { imi ->
+                            val emojiIme = enabledImes.firstOrNull { imi ->
                                 val id = imi.id.lowercase()
                                 id.contains("com.google.android.inputmethod.latin") || 
                                 id.contains("gboard") || 
-                                id.contains("emoji")
+                                id.contains("swiftkey") ||
+                                id.contains("honeyboard") ||
+                                id.contains("emoji") ||
+                                id.contains("kika") ||
+                                id.contains("facemoji")
                             }
-                            if (gboardIme != null) {
+                            if (emojiIme != null) {
                                 try {
-                                    imm.setInputMethod(token, gboardIme.id)
-                                    switchedToGboard = true
+                                    imm.setInputMethod(token, emojiIme.id)
+                                    switchedToEmojiIme = true
                                 } catch (_: Exception) {}
                             }
                         }
 
-                        if (!switchedToGboard) {
+                        if (!switchedToEmojiIme) {
                             keyboardView.showEmojiPicker()
                         }
                     }

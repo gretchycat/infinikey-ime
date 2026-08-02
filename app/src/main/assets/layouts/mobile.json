@@ -75,10 +75,10 @@
       "keys": [
         { "label": "💻", "style": "functionKey", "onPress": { "type": "SWITCH_LAYOUT", "target": "main" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
         { "label": "?123", "style": "modifierKey", "weight": 1.25, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile_number" } },
-        { "label": "🔊", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "READ_TEXT" } },
         { "label": "🎙", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT_CONTINUOUS" }, "onLongPress": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" } },
         { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " } },
         { "label": ".", "alternates": [",", "!", "?", ":", ";", "-"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "." } },
+        { "label": "😀", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "EMOJI_PICKER" } },
         { "label": "↵", "style": "actionKey", "weight": 1.25, "onPress": { "type": "SEND_CODE", "code": 66 } }
       ]
     }
