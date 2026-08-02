@@ -1573,10 +1573,15 @@ class SettingsActivity : AppCompatActivity() {
         val currentWeight = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
         etWeight.setText("$currentWeight")
 
-        val categories = listOf("alphaKey", "numberKey", "modifierKey", "functionKey", "actionKey", "navigationKey", "editingKey")
-        val catAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories)
+        val availableStyles = mutableListOf("alphaKey", "numberKey", "modifierKey", "functionKey", "actionKey", "navigationKey", "editingKey")
+        editingLayout?.styles?.keys?.forEach { s ->
+            if (!availableStyles.contains(s)) availableStyles.add(s)
+        }
+        key.styleName?.let { if (!availableStyles.contains(it)) availableStyles.add(it) }
+
+        val catAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, availableStyles)
         spCategory.adapter = catAdapter
-        val currentCatIdx = categories.indexOf(key.styleName).coerceAtLeast(0)
+        val currentCatIdx = availableStyles.indexOf(key.styleName).coerceAtLeast(0)
         spCategory.setSelection(currentCatIdx)
 
         val actionTypes = listOf(
@@ -1634,7 +1639,7 @@ class SettingsActivity : AppCompatActivity() {
                 val newSecondary = etSecondary.text.toString().ifEmpty { null }
                 val newTopLeft = etTopLeft.text.toString().ifEmpty { null }
                 val newTopRight = etTopRight.text.toString().ifEmpty { null }
-                val newCat = categories[spCategory.selectedItemPosition.coerceIn(0, categories.size - 1)]
+                val newCat = availableStyles[spCategory.selectedItemPosition.coerceIn(0, availableStyles.size - 1)]
                 val newWeightVal = etWeight.text.toString().toFloatOrNull() ?: 1.0f
 
                 val newOnPress = parseKeyActionFromInputs(spActionType.selectedItemPosition, etActionParam.text.toString(), newPrimary)
