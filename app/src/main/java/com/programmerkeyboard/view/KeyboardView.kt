@@ -885,8 +885,7 @@ class KeyboardView @JvmOverloads constructor(
                 fontMetrics = textPaintToUse.fontMetrics
             }
 
-            val baseline = rect.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2
-            canvas.drawText(displayLabel, rect.centerX(), baseline, textPaintToUse)
+            drawKeyIconOrLabel(canvas, key, displayLabel, rect, textPaintToUse)
 
             val secFontSize = (targetFontSize * 0.55f).coerceIn(9f * density, 14f * density)
             val secY = rect.top + secFontSize + (2f * density)
@@ -1026,6 +1025,65 @@ class KeyboardView @JvmOverloads constructor(
             is DimensionValue.Absolute -> value.value * density
             null -> fallbackPx
         }
+    }
+
+    private fun drawKeyIconOrLabel(canvas: Canvas, key: KeyDefinition, displayLabel: String, rect: RectF, paint: Paint) {
+        val density = resources.displayMetrics.density
+        val iconType = key.iconName?.lowercase() ?: when (displayLabel.trim()) {
+            "🎙", "🎙️", "🎤" -> "mic"
+            else -> null
+        }
+
+        if (iconType != null) {
+            val centerX = rect.centerX()
+            val centerY = rect.centerY()
+            val iconSize = minOf(rect.width(), rect.height()) * 0.42f
+
+            when (iconType) {
+                "mic", "microphone", "voice" -> {
+                    val micW = iconSize * 0.42f
+                    val micH = iconSize * 0.72f
+                    val micTop = centerY - (micH * 0.55f)
+                    val micRect = RectF(centerX - micW / 2f, micTop, centerX + micW / 2f, micTop + micH)
+
+                    val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = paint.color
+                        style = Paint.Style.FILL
+                    }
+                    canvas.drawRoundRect(micRect, micW / 2f, micW / 2f, fillPaint)
+
+                    val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = paint.color
+                        style = Paint.Style.STROKE
+                        strokeWidth = maxOf(2f * density, iconSize * 0.11f)
+                        strokeCap = Paint.Cap.ROUND
+                    }
+
+                    val arcRect = RectF(centerX - iconSize * 0.38f, centerY - iconSize * 0.22f, centerX + iconSize * 0.38f, centerY + iconSize * 0.35f)
+                    canvas.drawArc(arcRect, 0f, 180f, false, strokePaint)
+
+                    val stemTop = arcRect.bottom
+                    val stemBottom = stemTop + (iconSize * 0.25f)
+                    canvas.drawLine(centerX, stemTop, centerX, stemBottom, strokePaint)
+                    canvas.drawLine(centerX - iconSize * 0.22f, stemBottom, centerX + iconSize * 0.22f, stemBottom, strokePaint)
+                    return
+                }
+                "keyboard" -> {
+                    val p = Paint(paint).apply {
+                        textSize = iconSize * 1.3f
+                        textAlign = Paint.Align.CENTER
+                    }
+                    val fm = p.fontMetrics
+                    val bl = centerY - (fm.ascent + fm.descent) / 2
+                    canvas.drawText("⌨", centerX, bl, p)
+                    return
+                }
+            }
+        }
+
+        val fontMetrics = paint.fontMetrics
+        val baseline = rect.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2
+        canvas.drawText(displayLabel, rect.centerX(), baseline, paint)
     }
 
     var isTextSelected: Boolean = false
