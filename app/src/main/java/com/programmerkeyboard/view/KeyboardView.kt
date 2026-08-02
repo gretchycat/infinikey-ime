@@ -90,15 +90,27 @@ class KeyboardView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val displayMetrics = context.resources.displayMetrics
-        val density = displayMetrics.density
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+
+        val effectiveHeightPercent = if (isLandscape) minOf(heightPercentage, 35) else heightPercentage
 
         val calculatedHeight = if (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
-            (displayMetrics.heightPixels * 0.65f).toInt()
+            (displayMetrics.heightPixels * 0.45f).toInt()
         } else {
-            (displayMetrics.heightPixels * (heightPercentage / 100f)).toInt()
+            (displayMetrics.heightPixels * (effectiveHeightPercent / 100f)).toInt()
         }
 
-        setMeasuredDimension(width, calculatedHeight)
+        val aspectRatio = getKeyboardAspectRatio()
+        val idealWidth = (calculatedHeight * aspectRatio).toInt()
+        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
+
+        val measuredWidth = if (isPrimaryFullWidth || (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED && isPrimaryFullWidth)) {
+            width
+        } else {
+            minOf(width, idealWidth)
+        }
+
+        setMeasuredDimension(measuredWidth, calculatedHeight)
     }
 
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -724,15 +736,8 @@ class KeyboardView @JvmOverloads constructor(
         when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
                 val isPrimaryFullWidth = isPrimaryFullWidthLayout()
-                val aspectRatio = getKeyboardAspectRatio()
-                val idealWidth = h * aspectRatio
-                val targetWidth = if (isPrimaryFullWidth) w else minOf(w, idealWidth)
-                if (targetWidth < w) {
-                    val startX = (w - targetWidth) / 2f
-                    canvas.drawRect(0f, 0f, startX, h, dimOverlayPaint)
-                    canvas.drawRect(startX + targetWidth, 0f, w, h, dimOverlayPaint)
-
-                    val cardRect = RectF(startX, 0f, startX + targetWidth, h)
+                if (!isPrimaryFullWidth) {
+                    val cardRect = RectF(0f, 0f, w, h)
                     canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBgPaint)
                     canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBorderPaint)
                 } else {

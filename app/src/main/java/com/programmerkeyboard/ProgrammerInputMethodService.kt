@@ -23,7 +23,7 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     private lateinit var keyboardView: KeyboardView
     private var trackpadView: TrackpadView? = null
-    private var mainContainer: LinearLayout? = null
+    private var mainContainer: ViewGroup? = null
     private val keyboardState = KeyboardState()
     private data class AppProfile(
         var layoutTarget: String = "mobile",
@@ -63,8 +63,7 @@ class ProgrammerInputMethodService : InputMethodService() {
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val heightPercent = prefs.getInt("pref_keyboard_height_percent", 30)
 
-        val rootLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
+        val rootLayout = android.widget.FrameLayout(this).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -75,11 +74,12 @@ class ProgrammerInputMethodService : InputMethodService() {
         mainContainer = rootLayout
 
         keyboardView = KeyboardView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                0,
+            layoutParams = android.widget.FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                1.0f
-            )
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = android.view.Gravity.CENTER_HORIZONTAL or android.view.Gravity.BOTTOM
+            }
             heightPercentage = heightPercent
             layoutDefinition = LayoutParser.loadLayoutFromAsset(this@ProgrammerInputMethodService, "mobile.json")
             keyboardState = this@ProgrammerInputMethodService.keyboardState
