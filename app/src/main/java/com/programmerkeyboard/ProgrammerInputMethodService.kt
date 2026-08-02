@@ -86,11 +86,27 @@ class ProgrammerInputMethodService : InputMethodService() {
             onKeyActionListener = { action -> handleKeyAction(action) }
             onLayoutChangeListener = { targetLayout ->
                 val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                if (!currentId.equals("meta", ignoreCase = true)) {
+                if (!currentId.equals("meta", ignoreCase = true) &&
+                    !currentId.equals("mobile_symbol", ignoreCase = true) &&
+                    !currentId.equals("mobile_number", ignoreCase = true)) {
                     lastNonMetaLayout = currentId
                 }
-                val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
-                profile.layoutTarget = targetLayout
+
+                val isPrimaryTarget = !targetLayout.equals("mobile_symbol", ignoreCase = true) &&
+                        !targetLayout.equals("mobile_number", ignoreCase = true) &&
+                        !targetLayout.equals("phone", ignoreCase = true) &&
+                        !targetLayout.equals("meta", ignoreCase = true)
+
+                if (isPrimaryTarget) {
+                    val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
+                    profile.layoutTarget = targetLayout
+                    val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+                    prefs.edit()
+                        .putString("pref_keyboard_layout_target", targetLayout)
+                        .putString("pref_last_primary_layout_target", targetLayout)
+                        .apply()
+                }
+
                 val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
                 layoutDefinition = LayoutParser.loadLayoutFromAsset(this@ProgrammerInputMethodService, layoutFile, lastNonMetaLayout)
             }
@@ -101,7 +117,7 @@ class ProgrammerInputMethodService : InputMethodService() {
                 profile.rowVisibility[rowId] = isVisible
             }
             onScreenModeChangeListener = { mode ->
-                // Mode change handler (FULL_WIDTH_DOCKED, SPLIT, DOCK_LEFT, DOCK_RIGHT, FLOAT)
+                // Mode change handler
             }
         }
 
@@ -136,9 +152,11 @@ class ProgrammerInputMethodService : InputMethodService() {
         val isNewProfile = !appProfiles.containsKey(pkgName)
         val profile = appProfiles.getOrPut(pkgName) { AppProfile() }
 
+        val inputType = info?.inputType ?: 0
+        val inputClass = inputType and android.text.InputType.TYPE_MASK_CLASS
+
         if (isNewProfile) {
             val lowerPkg = pkgName.lowercase()
-            val inputType = info?.inputType ?: 0
             val isUriField = (inputType and android.text.InputType.TYPE_TEXT_VARIATION_URI) == android.text.InputType.TYPE_TEXT_VARIATION_URI
 
             if (lowerPkg.contains("termux") || lowerPkg.contains("terminal") || lowerPkg.contains("ide") || lowerPkg.contains("code")) {
@@ -149,18 +167,33 @@ class ProgrammerInputMethodService : InputMethodService() {
                 profile.layoutTarget = "mobile"
                 profile.rowVisibility["main:1"] = false
                 profile.rowVisibility["1"] = false
+            } else {
+                profile.layoutTarget = "mobile"
             }
         }
 
-        val inputType = info?.inputType ?: 0
-        val inputClass = inputType and android.text.InputType.TYPE_MASK_CLASS
+        val lastPrimaryGlobal = prefs.getString("pref_last_primary_layout_target", "mobile") ?: "mobile"
+        val appSavedTarget = profile.layoutTarget
 
-        val activeTarget = prefs.getString("pref_keyboard_layout_target", "mobile") ?: "mobile"
+        val activePrimaryTarget = if (!appSavedTarget.isNullOrEmpty() &&
+            !appSavedTarget.equals("mobile_symbol", ignoreCase = true) &&
+            !appSavedTarget.equals("mobile_number", ignoreCase = true) &&
+            !appSavedTarget.equals("phone", ignoreCase = true) &&
+            !appSavedTarget.equals("meta", ignoreCase = true)) {
+            appSavedTarget
+        } else {
+            if (lastPrimaryGlobal.equals("mobile_symbol", ignoreCase = true) || lastPrimaryGlobal.equals("mobile_number", ignoreCase = true)) {
+                "mobile"
+            } else {
+                lastPrimaryGlobal
+            }
+        }
+
         val targetLayout = when (inputClass) {
             android.text.InputType.TYPE_CLASS_PHONE -> "phone"
             android.text.InputType.TYPE_CLASS_NUMBER,
             android.text.InputType.TYPE_CLASS_DATETIME -> "mobile_number"
-            else -> activeTarget
+            else -> activePrimaryTarget
         }
 
         val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
