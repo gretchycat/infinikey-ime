@@ -49,6 +49,13 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    applicationVariants.all {
+        outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            output.outputFileName = "infinikey-ime-v${versionName}-${buildType.name}.apk"
+        }
+    }
 }
 
 dependencies {
