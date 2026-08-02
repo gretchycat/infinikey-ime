@@ -321,7 +321,7 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun getKeyboardAspectRatio(): Float {
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-        return prefs.getFloat("pref_keyboard_aspect_ratio", 2.2f).coerceIn(1.8f, 3.5f)
+        return prefs.getFloat("pref_keyboard_aspect_ratio", 2.2f).coerceIn(1.0f, 5.0f)
     }
 
     data class RowGearBounds(val rowIdx: Int, val row: com.programmerkeyboard.model.KeyRow, val rect: RectF)

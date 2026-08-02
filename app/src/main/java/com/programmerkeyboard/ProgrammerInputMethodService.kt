@@ -36,20 +36,41 @@ class ProgrammerInputMethodService : InputMethodService() {
     private var lastNonMetaLayout: String = "mobile"
 
     private val prefChangeListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == "pref_custom_theme_json" || key == "pref_theme_preset_idx" || key == "pref_keyboard_height_percent") {
+        if (key == "pref_custom_theme_json" ||
+            key == "pref_theme_preset_idx" ||
+            key == "pref_keyboard_height_percent" ||
+            key == "pref_keyboard_aspect_ratio" ||
+            key == "pref_form_factor_mode" ||
+            key?.startsWith("pref_row_vis_") == true) {
             reloadKeyboardLayoutAndTheme()
         }
     }
 
     private fun reloadKeyboardLayoutAndTheme() {
         if (::keyboardView.isInitialized) {
+            val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+
+            val newHeightPercent = prefs.getInt("pref_keyboard_height_percent", 30)
+            keyboardView.heightPercentage = newHeightPercent
+
+            val formFactorStr = prefs.getString("pref_form_factor_mode", "FULL_WIDTH_DOCKED") ?: "FULL_WIDTH_DOCKED"
+            keyboardState.formFactorMode = when (formFactorStr) {
+                "LEFT_DOCKED", "SIDE_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED
+                "RIGHT_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED
+                "FLOATING" -> com.programmerkeyboard.model.FormFactorMode.FLOATING
+                "SPLIT" -> com.programmerkeyboard.model.FormFactorMode.SPLIT
+                else -> com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED
+            }
+
             val currentLayout = keyboardView.layoutDefinition
             if (currentLayout != null) {
                 val updatedLayout = com.programmerkeyboard.engine.LayoutParser.applyThemeOverrides(this, currentLayout)
                 keyboardView.layoutDefinition = updatedLayout
-                keyboardView.recalculateKeyBounds()
-                keyboardView.invalidate()
             }
+
+            keyboardView.requestLayout()
+            keyboardView.recalculateKeyBounds()
+            keyboardView.invalidate()
         }
     }
 
