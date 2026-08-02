@@ -272,7 +272,8 @@ class SettingsActivity : AppCompatActivity() {
             getString(R.string.setting_docked),
             getString(R.string.setting_split),
             getString(R.string.setting_left_docked),
-            getString(R.string.setting_right_docked)
+            getString(R.string.setting_right_docked),
+            "Floating Window Mode"
         )
         val formFactorAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, formFactorOptions)
         spFormFactor.adapter = formFactorAdapter
@@ -282,6 +283,7 @@ class SettingsActivity : AppCompatActivity() {
             "SPLIT" -> 1
             "LEFT_DOCKED", "SIDE_DOCKED" -> 2
             "RIGHT_DOCKED" -> 3
+            "FLOATING" -> 4
             else -> 0
         }
         spFormFactor.setSelection(initialFormIdx)
@@ -292,8 +294,25 @@ class SettingsActivity : AppCompatActivity() {
                     1 -> "SPLIT"
                     2 -> "LEFT_DOCKED"
                     3 -> "RIGHT_DOCKED"
+                    4 -> "FLOATING"
                     else -> "FULL_WIDTH_DOCKED"
                 }
+
+                if (mode == "FLOATING") {
+                    if (!com.programmerkeyboard.util.OverlayPermissionUtil.hasOverlayPermission(this@SettingsActivity)) {
+                        com.programmerkeyboard.util.OverlayPermissionUtil.requestOverlayPermission(this@SettingsActivity)
+                        val prevMode = prefs.getString("pref_form_factor", "FULL_WIDTH_DOCKED")
+                        val prevIdx = when (prevMode) {
+                            "SPLIT" -> 1
+                            "LEFT_DOCKED" -> 2
+                            "RIGHT_DOCKED" -> 3
+                            else -> 0
+                        }
+                        spFormFactor.setSelection(prevIdx)
+                        return
+                    }
+                }
+
                 prefs.edit().putString("pref_form_factor", mode).apply()
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
