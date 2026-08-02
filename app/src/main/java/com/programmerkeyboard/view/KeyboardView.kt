@@ -385,7 +385,7 @@ class KeyboardView @JvmOverloads constructor(
         keyBoundsList.clear()
         rowGearBoundsList.clear()
 
-        val formFactor = if (layoutDefinition?.id == "phone") com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED else keyboardState.formFactorMode
+        val formFactor = keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = h * aspectRatio
         val isPrimaryFullWidth = isPrimaryFullWidthLayout()

@@ -72,6 +72,8 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
         window.window?.let { win ->
             win.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            win.decorView.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            win.findViewById<View>(android.R.id.content)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
             win.setDimAmount(0f)
             win.clearFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         }
