@@ -26,14 +26,14 @@ class ProgrammerInputMethodService : InputMethodService() {
     private var mainContainer: ViewGroup? = null
     private val keyboardState = KeyboardState()
     private data class AppProfile(
-        var layoutTarget: String = "mobile",
+        var layoutTarget: String = "main",
         val rowVisibility: MutableMap<String, Boolean> = mutableMapOf()
     )
 
     private val appProfiles = mutableMapOf<String, AppProfile>()
     private var currentPackageName: String = "default"
 
-    private var lastNonMetaLayout: String = "mobile"
+    private var lastNonMetaLayout: String = "main"
 
     private val prefChangeListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == "pref_custom_theme_json" ||
@@ -410,43 +410,17 @@ class ProgrammerInputMethodService : InputMethodService() {
                         startActivity(intent)
                     }
                     "EMOJI_PICKER", "EMOJI", "EMOJI_KEYBOARD" -> {
-                        val currentTarget = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "mobile"
-                        if (!currentTarget.equals("mobile_symbol", ignoreCase = true) &&
-                            !currentTarget.equals("mobile_number", ignoreCase = true) &&
-                            !currentTarget.equals("meta", ignoreCase = true)) {
-                            prefs.edit().putString("pref_last_primary_layout_target", currentTarget).apply()
+                        val currentTarget = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
+                        if (!currentTarget.equals("meta", ignoreCase = true) && !currentTarget.equals("emoji_auto", ignoreCase = true)) {
+                            lastNonMetaLayout = currentTarget
+                            prefs.edit()
+                                .putString("pref_last_actual_layout", currentTarget)
+                                .putString("pref_last_primary_layout_target", currentTarget)
+                                .apply()
                         }
 
-                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
-                        val token = window?.window?.attributes?.token
-                        var switchedToEmojiIme = false
-
-                        if (imm != null && token != null) {
-                            val enabledImes = imm.enabledInputMethodList
-                            val emojiIme = enabledImes.firstOrNull { imi ->
-                                val id = imi.id.lowercase()
-                                id.contains("com.google.android.inputmethod.latin") || 
-                                id.contains("gboard") || 
-                                id.contains("swiftkey") ||
-                                id.contains("honeyboard") ||
-                                id.contains("emoji") ||
-                                id.contains("kika") ||
-                                id.contains("facemoji")
-                            }
-                            if (emojiIme != null) {
-                                try {
-                                    val lastPrimary = prefs.getString("pref_last_primary_layout_target", "mobile") ?: "mobile"
-                                    prefs.edit().putString("pref_keyboard_layout_target", lastPrimary).apply()
-                                    imm.setInputMethod(token, emojiIme.id)
-                                    switchedToEmojiIme = true
-                                } catch (_: Exception) {}
-                            }
-                        }
-
-                        if (!switchedToEmojiIme) {
-                            val autoEmojiLayout = LayoutParser.loadLayoutFromAsset(this, "emoji_auto_0")
-                            keyboardView.layoutDefinition = LayoutParser.applyThemeOverrides(this, autoEmojiLayout)
-                        }
+                        val autoEmojiLayout = LayoutParser.loadLayoutFromAsset(this, "emoji_auto_0", lastNonMetaLayout)
+                        keyboardView.layoutDefinition = LayoutParser.applyThemeOverrides(this, autoEmojiLayout)
                     }
                     "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL" -> {
                         toggleOneShotVoiceRecognition()

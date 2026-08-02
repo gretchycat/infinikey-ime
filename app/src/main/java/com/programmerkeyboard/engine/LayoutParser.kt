@@ -194,13 +194,16 @@ object LayoutParser {
     fun createMetaLayout(context: Context, previousLayoutId: String = "mobile"): LayoutDefinition {
         val assetManager = context.assets
         val layoutFiles = try {
-            (assetManager.list("layouts") ?: emptyArray()).filter { it.endsWith(".json") }
+            (assetManager.list("layouts") ?: emptyArray()).filter { 
+                it.endsWith(".json") && !it.equals("mobile.json", ignoreCase = true) 
+            }
         } catch (e: Exception) {
-            listOf("main.json", "mobile.json", "function.json", "mobile_number.json")
+            listOf("main.json", "function.json", "mobile_number.json", "mobile_symbol.json", "phone.json")
         }
 
-        val layoutItems = layoutFiles.map { file ->
+        val layoutItems = layoutFiles.mapNotNull { file ->
             val cleanName = file.removeSuffix(".json")
+            if (cleanName.equals("mobile", ignoreCase = true)) return@mapNotNull null
             val layoutDef = try {
                 val assetPath = "layouts/$file"
                 val jsonString = context.assets.open(assetPath).bufferedReader().use { it.readText() }
@@ -210,7 +213,6 @@ object LayoutParser {
             }
             val displayName = when (cleanName) {
                 "main" -> "⌨ Full Programmer"
-                "mobile" -> "📱 Mobile Standard"
                 "function" -> "⚡ Function & Nav"
                 "mobile_number" -> "🔢 Number Pad"
                 "mobile_symbol" -> "🔣 Symbols & Math"
@@ -222,7 +224,6 @@ object LayoutParser {
 
         val previousDisplayName = when (previousLayoutId) {
             "main" -> "Full Programmer"
-            "mobile" -> "Mobile Standard"
             "function" -> "Function & Nav"
             "mobile_number" -> "Number Pad"
             "mobile_symbol" -> "Symbols & Math"
@@ -233,7 +234,7 @@ object LayoutParser {
 
         val rowList = mutableListOf<KeyRow>()
 
-        // Dynamic Header Row (Return to Previous Layout + Quick Settings Button)
+        // Dynamic Header Row (Return to Previous Layout)
         rowList.add(
             KeyRow(
                 id = 1,
@@ -241,17 +242,10 @@ object LayoutParser {
                     KeyDefinition(
                         primaryLabel = "← Return ($previousDisplayName)",
                         styleName = "actionKey",
-                        widthWeight = DimensionValue.Ratio(2.5f),
+                        widthWeight = DimensionValue.Ratio(1.0f),
                         isFlexible = true,
                         showPreview = false,
                         onPressAction = KeyAction.SwitchLayout(previousLayoutId)
-                    ),
-                    KeyDefinition(
-                        primaryLabel = "⚙ Settings",
-                        styleName = "functionKey",
-                        widthWeight = DimensionValue.Ratio(1.0f),
-                        showPreview = false,
-                        onPressAction = KeyAction.SwitchLayout("settings")
                     )
                 )
             )
