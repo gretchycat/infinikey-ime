@@ -888,12 +888,18 @@ class KeyboardView @JvmOverloads constructor(
             val baseline = rect.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2
             canvas.drawText(displayLabel, rect.centerX(), baseline, textPaintToUse)
 
+            val secFontSize = (targetFontSize * 0.55f).coerceIn(9f * density, 14f * density)
+            val secY = rect.top + secFontSize + (2f * density)
+
             // Top-Left Corner Text Drawing
             val topLeft = key.topLeftLabel
             if (!topLeft.isNullOrEmpty() && !isModifierKey(key)) {
-                val topLeftPaint = Paint(secondaryTextPaint).apply { textAlign = Paint.Align.LEFT }
+                val topLeftPaint = Paint(secondaryTextPaint).apply {
+                    textSize = secFontSize
+                    textAlign = Paint.Align.LEFT
+                }
                 key.secondaryFgColor?.let { topLeftPaint.color = it }
-                canvas.drawText(topLeft, rect.left + (6f * density), rect.top + (14f * density), topLeftPaint)
+                canvas.drawText(topLeft, rect.left + (5f * density), secY, topLeftPaint)
             }
 
             // Top-Right Corner Text Drawing (First Alternate)
@@ -908,9 +914,12 @@ class KeyboardView @JvmOverloads constructor(
             }
 
             if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key)) {
-                val secPaint = Paint(secondaryTextPaint).apply { textAlign = Paint.Align.RIGHT }
+                val secPaint = Paint(secondaryTextPaint).apply {
+                    textSize = secFontSize
+                    textAlign = Paint.Align.RIGHT
+                }
                 key.secondaryFgColor?.let { secPaint.color = it }
-                canvas.drawText(rawSecToDraw, rect.right - (6f * density), rect.top + (14f * density), secPaint)
+                canvas.drawText(rawSecToDraw, rect.right - (5f * density), secY, secPaint)
             }
 
             if (saveCount != -1) {
