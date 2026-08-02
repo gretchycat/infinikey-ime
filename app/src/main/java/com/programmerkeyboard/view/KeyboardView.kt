@@ -90,9 +90,7 @@ class KeyboardView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val displayMetrics = context.resources.displayMetrics
-        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
-
-        val effectiveHeightPercent = if (isLandscape) minOf(heightPercentage, 35) else heightPercentage
+        val effectiveHeightPercent = heightPercentage.coerceIn(15, 60)
 
         val calculatedHeight = if (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
             (displayMetrics.heightPixels * 0.45f).toInt()
