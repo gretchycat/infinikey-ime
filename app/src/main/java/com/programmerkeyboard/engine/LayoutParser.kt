@@ -168,8 +168,10 @@ object LayoutParser {
         return layout
     }
 
-    fun createMetaLayout(context: Context, previousLayoutId: String = "mobile"): LayoutDefinition {
+    fun createMetaLayout(context: Context, previousLayoutId: String = "main"): LayoutDefinition {
+        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val assetManager = context.assets
+
         val layoutFiles = try {
             (assetManager.list("layouts") ?: emptyArray()).filter { 
                 it.endsWith(".json") && !it.equals("mobile.json", ignoreCase = true) 
@@ -178,40 +180,51 @@ object LayoutParser {
             listOf("main.json", "function.json", "mobile_number.json", "mobile_symbol.json", "phone.json")
         }
 
-        val layoutItems = layoutFiles.mapNotNull { file ->
-            val cleanName = file.removeSuffix(".json")
-            if (cleanName.equals("mobile", ignoreCase = true)) return@mapNotNull null
-            val layoutDef = try {
-                val assetPath = "layouts/$file"
-                val jsonString = context.assets.open(assetPath).bufferedReader().use { it.readText() }
-                parseJsonLayoutDescriptor(jsonString)
-            } catch (e: Exception) {
-                null
-            }
-            val displayName = when (cleanName) {
-                "main" -> "⌨ Full Programmer"
-                "function" -> "⚡ Function & Nav"
-                "mobile_number" -> "🔢 Number Pad"
-                "mobile_symbol" -> "🔣 Symbols & Math"
-                "phone" -> "📞 Phone Dialer"
-                else -> layoutDef?.name?.takeIf { it.isNotBlank() } ?: cleanName.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
-            }
-            Pair(cleanName, displayName)
+        val layoutMap = mutableMapOf<String, LayoutDefinition>()
+
+        for (file in layoutFiles) {
+            val id = file.removeSuffix(".json")
+            try {
+                val customJson = prefs.getString("pref_custom_layout_json_$id", null)
+                val jsonString = if (!customJson.isNullOrEmpty()) customJson else {
+                    assetManager.open("layouts/$file").bufferedReader().use { it.readText() }
+                }
+                val parsed = parseJsonLayoutDescriptor(jsonString)
+                layoutMap[id] = parsed
+            } catch (_: Exception) {}
         }
 
-        val previousDisplayName = when (previousLayoutId) {
-            "main" -> "Full Programmer"
-            "function" -> "Function & Nav"
-            "mobile_number" -> "Number Pad"
-            "mobile_symbol" -> "Symbols & Math"
-            "phone" -> "Phone Dialer"
-            "emoji_auto" -> "Emoji Picker"
-            else -> previousLayoutId.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+        val allPrefKeys = prefs.all.keys
+        for (key in allPrefKeys) {
+            if (key.startsWith("pref_custom_layout_json_")) {
+                val id = key.removePrefix("pref_custom_layout_json_")
+                if (id != "mobile" && !layoutMap.containsKey(id)) {
+                    val customJson = prefs.getString(key, null)
+                    if (!customJson.isNullOrEmpty()) {
+                        try {
+                            val parsed = parseJsonLayoutDescriptor(customJson)
+                            layoutMap[id] = parsed
+                        } catch (_: Exception) {}
+                    }
+                }
+            }
         }
+
+        val prevLayoutDef = layoutMap[previousLayoutId]
+        val previousDisplayName = prevLayoutDef?.name?.takeIf { it.isNotBlank() }
+            ?: when (previousLayoutId) {
+                "main" -> "Full Programmer Keyboard"
+                "function" -> "Function & Nav"
+                "mobile_number" -> "Numeric Keypad"
+                "mobile_symbol" -> "Symbols & Math"
+                "phone" -> "Phone Dialer"
+                "emoji_auto" -> "Emoji Picker"
+                else -> previousLayoutId.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+            }
 
         val rowList = mutableListOf<KeyRow>()
 
-        // Dynamic Header Row (Return to Previous Layout)
+        // Dynamic Header Row 1: Return to Previous Layout
         rowList.add(
             KeyRow(
                 id = 1,
@@ -227,6 +240,19 @@ object LayoutParser {
                 )
             )
         )
+
+        val layoutItems = layoutMap.map { (id, def) ->
+            val icon = when (id) {
+                "main" -> "⌨ "
+                "function" -> "⚡ "
+                "mobile_number" -> "🔢 "
+                "mobile_symbol" -> "🔣 "
+                "phone" -> "📞 "
+                else -> "📄 "
+            }
+            val labelName = def.name.takeIf { it.isNotBlank() } ?: id.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+            Pair(id, "$icon$labelName")
+        }
 
         // Group layout buttons into rows of 2 keys
         var rowId = 2
