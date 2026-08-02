@@ -1337,12 +1337,16 @@ class SettingsActivity : AppCompatActivity() {
                         editorKeyboardView.setLayout(editingLayout!!)
                         val pretty = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(parsed)
                         prefs.edit().putString("pref_custom_layout_json", pretty).apply()
-                        Toast.makeText(this, "Layout imported successfully!", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     Toast.makeText(this, "Failed to parse layout file: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+
+        fun getExportedLayoutFileName(): String {
+            val layoutId = editingLayout?.id?.lowercase()?.replace("[^a-z0-9_]+".toRegex(), "_")?.trim('_') ?: "main"
+            return "infinikey_${layoutId}_layout.json"
         }
 
         exportLayoutLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri: Uri? ->
@@ -1365,7 +1369,7 @@ class SettingsActivity : AppCompatActivity() {
         val btnResetLayout = findViewById<Button>(R.id.btnResetLayout)
 
         btnExportLayout.setOnClickListener {
-            exportLayoutLauncher.launch("programmer_keyboard_layout.json")
+            exportLayoutLauncher.launch(getExportedLayoutFileName())
         }
 
         btnExportLayout.setOnLongClickListener {
@@ -1376,7 +1380,7 @@ class SettingsActivity : AppCompatActivity() {
                 .setTitle("Export Layout Options")
                 .setItems(exportOptions) { _, which ->
                     when (which) {
-                        0 -> exportLayoutLauncher.launch("programmer_keyboard_layout.json")
+                        0 -> exportLayoutLauncher.launch(getExportedLayoutFileName())
                         1 -> {
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                             val clip = android.content.ClipData.newPlainText("Layout JSON", prettyJson)
