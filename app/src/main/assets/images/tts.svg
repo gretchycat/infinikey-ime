@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100" height="120" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100" height="120" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
   <!-- Profile Silhouette -->
   <path d="M 30,5 C 50,5 65,15 65,30 C 65,38 72,42 75,46 C 78,50 71,54 68,54 C 67,56 68,58 69,60 C 70,62 66,63 63,61 C 61,63 64,66 65,69 C 66,72 63,74 63,77 C 62,80 50,85 40,92 C 32,97 31,105 31,115" />
 
   <!-- Sound Waves -->
-  <path d="M 76,64 A 3,3 0 0,1 76,60" stroke-width="3.5" />
+  <path d="M 76,64 A 3,3 0 0,1 76,60" stroke-width="9" />
   <path d="M 83,70 A 10,10 0 0,0 83,54" />
   <path d="M 91,76 A 18,18 0 0,0 91,48" />
 </svg>

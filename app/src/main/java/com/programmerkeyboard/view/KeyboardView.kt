@@ -1076,7 +1076,7 @@ class KeyboardView @JvmOverloads constructor(
         val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = paint.color
             style = Paint.Style.STROKE
-            strokeWidth = 3f
+            strokeWidth = 8f
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
         }
@@ -1097,7 +1097,7 @@ class KeyboardView @JvmOverloads constructor(
         canvas.drawPath(pathProfile, strokePaint)
 
         // Sound Waves
-        val wave1Paint = Paint(strokePaint).apply { strokeWidth = 3.5f }
+        val wave1Paint = Paint(strokePaint).apply { strokeWidth = 9f }
         val wave1Rect = RectF(73f, 60f, 79f, 64f)
         canvas.drawArc(wave1Rect, 270f, 180f, false, wave1Paint)
 
