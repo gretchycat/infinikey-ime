@@ -1,4 +1,4 @@
-# Programmer Keyboard
+# Infinikey IME
 
 An open-source, highly customizable soft keyboard for Android designed for power users, developers, and terminal environments (Termux, X11, VNC, RDP).
 
@@ -15,16 +15,21 @@ An open-source, highly customizable soft keyboard for Android designed for power
 - **`app/src/main/java/com/programmerkeyboard/view/`**:
   - `KeyboardView.kt`: Custom View for rendering staggered and ortholinear key rows, swipe gestures, and active states.
   - `TrackpadView.kt`: Integrated margin trackpad for mouse emulation in split or side-docked modes.
-- **`app/src/main/assets/layouts/default_layout.json`**: JSON layout descriptor defining the default 5-row base and desktop Fn utility layers.
+- **`app/src/main/assets/layouts/main.json`**: JSON layout descriptor defining the default 5-row base and desktop Fn utility layers.
 
 ## Building the Project
 
 Use Gradle to assemble the APK:
 
 ```bash
-./gradlew assembleDebug
+./gradlew assembleRelease assembleDebug
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
 
 ## Attributions & Credits
 
 Mechanical keyboard switch audio samples are sourced from **[Mechvibes](https://mechvibes.com/)**. See [ATTRIBUTION.md](ATTRIBUTION.md) for full sound pack credits.
+
