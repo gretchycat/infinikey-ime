@@ -9,6 +9,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -20,6 +22,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.programmerkeyboard.R
+import com.programmerkeyboard.model.DimensionValue
+import com.programmerkeyboard.model.KeyAction
+import com.programmerkeyboard.model.KeyDefinition
+import com.programmerkeyboard.model.KeyRow
+import com.programmerkeyboard.model.LayoutDefinition
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -28,8 +35,12 @@ class SettingsActivity : AppCompatActivity() {
     private var isUpdatingAutoRepeatFromText = false
     private var isUpdatingAspectRatioFromText = false
 
+    private var editingLayout: LayoutDefinition? = null
+
     private lateinit var importFileLauncher: ActivityResultLauncher<String>
     private lateinit var exportFileLauncher: ActivityResultLauncher<String>
+    private lateinit var importLayoutLauncher: ActivityResultLauncher<String>
+    private lateinit var exportLayoutLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +53,18 @@ class SettingsActivity : AppCompatActivity() {
         val panelLayout = findViewById<View>(R.id.panelLayout)
         val panelBehavior = findViewById<View>(R.id.panelBehavior)
         val panelHaptics = findViewById<View>(R.id.panelHaptics)
+        val panelAudio = findViewById<View>(R.id.panelAudio)
         val panelThemes = findViewById<View>(R.id.panelThemes)
 
         tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
                 val position = tab?.position ?: 0
-                panelEditor.visibility = if (position == 0) View.VISIBLE else View.GONE
-                panelLayout.visibility = if (position == 1) View.VISIBLE else View.GONE
-                panelBehavior.visibility = if (position == 2) View.VISIBLE else View.GONE
-                panelHaptics.visibility = if (position == 3) View.VISIBLE else View.GONE
+                panelLayout.visibility = if (position == 0) View.VISIBLE else View.GONE
+                panelBehavior.visibility = if (position == 1) View.VISIBLE else View.GONE
+                panelHaptics.visibility = if (position == 2) View.VISIBLE else View.GONE
+                panelAudio.visibility = if (position == 3) View.VISIBLE else View.GONE
                 panelThemes.visibility = if (position == 4) View.VISIBLE else View.GONE
+                panelEditor.visibility = if (position == 5) View.VISIBLE else View.GONE
             }
             override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
@@ -262,6 +275,12 @@ class SettingsActivity : AppCompatActivity() {
                 prefs.edit().putBoolean("pref_is_shift_lock", isShift).apply()
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        val cbMinimalVoiceFeedback = findViewById<android.widget.CheckBox>(R.id.cbMinimalVoiceFeedback)
+        cbMinimalVoiceFeedback.isChecked = prefs.getBoolean("pref_minimal_voice_feedback", true)
+        cbMinimalVoiceFeedback.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("pref_minimal_voice_feedback", isChecked).apply()
         }
 
         // 6. Haptic Feedback CheckBox
@@ -944,19 +963,35 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        val themePresetFileNames = listOf(
+            "theme_system_auto.json",
+            "theme_slate.json",
+            "theme_cyberpunk.json",
+            "theme_oled.json",
+            "theme_matrix.json",
+            "theme_retro.json",
+            "theme_muted_slate.json",
+            "theme_custom.json"
+        )
+
+        fun getExportedThemeFileName(): String {
+            val idx = spThemePreset.selectedItemPosition.coerceIn(0, 7)
+            return themePresetFileNames[idx]
+        }
+
         btnExportTheme.setOnClickListener {
-            exportFileLauncher.launch("programmer_keyboard_theme.json")
+            exportFileLauncher.launch(getExportedThemeFileName())
         }
 
         btnExportTheme.setOnLongClickListener {
             val exportOptions = arrayOf("💾 Save Theme File (Downloads)", "📋 Copy JSON to Clipboard", "📤 Share via App")
             AlertDialog.Builder(this)
-                .setTitle("Export Options")
+                .setTitle("Export Theme Options")
                 .setItems(exportOptions) { _, which ->
                     val currentJson = prefs.getString("pref_custom_theme_json", null) ?: getDefaultThemeJson()
                     val prettyJson = formatPrettyJson(currentJson)
                     when (which) {
-                        0 -> exportFileLauncher.launch("programmer_keyboard_theme.json")
+                        0 -> exportFileLauncher.launch(getExportedThemeFileName())
                         1 -> {
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
                             val clip = android.content.ClipData.newPlainText("Theme JSON", prettyJson)
@@ -966,7 +1001,7 @@ class SettingsActivity : AppCompatActivity() {
                         2 -> {
                             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT, "Programmer Keyboard Theme Configuration")
+                                putExtra(Intent.EXTRA_SUBJECT, "Programmer Keyboard Theme Configuration (${getExportedThemeFileName()})")
                                 putExtra(Intent.EXTRA_TEXT, prettyJson)
                             }
                             startActivity(Intent.createChooser(shareIntent, "Share Theme Configuration"))
@@ -1010,6 +1045,7 @@ class SettingsActivity : AppCompatActivity() {
                         2 -> {
                             val inputEditText = EditText(this).apply {
                                 hint = "Paste Theme JSON here..."
+                                setHintTextColor(android.graphics.Color.parseColor("#64748B"))
                                 setPadding(32, 32, 32, 32)
                                 textSize = 13f
                                 val currentJson = prefs.getString("pref_custom_theme_json", null) ?: getDefaultThemeJson()
@@ -1063,20 +1099,20 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // --- WYSIWYG LAYOUT EDITOR SETUP ---
-        val editorView = findViewById<com.programmerkeyboard.view.InteractiveLayoutEditorView>(R.id.editorView)
+        val editorKeyboardView = findViewById<com.programmerkeyboard.view.KeyboardView>(R.id.editorKeyboardView)
+        editorKeyboardView.isEditorPreviewMode = true
+
+        val btnPreviewFullWidth = findViewById<Button>(R.id.btnPreviewFullWidth)
+        val btnPreviewLeftDocked = findViewById<Button>(R.id.btnPreviewLeftDocked)
+        val btnPreviewRightDocked = findViewById<Button>(R.id.btnPreviewRightDocked)
+        val btnPreviewSplitScreen = findViewById<Button>(R.id.btnPreviewSplitScreen)
+        val btnAddRowEditor = findViewById<Button>(R.id.btnAddRowEditor)
         val btnEditorUndo = findViewById<Button>(R.id.btnEditorUndo)
         val btnEditorRedo = findViewById<Button>(R.id.btnEditorRedo)
         val btnEditorSave = findViewById<Button>(R.id.btnEditorSave)
 
-        val undoStack = java.util.ArrayDeque<com.programmerkeyboard.model.LayoutDefinition>()
-        val redoStack = java.util.ArrayDeque<com.programmerkeyboard.model.LayoutDefinition>()
-
-        val customLayoutJson = prefs.getString("pref_custom_layout_json", null)
-        var editingLayout: com.programmerkeyboard.model.LayoutDefinition? = if (!customLayoutJson.isNullOrEmpty()) {
-            try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json") }
-        } else {
-            com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
-        }
+        val undoStack = java.util.ArrayDeque<LayoutDefinition>()
+        val redoStack = java.util.ArrayDeque<LayoutDefinition>()
 
         fun updateUndoRedoButtons() {
             btnEditorUndo.isEnabled = undoStack.isNotEmpty()
@@ -1085,28 +1121,110 @@ class SettingsActivity : AppCompatActivity() {
             btnEditorRedo.alpha = if (redoStack.isNotEmpty()) 1.0f else 0.4f
         }
 
+        val spEditorLayoutSelector = findViewById<Spinner>(R.id.spEditorLayoutSelector)
+        val layoutOptions = listOf(
+            "⌨️ Main / Terminal Layout (main.json)",
+            "📱 Mobile Layout (mobile.json)",
+            "🔢 Mobile Numbers (mobile_number.json)",
+            "🔣 Mobile Symbols (mobile_symbol.json)",
+            "⚡ Function / Fn Layer (function.json)",
+            "✏️ Custom Active Layout"
+        )
+        val layoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, layoutOptions)
+        spEditorLayoutSelector.adapter = layoutAdapter
+
+        val customLayoutJson = prefs.getString("pref_custom_layout_json", null)
+        editingLayout = if (!customLayoutJson.isNullOrEmpty()) {
+            try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json") }
+        } else {
+            com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
+        }
+
+        spEditorLayoutSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val targetFile = when (position) {
+                    0 -> "main.json"
+                    1 -> "mobile.json"
+                    2 -> "mobile_number.json"
+                    3 -> "mobile_symbol.json"
+                    4 -> "function.json"
+                    else -> null
+                }
+                editingLayout = if (targetFile != null) {
+                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile)
+                } else {
+                    val customJson = prefs.getString("pref_custom_layout_json", null)
+                    if (!customJson.isNullOrEmpty()) {
+                        try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJson) }
+                        catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, "main.json") }
+                    } else {
+                        com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, "main.json")
+                    }
+                }
+                undoStack.clear()
+                redoStack.clear()
+                updateUndoRedoButtons()
+                editingLayout?.let { editorKeyboardView.setLayout(it) }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        fun updateFormFactorButtons(selectedMode: com.programmerkeyboard.model.FormFactorMode) {
+            val activeColor = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#0F766E"))
+            val inactiveColor = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1E293B"))
+            btnPreviewFullWidth.backgroundTintList = if (selectedMode == com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED) activeColor else inactiveColor
+            btnPreviewLeftDocked.backgroundTintList = if (selectedMode == com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED) activeColor else inactiveColor
+            btnPreviewRightDocked.backgroundTintList = if (selectedMode == com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED) activeColor else inactiveColor
+            btnPreviewSplitScreen.backgroundTintList = if (selectedMode == com.programmerkeyboard.model.FormFactorMode.SPLIT) activeColor else inactiveColor
+
+            editorKeyboardView.keyboardState.formFactorMode = selectedMode
+            editorKeyboardView.recalculateKeyBounds()
+            editorKeyboardView.requestLayout()
+            editorKeyboardView.invalidate()
+        }
+
+        btnPreviewFullWidth.setOnClickListener { updateFormFactorButtons(com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED) }
+        btnPreviewLeftDocked.setOnClickListener { updateFormFactorButtons(com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED) }
+        btnPreviewRightDocked.setOnClickListener { updateFormFactorButtons(com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED) }
+        btnPreviewSplitScreen.setOnClickListener { updateFormFactorButtons(com.programmerkeyboard.model.FormFactorMode.SPLIT) }
+
+        editorKeyboardView.onFormFactorModeChangeListener = { mode ->
+            updateFormFactorButtons(mode)
+        }
+
         fun pushUndoState() {
-            editingLayout?.let {
-                val gson = com.google.gson.Gson()
-                val json = gson.toJson(it)
-                val copy = gson.fromJson(json, com.programmerkeyboard.model.LayoutDefinition::class.java)
-                undoStack.push(copy)
+            editingLayout?.let { curr ->
+                undoStack.push(curr)
                 redoStack.clear()
                 updateUndoRedoButtons()
             }
         }
 
-        editorView.layoutDefinition = editingLayout
+        val btnEditRowProperties = findViewById<Button>(R.id.btnEditRowProperties)
+        btnEditRowProperties.setOnClickListener {
+            showRowEditorDialog(initialRowIdx = 0, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
+                editingLayout = updatedLayout
+                editorKeyboardView.setLayout(updatedLayout)
+            })
+        }
+
+        editorKeyboardView.onRowTapForEditingListener = { rowIdx, _ ->
+            showRowEditorDialog(initialRowIdx = rowIdx, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
+                editingLayout = updatedLayout
+                editorKeyboardView.setLayout(updatedLayout)
+            })
+        }
+
+        editingLayout?.let { editorKeyboardView.setLayout(it) }
         updateUndoRedoButtons()
 
         btnEditorUndo.setOnClickListener {
             if (undoStack.isNotEmpty()) {
                 editingLayout?.let { curr ->
-                    val gson = com.google.gson.Gson()
-                    redoStack.push(gson.fromJson(gson.toJson(curr), com.programmerkeyboard.model.LayoutDefinition::class.java))
+                    redoStack.push(curr)
                 }
                 editingLayout = undoStack.pop()
-                editorView.layoutDefinition = editingLayout
+                editingLayout?.let { editorKeyboardView.setLayout(it) }
                 updateUndoRedoButtons()
             }
         }
@@ -1114,11 +1232,10 @@ class SettingsActivity : AppCompatActivity() {
         btnEditorRedo.setOnClickListener {
             if (redoStack.isNotEmpty()) {
                 editingLayout?.let { curr ->
-                    val gson = com.google.gson.Gson()
-                    undoStack.push(gson.fromJson(gson.toJson(curr), com.programmerkeyboard.model.LayoutDefinition::class.java))
+                    undoStack.push(curr)
                 }
                 editingLayout = redoStack.pop()
-                editorView.layoutDefinition = editingLayout
+                editingLayout?.let { editorKeyboardView.setLayout(it) }
                 updateUndoRedoButtons()
             }
         }
@@ -1126,103 +1243,284 @@ class SettingsActivity : AppCompatActivity() {
         btnEditorSave.setOnClickListener {
             editingLayout?.let { layout ->
                 try {
-                    val gson = com.google.gson.GsonBuilder().setPrettyPrinting().create()
-                    val jsonStr = gson.toJson(layout)
+                    val jsonStr = serializeLayoutToJson(layout)
                     prefs.edit().putString("pref_custom_layout_json", jsonStr).apply()
                     Toast.makeText(this, "Layout configuration saved successfully!", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Failed to save layout!", Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
+                    Toast.makeText(this, "Failed to save layout: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
 
-        editorView.onAddRowListener = {
+        btnAddRowEditor.setOnClickListener {
             pushUndoState()
             val currentRows = editingLayout?.rows?.toMutableList() ?: mutableListOf()
-            val newRowId = (currentRows.maxOfOrNull { it.id } ?: 0) + 1
-            val newKey = com.programmerkeyboard.model.KeyDefinition(
+            val newRowId = (currentRows.mapNotNull { (it.id as? Number)?.toInt() }.maxOrNull() ?: 0) + 1
+            val newKey = KeyDefinition(
                 primaryLabel = "Key",
-                widthWeight = com.programmerkeyboard.model.DimensionValue.Ratio(1.0f),
+                widthWeight = DimensionValue.Ratio(1.0f),
                 styleName = "alphaKey",
-                onPressAction = com.programmerkeyboard.model.KeyAction.SendText("Key")
+                onPressAction = KeyAction.SendText("Key")
             )
-            currentRows.add(com.programmerkeyboard.model.KeyRow(id = newRowId, keys = listOf(newKey)))
+            currentRows.add(KeyRow(id = newRowId, keys = listOf(newKey)))
             editingLayout = editingLayout?.copy(rows = currentRows)
-            editorView.layoutDefinition = editingLayout
+            editingLayout?.let { editorKeyboardView.setLayout(it) }
         }
 
-        editorView.onAddKeyToRowListener = { rowIdx ->
-            pushUndoState()
-            editingLayout?.let { layout ->
-                if (rowIdx in layout.rows.indices) {
-                    val newRows = layout.rows.toMutableList()
-                    val targetRow = newRows[rowIdx]
-                    val updatedKeys = targetRow.keys.toMutableList()
-                    updatedKeys.add(
-                        com.programmerkeyboard.model.KeyDefinition(
-                            primaryLabel = "Key",
-                            widthWeight = com.programmerkeyboard.model.DimensionValue.Ratio(1.0f),
-                            styleName = "alphaKey",
-                            onPressAction = com.programmerkeyboard.model.KeyAction.SendText("Key")
-                        )
-                    )
-                    newRows[rowIdx] = targetRow.copy(keys = updatedKeys)
-                    editingLayout = layout.copy(rows = newRows)
-                    editorView.layoutDefinition = editingLayout
-                }
-            }
-        }
-
-        editorView.onKeyReorderedListener = { fromRow, fromKey, toRow, toKey ->
-            pushUndoState()
-            editingLayout?.let { layout ->
-                if (fromRow in layout.rows.indices && toRow in layout.rows.indices) {
-                    val newRows = layout.rows.toMutableList()
-                    val srcRowKeys = newRows[fromRow].keys.toMutableList()
-                    if (fromKey in srcRowKeys.indices) {
-                        val keyToMove = srcRowKeys.removeAt(fromKey)
-                        newRows[fromRow] = newRows[fromRow].copy(keys = srcRowKeys)
-
-                        val dstRowKeys = newRows[toRow].keys.toMutableList()
-                        val clampedDst = toKey.coerceIn(0, dstRowKeys.size)
-                        dstRowKeys.add(clampedDst, keyToMove)
-                        newRows[toRow] = newRows[toRow].copy(keys = dstRowKeys)
-
-                        editingLayout = layout.copy(rows = newRows)
-                        editorView.layoutDefinition = editingLayout
-                    }
-                }
-            }
-        }
-
-        editorView.onKeyTappedListener = { rIdx, kIdx, key ->
+        editorKeyboardView.onKeyTapForEditingListener = { rIdx, kIdx, key ->
             showKeyEditorDialog(rIdx, kIdx, key, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
                 editingLayout = updatedLayout
-                editorView.layoutDefinition = editingLayout
+                editorKeyboardView.setLayout(updatedLayout)
             })
+        }
+
+        // Layout Import/Export/Reset Suite
+        importLayoutLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { fileUri ->
+                try {
+                    val jsonStr = contentResolver.openInputStream(fileUri)?.bufferedReader()?.use { it.readText() }
+                    if (!jsonStr.isNullOrEmpty()) {
+                        val parsed = com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(jsonStr)
+                        pushUndoState()
+                        editingLayout = parsed
+                        editorKeyboardView.setLayout(editingLayout!!)
+                        val pretty = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(parsed)
+                        prefs.edit().putString("pref_custom_layout_json", pretty).apply()
+                        Toast.makeText(this, "Layout imported successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Failed to parse layout file: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        exportLayoutLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri: Uri? ->
+            uri?.let { fileUri ->
+                try {
+                    val layout = editingLayout ?: com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
+                    val prettyJson = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(layout)
+                    contentResolver.openOutputStream(fileUri)?.use { out ->
+                        out.write(prettyJson.toByteArray(Charsets.UTF_8))
+                    }
+                    Toast.makeText(this, "Layout configuration exported to file!", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Failed to export layout file: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        val btnExportLayout = findViewById<Button>(R.id.btnExportLayout)
+        val btnImportLayout = findViewById<Button>(R.id.btnImportLayout)
+        val btnResetLayout = findViewById<Button>(R.id.btnResetLayout)
+
+        btnExportLayout.setOnClickListener {
+            exportLayoutLauncher.launch("programmer_keyboard_layout.json")
+        }
+
+        btnExportLayout.setOnLongClickListener {
+            val layout = editingLayout ?: com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
+            val prettyJson = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(layout)
+            val exportOptions = arrayOf("💾 Save Layout File (Downloads)", "📋 Copy Layout JSON to Clipboard", "📤 Share via App")
+            AlertDialog.Builder(this)
+                .setTitle("Export Layout Options")
+                .setItems(exportOptions) { _, which ->
+                    when (which) {
+                        0 -> exportLayoutLauncher.launch("programmer_keyboard_layout.json")
+                        1 -> {
+                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            val clip = android.content.ClipData.newPlainText("Layout JSON", prettyJson)
+                            clipboard.setPrimaryClip(clip)
+                            Toast.makeText(this, "Layout JSON copied to clipboard!", Toast.LENGTH_SHORT).show()
+                        }
+                        2 -> {
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_SUBJECT, "Programmer Keyboard Layout Configuration")
+                                putExtra(Intent.EXTRA_TEXT, prettyJson)
+                            }
+                            startActivity(Intent.createChooser(shareIntent, "Share Layout Configuration"))
+                        }
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+            true
+        }
+
+        btnImportLayout.setOnClickListener {
+            importLayoutLauncher.launch("*/*")
+        }
+
+        btnImportLayout.setOnLongClickListener {
+            val importOptions = arrayOf("📂 Choose .json File from Storage", "📋 Paste Layout JSON from Clipboard", "✏️ Edit Layout JSON Text")
+            AlertDialog.Builder(this)
+                .setTitle("Import Layout Options")
+                .setItems(importOptions) { _, which ->
+                    when (which) {
+                        0 -> importLayoutLauncher.launch("*/*")
+                        1 -> {
+                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                            val clipText = clipboard.primaryClip?.getItemAt(0)?.text?.toString()?.trim()
+                            if (!clipText.isNullOrEmpty()) {
+                                try {
+                                    val parsed = com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(clipText)
+                                    pushUndoState()
+                                    editingLayout = parsed
+                                    editorKeyboardView.setLayout(editingLayout!!)
+                                    val pretty = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(parsed)
+                                    prefs.edit().putString("pref_custom_layout_json", pretty).apply()
+                                    Toast.makeText(this, "Layout JSON pasted & applied!", Toast.LENGTH_SHORT).show()
+                                } catch (e: Exception) {
+                                    Toast.makeText(this, "Clipboard contents are not valid layout JSON!", Toast.LENGTH_LONG).show()
+                                }
+                            } else {
+                                Toast.makeText(this, "Clipboard is empty!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        2 -> {
+                            val layout = editingLayout ?: com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
+                            val prettyJson = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(layout)
+                            val inputEditText = EditText(this).apply {
+                                hint = "Paste Layout JSON here..."
+                                setHintTextColor(android.graphics.Color.parseColor("#64748B"))
+                                setPadding(32, 32, 32, 32)
+                                textSize = 13f
+                                setText(prettyJson)
+                            }
+                            AlertDialog.Builder(this)
+                                .setTitle("Edit Layout JSON")
+                                .setView(inputEditText)
+                                .setPositiveButton("Apply") { _, _ ->
+                                    val text = inputEditText.text.toString().trim()
+                                    if (text.isNotEmpty()) {
+                                        try {
+                                            val parsed = com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(text)
+                                            pushUndoState()
+                                            editingLayout = parsed
+                                            editorKeyboardView.setLayout(editingLayout!!)
+                                            val pretty = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(parsed)
+                                            prefs.edit().putString("pref_custom_layout_json", pretty).apply()
+                                            Toast.makeText(this, "Layout JSON updated & applied!", Toast.LENGTH_SHORT).show()
+                                        } catch (e: Exception) {
+                                            Toast.makeText(this, "Invalid Layout JSON format!", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                                .setNegativeButton("Cancel", null)
+                                .show()
+                        }
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+            true
+        }
+
+        btnResetLayout.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Reset Keyboard Layout")
+                .setMessage("Reset to default factory Programmer keyboard layout?")
+                .setPositiveButton("Reset Layout") { _, _ ->
+                    pushUndoState()
+                    prefs.edit().remove("pref_custom_layout_json").apply()
+                    editingLayout = com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
+                    editorKeyboardView.setLayout(editingLayout!!)
+                    Toast.makeText(this, "Layout reset to default!", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+    }
+
+    private fun getActionTypeIndex(action: KeyAction): Int {
+        return when (action) {
+            is KeyAction.None -> 0
+            is KeyAction.SendText -> 1
+            is KeyAction.SendCode -> 2
+            is KeyAction.AutoRepeat -> 3
+            is KeyAction.ToggleModifier -> 4
+            is KeyAction.SwitchLayout -> 5
+            is KeyAction.ShowWidget -> 6
+            is KeyAction.SetScreenMode -> 7
+            is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.SelectAll -> 8
+            else -> 0
+        }
+    }
+
+    private fun getActionParamString(action: KeyAction): String {
+        return when (action) {
+            is KeyAction.SendText -> action.text
+            is KeyAction.SendCode -> "${action.code}"
+            is KeyAction.AutoRepeat -> "${action.code}"
+            is KeyAction.ToggleModifier -> action.modifier
+            is KeyAction.SwitchLayout -> action.target
+            is KeyAction.ShowWidget -> action.widget
+            is KeyAction.SetScreenMode -> action.mode
+            is KeyAction.Copy -> "COPY"
+            is KeyAction.Cut -> "CUT"
+            is KeyAction.Paste -> "PASTE"
+            is KeyAction.SelectAll -> "SELECT_ALL"
+            else -> ""
+        }
+    }
+
+    private fun parseKeyActionFromInputs(typeIdx: Int, paramStr: String, defaultText: String): KeyAction {
+        val param = paramStr.trim()
+        return when (typeIdx) {
+            0 -> KeyAction.None
+            1 -> KeyAction.SendText(param.ifEmpty { defaultText })
+            2 -> KeyAction.SendCode(param.toIntOrNull() ?: 66)
+            3 -> KeyAction.AutoRepeat(param.toIntOrNull() ?: 67)
+            4 -> KeyAction.ToggleModifier(param.uppercase().ifEmpty { "SHIFT" })
+            5 -> KeyAction.SwitchLayout(param.ifEmpty { "main" })
+            6 -> KeyAction.ShowWidget(param.ifEmpty { "VOICE_INPUT" })
+            7 -> KeyAction.SetScreenMode(param.uppercase().ifEmpty { "SPLIT" })
+            8 -> when (param.uppercase()) {
+                "COPY" -> KeyAction.Copy
+                "CUT" -> KeyAction.Cut
+                "PASTE" -> KeyAction.Paste
+                else -> KeyAction.SelectAll
+            }
+            else -> KeyAction.SendText(defaultText)
         }
     }
 
     private fun showKeyEditorDialog(
         rowIdx: Int,
         keyIdx: Int,
-        key: com.programmerkeyboard.model.KeyDefinition,
+        key: KeyDefinition,
         pushUndoState: () -> Unit,
-        onUpdate: (com.programmerkeyboard.model.LayoutDefinition) -> Unit
+        onUpdate: (LayoutDefinition) -> Unit
     ) {
         val view = layoutInflater.inflate(R.layout.dialog_edit_key, null)
         val etPrimary = view.findViewById<EditText>(R.id.etEditKeyPrimaryLabel)
         val etSecondary = view.findViewById<EditText>(R.id.etEditKeySecondaryLabel)
+        val etTopLeft = view.findViewById<EditText>(R.id.etEditKeyTopLeftLabel)
+        val etTopRight = view.findViewById<EditText>(R.id.etEditKeyShiftLabel)
         val spCategory = view.findViewById<Spinner>(R.id.spEditKeyCategoryStyle)
         val etWeight = view.findViewById<EditText>(R.id.etEditKeyWidthWeight)
+
         val spActionType = view.findViewById<Spinner>(R.id.spEditKeyActionType)
         val etActionParam = view.findViewById<EditText>(R.id.etEditKeyActionParam)
+
+        val spLongPressType = view.findViewById<Spinner>(R.id.spEditKeyLongPressType)
+        val etLongPressParam = view.findViewById<EditText>(R.id.etEditKeyLongPressParam)
+
+        val spSwipeUpType = view.findViewById<Spinner>(R.id.spEditKeySwipeUpType)
+        val etSwipeUpParam = view.findViewById<EditText>(R.id.etEditKeySwipeUpParam)
+
+        val spSwipeDownType = view.findViewById<Spinner>(R.id.spEditKeySwipeDownType)
+        val etSwipeDownParam = view.findViewById<EditText>(R.id.etEditKeySwipeDownParam)
+
         val btnDelete = view.findViewById<Button>(R.id.btnDeleteKey)
 
         etPrimary.setText(key.primaryLabel)
         etSecondary.setText(key.secondaryLabel ?: "")
+        etTopLeft.setText(key.topLeftLabel ?: "")
+        etTopRight.setText(key.topRightLabel ?: "")
 
-        val currentWeight = (key.widthWeight as? com.programmerkeyboard.model.DimensionValue.Ratio)?.value ?: 1.0f
+        val currentWeight = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
         etWeight.setText("$currentWeight")
 
         val categories = listOf("alphaKey", "numberKey", "modifierKey", "functionKey", "actionKey", "navigationKey", "editingKey")
@@ -1231,36 +1529,34 @@ class SettingsActivity : AppCompatActivity() {
         val currentCatIdx = categories.indexOf(key.styleName).coerceAtLeast(0)
         spCategory.setSelection(currentCatIdx)
 
-        val actionTypes = listOf("Send Text", "Send Code", "Toggle Modifier", "Switch Layout", "Show Widget", "Clipboard")
+        val actionTypes = listOf(
+            "None",
+            "Send Text",
+            "Send Keycode",
+            "Auto-Repeat Keycode",
+            "Toggle Modifier",
+            "Switch Layout",
+            "Show Widget",
+            "Set Screen Mode",
+            "Clipboard (COPY/CUT/PASTE/SELECT_ALL)"
+        )
         val actionAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, actionTypes)
         spActionType.adapter = actionAdapter
+        spLongPressType.adapter = actionAdapter
+        spSwipeUpType.adapter = actionAdapter
+        spSwipeDownType.adapter = actionAdapter
 
-        when (val act = key.onPressAction) {
-            is com.programmerkeyboard.model.KeyAction.SendText -> {
-                spActionType.setSelection(0)
-                etActionParam.setText(act.text)
-            }
-            is com.programmerkeyboard.model.KeyAction.SendCode -> {
-                spActionType.setSelection(1)
-                etActionParam.setText("${act.code}")
-            }
-            is com.programmerkeyboard.model.KeyAction.ToggleModifier -> {
-                spActionType.setSelection(2)
-                etActionParam.setText(act.modifier.name)
-            }
-            is com.programmerkeyboard.model.KeyAction.SwitchLayout -> {
-                spActionType.setSelection(3)
-                etActionParam.setText(act.targetLayoutId)
-            }
-            is com.programmerkeyboard.model.KeyAction.ShowWidget -> {
-                spActionType.setSelection(4)
-                etActionParam.setText(act.widgetType)
-            }
-            else -> {
-                spActionType.setSelection(0)
-                etActionParam.setText(key.primaryLabel)
-            }
-        }
+        spActionType.setSelection(getActionTypeIndex(key.onPressAction))
+        etActionParam.setText(getActionParamString(key.onPressAction))
+
+        spLongPressType.setSelection(getActionTypeIndex(key.onLongPressAction))
+        etLongPressParam.setText(getActionParamString(key.onLongPressAction))
+
+        spSwipeUpType.setSelection(getActionTypeIndex(key.onSwipeUpAction))
+        etSwipeUpParam.setText(getActionParamString(key.onSwipeUpAction))
+
+        spSwipeDownType.setSelection(getActionTypeIndex(key.onSwipeDownAction))
+        etSwipeDownParam.setText(getActionParamString(key.onSwipeDownAction))
 
         var dialog: AlertDialog? = null
 
@@ -1282,30 +1578,19 @@ class SettingsActivity : AppCompatActivity() {
 
         dialog = AlertDialog.Builder(this)
             .setView(view)
-            .setPositiveButton("Save Changes") { _, _ ->
+            .setPositiveButton("Save Key Properties") { _, _ ->
                 pushUndoState()
                 val newPrimary = etPrimary.text.toString().ifEmpty { "Key" }
                 val newSecondary = etSecondary.text.toString().ifEmpty { null }
+                val newTopLeft = etTopLeft.text.toString().ifEmpty { null }
+                val newTopRight = etTopRight.text.toString().ifEmpty { null }
                 val newCat = categories[spCategory.selectedItemPosition.coerceIn(0, categories.size - 1)]
                 val newWeightVal = etWeight.text.toString().toFloatOrNull() ?: 1.0f
 
-                val paramStr = etActionParam.text.toString().trim()
-                val newAction = when (spActionType.selectedItemPosition) {
-                    0 -> com.programmerkeyboard.model.KeyAction.SendText(paramStr.ifEmpty { newPrimary })
-                    1 -> com.programmerkeyboard.model.KeyAction.SendCode(paramStr.toIntOrNull() ?: 66)
-                    2 -> com.programmerkeyboard.model.KeyAction.ToggleModifier(
-                        try { com.programmerkeyboard.model.ModifierType.valueOf(paramStr.uppercase()) } catch (_: Exception) { com.programmerkeyboard.model.ModifierType.SHIFT }
-                    )
-                    3 -> com.programmerkeyboard.model.KeyAction.SwitchLayout(paramStr.ifEmpty { "main" })
-                    4 -> com.programmerkeyboard.model.KeyAction.ShowWidget(paramStr.ifEmpty { "EMOJI_PICKER" })
-                    5 -> when (paramStr.uppercase()) {
-                        "COPY" -> com.programmerkeyboard.model.KeyAction.Copy
-                        "CUT" -> com.programmerkeyboard.model.KeyAction.Cut
-                        "PASTE" -> com.programmerkeyboard.model.KeyAction.Paste
-                        else -> com.programmerkeyboard.model.KeyAction.SelectAll
-                    }
-                    else -> com.programmerkeyboard.model.KeyAction.SendText(newPrimary)
-                }
+                val newOnPress = parseKeyActionFromInputs(spActionType.selectedItemPosition, etActionParam.text.toString(), newPrimary)
+                val newLongPress = parseKeyActionFromInputs(spLongPressType.selectedItemPosition, etLongPressParam.text.toString(), "")
+                val newSwipeUp = parseKeyActionFromInputs(spSwipeUpType.selectedItemPosition, etSwipeUpParam.text.toString(), "")
+                val newSwipeDown = parseKeyActionFromInputs(spSwipeDownType.selectedItemPosition, etSwipeDownParam.text.toString(), "")
 
                 editingLayout?.let { layout ->
                     if (rowIdx in layout.rows.indices) {
@@ -1315,14 +1600,118 @@ class SettingsActivity : AppCompatActivity() {
                             targetKeys[keyIdx] = targetKeys[keyIdx].copy(
                                 primaryLabel = newPrimary,
                                 secondaryLabel = newSecondary,
+                                topLeftLabel = newTopLeft,
+                                topRightLabel = newTopRight,
                                 styleName = newCat,
-                                widthWeight = com.programmerkeyboard.model.DimensionValue.Ratio(newWeightVal),
-                                onPressAction = newAction
+                                widthWeight = DimensionValue.Ratio(newWeightVal),
+                                onPressAction = newOnPress,
+                                onLongPressAction = newLongPress,
+                                onSwipeUpAction = newSwipeUp,
+                                onSwipeDownAction = newSwipeDown
                             )
                             newRows[rowIdx] = newRows[rowIdx].copy(keys = targetKeys)
                             onUpdate(layout.copy(rows = newRows))
                         }
                     }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showRowEditorDialog(initialRowIdx: Int = 0, pushUndoState: () -> Unit, onUpdate: (LayoutDefinition) -> Unit) {
+        val layout = editingLayout ?: return
+        val view = layoutInflater.inflate(R.layout.dialog_edit_row, null)
+        val spRowSelect = view.findViewById<Spinner>(R.id.spEditRowSelect)
+        val cbHidden = view.findViewById<CheckBox>(R.id.cbEditRowHidden)
+        val etSplitIndex = view.findViewById<EditText>(R.id.etEditRowSplitIndex)
+        val cbSplitKey = view.findViewById<CheckBox>(R.id.cbEditRowSplitKey)
+        val btnAddKeyToRow = view.findViewById<Button>(R.id.btnAddKeyToRow)
+        val btnDeleteRow = view.findViewById<Button>(R.id.btnDeleteRow)
+
+        val rowOptions = layout.rows.mapIndexed { idx, row ->
+            val status = if (row.hidden) " (Hidden)" else ""
+            "Row ${idx + 1}$status (ID: ${row.id}, Keys: ${row.keys.size})"
+        }
+        val rowAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, rowOptions)
+        spRowSelect.adapter = rowAdapter
+
+        fun updateRowFields(idx: Int) {
+            if (idx in layout.rows.indices) {
+                val row = layout.rows[idx]
+                cbHidden.isChecked = row.hidden
+                etSplitIndex.setText("${row.splitIndex ?: 5}")
+                cbSplitKey.isChecked = row.splitKey
+            }
+        }
+
+        spRowSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, v: View?, pos: Int, id: Long) {
+                updateRowFields(pos)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        val safeInitialIdx = initialRowIdx.coerceIn(0, maxOf(0, layout.rows.size - 1))
+        spRowSelect.setSelection(safeInitialIdx)
+        updateRowFields(safeInitialIdx)
+
+        var dialogRef: AlertDialog? = null
+
+        btnAddKeyToRow.setOnClickListener {
+            val selectedIdx = spRowSelect.selectedItemPosition
+            if (selectedIdx in layout.rows.indices) {
+                pushUndoState()
+                val newRows = layout.rows.toMutableList()
+                val targetRow = newRows[selectedIdx]
+                val updatedKeys = targetRow.keys.toMutableList()
+                updatedKeys.add(
+                    KeyDefinition(
+                        primaryLabel = "Key",
+                        widthWeight = DimensionValue.Ratio(1.0f),
+                        styleName = "alphaKey",
+                        onPressAction = KeyAction.SendText("Key")
+                    )
+                )
+                newRows[selectedIdx] = targetRow.copy(keys = updatedKeys)
+                onUpdate(layout.copy(rows = newRows))
+                dialogRef?.dismiss()
+            }
+        }
+
+        btnDeleteRow.setOnClickListener {
+            val selectedIdx = spRowSelect.selectedItemPosition
+            if (selectedIdx in layout.rows.indices && layout.rows.size > 1) {
+                AlertDialog.Builder(this)
+                    .setTitle("🗑️ Confirm Delete Row")
+                    .setMessage("Are you sure you want to delete Row ${selectedIdx + 1}? This will remove all ${layout.rows[selectedIdx].keys.size} keys in this row and cannot be undone.")
+                    .setPositiveButton("Delete Row") { _, _ ->
+                        pushUndoState()
+                        val newRows = layout.rows.toMutableList()
+                        newRows.removeAt(selectedIdx)
+                        onUpdate(layout.copy(rows = newRows))
+                        dialogRef?.dismiss()
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            } else if (layout.rows.size <= 1) {
+                Toast.makeText(this, "Cannot delete the only remaining row!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialogRef = AlertDialog.Builder(this)
+            .setView(view)
+            .setPositiveButton("Save Row Settings") { _, _ ->
+                val selectedIdx = spRowSelect.selectedItemPosition
+                if (selectedIdx in layout.rows.indices) {
+                    pushUndoState()
+                    val newRows = layout.rows.toMutableList()
+                    val targetRow = newRows[selectedIdx]
+                    val newHidden = cbHidden.isChecked
+                    val newSplitIdx = etSplitIndex.text.toString().toIntOrNull() ?: 5
+                    val newSplitKey = cbSplitKey.isChecked
+                    newRows[selectedIdx] = targetRow.copy(hidden = newHidden, splitIndex = newSplitIdx, splitKey = newSplitKey)
+                    onUpdate(layout.copy(rows = newRows))
                 }
             }
             .setNegativeButton("Cancel", null)
@@ -1357,5 +1746,94 @@ class SettingsActivity : AppCompatActivity() {
           }
         }
         """.trimIndent()
+    }
+
+    private fun serializeAction(action: KeyAction): com.google.gson.JsonElement {
+        val obj = com.google.gson.JsonObject()
+        when (action) {
+            is KeyAction.None -> obj.addProperty("type", "NONE")
+            is KeyAction.SendText -> {
+                obj.addProperty("type", "SEND_TEXT")
+                obj.addProperty("text", action.text)
+            }
+            is KeyAction.SendCode -> {
+                obj.addProperty("type", "SEND_CODE")
+                obj.addProperty("code", action.code)
+            }
+            is KeyAction.AutoRepeat -> {
+                obj.addProperty("type", "AUTO_REPEAT")
+                obj.addProperty("code", action.code)
+            }
+            is KeyAction.ToggleModifier -> {
+                obj.addProperty("type", "TOGGLE_MODIFIER")
+                obj.addProperty("modifier", action.modifier)
+            }
+            is KeyAction.SwitchLayout -> {
+                obj.addProperty("type", "SWITCH_LAYOUT")
+                obj.addProperty("target", action.target)
+            }
+            is KeyAction.ShowWidget -> {
+                obj.addProperty("type", "SHOW_WIDGET")
+                obj.addProperty("widget", action.widget)
+            }
+            is KeyAction.SetScreenMode -> {
+                obj.addProperty("type", "SET_SCREEN_MODE")
+                obj.addProperty("mode", action.mode)
+            }
+            is KeyAction.Copy -> obj.addProperty("type", "COPY")
+            is KeyAction.Cut -> obj.addProperty("type", "CUT")
+            is KeyAction.Paste -> obj.addProperty("type", "PASTE")
+            is KeyAction.SelectAll -> obj.addProperty("type", "SELECT_ALL")
+            is KeyAction.SwitchIme -> obj.addProperty("type", "SWITCH_IME")
+            is KeyAction.ToggleRow -> {
+                obj.addProperty("type", "TOGGLE_ROW")
+                obj.addProperty("rowId", action.rowId.toString())
+            }
+            is KeyAction.ShowPopup -> {
+                obj.addProperty("type", "SHOW_POPUP")
+                val arr = com.google.gson.JsonArray()
+                action.options.forEach { arr.add(it) }
+                obj.add("options", arr)
+            }
+            else -> obj.addProperty("type", "NONE")
+        }
+        return obj
+    }
+
+    private fun serializeKey(key: KeyDefinition): com.google.gson.JsonObject {
+        val obj = com.google.gson.JsonObject()
+        obj.addProperty("label", key.primaryLabel)
+        key.secondaryLabel?.let { obj.addProperty("secondaryLabel", it) }
+        key.topLeftLabel?.let { obj.addProperty("topLeftLabel", it) }
+        key.topRightLabel?.let { obj.addProperty("topRightLabel", it) }
+        obj.addProperty("style", key.styleName)
+        (key.widthWeight as? DimensionValue.Ratio)?.let { obj.addProperty("weight", it.value) }
+        if (key.onPressAction !is KeyAction.None) obj.add("onPress", serializeAction(key.onPressAction))
+        if (key.onLongPressAction !is KeyAction.None) obj.add("onLongPress", serializeAction(key.onLongPressAction))
+        if (key.onSwipeUpAction !is KeyAction.None) obj.add("onSwipeUp", serializeAction(key.onSwipeUpAction))
+        if (key.onSwipeDownAction !is KeyAction.None) obj.add("onSwipeDown", serializeAction(key.onSwipeDownAction))
+        return obj
+    }
+
+    private fun serializeRow(row: KeyRow): com.google.gson.JsonObject {
+        val obj = com.google.gson.JsonObject()
+        obj.addProperty("id", row.id.toString())
+        if (row.hidden) obj.addProperty("hidden", true)
+        row.splitIndex?.let { obj.addProperty("splitIndex", it) }
+        if (row.splitKey) obj.addProperty("splitKey", true)
+        val keysArr = com.google.gson.JsonArray()
+        row.keys.forEach { keysArr.add(serializeKey(it)) }
+        obj.add("keys", keysArr)
+        return obj
+    }
+
+    private fun serializeLayoutToJson(layout: LayoutDefinition): String {
+        val root = com.google.gson.JsonObject()
+        root.addProperty("id", layout.id)
+        root.addProperty("name", layout.name)
+        val rowsArr = com.google.gson.JsonArray()
+        layout.rows.forEach { rowsArr.add(serializeRow(it)) }
+        root.add("rows", rowsArr)
+        return com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(root)
     }
 }

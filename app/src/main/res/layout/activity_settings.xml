@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⌨ Programmer Keyboard"
+            android:text="⌨ Infinikey IME"
             android:textColor="@color/settings_text_header"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -49,11 +49,6 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📐 WYSIWYG Editor" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="🎨 Geometry" />
 
         <com.google.android.material.tabs.TabItem
@@ -64,12 +59,22 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔊 Audio &amp; Haptics" />
+            android:text="📳 Haptics" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔊 Audio" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="🖌️ Themes &amp; Colors" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📐 Layout Editor" />
     </com.google.android.material.tabs.TabLayout>
 
     <!-- Main Content Area -->
@@ -121,22 +126,22 @@
                     android:layout_height="42dp"
                     android:background="@drawable/bg_spinner_card"
                     android:hint="Tap here to test typing with your keyboard layout..."
+                    android:textColorHint="#64748B"
                     android:inputType="textMultiLine"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:textColor="@color/settings_text_header"
-                    android:textColorHint="@color/settings_text_sub"
                     android:textSize="13sp" />
             </LinearLayout>
 
 
-            <!-- TAB 0: WYSIWYG LAYOUT EDITOR -->
+            <!-- TAB 5: WYSIWYG LAYOUT EDITOR -->
             <LinearLayout
                 android:id="@+id/panelEditor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -146,7 +151,38 @@
                     android:padding="16dp"
                     android:layout_marginBottom="16dp">
 
-                    <!-- Control Bar with Undo, Redo, Save, Preset Selector -->
+                    <!-- Layout Selector Dropdown -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Select Layout to Edit:"
+                            android:textColor="@color/key_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp" />
+
+                        <Spinner
+                            android:id="@+id/spEditorLayoutSelector"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_spinner_card"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/settings_divider"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Control Bar with Undo, Redo, Save -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -196,30 +232,199 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
+                    <!-- Form Factor Mode Selector Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <Button
+                            android:id="@+id/btnPreviewFullWidth"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:text="📱 Full"
+                            android:textSize="11sp"
+                            android:backgroundTint="#0F766E"
+                            android:textColor="#FFFFFF"
+                            android:padding="0dp"
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btnPreviewLeftDocked"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:text="👈 Left"
+                            android:textSize="11sp"
+                            android:backgroundTint="#1E293B"
+                            android:textColor="#E2E8F0"
+                            android:padding="0dp"
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btnPreviewRightDocked"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:text="👉 Right"
+                            android:textSize="11sp"
+                            android:backgroundTint="#1E293B"
+                            android:textColor="#E2E8F0"
+                            android:padding="0dp"
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btnPreviewSplitScreen"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:text="✂️ Split"
+                            android:textSize="11sp"
+                            android:backgroundTint="#1E293B"
+                            android:textColor="#E2E8F0"
+                            android:padding="0dp" />
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="• Tap any key to edit properties, group, action, or delete it.\n• Drag keys horizontally or between rows to re-order in real time.\n• Tap ➕ to add keys or rows. Width defaults to 1.0."
+                        android:text="• Tap any key to open the property editor popup and edit its labels, actions, category, or delete it.\n• Preview layout rendering in Full, Left Docked, Right Docked, or Split modes above."
                         android:textColor="@color/settings_text_sub"
                         android:textSize="12sp"
                         android:layout_marginBottom="12dp" />
 
-                    <!-- Interactive Canvas View -->
-                    <com.programmerkeyboard.view.InteractiveLayoutEditorView
-                        android:id="@+id/editorView"
+                    <!-- Live Keyboard Preview View -->
+                    <com.programmerkeyboard.view.KeyboardView
+                        android:id="@+id/editorKeyboardView"
                         android:layout_width="match_parent"
-                        android:layout_height="340dp"
+                        android:layout_height="250dp"
                         android:background="#0F172A" />
+
+                    <!-- Row Control Action Bar -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+
+                        <Button
+                            android:id="@+id/btnEditRowProperties"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="⚙️ Row Settings"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:backgroundTint="#0F766E"
+                            android:textColor="#FFFFFF"
+                            android:layout_marginEnd="6dp" />
+
+                        <Button
+                            android:id="@+id/btnAddRowEditor"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="➕ Add New Key Row"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:backgroundTint="#1E3A5F"
+                            android:textColor="#38BDF8" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Card 2: Layout Import, Export & Reset Suite -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Layout Import, Export &amp; Reset Suite"
+                            android:textColor="@color/settings_text_header"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Save layout JSON configurations, import custom user layouts from storage or clipboard, or restore factory default layout."
+                        android:textColor="@color/settings_text_sub"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Side-by-Side Import/Export Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnExportLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#1E3A5F"
+                            android:text="📤 Export Layout"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="6dp" />
+
+                        <Button
+                            android:id="@+id/btnImportLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#0F766E"
+                            android:text="📥 Import Layout"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="6dp" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnResetLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#7F1D1D"
+                        android:text="🔄 Reset to Default Layout"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
 
-            <!-- TAB 1: LAYOUT & APPEARANCE -->
+            <!-- TAB 0: GEOMETRY & SCALE -->
             <LinearLayout
                 android:id="@+id/panelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -553,6 +758,25 @@
                         android:background="@drawable/bg_spinner_card"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/settings_divider"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Minimal Voice Feedback CheckBox -->
+                    <CheckBox
+                        android:id="@+id/cbMinimalVoiceFeedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Minimal Toast for Simple Speech-to-Text (Keep Keyboard Visible)"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:buttonTint="@color/key_text_accent"
+                        android:checked="true" />
                 </LinearLayout>
             </LinearLayout>
 

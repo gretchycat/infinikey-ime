@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Programmer Keyboard</string>
-    <string name="ime_name">Programmer Keyboard IME</string>
-    <string name="subtype_en_us">English (US) - Programmer Layout</string>
-    <string name="settings_title">Programmer Keyboard Settings</string>
+    <string name="app_name">Infinikey IME</string>
+    <string name="ime_name">Infinikey IME</string>
+    <string name="subtype_en_us">English (US) - Infinikey Layout</string>
+    <string name="settings_title">Infinikey IME Settings</string>
     
     <!-- Settings labels -->
     <string name="setting_geometry_title">Geometry &amp; Alignment</string>

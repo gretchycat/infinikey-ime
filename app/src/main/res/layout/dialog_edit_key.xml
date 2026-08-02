@@ -33,17 +33,18 @@
             android:layout_height="44dp"
             android:background="@drawable/bg_spinner_card"
             android:hint="Label (e.g. A, Shift, F1)"
+            android:textColorHint="#64748B"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textColor="@color/settings_text_header"
             android:textSize="14sp"
             android:layout_marginBottom="12dp" />
 
-        <!-- Secondary Label -->
+        <!-- Secondary Label (Top Right) -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Secondary / Swipe-Up Label (Optional)"
+            android:text="Top-Right / Secondary Alternate Label (Optional)"
             android:textColor="@color/settings_text_sub"
             android:textSize="13sp"
             android:layout_marginBottom="4dp" />
@@ -54,6 +55,51 @@
             android:layout_height="44dp"
             android:background="@drawable/bg_spinner_card"
             android:hint="Secondary (e.g. @, #, $)"
+            android:textColorHint="#64748B"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Top-Left Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top-Left Corner Label (Optional)"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeyTopLeftLabel"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Top-Left Label (e.g. F1, Home)"
+            android:textColorHint="#64748B"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Shift Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shift Active Label (Optional)"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeyShiftLabel"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Shift Label (e.g. A, ~)"
+            android:textColorHint="#64748B"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textColor="@color/settings_text_header"
@@ -93,20 +139,38 @@
             android:layout_height="44dp"
             android:background="@drawable/bg_spinner_card"
             android:hint="1.0"
+            android:textColorHint="#64748B"
             android:inputType="numberDecimal"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textColor="@color/settings_text_header"
             android:textSize="14sp"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="16dp" />
 
-        <!-- Action Type -->
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/settings_divider"
+            android:layout_marginBottom="16dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Key Action Type"
-            android:textColor="@color/settings_text_sub"
+            android:text="⚡ Access Method Key Actions"
+            android:textColor="@color/key_text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <!-- 1. On Press Action -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1. On Tap / Press Action"
+            android:textColor="#38BDF8"
             android:textSize="13sp"
+            android:textStyle="bold"
             android:layout_marginBottom="4dp" />
 
         <Spinner
@@ -116,16 +180,6 @@
             android:background="@drawable/bg_spinner_card"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Action Parameter -->
-        <TextView
-            android:id="@+id/tvEditKeyActionParamLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Action Parameter Value"
-            android:textColor="@color/settings_text_sub"
-            android:textSize="13sp"
             android:layout_marginBottom="4dp" />
 
         <EditText
@@ -133,12 +187,109 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:background="@drawable/bg_spinner_card"
-            android:hint="Value (e.g. text string or code number)"
+            android:hint="Parameter (e.g. text string or keycode)"
+            android:textColorHint="#64748B"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textColor="@color/settings_text_header"
             android:textSize="14sp"
             android:layout_marginBottom="16dp" />
+
+        <!-- 2. On Long Press Action -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2. On Long Press Action"
+            android:textColor="#38BDF8"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeyLongPressType"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeyLongPressParam"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Parameter (e.g. repeat keycode, layout name, text)"
+            android:textColorHint="#64748B"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 3. On Swipe Up Action -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3. On Swipe Up Action"
+            android:textColor="#38BDF8"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeySwipeUpType"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeySwipeUpParam"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Parameter (e.g. text character, keycode)"
+            android:textColorHint="#64748B"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 4. On Swipe Down Action -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4. On Swipe Down Action"
+            android:textColor="#38BDF8"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeySwipeDownType"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeySwipeDownParam"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Parameter (e.g. text character, keycode)"
+            android:textColorHint="#64748B"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp" />
 
         <!-- Delete Key Button -->
         <Button

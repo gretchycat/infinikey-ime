@@ -44,10 +44,16 @@ object LayoutParser {
 
     fun loadThemePresetFromAssets(context: Context, themeName: String): Pair<LayoutTheme?, Map<String, KeyStyle>> {
         return try {
-            val jsonStr = context.assets.open("themes.json").bufferedReader().use { it.readText() }
-            val root = com.google.gson.JsonParser.parseString(jsonStr).asJsonObject
-            val themeEntry = root.getAsJsonObject(themeName) ?: return Pair(null, emptyMap())
+            val jsonStr = try {
+                context.assets.open("themes/$themeName.json").bufferedReader().use { it.readText() }
+            } catch (_: Exception) {
+                val rootStr = context.assets.open("themes.json").bufferedReader().use { it.readText() }
+                val root = com.google.gson.JsonParser.parseString(rootStr).asJsonObject
+                root.getAsJsonObject(themeName)?.toString() ?: ""
+            }
+            if (jsonStr.isEmpty()) return Pair(null, emptyMap())
 
+            val themeEntry = com.google.gson.JsonParser.parseString(jsonStr).asJsonObject
             val themeObj = themeEntry.getAsJsonObject("theme")
             val bgStr = themeObj?.get("backgroundColor")?.asString
             val offDotStr = themeObj?.get("modifierOffDotColor")?.asString
@@ -205,6 +211,7 @@ object LayoutParser {
                 "mobile" -> "Mobile Keyboard"
                 "function" -> "Function Keyboard"
                 "mobile_number" -> "Mobile Number Keyboard"
+                "mobile_symbol" -> "Mobile Symbol Keyboard"
                 "phone" -> "Phone Dialer Keyboard"
                 else -> layoutDef?.name?.takeIf { it.isNotBlank() } ?: cleanName.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
             }
@@ -216,6 +223,7 @@ object LayoutParser {
             "mobile" -> "Mobile Keyboard"
             "function" -> "Function Keyboard"
             "mobile_number" -> "Mobile Number Keyboard"
+            "mobile_symbol" -> "Mobile Symbol Keyboard"
             "phone" -> "Phone Dialer Keyboard"
             else -> previousLayoutId.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
         }

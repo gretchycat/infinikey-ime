@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Record audio for speech-to-text / voice input -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <queries>
-        <intent>
-            <action android:name="android.speech.RecognitionService" />
-        </intent>
-        <intent>
-            <action android:name="android.speech.RecognizerIntent" />
-        </intent>
-    </queries>
+
 
     <application
         android:allowBackup="true"
@@ -49,6 +41,12 @@
         <!-- Translucent Activity Proxy for Voice Input -->
         <activity
             android:name=".VoiceInputActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- Continuous Speech Recognition Activity -->
+        <activity
+            android:name=".VoiceInputContinuousActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 

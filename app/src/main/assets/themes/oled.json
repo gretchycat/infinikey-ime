@@ -1,0 +1,16 @@
+{
+  "theme": {
+    "backgroundColor": "#000000",
+    "modifierLatchedDotColor": "#3B82F6",
+    "modifierLockedDotColor": "#F43F5E"
+  },
+  "styles": {
+    "alphaKey": { "bgColor": "#121212", "fgColor": "#FFFFFF", "pressedBgColor": "#242424" },
+    "numberKey": { "bgColor": "#1A1A1A", "fgColor": "#60A5FA", "pressedBgColor": "#2E2E2E" },
+    "modifierKey": { "bgColor": "#1E1E1E", "fgColor": "#FBBF24", "activeBgColor": "#2563EB" },
+    "functionKey": { "bgColor": "#181818", "fgColor": "#C084FC", "pressedBgColor": "#2D2D2D" },
+    "actionKey": { "bgColor": "#222222", "fgColor": "#38BDF8", "pressedBgColor": "#383838" },
+    "navigationKey": { "bgColor": "#151F28", "fgColor": "#34D399", "pressedBgColor": "#253444" },
+    "editingKey": { "bgColor": "#241824", "fgColor": "#F472B6", "pressedBgColor": "#3B283B" }
+  }
+}

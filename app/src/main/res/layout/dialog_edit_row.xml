@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚙️ Edit Row Properties"
+            android:textColor="@color/settings_text_header"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Select Row Dropdown -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Target Row:"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditRowSelect"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Hide Row by Default -->
+        <CheckBox
+            android:id="@+id/cbEditRowHidden"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hide this row by default (reveals on Fn/toggle)"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Split Index -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Split Index (Key position where split mode divides row)"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditRowSplitIndex"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="e.g. 5"
+            android:textColorHint="#64748B"
+            android:inputType="number"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Enable Split Key -->
+        <CheckBox
+            android:id="@+id/cbEditRowSplitKey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enable Split Key Layout on this row"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Add Key to Row Button -->
+        <Button
+            android:id="@+id/btnAddKeyToRow"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:backgroundTint="#0F766E"
+            android:text="➕ Add Key to This Row"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Delete Row Button -->
+        <Button
+            android:id="@+id/btnDeleteRow"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:backgroundTint="#7F1D1D"
+            android:text="🗑️ Delete Row from Layout"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

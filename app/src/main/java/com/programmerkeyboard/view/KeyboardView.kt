@@ -162,6 +162,12 @@ class KeyboardView @JvmOverloads constructor(
     private var voiceInputOverlay: VoiceInputOverlay? = null
     private var autoRepeatRunnable: Runnable? = null
 
+    var activeListeningStatus: String? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
+
     // Multi-touch tracking
     private var initialPointersDistance = 0f
     private var initialPointersCenterX = 0f
@@ -190,6 +196,8 @@ class KeyboardView @JvmOverloads constructor(
         return false
     }
 
+    var onFormFactorModeChangeListener: ((com.programmerkeyboard.model.FormFactorMode) -> Unit)? = null
+
     fun setFormFactorMode(mode: com.programmerkeyboard.model.FormFactorMode) {
         keyboardState.formFactorMode = mode
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
@@ -202,6 +210,14 @@ class KeyboardView @JvmOverloads constructor(
         }
         prefs.edit().putString("pref_form_factor", modeStr).apply()
         dismissKeyPreview()
+        recalculateKeyBounds()
+        requestLayout()
+        invalidate()
+        onFormFactorModeChangeListener?.invoke(mode)
+    }
+
+    fun setLayout(layout: LayoutDefinition) {
+        layoutDefinition = layout
         recalculateKeyBounds()
         requestLayout()
         invalidate()
@@ -264,11 +280,17 @@ class KeyboardView @JvmOverloads constructor(
         return prefs.getFloat("pref_keyboard_aspect_ratio", 1.75f).coerceIn(1.5f, 2.5f)
     }
 
+    data class RowGearBounds(val rowIdx: Int, val row: com.programmerkeyboard.model.KeyRow, val rect: RectF)
+    val rowGearBoundsList = mutableListOf<RowGearBounds>()
+    var onRowTapForEditingListener: ((rowIdx: Int, row: com.programmerkeyboard.model.KeyRow) -> Unit)? = null
+
     private fun isRowVisible(row: com.programmerkeyboard.model.KeyRow): Boolean {
+        if (isEditorPreviewMode) return true
         val layoutId = layoutDefinition?.id ?: ""
+        val qualifiedKey = "$layoutId:${row.id}"
+        val override = rowVisibilityMap[qualifiedKey]
+        if (override != null) return override
         if (layoutId == "main" || layoutId == "function") {
-            val override = rowVisibilityMap[row.id.toString()]
-            if (override != null) return override
             return !row.hidden || keyboardState.isFnActive
         }
         return !row.hidden
@@ -300,6 +322,7 @@ class KeyboardView @JvmOverloads constructor(
         val rowHeight = availableHeight / currentRows.size
 
         keyBoundsList.clear()
+        rowGearBoundsList.clear()
 
         val formFactor = if (layoutDefinition?.id == "phone") com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED else keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
@@ -320,7 +343,8 @@ class KeyboardView @JvmOverloads constructor(
                     else -> activeWidth
                 }
 
-                val availableWidthForRatio = targetWidth - (hSpacingPx * (maxRowRatioWeight + 1))
+                val editorGearWidth = if (isEditorPreviewMode) 40f * density else 0f
+                val availableWidthForRatio = targetWidth - editorGearWidth - (hSpacingPx * (maxRowRatioWeight + 1))
                 val globalBaseUnit = if (maxRowRatioWeight > 0) maxOf(0f, availableWidthForRatio / maxRowRatioWeight) else 0f
 
                 val (startX, keysStartY, floatRowHeight) = when (formFactor) {
@@ -354,13 +378,21 @@ class KeyboardView @JvmOverloads constructor(
                         else -> 0f
                     }
 
-                    var currentX = startX + hSpacingPx + rowOffsetPx
                     val currentY = if (formFactor == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
                         keysStartY + rowIndex * (floatRowHeight + vSpacingPx)
                     } else {
                         vSpacingPx + rowIndex * (rowHeight + vSpacingPx)
                     }
                     val curRowHeight = if (formFactor == com.programmerkeyboard.model.FormFactorMode.FLOATING) floatRowHeight else rowHeight
+
+                    var currentX = startX + hSpacingPx + rowOffsetPx
+
+                    if (isEditorPreviewMode) {
+                        val gearW = 38f * density
+                        val gearRect = RectF(startX + hSpacingPx, currentY, startX + hSpacingPx + gearW, currentY + curRowHeight)
+                        rowGearBoundsList.add(RowGearBounds(rowIndex, row, gearRect))
+                        currentX += gearW + hSpacingPx
+                    }
 
                     row.keys.forEach { key ->
                         val keyOffsetPx = when (val off = key.startOffset) {
@@ -705,8 +737,10 @@ class KeyboardView @JvmOverloads constructor(
             val modState = getModifierState(key)
             val isModActive = modState != com.programmerkeyboard.model.ModifierState.OFF
 
+            val isReadTextKey = key.primaryLabel == "🔊" || (key.onPressAction as? KeyAction.ShowWidget)?.widget == "READ_TEXT"
             val paintToUse = when {
                 isPressed && key.pressedBgColor != null -> customBgPaint.apply { color = key.pressedBgColor }
+                isReadTextKey && isTextSelected -> keyModifierActivePaint
                 isModActive && key.activeBgColor != null -> customBgPaint.apply { color = key.activeBgColor }
                 key.bgColor != null -> customBgPaint.apply { color = key.bgColor }
                 modState == com.programmerkeyboard.model.ModifierState.LOCKED -> keyModifierActivePaint
@@ -767,10 +801,13 @@ class KeyboardView @JvmOverloads constructor(
                 val lpAct = key.onLongPressAction
                 when {
                     isLetter -> key.primaryLabel.uppercase()
-                    firstAlt != null -> firstAlt
-                    !key.secondaryLabel.isNullOrEmpty() -> key.secondaryLabel
-                    upAct is KeyAction.SendText -> upAct.text
-                    lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> lpAct.options.first()
+                    firstAlt != null -> if (firstAlt.any { it.isLowerCase() }) firstAlt.uppercase() else firstAlt
+                    !key.secondaryLabel.isNullOrEmpty() -> if (key.secondaryLabel.any { it.isLowerCase() }) key.secondaryLabel.uppercase() else key.secondaryLabel
+                    upAct is KeyAction.SendText -> if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text
+                    lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> {
+                        val opt = lpAct.options.first()
+                        if (opt.any { it.isLowerCase() }) opt.uppercase() else opt
+                    }
                     else -> key.primaryLabel
                 }
             } else {
@@ -835,6 +872,73 @@ class KeyboardView @JvmOverloads constructor(
                 canvas.drawText(rawSecToDraw, rect.right - (6f * density), rect.top + (14f * density), secPaint)
             }
         }
+
+        // Draw Minimal In-Keyboard Listening Toast/Badge if active
+        activeListeningStatus?.let { status ->
+            val pillWidth = 220f * density
+            val pillHeight = 36f * density
+            val pillX = (w - pillWidth) / 2f
+            val pillY = 12f * density
+            val pillRect = RectF(pillX, pillY, pillX + pillWidth, pillY + pillHeight)
+
+            val pillBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.argb(235, 15, 23, 42)
+                style = Paint.Style.FILL
+            }
+            val pillBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.parseColor("#38BDF8")
+                style = Paint.Style.STROKE
+                strokeWidth = 2f * density
+            }
+            val pillTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.WHITE
+                textSize = 14f * density
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                textAlign = Paint.Align.CENTER
+            }
+
+            canvas.drawRoundRect(pillRect, 18f * density, 18f * density, pillBgPaint)
+            canvas.drawRoundRect(pillRect, 18f * density, 18f * density, pillBorderPaint)
+            val fontMetrics = pillTextPaint.fontMetrics
+            val baseline = pillRect.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2f
+            canvas.drawText(status, pillRect.centerX(), baseline, pillTextPaint)
+        }
+
+        // Draw Row Gear Buttons in Layout Editor Mode
+        if (isEditorPreviewMode && rowGearBoundsList.isNotEmpty()) {
+            val gearBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.FILL
+            }
+            val gearBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.STROKE
+                strokeWidth = 2f * density
+            }
+            val gearTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.WHITE
+                textSize = 11f * density
+                textAlign = Paint.Align.CENTER
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+            }
+
+            rowGearBoundsList.forEach { gBounds ->
+                val r = gBounds.rect
+                val cornerRadius = 6f * density
+                if (gBounds.row.hidden) {
+                    gearBgPaint.color = android.graphics.Color.parseColor("#334155")
+                    gearBorderPaint.color = android.graphics.Color.parseColor("#94A3B8")
+                } else {
+                    gearBgPaint.color = android.graphics.Color.parseColor("#0F766E")
+                    gearBorderPaint.color = android.graphics.Color.parseColor("#2DD4BF")
+                }
+                canvas.drawRoundRect(r, cornerRadius, cornerRadius, gearBgPaint)
+                canvas.drawRoundRect(r, cornerRadius, cornerRadius, gearBorderPaint)
+                
+                val label = if (gBounds.row.hidden) "🙈 R${gBounds.rowIdx + 1}" else "⚙️ R${gBounds.rowIdx + 1}"
+                val fontMetrics = gearTextPaint.fontMetrics
+                val textY = r.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2f
+                canvas.drawText(label, r.centerX(), textY, gearTextPaint)
+            }
+        }
     }
 
     private fun resolveDimension(value: DimensionValue?, parentSize: Float, density: Float, fallbackPx: Float): Float {
@@ -845,7 +949,31 @@ class KeyboardView @JvmOverloads constructor(
         }
     }
 
+    var isTextSelected: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                invalidate()
+            }
+        }
+
+    var isEditorPreviewMode: Boolean = false
+    var onKeyTapForEditingListener: ((rowIdx: Int, keyIdx: Int, key: KeyDefinition) -> Unit)? = null
+
     private fun executeAction(action: KeyAction, sourceKey: KeyDefinition? = null) {
+        if (isEditorPreviewMode) {
+            sourceKey?.let { targetKey ->
+                val rows = layoutDefinition?.rows ?: emptyList()
+                for (rIdx in rows.indices) {
+                    val kIdx = rows[rIdx].keys.indexOf(targetKey)
+                    if (kIdx != -1) {
+                        onKeyTapForEditingListener?.invoke(rIdx, kIdx, targetKey)
+                        return
+                    }
+                }
+            }
+            return
+        }
         val actionToExecute = if (sourceKey != null && keyboardState.shouldShiftKey(sourceKey)) {
             val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLowerCase()
             val firstAlt = sourceKey.alternates.firstOrNull()
@@ -853,10 +981,13 @@ class KeyboardView @JvmOverloads constructor(
             val lpAct = sourceKey.onLongPressAction
             when {
                 isLetter -> KeyAction.SendText(sourceKey.primaryLabel.uppercase())
-                firstAlt != null -> KeyAction.SendText(firstAlt)
-                !sourceKey.secondaryLabel.isNullOrEmpty() -> KeyAction.SendText(sourceKey.secondaryLabel)
-                upAct is KeyAction.SendText -> upAct
-                lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> KeyAction.SendText(lpAct.options.first())
+                firstAlt != null -> KeyAction.SendText(if (firstAlt.any { it.isLowerCase() }) firstAlt.uppercase() else firstAlt)
+                !sourceKey.secondaryLabel.isNullOrEmpty() -> KeyAction.SendText(if (sourceKey.secondaryLabel.any { it.isLowerCase() }) sourceKey.secondaryLabel.uppercase() else sourceKey.secondaryLabel)
+                upAct is KeyAction.SendText -> KeyAction.SendText(if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text)
+                lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> {
+                    val opt = lpAct.options.first()
+                    KeyAction.SendText(if (opt.any { it.isLowerCase() }) opt.uppercase() else opt)
+                }
                 else -> action
             }
         } else {
@@ -910,20 +1041,35 @@ class KeyboardView @JvmOverloads constructor(
                             it.show(this, keyCenterX, keyCenterY, keyCode)
                         }
                     }
-                    "SETTINGS" -> onKeyActionListener?.invoke(actionToExecute)
-                    "VOICE_INPUT" -> {
+                    "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL" -> {
+                        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+                        val useMinimalToast = prefs.getBoolean("pref_minimal_voice_feedback", true)
+                        if (useMinimalToast) {
+                            onKeyActionListener?.invoke(actionToExecute)
+                        } else {
+                            voiceInputOverlay = VoiceInputOverlay(context) { recognizedText ->
+                                onKeyActionListener?.invoke(KeyAction.SendText(recognizedText))
+                            }.also {
+                                it.show(this)
+                            }
+                        }
+                    }
+                    "VOICE_INPUT_EMBEDDED" -> {
                         voiceInputOverlay = VoiceInputOverlay(context) { recognizedText ->
                             onKeyActionListener?.invoke(KeyAction.SendText(recognizedText))
                         }.also {
                             it.show(this)
                         }
                     }
-                    "EMOJI_PICKER" -> {
+                    "EMOJI_PICKER_EMBEDDED" -> {
                         emojiPickerOverlay = EmojiPickerOverlay(context) { selectedEmoji ->
                             onKeyActionListener?.invoke(KeyAction.SendText(selectedEmoji))
                         }.also {
                             it.show(this)
                         }
+                    }
+                    else -> {
+                        onKeyActionListener?.invoke(actionToExecute)
                     }
                 }
             }
@@ -936,14 +1082,17 @@ class KeyboardView @JvmOverloads constructor(
                 }.also { handler.post(it) }
             }
             is KeyAction.ToggleRow -> {
-                val rowKeyStr = actionToExecute.rowId.toString()
-                if (rowKeyStr == "all_hidden") {
+                val layoutId = layoutDefinition?.id ?: ""
+                val rawRowId = actionToExecute.rowId.toString()
+                if (rawRowId == "all_hidden") {
                     keyboardState.isFnActive = !keyboardState.isFnActive
                 } else {
-                    val current = rowVisibilityMap[rowKeyStr] ?: false
-                    val newVis = !current
-                    rowVisibilityMap[rowKeyStr] = newVis
-                    onRowToggleListener?.invoke(rowKeyStr, newVis)
+                    val qualifiedKey = "$layoutId:$rawRowId"
+                    val targetRow = layoutDefinition?.rows?.firstOrNull { it.id.toString() == rawRowId }
+                    val isCurrentlyVisible = targetRow?.let { isRowVisible(it) } ?: (rowVisibilityMap[qualifiedKey] ?: true)
+                    val newVis = !isCurrentlyVisible
+                    rowVisibilityMap[qualifiedKey] = newVis
+                    onRowToggleListener?.invoke(qualifiedKey, newVis)
                 }
                 recalculateKeyBounds()
                 requestLayout()
@@ -1061,6 +1210,17 @@ class KeyboardView @JvmOverloads constructor(
     private var soundPool: android.media.SoundPool? = null
     private val soundMap = mutableMapOf<String, Int>()
 
+    private fun loadAssetSound(assetPath: String): Int {
+        return try {
+            val afd = context.assets.openFd(assetPath)
+            val soundId = soundPool?.load(afd, 1) ?: 0
+            afd.close()
+            soundId
+        } catch (e: Exception) {
+            0
+        }
+    }
+
     private fun initSoundPool() {
         if (soundPool == null) {
             val audioAttrs = android.media.AudioAttributes.Builder()
@@ -1073,25 +1233,25 @@ class KeyboardView @JvmOverloads constructor(
                 .build()
 
             // Mechvibes Recorded Switch Sound Packs
-            soundMap["REC_BLUE_PBT"] = soundPool?.load(context, R.raw.sound_cherry_blue_pbt, 1) ?: 0
-            soundMap["REC_BLUE_ABS"] = soundPool?.load(context, R.raw.sound_cherry_blue_abs, 1) ?: 0
-            soundMap["REC_BROWN_PBT"] = soundPool?.load(context, R.raw.sound_cherry_brown_pbt, 1) ?: 0
-            soundMap["REC_BROWN_ABS"] = soundPool?.load(context, R.raw.sound_cherry_brown_abs, 1) ?: 0
-            soundMap["REC_RED_PBT"] = soundPool?.load(context, R.raw.sound_cherry_red_pbt, 1) ?: 0
-            soundMap["REC_RED_ABS"] = soundPool?.load(context, R.raw.sound_cherry_red_abs, 1) ?: 0
-            soundMap["REC_BLACK_PBT"] = soundPool?.load(context, R.raw.sound_cherry_black_pbt, 1) ?: 0
-            soundMap["REC_BLACK_ABS"] = soundPool?.load(context, R.raw.sound_cherry_black_abs, 1) ?: 0
-            soundMap["REC_NK_CREAM"] = soundPool?.load(context, R.raw.sound_nk_cream, 1) ?: 0
-            soundMap["REC_EG_OREO"] = soundPool?.load(context, R.raw.sound_eg_oreo, 1) ?: 0
-            soundMap["REC_EG_PURPLE"] = soundPool?.load(context, R.raw.sound_eg_crystal_purple, 1) ?: 0
-            soundMap["REC_TOPRE"] = soundPool?.load(context, R.raw.sound_topre_purple, 1) ?: 0
+            soundMap["REC_BLUE_PBT"] = loadAssetSound("audio/sound_cherry_blue_pbt.wav")
+            soundMap["REC_BLUE_ABS"] = loadAssetSound("audio/sound_cherry_blue_abs.wav")
+            soundMap["REC_BROWN_PBT"] = loadAssetSound("audio/sound_cherry_brown_pbt.wav")
+            soundMap["REC_BROWN_ABS"] = loadAssetSound("audio/sound_cherry_brown_abs.wav")
+            soundMap["REC_RED_PBT"] = loadAssetSound("audio/sound_cherry_red_pbt.wav")
+            soundMap["REC_RED_ABS"] = loadAssetSound("audio/sound_cherry_red_abs.wav")
+            soundMap["REC_BLACK_PBT"] = loadAssetSound("audio/sound_cherry_black_pbt.wav")
+            soundMap["REC_BLACK_ABS"] = loadAssetSound("audio/sound_cherry_black_abs.wav")
+            soundMap["REC_NK_CREAM"] = loadAssetSound("audio/sound_nk_cream.wav")
+            soundMap["REC_EG_OREO"] = loadAssetSound("audio/sound_eg_oreo.wav")
+            soundMap["REC_EG_PURPLE"] = loadAssetSound("audio/sound_eg_crystal_purple.wav")
+            soundMap["REC_TOPRE"] = loadAssetSound("audio/sound_topre_purple.wav")
 
             // Synthesized / Generated Audio Sounds
-            soundMap["SYNTH_CLICKY"] = soundPool?.load(context, R.raw.switch_cherry_blue, 1) ?: 0
-            soundMap["SYNTH_TACTILE"] = soundPool?.load(context, R.raw.switch_cherry_brown, 1) ?: 0
-            soundMap["SYNTH_LINEAR"] = soundPool?.load(context, R.raw.switch_cherry_red, 1) ?: 0
-            soundMap["SYNTH_THOCK"] = soundPool?.load(context, R.raw.switch_cherry_black, 1) ?: 0
-            soundMap["SYNTH_SPRING"] = soundPool?.load(context, R.raw.switch_ibm_buckling, 1) ?: 0
+            soundMap["SYNTH_CLICKY"] = loadAssetSound("audio/switch_cherry_blue.wav")
+            soundMap["SYNTH_TACTILE"] = loadAssetSound("audio/switch_cherry_brown.wav")
+            soundMap["SYNTH_LINEAR"] = loadAssetSound("audio/switch_cherry_red.wav")
+            soundMap["SYNTH_THOCK"] = loadAssetSound("audio/switch_cherry_black.wav")
+            soundMap["SYNTH_SPRING"] = loadAssetSound("audio/switch_ibm_buckling.wav")
         }
     }
 
@@ -1210,6 +1370,14 @@ class KeyboardView @JvmOverloads constructor(
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 isLongPressTriggered = false
+
+                if (isEditorPreviewMode) {
+                    val hitGear = rowGearBoundsList.firstOrNull { it.rect.contains(event.x, event.y) }
+                    if (hitGear != null) {
+                        performKeypressHapticFeedback()
+                        return true
+                    }
+                }
                 
                 if (isInTrackpadZone(event.x, event.y)) {
                     isTrackpadActive = true
@@ -1259,6 +1427,17 @@ class KeyboardView @JvmOverloads constructor(
                 dismissKeyPreview()
                 handler.removeCallbacks(longPressRunnable)
                 stopAutoRepeat()
+
+                if (isEditorPreviewMode) {
+                    val hitGear = rowGearBoundsList.firstOrNull { it.rect.contains(event.x, event.y) }
+                    if (hitGear != null) {
+                        onRowTapForEditingListener?.invoke(hitGear.rowIdx, hitGear.row)
+                        pressedKeyBounds = null
+                        isLongPressTriggered = false
+                        return true
+                    }
+                }
+
                 val releasedBounds = keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(event.x, event.y) } ?: pressedKeyBounds
 
                 if (!isLongPressTriggered) {

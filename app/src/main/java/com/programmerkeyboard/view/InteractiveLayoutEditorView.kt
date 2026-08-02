@@ -9,11 +9,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.programmerkeyboard.model.DimensionValue
-import com.programmerkeyboard.model.KeyAction
 import com.programmerkeyboard.model.KeyDefinition
-import com.programmerkeyboard.model.KeyRow
 import com.programmerkeyboard.model.LayoutDefinition
-import kotlin.math.max
 
 class InteractiveLayoutEditorView @JvmOverloads constructor(
     context: Context,
@@ -59,11 +56,6 @@ class InteractiveLayoutEditorView @JvmOverloads constructor(
     private val dragSlopPx = 16f
 
     // Paints
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#0F172A")
-        style = Paint.Style.FILL
-    }
-
     private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#161923")
         style = Paint.Style.FILL
@@ -104,15 +96,6 @@ class InteractiveLayoutEditorView @JvmOverloads constructor(
         color = Color.parseColor("#38BDF8")
         alpha = 180
         style = Paint.Style.FILL
-    }
-
-    private fun parseColor(hex: String?, defaultColor: Int): Int {
-        if (hex.isNullOrEmpty()) return defaultColor
-        return try {
-            Color.parseColor(hex)
-        } catch (_: Exception) {
-            defaultColor
-        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -174,7 +157,8 @@ class InteractiveLayoutEditorView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(parseColor(layoutDefinition?.theme?.backgroundColor, Color.parseColor("#0F172A")))
+        val bgColor = layoutDefinition?.theme?.backgroundColor ?: Color.parseColor("#0F172A")
+        canvas.drawColor(bgColor)
 
         val density = context.resources.displayMetrics.density
 

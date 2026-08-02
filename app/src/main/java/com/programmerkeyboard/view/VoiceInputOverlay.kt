@@ -240,7 +240,8 @@ class VoiceInputOverlay(
             isListening = false
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (!matches.isNullOrEmpty()) {
-                onTextRecognized(matches[0])
+                val textWithSpace = matches[0] + " "
+                onTextRecognized(textWithSpace)
             }
             onCloseRequested()
         }
