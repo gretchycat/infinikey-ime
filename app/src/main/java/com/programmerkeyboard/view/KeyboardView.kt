@@ -102,13 +102,7 @@ class KeyboardView @JvmOverloads constructor(
 
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = (calculatedHeight * aspectRatio).toInt()
-        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
-
-        val measuredWidth = if (isPrimaryFullWidth || (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED && isPrimaryFullWidth)) {
-            width
-        } else {
-            minOf(width, idealWidth)
-        }
+        val measuredWidth = minOf(width, idealWidth)
 
         setMeasuredDimension(measuredWidth, calculatedHeight)
     }
@@ -383,14 +377,7 @@ class KeyboardView @JvmOverloads constructor(
         val formFactor = if (layoutDefinition?.id == "phone") com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED else keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = h * aspectRatio
-        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
-
-        val targetWidth = when (formFactor) {
-            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                if (isPrimaryFullWidth) w else minOf(w, idealWidth)
-            }
-            else -> minOf(w, idealWidth)
-        }
+        val targetWidth = minOf(w, idealWidth)
         val activeWidth = targetWidth
 
         when (formFactor) {
@@ -735,13 +722,13 @@ class KeyboardView @JvmOverloads constructor(
 
         when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                val isPrimaryFullWidth = isPrimaryFullWidthLayout()
-                if (!isPrimaryFullWidth) {
-                    val cardRect = RectF(0f, 0f, w, h)
-                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBgPaint)
-                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBorderPaint)
-                } else {
-                    canvas.drawRect(0f, 0f, w, h, cardBgPaint)
+                val cardRect = RectF(0f, 0f, w, h)
+                val screenW = context.resources.displayMetrics.widthPixels.toFloat()
+                val isSliced = w < screenW
+                val radius = if (isSliced) 16f * density else 0f
+                canvas.drawRoundRect(cardRect, radius, radius, cardBgPaint)
+                if (isSliced) {
+                    canvas.drawRoundRect(cardRect, radius, radius, cardBorderPaint)
                 }
             }
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED, com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED -> {
