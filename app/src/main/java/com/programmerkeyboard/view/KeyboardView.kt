@@ -98,18 +98,7 @@ class KeyboardView @JvmOverloads constructor(
             (displayMetrics.heightPixels * (effectiveHeightPercent / 100f)).toInt()
         }
 
-        val aspectRatio = getKeyboardAspectRatio()
-        val idealWidth = (calculatedHeight * aspectRatio).toInt()
-        val measuredWidth = when (keyboardState.formFactorMode) {
-            com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.SPLIT,
-            com.programmerkeyboard.model.FormFactorMode.FLOATING -> width
-            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> minOf(width, idealWidth)
-        }
-
-        setMeasuredDimension(measuredWidth, calculatedHeight)
+        setMeasuredDimension(width, calculatedHeight)
     }
 
     private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -382,12 +371,8 @@ class KeyboardView @JvmOverloads constructor(
         val formFactor = keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = h * aspectRatio
-        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
-
         val targetWidth = when (formFactor) {
-            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                if (isPrimaryFullWidth) w else minOf(w, idealWidth)
-            }
+            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> w
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
             com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
             com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED,
