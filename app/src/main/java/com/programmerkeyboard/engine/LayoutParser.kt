@@ -165,7 +165,7 @@ object LayoutParser {
     }
 
     fun ensureNavigationKey(layout: LayoutDefinition): LayoutDefinition {
-        if (layout.id == "meta") return layout
+        if (layout.id == "meta" || layout.id == "emoji_auto") return layout
         val hasSwitchKey = layout.rows.any { row ->
             row.keys.any { key ->
                 key.onPressAction is KeyAction.SwitchLayout ||
@@ -176,20 +176,17 @@ object LayoutParser {
                 key.onSwipeRightAction is KeyAction.SwitchLayout
             }
         }
-        if (!hasSwitchKey) {
+        if (!hasSwitchKey && layout.rows.isNotEmpty()) {
             val backKey = KeyDefinition(
-                primaryLabel = "← Back to Layout Switcher",
-                styleName = "actionKey",
-                widthWeight = DimensionValue.Ratio(1.0f),
-                isFlexible = true,
+                primaryLabel = "🌐 Layouts",
+                styleName = "modifierKey",
+                widthWeight = DimensionValue.Ratio(1.2f),
                 showPreview = false,
                 onPressAction = KeyAction.SwitchLayout("meta")
             )
-            val backRow = KeyRow(
-                id = "back_nav_row",
-                keys = listOf(backKey)
-            )
-            return layout.copy(rows = layout.rows + backRow)
+            val lastRow = layout.rows.last()
+            val newRow = lastRow.copy(keys = listOf(backKey) + lastRow.keys)
+            return layout.copy(rows = layout.rows.dropLast(1) + newRow)
         }
         return layout
     }
@@ -212,41 +209,49 @@ object LayoutParser {
                 null
             }
             val displayName = when (cleanName) {
-                "main" -> "Full Keyboard"
-                "mobile" -> "Mobile Keyboard"
-                "function" -> "Function Keyboard"
-                "mobile_number" -> "Mobile Number Keyboard"
-                "mobile_symbol" -> "Mobile Symbol Keyboard"
-                "phone" -> "Phone Dialer Keyboard"
+                "main" -> "⌨ Full Programmer"
+                "mobile" -> "📱 Mobile Standard"
+                "function" -> "⚡ Function & Nav"
+                "mobile_number" -> "🔢 Number Pad"
+                "mobile_symbol" -> "🔣 Symbols & Math"
+                "phone" -> "📞 Phone Dialer"
                 else -> layoutDef?.name?.takeIf { it.isNotBlank() } ?: cleanName.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
             }
             Pair(cleanName, displayName)
         }
 
         val previousDisplayName = when (previousLayoutId) {
-            "main" -> "Full Keyboard"
-            "mobile" -> "Mobile Keyboard"
-            "function" -> "Function Keyboard"
-            "mobile_number" -> "Mobile Number Keyboard"
-            "mobile_symbol" -> "Mobile Symbol Keyboard"
-            "phone" -> "Phone Dialer Keyboard"
+            "main" -> "Full Programmer"
+            "mobile" -> "Mobile Standard"
+            "function" -> "Function & Nav"
+            "mobile_number" -> "Number Pad"
+            "mobile_symbol" -> "Symbols & Math"
+            "phone" -> "Phone Dialer"
+            "emoji_auto" -> "Emoji Picker"
             else -> previousLayoutId.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
         }
 
         val rowList = mutableListOf<KeyRow>()
 
-        // Dynamic Header Row (Return to Previous Layout)
+        // Dynamic Header Row (Return to Previous Layout + Quick Settings Button)
         rowList.add(
             KeyRow(
                 id = 1,
                 keys = listOf(
                     KeyDefinition(
-                        primaryLabel = "← Back to $previousDisplayName",
+                        primaryLabel = "← Return ($previousDisplayName)",
                         styleName = "actionKey",
-                        widthWeight = DimensionValue.Ratio(1.0f),
+                        widthWeight = DimensionValue.Ratio(2.5f),
                         isFlexible = true,
                         showPreview = false,
                         onPressAction = KeyAction.SwitchLayout(previousLayoutId)
+                    ),
+                    KeyDefinition(
+                        primaryLabel = "⚙ Settings",
+                        styleName = "functionKey",
+                        widthWeight = DimensionValue.Ratio(1.0f),
+                        showPreview = false,
+                        onPressAction = KeyAction.SwitchLayout("settings")
                     )
                 )
             )

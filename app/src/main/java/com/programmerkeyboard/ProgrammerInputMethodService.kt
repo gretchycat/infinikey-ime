@@ -338,8 +338,17 @@ class ProgrammerInputMethodService : InputMethodService() {
                     action.target
                 }
 
+                if (target.equals("settings", ignoreCase = true)) {
+                    val intent = Intent(this, com.programmerkeyboard.settings.SettingsActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    startActivity(intent)
+                    return
+                }
+
                 if (!target.equals("mobile_symbol", ignoreCase = true) &&
                     !target.equals("mobile_number", ignoreCase = true) &&
+                    !target.equals("emoji_auto", ignoreCase = true) &&
                     !target.equals("meta", ignoreCase = true)) {
                     prefs.edit().putString("pref_last_primary_layout_target", target).apply()
                 }
@@ -347,7 +356,9 @@ class ProgrammerInputMethodService : InputMethodService() {
                 val layoutFile = if (target.endsWith(".json")) target else "${target}.json"
                 val customLayoutJson = prefs.getString("pref_custom_layout_json_$target", null)
                     ?: if (target == "main") prefs.getString("pref_custom_layout_json", null) else null
-                val rawLayout = if (!customLayoutJson.isNullOrEmpty()) {
+                val rawLayout = if (target == "meta") {
+                    LayoutParser.createMetaLayout(this, lastPrimary)
+                } else if (!customLayoutJson.isNullOrEmpty()) {
                     try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile) }
                 } else {
                     LayoutParser.loadLayoutFromAsset(this, layoutFile)
