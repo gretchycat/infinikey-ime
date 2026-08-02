@@ -299,7 +299,7 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun getKeyboardAspectRatio(): Float {
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-        return prefs.getFloat("pref_keyboard_aspect_ratio", 1.75f).coerceIn(1.5f, 2.5f)
+        return prefs.getFloat("pref_keyboard_aspect_ratio", 2.2f).coerceIn(1.8f, 3.5f)
     }
 
     data class RowGearBounds(val rowIdx: Int, val row: com.programmerkeyboard.model.KeyRow, val rect: RectF)
@@ -365,7 +365,9 @@ class KeyboardView @JvmOverloads constructor(
 
         val formFactor = if (layoutDefinition?.id == "phone") com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED else keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
-        val activeWidth = (w * (aspectRatio / 2.0f)).coerceIn(150f, w)
+        val idealWidth = h * aspectRatio
+        val targetWidth = minOf(w, idealWidth)
+        val activeWidth = targetWidth
 
         when (formFactor) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED,
@@ -377,28 +379,17 @@ class KeyboardView @JvmOverloads constructor(
                     row.keys.sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }.toFloat()
                 } ?: 1.0f
 
-                val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
-                val maxLandscapeWidth = h * 2.8f
-                val shouldCapLandscapeWidth = isLandscape || (w / h > 2.8f)
-
-                val targetWidth = when (formFactor) {
-                    com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                        if (shouldCapLandscapeWidth) minOf(w, maxLandscapeWidth) else w
-                    }
-                    else -> activeWidth
-                }
-
                 val editorGearWidth = if (isEditorPreviewMode) 40f * density else 0f
                 val availableWidthForRatio = targetWidth - editorGearWidth - (hSpacingPx * (maxRowRatioWeight + 1))
                 val globalBaseUnit = if (maxRowRatioWeight > 0) maxOf(0f, availableWidthForRatio / maxRowRatioWeight) else 0f
 
                 val (startX, keysStartY, floatRowHeight) = when (formFactor) {
                     com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                        val sx = if (shouldCapLandscapeWidth) (w - targetWidth) / 2f else 0f
+                        val sx = (w - targetWidth) / 2f
                         Triple(sx, vSpacingPx, rowHeight)
                     }
                     com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> {
-                        Triple(w - activeWidth, vSpacingPx, rowHeight)
+                        Triple(w - targetWidth, vSpacingPx, rowHeight)
                     }
                     com.programmerkeyboard.model.FormFactorMode.FLOATING -> {
                         val baseStartX = (w - activeWidth) / 2f
