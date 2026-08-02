@@ -711,7 +711,17 @@ class KeyboardView @JvmOverloads constructor(
 
         when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                canvas.drawRect(0f, 0f, w, h, cardBgPaint)
+                val aspectRatio = getKeyboardAspectRatio()
+                val idealWidth = h * aspectRatio
+                val targetWidth = minOf(w, idealWidth)
+                if (targetWidth < w) {
+                    val startX = (w - targetWidth) / 2f
+                    val cardRect = RectF(startX, 0f, startX + targetWidth, h)
+                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBgPaint)
+                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBorderPaint)
+                } else {
+                    canvas.drawRect(0f, 0f, w, h, cardBgPaint)
+                }
             }
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED, com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED -> {
                 canvas.drawRect(activeWidth, 0f, w, h, dimOverlayPaint)
