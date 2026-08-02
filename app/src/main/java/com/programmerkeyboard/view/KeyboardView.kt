@@ -396,8 +396,8 @@ class KeyboardView @JvmOverloads constructor(
             }
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
             com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> minOf(w, idealWidth)
-            com.programmerkeyboard.model.FormFactorMode.SPLIT -> w
+            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED,
+            com.programmerkeyboard.model.FormFactorMode.SPLIT,
             com.programmerkeyboard.model.FormFactorMode.FLOATING -> minOf(w, idealWidth)
         }
         val activeWidth = targetWidth
@@ -748,8 +748,6 @@ class KeyboardView @JvmOverloads constructor(
                 val targetWidth = if (isPrimaryFullWidth) w else minOf(w, h * aspectRatio)
                 if (targetWidth < w) {
                     val startX = (w - targetWidth) / 2f
-                    canvas.drawRect(0f, 0f, startX, h, dimOverlayPaint)
-                    canvas.drawRect(startX + targetWidth, 0f, w, h, dimOverlayPaint)
                     val cardRect = RectF(startX, 0f, startX + targetWidth, h)
                     canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBgPaint)
                     canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBorderPaint)
@@ -758,14 +756,12 @@ class KeyboardView @JvmOverloads constructor(
                 }
             }
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED, com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED -> {
-                canvas.drawRect(activeWidth, 0f, w, h, dimOverlayPaint)
                 val cardRect = RectF(0f, 0f, activeWidth, h)
                 canvas.drawRoundRect(cardRect, 0f, 16f * density, cardBgPaint)
                 canvas.drawRoundRect(cardRect, 0f, 16f * density, cardBorderPaint)
             }
             com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> {
                 val startX = w - activeWidth
-                canvas.drawRect(0f, 0f, startX, h, dimOverlayPaint)
                 val cardRect = RectF(startX, 0f, w, h)
                 canvas.drawRoundRect(cardRect, 16f * density, 0f, cardBgPaint)
                 canvas.drawRoundRect(cardRect, 16f * density, 0f, cardBorderPaint)
@@ -778,8 +774,6 @@ class KeyboardView @JvmOverloads constructor(
                 val cardTop = (baseStartY + floatingOffsetY).coerceIn(4f, maxOf(4f, h - floatCardHeight - 4f))
                 val cardBottom = cardTop + floatCardHeight
 
-                canvas.drawRect(0f, 0f, startX, h, dimOverlayPaint)
-                canvas.drawRect(startX + activeWidth, 0f, w, h, dimOverlayPaint)
                 val cardRect = RectF(startX + 4f, cardTop, startX + activeWidth - 4f, cardBottom)
                 canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBgPaint)
                 canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBorderPaint)
@@ -806,8 +800,6 @@ class KeyboardView @JvmOverloads constructor(
                 val rightRect = RectF(rightClusterStartX, 0f, w, h)
                 canvas.drawRoundRect(rightRect, 16f * density, 0f, cardBgPaint)
                 canvas.drawRoundRect(rightRect, 16f * density, 0f, cardBorderPaint)
-
-                canvas.drawRect(leftClusterWidth, 0f, rightClusterStartX, h, dimOverlayPaint)
             }
         }
 
