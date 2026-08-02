@@ -377,8 +377,14 @@ class KeyboardView @JvmOverloads constructor(
                     row.keys.sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }.toFloat()
                 } ?: 1.0f
 
+                val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+                val maxLandscapeWidth = h * 2.8f
+                val shouldCapLandscapeWidth = isLandscape || (w / h > 2.8f)
+
                 val targetWidth = when (formFactor) {
-                    com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> w
+                    com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
+                        if (shouldCapLandscapeWidth) minOf(w, maxLandscapeWidth) else w
+                    }
                     else -> activeWidth
                 }
 
@@ -387,6 +393,10 @@ class KeyboardView @JvmOverloads constructor(
                 val globalBaseUnit = if (maxRowRatioWeight > 0) maxOf(0f, availableWidthForRatio / maxRowRatioWeight) else 0f
 
                 val (startX, keysStartY, floatRowHeight) = when (formFactor) {
+                    com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
+                        val sx = if (shouldCapLandscapeWidth) (w - targetWidth) / 2f else 0f
+                        Triple(sx, vSpacingPx, rowHeight)
+                    }
                     com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> {
                         Triple(w - activeWidth, vSpacingPx, rowHeight)
                     }

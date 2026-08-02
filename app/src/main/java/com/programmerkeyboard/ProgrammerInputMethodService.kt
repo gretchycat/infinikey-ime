@@ -653,6 +653,15 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     private var textToSpeech: android.speech.tts.TextToSpeech? = null
 
+    override fun onEvaluateFullscreenMode(): Boolean {
+        return false
+    }
+
+    override fun onEvaluateInputViewShown(): Boolean {
+        super.onEvaluateInputViewShown()
+        return true
+    }
+
     override fun onUpdateSelection(
         oldSelStart: Int, oldSelEnd: Int,
         newSelStart: Int, newSelEnd: Int,
