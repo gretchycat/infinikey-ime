@@ -7,4 +7,11 @@
         <item name="android:statusBarColor">#12141C</item>
         <item name="android:navigationBarColor">#12141C</item>
     </style>
+    <style name="Theme.ProgrammerKeyboard.IME" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

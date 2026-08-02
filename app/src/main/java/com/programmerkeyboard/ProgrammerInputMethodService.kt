@@ -70,7 +70,11 @@ class ProgrammerInputMethodService : InputMethodService() {
             )
             setBackgroundColor(android.graphics.Color.TRANSPARENT)
         }
-        window.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        window.window?.let { win ->
+            win.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            win.setDimAmount(0f)
+            win.clearFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        }
         mainContainer = rootLayout
 
         keyboardView = KeyboardView(this).apply {
