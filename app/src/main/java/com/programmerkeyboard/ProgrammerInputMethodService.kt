@@ -131,26 +131,7 @@ class ProgrammerInputMethodService : InputMethodService() {
             keyboardState = this@ProgrammerInputMethodService.keyboardState
             onKeyActionListener = { action -> handleKeyAction(action) }
             onLayoutChangeListener = { targetLayout ->
-                val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                if (!currentId.equals("meta", ignoreCase = true) && !currentId.startsWith("emoji_auto", ignoreCase = true)) {
-                    lastNonMetaLayout = currentId
-                }
-
-                val isActualLayout = !targetLayout.equals("meta", ignoreCase = true) && !targetLayout.startsWith("emoji_auto", ignoreCase = true)
-
-                if (isActualLayout) {
-                    val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
-                    profile.layoutTarget = targetLayout
-                    val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-                    prefs.edit()
-                        .putString("pref_keyboard_layout_target", targetLayout)
-                        .putString("pref_last_primary_layout_target", targetLayout)
-                        .putString("pref_last_actual_layout", targetLayout)
-                        .apply()
-                }
-
-                val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
-                layoutDefinition = LayoutParser.loadLayoutFromAsset(this@ProgrammerInputMethodService, layoutFile, lastNonMetaLayout)
+                handleKeyAction(KeyAction.SwitchLayout(targetLayout))
             }
             onRowToggleListener = { rowId, isVisible ->
                 val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
@@ -205,30 +186,23 @@ class ProgrammerInputMethodService : InputMethodService() {
                 profile.layoutTarget = "main"
                 profile.rowVisibility["main:1"] = true
                 profile.rowVisibility["1"] = true
-            } else if (lowerPkg.contains("chrome") || lowerPkg.contains("browser") || lowerPkg.contains("search") || isUriField) {
-                profile.layoutTarget = "mobile"
-                profile.rowVisibility["main:1"] = false
-                profile.rowVisibility["1"] = false
             } else {
-                profile.layoutTarget = "mobile"
+                profile.layoutTarget = prefs.getString("pref_last_actual_layout", "main") ?: "main"
             }
         }
 
-        val lastPrimaryGlobal = prefs.getString("pref_last_primary_layout_target", "mobile") ?: "mobile"
+        val lastPrimaryGlobal = prefs.getString("pref_last_actual_layout", "main") ?: "main"
         val appSavedTarget = profile.layoutTarget
 
         val activePrimaryTarget = if (!appSavedTarget.isNullOrEmpty() &&
             !appSavedTarget.equals("mobile_symbol", ignoreCase = true) &&
             !appSavedTarget.equals("mobile_number", ignoreCase = true) &&
             !appSavedTarget.equals("phone", ignoreCase = true) &&
-            !appSavedTarget.equals("meta", ignoreCase = true)) {
+            !appSavedTarget.equals("meta", ignoreCase = true) &&
+            !appSavedTarget.startsWith("emoji_auto", ignoreCase = true)) {
             appSavedTarget
         } else {
-            if (lastPrimaryGlobal.equals("mobile_symbol", ignoreCase = true) || lastPrimaryGlobal.equals("mobile_number", ignoreCase = true)) {
-                "mobile"
-            } else {
-                lastPrimaryGlobal
-            }
+            lastPrimaryGlobal
         }
 
         val targetLayout = when (inputClass) {
@@ -236,6 +210,11 @@ class ProgrammerInputMethodService : InputMethodService() {
             android.text.InputType.TYPE_CLASS_NUMBER,
             android.text.InputType.TYPE_CLASS_DATETIME -> "mobile_number"
             else -> activePrimaryTarget
+        }
+
+        if (!isGeneratedLayoutId(targetLayout)) {
+            layoutStack.clear()
+            prefs.edit().putString("pref_last_actual_layout", targetLayout).apply()
         }
 
         val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
