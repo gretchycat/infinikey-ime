@@ -85,20 +85,13 @@ object EmojiLayoutGenerator {
             rowsList.add(KeyRow(id = rowIdCounter++, keys = keysList))
         }
 
-        // Bottom Navigation Row: ⌨ ABC, 🌐, ␣ Space, ⌫ Backspace
+        // Bottom Navigation Row: ⌨ ABC, ␣ Space, ⌫ Backspace
         val bottomRowKeys = mutableListOf<KeyDefinition>()
         bottomRowKeys.add(KeyDefinition(
             primaryLabel = "⌨ ABC",
             styleName = "modifierKey",
-            widthWeight = DimensionValue.Ratio(1.4f),
+            widthWeight = DimensionValue.Ratio(1.5f),
             onPressAction = KeyAction.SwitchLayout("previous")
-        ))
-
-        bottomRowKeys.add(KeyDefinition(
-            primaryLabel = "🌐",
-            styleName = "modifierKey",
-            widthWeight = DimensionValue.Ratio(1.0f),
-            onPressAction = KeyAction.SwitchLayout("meta")
         ))
 
         bottomRowKeys.add(KeyDefinition(
@@ -111,7 +104,7 @@ object EmojiLayoutGenerator {
         bottomRowKeys.add(KeyDefinition(
             primaryLabel = "⌫",
             styleName = "actionKey",
-            widthWeight = DimensionValue.Ratio(1.4f),
+            widthWeight = DimensionValue.Ratio(1.5f),
             onPressAction = KeyAction.SendCode(KeyEvent.KEYCODE_DEL),
             onLongPressAction = KeyAction.AutoRepeat(KeyEvent.KEYCODE_DEL, 50)
         ))

@@ -119,24 +119,20 @@ class ProgrammerInputMethodService : InputMethodService() {
             onKeyActionListener = { action -> handleKeyAction(action) }
             onLayoutChangeListener = { targetLayout ->
                 val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
-                if (!currentId.equals("meta", ignoreCase = true) &&
-                    !currentId.equals("mobile_symbol", ignoreCase = true) &&
-                    !currentId.equals("mobile_number", ignoreCase = true)) {
+                if (!currentId.equals("meta", ignoreCase = true) && !currentId.equals("emoji_auto", ignoreCase = true)) {
                     lastNonMetaLayout = currentId
                 }
 
-                val isPrimaryTarget = !targetLayout.equals("mobile_symbol", ignoreCase = true) &&
-                        !targetLayout.equals("mobile_number", ignoreCase = true) &&
-                        !targetLayout.equals("phone", ignoreCase = true) &&
-                        !targetLayout.equals("meta", ignoreCase = true)
+                val isActualLayout = !targetLayout.equals("meta", ignoreCase = true) && !targetLayout.equals("emoji_auto", ignoreCase = true)
 
-                if (isPrimaryTarget) {
+                if (isActualLayout) {
                     val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
                     profile.layoutTarget = targetLayout
                     val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
                     prefs.edit()
                         .putString("pref_keyboard_layout_target", targetLayout)
                         .putString("pref_last_primary_layout_target", targetLayout)
+                        .putString("pref_last_actual_layout", targetLayout)
                         .apply()
                 }
 
@@ -331,9 +327,21 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
             }
             is KeyAction.SwitchLayout -> {
-                val lastPrimary = prefs.getString("pref_last_primary_layout_target", "mobile") ?: "mobile"
+                val currentId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "main"
+                if (!currentId.equals("meta", ignoreCase = true) && !currentId.equals("emoji_auto", ignoreCase = true)) {
+                    lastNonMetaLayout = currentId
+                }
+
+                val savedLastActual = prefs.getString("pref_last_actual_layout", null)
+                    ?: prefs.getString("pref_last_primary_layout_target", "main")
+                    ?: "main"
+
                 val target = if (action.target == "previous" || action.target == "back") {
-                    lastPrimary
+                    if (lastNonMetaLayout.isNotBlank() && !lastNonMetaLayout.equals("meta", ignoreCase = true) && !lastNonMetaLayout.equals("emoji_auto", ignoreCase = true)) {
+                        lastNonMetaLayout
+                    } else {
+                        savedLastActual
+                    }
                 } else {
                     action.target
                 }
@@ -346,18 +354,19 @@ class ProgrammerInputMethodService : InputMethodService() {
                     return
                 }
 
-                if (!target.equals("mobile_symbol", ignoreCase = true) &&
-                    !target.equals("mobile_number", ignoreCase = true) &&
-                    !target.equals("emoji_auto", ignoreCase = true) &&
-                    !target.equals("meta", ignoreCase = true)) {
-                    prefs.edit().putString("pref_last_primary_layout_target", target).apply()
+                if (!target.equals("emoji_auto", ignoreCase = true) && !target.equals("meta", ignoreCase = true)) {
+                    lastNonMetaLayout = target
+                    prefs.edit()
+                        .putString("pref_last_actual_layout", target)
+                        .putString("pref_last_primary_layout_target", target)
+                        .apply()
                 }
 
                 val layoutFile = if (target.endsWith(".json")) target else "${target}.json"
                 val customLayoutJson = prefs.getString("pref_custom_layout_json_$target", null)
                     ?: if (target == "main") prefs.getString("pref_custom_layout_json", null) else null
                 val rawLayout = if (target == "meta") {
-                    LayoutParser.createMetaLayout(this, lastPrimary)
+                    LayoutParser.createMetaLayout(this, lastNonMetaLayout.ifBlank { "main" })
                 } else if (!customLayoutJson.isNullOrEmpty()) {
                     try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile) }
                 } else {
