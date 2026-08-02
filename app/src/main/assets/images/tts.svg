@@ -1,17 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 100" width="110" height="100" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Geometric Profile Head (Shallow Mouth) -->
   <path d="
-    M 25,85 
-    L 25,62 
-    C 10,48 10,22 28,12 
-    C 48,2 67,16 67,35 
-    L 72,50 
-    L 64,50 
-    L 64,56 
-    L 52,56 
-    L 64,69 
-    L 64,75 
-    L 50,75 
-    L 50,85 
+    M 22,85 
+    L 22,62 
+    C 7,48 7,22 25,12 
+    C 45,2 64,16 64,35 
+    L 69,50 
+    L 62,50 
+    L 62,56 
+    L 53,58 
+    L 62,64 
+    L 62,70 
+    L 47,70 
+    L 47,85 
     Z" 
   />
+
+  <!-- Three Center-Outward Rays -->
+  <!-- Top Ray -->
+  <line x1="70" y1="56" x2="84" y2="48" />
+  <!-- Center Ray -->
+  <line x1="71" y1="60" x2="86" y2="60" />
+  <!-- Bottom Ray -->
+  <line x1="70" y1="64" x2="84" y2="72" />
 </svg>

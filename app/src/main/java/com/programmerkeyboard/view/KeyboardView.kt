@@ -1063,10 +1063,11 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun drawSvgTtsIcon(canvas: Canvas, rect: RectF, paint: Paint) {
-        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
-        val scale = iconSize / 100f
-        val offsetX = rect.centerX() - (iconSize / 2f)
-        val offsetY = rect.centerY() - (iconSize / 2f)
+        val iconH = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconH / 100f
+        val iconW = 110f * scale
+        val offsetX = rect.centerX() - (iconW / 2f)
+        val offsetY = rect.centerY() - (iconH / 2f)
 
         val saveCount = canvas.save()
         canvas.translate(offsetX, offsetY)
@@ -1080,22 +1081,28 @@ class KeyboardView @JvmOverloads constructor(
             strokeJoin = Paint.Join.ROUND
         }
 
+        // Geometric Profile Head (Shallow Mouth)
         val ttsPath = android.graphics.Path().apply {
-            moveTo(25f, 85f)
-            lineTo(25f, 62f)
-            cubicTo(10f, 48f, 10f, 22f, 28f, 12f)
-            cubicTo(48f, 2f, 67f, 16f, 67f, 35f)
-            lineTo(72f, 50f)
-            lineTo(64f, 50f)
-            lineTo(64f, 56f)
-            lineTo(52f, 56f)
-            lineTo(64f, 69f)
-            lineTo(64f, 75f)
-            lineTo(50f, 75f)
-            lineTo(50f, 85f)
+            moveTo(22f, 85f)
+            lineTo(22f, 62f)
+            cubicTo(7f, 48f, 7f, 22f, 25f, 12f)
+            cubicTo(45f, 2f, 64f, 16f, 64f, 35f)
+            lineTo(69f, 50f)
+            lineTo(62f, 50f)
+            lineTo(62f, 56f)
+            lineTo(53f, 58f)
+            lineTo(62f, 64f)
+            lineTo(62f, 70f)
+            lineTo(47f, 70f)
+            lineTo(47f, 85f)
             close()
         }
         canvas.drawPath(ttsPath, strokePaint)
+
+        // Three Center-Outward Rays
+        canvas.drawLine(70f, 56f, 84f, 48f, strokePaint)
+        canvas.drawLine(71f, 60f, 86f, 60f, strokePaint)
+        canvas.drawLine(70f, 64f, 84f, 72f, strokePaint)
 
         canvas.restoreToCount(saveCount)
     }
