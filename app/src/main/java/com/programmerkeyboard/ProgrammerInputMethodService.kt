@@ -164,11 +164,12 @@ class ProgrammerInputMethodService : InputMethodService() {
 
         val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
         val customLayoutJson = prefs.getString("pref_custom_layout_json", null)
-        val layout = if (targetLayout == "main" && !customLayoutJson.isNullOrEmpty()) {
+        val rawLayout = if (targetLayout == "main" && !customLayoutJson.isNullOrEmpty()) {
             try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile) }
         } else {
             LayoutParser.loadLayoutFromAsset(this, layoutFile)
         }
+        val layout = LayoutParser.applyThemeOverrides(this, rawLayout)
 
         keyboardView.layoutDefinition = layout
         keyboardView.setRowVisibilityMap(profile.rowVisibility)

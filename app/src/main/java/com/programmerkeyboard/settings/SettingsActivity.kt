@@ -70,6 +70,38 @@ class SettingsActivity : AppCompatActivity() {
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
         })
 
+        // Required Permissions & Setup Buttons
+        val btnEnableIme = findViewById<Button>(R.id.btnEnableIme)
+        val btnSelectIme = findViewById<Button>(R.id.btnSelectIme)
+        val btnGrantMicPermission = findViewById<Button>(R.id.btnGrantMicPermission)
+        val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
+
+        btnEnableIme?.setOnClickListener {
+            startActivity(Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS))
+        }
+
+        btnSelectIme?.setOnClickListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.showInputMethodPicker()
+        }
+
+        btnGrantMicPermission?.setOnClickListener {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.RECORD_AUDIO), 101)
+            } else {
+                Toast.makeText(this, "Microphone permission is already granted!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnGrantOverlayPermission?.setOnClickListener {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(this)) {
+                val intent = Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Display over apps permission is already granted!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         // 1. Keyboard Height Slider + Editable Text Input (15% - 60%)
         val sbHeight = findViewById<SeekBar>(R.id.sbHeight)
         val etHeightValue = findViewById<EditText>(R.id.etHeightValue)
@@ -1806,8 +1838,33 @@ class SettingsActivity : AppCompatActivity() {
         key.secondaryLabel?.let { obj.addProperty("secondaryLabel", it) }
         key.topLeftLabel?.let { obj.addProperty("topLeftLabel", it) }
         key.topRightLabel?.let { obj.addProperty("topRightLabel", it) }
-        obj.addProperty("style", key.styleName)
-        (key.widthWeight as? DimensionValue.Ratio)?.let { obj.addProperty("weight", it.value) }
+        key.styleName?.let { obj.addProperty("style", it) }
+        
+        when (val w = key.widthWeight) {
+            is DimensionValue.Ratio -> obj.addProperty("weight", w.value)
+            is DimensionValue.Absolute -> obj.addProperty("weight", "${w.value}dp")
+            null -> {}
+        }
+        when (val h = key.heightRatio) {
+            is DimensionValue.Ratio -> obj.addProperty("height", h.value)
+            is DimensionValue.Absolute -> obj.addProperty("height", "${h.value}dp")
+            null -> {}
+        }
+        if (key.isSplitKey) obj.addProperty("isSplitKey", true)
+        if (key.isFlexible) obj.addProperty("flexible", true)
+        if (key.isSpacer) obj.addProperty("spacer", true)
+
+        fun formatColor(colorInt: Int?): String? {
+            return colorInt?.let { String.format("#%06X", (0xFFFFFF and it)) }
+        }
+
+        key.bgColor?.let { obj.addProperty("bgColor", formatColor(it)) }
+        key.fgColor?.let { obj.addProperty("fgColor", formatColor(it)) }
+        key.pressedBgColor?.let { obj.addProperty("pressedBgColor", formatColor(it)) }
+        key.activeBgColor?.let { obj.addProperty("activeBgColor", formatColor(it)) }
+        key.secondaryFgColor?.let { obj.addProperty("secondaryFgColor", formatColor(it)) }
+        key.borderColor?.let { obj.addProperty("borderColor", formatColor(it)) }
+
         if (key.onPressAction !is KeyAction.None) obj.add("onPress", serializeAction(key.onPressAction))
         if (key.onLongPressAction !is KeyAction.None) obj.add("onLongPress", serializeAction(key.onLongPressAction))
         if (key.onSwipeUpAction !is KeyAction.None) obj.add("onSwipeUp", serializeAction(key.onSwipeUpAction))
@@ -1817,7 +1874,18 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun serializeRow(row: KeyRow): com.google.gson.JsonObject {
         val obj = com.google.gson.JsonObject()
-        obj.addProperty("id", row.id.toString())
+        val numId = (row.id as? Number)?.toInt()
+        if (numId != null) {
+            obj.addProperty("id", numId)
+        } else {
+            val strId = row.id.toString()
+            val parsedInt = strId.toIntOrNull()
+            if (parsedInt != null) {
+                obj.addProperty("id", parsedInt)
+            } else {
+                obj.addProperty("id", strId)
+            }
+        }
         if (row.hidden) obj.addProperty("hidden", true)
         row.splitIndex?.let { obj.addProperty("splitIndex", it) }
         if (row.splitKey) obj.addProperty("splitKey", true)
@@ -1827,13 +1895,109 @@ class SettingsActivity : AppCompatActivity() {
         return obj
     }
 
+    private fun serializeStyle(style: com.programmerkeyboard.model.KeyStyle): com.google.gson.JsonObject {
+        val obj = com.google.gson.JsonObject()
+        style.bgColor?.let { obj.addProperty("bgColor", it) }
+        style.fgColor?.let { obj.addProperty("fgColor", it) }
+        style.pressedBgColor?.let { obj.addProperty("pressedBgColor", it) }
+        style.activeBgColor?.let { obj.addProperty("activeBgColor", it) }
+        style.secondaryFgColor?.let { obj.addProperty("secondaryFgColor", it) }
+        style.borderColor?.let { obj.addProperty("borderColor", it) }
+        style.showPreview?.let { obj.addProperty("showPreview", it) }
+        return obj
+    }
+
     private fun serializeLayoutToJson(layout: LayoutDefinition): String {
         val root = com.google.gson.JsonObject()
         root.addProperty("id", layout.id)
         root.addProperty("name", layout.name)
+
+        // Metadata
+        val metaObj = com.google.gson.JsonObject()
+        metaObj.addProperty("defaultScreenMode", layout.metadata.defaultScreenMode)
+        metaObj.addProperty("defaultHeightPercentage", layout.metadata.defaultHeightPercentage)
+        metaObj.addProperty("showKeyPreview", layout.metadata.showKeyPreview)
+        root.add("metadata", metaObj)
+
+        // Theme
+        val themeObj = com.google.gson.JsonObject()
+        fun formatColor(colorInt: Int?): String? {
+            return colorInt?.let { String.format("#%06X", (0xFFFFFF and it)) }
+        }
+        layout.theme.backgroundColor?.let { themeObj.addProperty("backgroundColor", formatColor(it)) }
+        layout.theme.modifierOffDotColor?.let { themeObj.addProperty("modifierOffDotColor", formatColor(it)) }
+        layout.theme.modifierLatchedDotColor?.let { themeObj.addProperty("modifierLatchedDotColor", formatColor(it)) }
+        layout.theme.modifierLockedDotColor?.let { themeObj.addProperty("modifierLockedDotColor", formatColor(it)) }
+        root.add("theme", themeObj)
+
+        // Styles
+        val stylesObj = com.google.gson.JsonObject()
+        layout.styles.forEach { (styleName, keyStyle) ->
+            stylesObj.add(styleName, serializeStyle(keyStyle))
+        }
+        root.add("styles", stylesObj)
+
+        // Rows
         val rowsArr = com.google.gson.JsonArray()
         layout.rows.forEach { rowsArr.add(serializeRow(it)) }
         root.add("rows", rowsArr)
+
         return com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(root)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updatePermissionStatusUI()
+    }
+
+    private fun updatePermissionStatusUI() {
+        val tvStatusEnableIme = findViewById<TextView>(R.id.tvStatusEnableIme) ?: return
+        val tvStatusSelectIme = findViewById<TextView>(R.id.tvStatusSelectIme) ?: return
+        val tvStatusMicPermission = findViewById<TextView>(R.id.tvStatusMicPermission) ?: return
+        val tvStatusOverlayPermission = findViewById<TextView>(R.id.tvStatusOverlayPermission) ?: return
+
+        // 1. IME Enabled Check
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+        val isEnabled = imm.enabledInputMethodList.any { it.packageName == packageName }
+        if (isEnabled) {
+            tvStatusEnableIme.text = "✅ Enabled in System Settings"
+            tvStatusEnableIme.setTextColor(android.graphics.Color.parseColor("#10B981"))
+        } else {
+            tvStatusEnableIme.text = "⚠️ Disabled in System Settings"
+            tvStatusEnableIme.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
+        }
+
+        // 2. IME Selected Check
+        val currentIme = android.provider.Settings.Secure.getString(contentResolver, android.provider.Settings.Secure.DEFAULT_INPUT_METHOD)
+        val isSelected = currentIme?.contains(packageName) == true
+        if (isSelected) {
+            tvStatusSelectIme.text = "✅ Selected as Active Keyboard"
+            tvStatusSelectIme.setTextColor(android.graphics.Color.parseColor("#10B981"))
+        } else {
+            tvStatusSelectIme.text = "⚠️ Not Selected as Active Keyboard"
+            tvStatusSelectIme.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
+        }
+
+        // 3. Mic Permission Check
+        val hasMic = androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (hasMic) {
+            tvStatusMicPermission.text = "✅ Granted (Voice Input Ready)"
+            tvStatusMicPermission.setTextColor(android.graphics.Color.parseColor("#10B981"))
+        } else {
+            tvStatusMicPermission.text = "⚠️ Permission Not Granted"
+            tvStatusMicPermission.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
+        }
+
+        // 4. Overlay Permission Check
+        val hasOverlay = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            android.provider.Settings.canDrawOverlays(this)
+        } else true
+        if (hasOverlay) {
+            tvStatusOverlayPermission.text = "✅ Granted (Overlay Widgets Enabled)"
+            tvStatusOverlayPermission.setTextColor(android.graphics.Color.parseColor("#10B981"))
+        } else {
+            tvStatusOverlayPermission.text = "⚠️ Permission Not Granted"
+            tvStatusOverlayPermission.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
+        }
     }
 }
