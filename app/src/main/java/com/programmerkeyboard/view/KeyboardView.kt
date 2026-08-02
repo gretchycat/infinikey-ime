@@ -342,9 +342,10 @@ class KeyboardView @JvmOverloads constructor(
 
         val isVerticalScroll = layoutDefinition?.metadata?.scrollDirection.equals("VERTICAL", ignoreCase = true)
         val maxVisRows = layoutDefinition?.metadata?.maxVisibleRows ?: 4
-        val fixedBottomRowsCount = if (isVerticalScroll && currentRows.size > 2) 2 else 0
-        val scrollingRowsCount = if (isVerticalScroll) maxOf(0, currentRows.size - fixedBottomRowsCount) else currentRows.size
-        val effectiveVisibleRowCount = if (isVerticalScroll) (maxVisRows + fixedBottomRowsCount) else currentRows.size
+        val fixedTopRowsCount = if (isVerticalScroll && currentRows.size > 2) 1 else 0
+        val fixedBottomRowsCount = if (isVerticalScroll && currentRows.size > 2) 1 else 0
+        val scrollingRowsCount = if (isVerticalScroll) maxOf(0, currentRows.size - fixedTopRowsCount - fixedBottomRowsCount) else currentRows.size
+        val effectiveVisibleRowCount = if (isVerticalScroll) (maxVisRows + fixedTopRowsCount + fixedBottomRowsCount) else currentRows.size
 
         val availableHeight = h - (vSpacingPx * (effectiveVisibleRowCount + 1))
         val rowHeight = availableHeight / effectiveVisibleRowCount
@@ -417,11 +418,13 @@ class KeyboardView @JvmOverloads constructor(
                     }
 
                     val currentY = if (isVerticalScroll) {
-                        if (rowIndex < scrollingRowsCount) {
-                            vSpacingPx + (rowIndex * (rowHeight + vSpacingPx)) - scrollOffsetY
+                        if (rowIndex < fixedTopRowsCount) {
+                            vSpacingPx
+                        } else if (rowIndex < fixedTopRowsCount + scrollingRowsCount) {
+                            val scrollRowIdx = rowIndex - fixedTopRowsCount
+                            vSpacingPx + (rowHeight + vSpacingPx) + (scrollRowIdx * (rowHeight + vSpacingPx)) - scrollOffsetY
                         } else {
-                            val fixedIdx = rowIndex - scrollingRowsCount
-                            vSpacingPx + ((maxVisRows + fixedIdx) * (rowHeight + vSpacingPx))
+                            h - rowHeight - vSpacingPx
                         }
                     } else if (formFactor == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
                         keysStartY + rowIndex * (floatRowHeight + vSpacingPx)
@@ -773,10 +776,28 @@ class KeyboardView @JvmOverloads constructor(
         val availableHeight = height.toFloat() - (resolveDimension(layoutDefinition?.metadata?.verticalSpacing, height.toFloat(), density, 4f) * (rowCount + 1))
         val rowHeight = availableHeight / rowCount
 
+        val isVerticalScroll = layoutDefinition?.metadata?.scrollDirection.equals("VERTICAL", ignoreCase = true)
+        val maxVisRows = layoutDefinition?.metadata?.maxVisibleRows ?: 4
+        val effectiveRowCount = maxVisRows + 2
+        val availableH = h - (resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f) * (effectiveRowCount + 1))
+        val rHeight = availableH / effectiveRowCount
+        val vSpacing = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
+
+        val topBarBottom = vSpacing + rHeight + (vSpacing / 2f)
+        val bottomNavTop = h - rHeight - (vSpacing * 1.5f)
+
         keyBoundsList.forEach { keyBounds ->
             val key = keyBounds.key
             if (key.isSpacer) return@forEach
             val rect = keyBounds.rect
+
+            val isMiddleScrollableKey = isVerticalScroll && (rect.top >= topBarBottom - 10f && rect.bottom <= bottomNavTop + 10f)
+            val saveCount = if (isVerticalScroll && isMiddleScrollableKey) {
+                val sc = canvas.save()
+                canvas.clipRect(0f, topBarBottom, w, bottomNavTop)
+                sc
+            } else -1
+
             val isPressed = (pressedKeyBounds == keyBounds)
             val isMod = isModifierKey(key)
             val modState = getModifierState(key)
@@ -819,34 +840,36 @@ class KeyboardView @JvmOverloads constructor(
                 val dotColor = when (modState) {
                     com.programmerkeyboard.model.ModifierState.LOCKED -> lockedColor
                     com.programmerkeyboard.model.ModifierState.LATCHED -> latchedColor
-                    com.programmerkeyboard.model.ModifierState.OFF -> offColor
+                    else -> offColor
                 }
+
+                val dotRadius = 3f * density
+                val dotMargin = 6f * density
+                val dotCenterX = rect.left + dotMargin
+                val dotCenterY = rect.top + dotMargin
 
                 val dotPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     color = dotColor
                     style = Paint.Style.FILL
                 }
+                canvas.drawCircle(dotCenterX, dotCenterY, dotRadius, dotPaint)
 
-                canvas.drawCircle(rect.left + 16f, rect.top + 16f, 6f, dotPaint)
-
-                if (modState == com.programmerkeyboard.model.ModifierState.LOCKED) {
-                    val isShiftKey = (key.primaryLabel == "Shift" || key.primaryLabel == "⇧")
-                    if (isShiftKey) {
-                        val lockLabel = if (keyboardState.shiftLockMode == com.programmerkeyboard.model.ShiftLockMode.CAPS_LOCK) "CAPS" else "LOCK"
-                        canvas.drawText(lockLabel, rect.right - 10f, rect.top + 24f, secondaryTextPaint)
-                    }
+                val dotBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = android.graphics.Color.argb(128, 255, 255, 255)
+                    style = Paint.Style.STROKE
+                    strokeWidth = 1f * density
                 }
+                canvas.drawCircle(dotCenterX, dotCenterY, dotRadius, dotBorderPaint)
             }
 
-            // Label Text Transformation
-            val isLetter = key.primaryLabel.length == 1 && key.primaryLabel[0].isLowerCase()
+            // Key Labels & Icons
             val firstAlt = key.alternates.firstOrNull()
-            val displayLabel = if (keyboardState.shouldShiftKey(key)) {
-                val upAct = key.onSwipeUpAction
+            val displayLabel = if (keyboardState.isShiftActive && key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()) {
+                key.primaryLabel.uppercase()
+            } else if (keyboardState.isShiftActive) {
                 val lpAct = key.onLongPressAction
+                val upAct = key.onSwipeUpAction
                 when {
-                    isLetter -> key.primaryLabel.uppercase()
-                    firstAlt != null -> if (firstAlt.any { it.isLowerCase() }) firstAlt.uppercase() else firstAlt
                     !key.secondaryLabel.isNullOrEmpty() -> if (key.secondaryLabel.any { it.isLowerCase() }) key.secondaryLabel.uppercase() else key.secondaryLabel
                     upAct is KeyAction.SendText -> if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text
                     lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> {
@@ -915,6 +938,10 @@ class KeyboardView @JvmOverloads constructor(
                 val secPaint = Paint(secondaryTextPaint).apply { textAlign = Paint.Align.RIGHT }
                 key.secondaryFgColor?.let { secPaint.color = it }
                 canvas.drawText(rawSecToDraw, rect.right - (6f * density), rect.top + (14f * density), secPaint)
+            }
+
+            if (saveCount != -1) {
+                canvas.restoreToCount(saveCount)
             }
         }
 
@@ -1353,11 +1380,26 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun findHitKeyBounds(x: Float, y: Float): KeyBounds? {
         val isVerticalScroll = layoutDefinition?.metadata?.scrollDirection.equals("VERTICAL", ignoreCase = true)
-        if (isVerticalScroll && scrollViewportHeight > 0f) {
-            if (y >= scrollViewportHeight - 4f) {
-                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.top >= (scrollViewportHeight - 10f) && it.rect.contains(x, y) }
+        if (isVerticalScroll) {
+            val allRows = layoutDefinition?.rows ?: emptyList()
+            val currentRows = allRows.filter { isRowVisible(it) }
+            val density = context.resources.displayMetrics.density
+            val h = height.toFloat()
+            val vSpacingPx = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
+            val maxVisRows = layoutDefinition?.metadata?.maxVisibleRows ?: 4
+            val effectiveRowCount = maxVisRows + 2
+            val availableHeight = h - (vSpacingPx * (effectiveRowCount + 1))
+            val rowHeight = availableHeight / effectiveRowCount
+
+            val topBarBottom = vSpacingPx + rowHeight + (vSpacingPx / 2f)
+            val bottomNavTop = h - rowHeight - (vSpacingPx * 1.5f)
+
+            if (y <= topBarBottom) {
+                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.top < topBarBottom && it.rect.contains(x, y) }
+            } else if (y >= bottomNavTop) {
+                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.bottom > bottomNavTop && it.rect.contains(x, y) }
             } else {
-                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.bottom <= (scrollViewportHeight + 10f) && it.rect.contains(x, y) }
+                return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.top >= (topBarBottom - 5f) && it.rect.bottom <= (bottomNavTop + 5f) && it.rect.contains(x, y) }
             }
         }
         return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(x, y) }

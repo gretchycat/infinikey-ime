@@ -59,19 +59,7 @@ object EmojiLayoutGenerator {
         val chunkSize = 8
         var rowIdCounter = 1
 
-        supportedEmojis.chunked(chunkSize).forEach { chunk ->
-            val keysList = chunk.map { emoji ->
-                KeyDefinition(
-                    primaryLabel = emoji,
-                    styleName = "alphaKey",
-                    fontSize = DimensionValue.Absolute(28),
-                    onPressAction = KeyAction.SendText(emoji)
-                )
-            }.toMutableList()
-            rowsList.add(KeyRow(id = rowIdCounter++, keys = keysList))
-        }
-
-        // Category Switcher Bar
+        // Row 1: Top Category Switcher Bar
         val catRowKeys = mutableListOf<KeyDefinition>()
         masterCategories.forEachIndexed { idx, pair ->
             catRowKeys.add(KeyDefinition(
@@ -83,6 +71,19 @@ object EmojiLayoutGenerator {
             ))
         }
         rowsList.add(KeyRow(id = rowIdCounter++, keys = catRowKeys))
+
+        // Middle Rows: Vertically scrolling grid of supported emojis
+        supportedEmojis.chunked(chunkSize).forEach { chunk ->
+            val keysList = chunk.map { emoji ->
+                KeyDefinition(
+                    primaryLabel = emoji,
+                    styleName = "alphaKey",
+                    fontSize = DimensionValue.Absolute(28),
+                    onPressAction = KeyAction.SendText(emoji)
+                )
+            }.toMutableList()
+            rowsList.add(KeyRow(id = rowIdCounter++, keys = keysList))
+        }
 
         // Bottom Navigation Row: ABC, Space, Backspace ⌫
         val bottomRowKeys = mutableListOf<KeyDefinition>()
