@@ -729,6 +729,9 @@ class KeyboardView @JvmOverloads constructor(
                 val targetWidth = if (isPrimaryFullWidth) w else minOf(w, idealWidth)
                 if (targetWidth < w) {
                     val startX = (w - targetWidth) / 2f
+                    canvas.drawRect(0f, 0f, startX, h, dimOverlayPaint)
+                    canvas.drawRect(startX + targetWidth, 0f, w, h, dimOverlayPaint)
+
                     val cardRect = RectF(startX, 0f, startX + targetWidth, h)
                     canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBgPaint)
                     canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBorderPaint)
