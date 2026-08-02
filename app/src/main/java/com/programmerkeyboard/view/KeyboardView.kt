@@ -168,6 +168,15 @@ class KeyboardView @JvmOverloads constructor(
             invalidate()
         }
 
+    fun showEmojiPicker() {
+        emojiPickerOverlay?.dismiss()
+        emojiPickerOverlay = EmojiPickerOverlay(context) { selectedEmoji ->
+            onKeyActionListener?.invoke(KeyAction.SendText(selectedEmoji))
+        }.also {
+            it.show(this)
+        }
+    }
+
     // Multi-touch tracking
     private var initialPointersDistance = 0f
     private var initialPointersCenterX = 0f
@@ -1061,12 +1070,8 @@ class KeyboardView @JvmOverloads constructor(
                             it.show(this)
                         }
                     }
-                    "EMOJI_PICKER_EMBEDDED" -> {
-                        emojiPickerOverlay = EmojiPickerOverlay(context) { selectedEmoji ->
-                            onKeyActionListener?.invoke(KeyAction.SendText(selectedEmoji))
-                        }.also {
-                            it.show(this)
-                        }
+                    "EMOJI_PICKER", "EMOJI_PICKER_EMBEDDED", "EMOJI", "EMOJI_KEYBOARD" -> {
+                        showEmojiPicker()
                     }
                     else -> {
                         onKeyActionListener?.invoke(actionToExecute)

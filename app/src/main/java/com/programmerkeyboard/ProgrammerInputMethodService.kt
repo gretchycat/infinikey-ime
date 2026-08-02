@@ -302,9 +302,30 @@ class ProgrammerInputMethodService : InputMethodService() {
                         }
                         startActivity(intent)
                     }
-                    "EMOJI_PICKER" -> {
+                    "EMOJI_PICKER", "EMOJI", "EMOJI_KEYBOARD" -> {
                         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
-                        imm?.showInputMethodPicker()
+                        val token = window?.window?.attributes?.token
+                        var switchedToGboard = false
+
+                        if (imm != null && token != null) {
+                            val enabledImes = imm.enabledInputMethodList
+                            val gboardIme = enabledImes.firstOrNull { imi ->
+                                val id = imi.id.lowercase()
+                                id.contains("com.google.android.inputmethod.latin") || 
+                                id.contains("gboard") || 
+                                id.contains("emoji")
+                            }
+                            if (gboardIme != null) {
+                                try {
+                                    imm.setInputMethod(token, gboardIme.id)
+                                    switchedToGboard = true
+                                } catch (_: Exception) {}
+                            }
+                        }
+
+                        if (!switchedToGboard) {
+                            keyboardView.showEmojiPicker()
+                        }
                     }
                     "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL" -> {
                         toggleOneShotVoiceRecognition()
