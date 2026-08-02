@@ -1027,8 +1027,42 @@ class KeyboardView @JvmOverloads constructor(
         }
     }
 
+    private fun drawSvgMicIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 24f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        // 1. Capsule (rect x="9" y="3" width="6" height="11" rx="3")
+        val capsuleRect = RectF(9f, 3f, 15f, 14f)
+        canvas.drawRoundRect(capsuleRect, 3f, 3f, strokePaint)
+
+        // 2. Cradle Arc (path d="M5 11a7 7 0 0 0 14 0")
+        val arcRect = RectF(5f, 4f, 19f, 18f)
+        canvas.drawArc(arcRect, 0f, 180f, false, strokePaint)
+
+        // 3. Stem Base (line x1="12" y1="18" x2="12" y2="21")
+        canvas.drawLine(12f, 18f, 12f, 21f, strokePaint)
+
+        // 4. Base Line
+        canvas.drawLine(9f, 21f, 15f, 21f, strokePaint)
+
+        canvas.restoreToCount(saveCount)
+    }
+
     private fun drawKeyIconOrLabel(canvas: Canvas, key: KeyDefinition, displayLabel: String, rect: RectF, paint: Paint) {
-        val density = resources.displayMetrics.density
         val iconType = key.iconName?.lowercase() ?: when (displayLabel.trim()) {
             "🎙", "🎙️", "🎤" -> "mic"
             else -> null
@@ -1040,32 +1074,8 @@ class KeyboardView @JvmOverloads constructor(
             val iconSize = minOf(rect.width(), rect.height()) * 0.42f
 
             when (iconType) {
-                "mic", "microphone", "voice" -> {
-                    val micW = iconSize * 0.42f
-                    val micH = iconSize * 0.72f
-                    val micTop = centerY - (micH * 0.55f)
-                    val micRect = RectF(centerX - micW / 2f, micTop, centerX + micW / 2f, micTop + micH)
-
-                    val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                        color = paint.color
-                        style = Paint.Style.FILL
-                    }
-                    canvas.drawRoundRect(micRect, micW / 2f, micW / 2f, fillPaint)
-
-                    val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                        color = paint.color
-                        style = Paint.Style.STROKE
-                        strokeWidth = maxOf(2f * density, iconSize * 0.11f)
-                        strokeCap = Paint.Cap.ROUND
-                    }
-
-                    val arcRect = RectF(centerX - iconSize * 0.38f, centerY - iconSize * 0.22f, centerX + iconSize * 0.38f, centerY + iconSize * 0.35f)
-                    canvas.drawArc(arcRect, 0f, 180f, false, strokePaint)
-
-                    val stemTop = arcRect.bottom
-                    val stemBottom = stemTop + (iconSize * 0.25f)
-                    canvas.drawLine(centerX, stemTop, centerX, stemBottom, strokePaint)
-                    canvas.drawLine(centerX - iconSize * 0.22f, stemBottom, centerX + iconSize * 0.22f, stemBottom, strokePaint)
+                "mic", "microphone", "voice", "mic.svg", "assets/images/mic.svg" -> {
+                    drawSvgMicIcon(canvas, rect, paint)
                     return
                 }
                 "keyboard" -> {
