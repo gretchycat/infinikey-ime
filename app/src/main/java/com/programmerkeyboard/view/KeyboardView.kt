@@ -726,46 +726,7 @@ class KeyboardView @JvmOverloads constructor(
         val themeBg = layoutDefinition?.theme?.backgroundColor
         val bgColor = themeBg ?: ContextCompat.getColor(context, R.color.keyboard_background)
 
-        val dimOverlayPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = android.graphics.Color.argb(180, 5, 7, 12)
-            style = Paint.Style.FILL
-        }
-
-        val cardBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = bgColor
-            style = Paint.Style.FILL
-        }
-
-        val cardBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = ContextCompat.getColor(context, R.color.key_border)
-            style = Paint.Style.STROKE
-            strokeWidth = 3f * density
-        }
-
         when (keyboardState.formFactorMode) {
-            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                val isPrimaryFullWidth = isPrimaryFullWidthLayout()
-                val targetWidth = if (isPrimaryFullWidth) w else minOf(w, h * aspectRatio)
-                if (targetWidth < w) {
-                    val startX = (w - targetWidth) / 2f
-                    val cardRect = RectF(startX, 0f, startX + targetWidth, h)
-                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBgPaint)
-                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBorderPaint)
-                } else {
-                    canvas.drawRect(0f, 0f, w, h, cardBgPaint)
-                }
-            }
-            com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED, com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED -> {
-                val cardRect = RectF(0f, 0f, activeWidth, h)
-                canvas.drawRoundRect(cardRect, 0f, 16f * density, cardBgPaint)
-                canvas.drawRoundRect(cardRect, 0f, 16f * density, cardBorderPaint)
-            }
-            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> {
-                val startX = w - activeWidth
-                val cardRect = RectF(startX, 0f, w, h)
-                canvas.drawRoundRect(cardRect, 16f * density, 0f, cardBgPaint)
-                canvas.drawRoundRect(cardRect, 16f * density, 0f, cardBorderPaint)
-            }
             com.programmerkeyboard.model.FormFactorMode.FLOATING -> {
                 val baseStartX = (w - activeWidth) / 2f
                 val startX = (baseStartX + floatingOffsetX).coerceIn(4f, maxOf(4f, w - activeWidth - 4f))
@@ -775,8 +736,6 @@ class KeyboardView @JvmOverloads constructor(
                 val cardBottom = cardTop + floatCardHeight
 
                 val cardRect = RectF(startX + 4f, cardTop, startX + activeWidth - 4f, cardBottom)
-                canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBgPaint)
-                canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBorderPaint)
 
                 val handleWidth = 40f * density
                 val handleX = cardRect.centerX() - handleWidth / 2f
@@ -788,18 +747,8 @@ class KeyboardView @JvmOverloads constructor(
                 val handleRect = RectF(handleX, handleY, handleX + handleWidth, handleY + 4f * density)
                 canvas.drawRoundRect(handleRect, 2f * density, 2f * density, handlePaint)
             }
-            com.programmerkeyboard.model.FormFactorMode.SPLIT -> {
-                val dims = computeSplitClusterDimensions(activeWidth, w)
-                val leftClusterWidth = dims.leftClusterWidth
-                val rightClusterStartX = dims.rightClusterStartX
-
-                val leftRect = RectF(0f, 0f, leftClusterWidth, h)
-                canvas.drawRoundRect(leftRect, 0f, 16f * density, cardBgPaint)
-                canvas.drawRoundRect(leftRect, 0f, 16f * density, cardBorderPaint)
-
-                val rightRect = RectF(rightClusterStartX, 0f, w, h)
-                canvas.drawRoundRect(rightRect, 16f * density, 0f, cardBgPaint)
-                canvas.drawRoundRect(rightRect, 16f * density, 0f, cardBorderPaint)
+            else -> {
+                // Completely transparent keyboard background box and outline
             }
         }
 
