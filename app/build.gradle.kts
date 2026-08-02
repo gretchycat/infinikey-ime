@@ -3,6 +3,18 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+val gitBuildNumber: Int = try {
+    val process = ProcessBuilder("git", "rev-list", "--count", "HEAD")
+        .directory(project.rootDir)
+        .start()
+    process.inputStream.bufferedReader().readText().trim().toIntOrNull() ?: 1
+} catch (e: Exception) {
+    1
+}
+
+val baseVersionName = "0.0.1"
+val fullVersionName = "$baseVersionName-b$gitBuildNumber"
+
 android {
     namespace = "com.programmerkeyboard"
     compileSdk = 34
@@ -11,8 +23,8 @@ android {
         applicationId = "com.programmerkeyboard"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.0.1"
+        versionCode = gitBuildNumber
+        versionName = fullVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
