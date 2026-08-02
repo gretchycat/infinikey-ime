@@ -102,7 +102,18 @@ class KeyboardView @JvmOverloads constructor(
 
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = (calculatedHeight * aspectRatio).toInt()
-        val measuredWidth = minOf(width, idealWidth)
+        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
+
+        val measuredWidth = when (keyboardState.formFactorMode) {
+            com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
+            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED,
+            com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
+            com.programmerkeyboard.model.FormFactorMode.SPLIT,
+            com.programmerkeyboard.model.FormFactorMode.FLOATING -> width
+            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
+                if (isPrimaryFullWidth) width else minOf(width, idealWidth)
+            }
+        }
 
         setMeasuredDimension(measuredWidth, calculatedHeight)
     }
@@ -377,7 +388,18 @@ class KeyboardView @JvmOverloads constructor(
         val formFactor = if (layoutDefinition?.id == "phone") com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED else keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = h * aspectRatio
-        val targetWidth = minOf(w, idealWidth)
+        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
+
+        val targetWidth = when (formFactor) {
+            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
+                if (isPrimaryFullWidth) w else minOf(w, idealWidth)
+            }
+            com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
+            com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
+            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> minOf(w, idealWidth)
+            com.programmerkeyboard.model.FormFactorMode.SPLIT -> w
+            com.programmerkeyboard.model.FormFactorMode.FLOATING -> minOf(w, idealWidth)
+        }
         val activeWidth = targetWidth
 
         when (formFactor) {
@@ -722,13 +744,17 @@ class KeyboardView @JvmOverloads constructor(
 
         when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                val cardRect = RectF(0f, 0f, w, h)
-                val screenW = context.resources.displayMetrics.widthPixels.toFloat()
-                val isSliced = w < screenW
-                val radius = if (isSliced) 16f * density else 0f
-                canvas.drawRoundRect(cardRect, radius, radius, cardBgPaint)
-                if (isSliced) {
-                    canvas.drawRoundRect(cardRect, radius, radius, cardBorderPaint)
+                val isPrimaryFullWidth = isPrimaryFullWidthLayout()
+                val targetWidth = if (isPrimaryFullWidth) w else minOf(w, h * aspectRatio)
+                if (targetWidth < w) {
+                    val startX = (w - targetWidth) / 2f
+                    canvas.drawRect(0f, 0f, startX, h, dimOverlayPaint)
+                    canvas.drawRect(startX + targetWidth, 0f, w, h, dimOverlayPaint)
+                    val cardRect = RectF(startX, 0f, startX + targetWidth, h)
+                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBgPaint)
+                    canvas.drawRoundRect(cardRect, 16f * density, 16f * density, cardBorderPaint)
+                } else {
+                    canvas.drawRect(0f, 0f, w, h, cardBgPaint)
                 }
             }
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED, com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED -> {
