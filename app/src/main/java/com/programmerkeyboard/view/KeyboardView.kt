@@ -297,6 +297,11 @@ class KeyboardView @JvmOverloads constructor(
         recalculateKeyBounds()
     }
 
+    private fun isPrimaryFullWidthLayout(): Boolean {
+        val id = layoutDefinition?.id ?: ""
+        return id == "main" || id == "mobile" || id == "phone" || id == "full"
+    }
+
     private fun getKeyboardAspectRatio(): Float {
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         return prefs.getFloat("pref_keyboard_aspect_ratio", 2.2f).coerceIn(1.8f, 3.5f)
@@ -366,7 +371,14 @@ class KeyboardView @JvmOverloads constructor(
         val formFactor = if (layoutDefinition?.id == "phone") com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED else keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = h * aspectRatio
-        val targetWidth = minOf(w, idealWidth)
+        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
+
+        val targetWidth = when (formFactor) {
+            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
+                if (isPrimaryFullWidth) w else minOf(w, idealWidth)
+            }
+            else -> minOf(w, idealWidth)
+        }
         val activeWidth = targetWidth
 
         when (formFactor) {
@@ -711,9 +723,10 @@ class KeyboardView @JvmOverloads constructor(
 
         when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
+                val isPrimaryFullWidth = isPrimaryFullWidthLayout()
                 val aspectRatio = getKeyboardAspectRatio()
                 val idealWidth = h * aspectRatio
-                val targetWidth = minOf(w, idealWidth)
+                val targetWidth = if (isPrimaryFullWidth) w else minOf(w, idealWidth)
                 if (targetWidth < w) {
                     val startX = (w - targetWidth) / 2f
                     val cardRect = RectF(startX, 0f, startX + targetWidth, h)
