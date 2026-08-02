@@ -23,7 +23,25 @@ object EmojiLayoutGenerator {
         Pair("🚩", listOf("🏁","🚩","🎌","🏴","🏳️","🏳️‍🌈","🏴‍☠️","🇺🇸","🇨🇦","🇬🇧","🇫🇷","🇩🇪","🇮🇹","🇪🇸","🇯🇵","🇰🇷","🇨🇳","🇮🇳","🇧🇷","🇲🇽","🇦🇺","🇷🇺"))
     )
 
+    fun getSystemBuildSignature(): String {
+        return "Android_${android.os.Build.VERSION.RELEASE}_SDK${android.os.Build.VERSION.SDK_INT}_${android.os.Build.ID}"
+    }
+
+    fun checkAndRefreshSystemEmojiCache(context: Context): Boolean {
+        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val currentSig = getSystemBuildSignature()
+        val savedSig = prefs.getString("pref_cached_emoji_system_build", null)
+
+        if (savedSig != currentSig) {
+            prefs.edit().putString("pref_cached_emoji_system_build", currentSig).apply()
+            return true
+        }
+        return false
+    }
+
     fun generateSupportedEmojiLayout(context: Context, categoryIndex: Int = 0): LayoutDefinition {
+        checkAndRefreshSystemEmojiCache(context)
+
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = Typeface.DEFAULT
         }
@@ -90,11 +108,15 @@ object EmojiLayoutGenerator {
 
         rowsList.add(KeyRow(id = rowIdCounter, keys = bottomRowKeys))
 
+        val sysVersionStr = "Android ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})"
+        val sysBuildSig = getSystemBuildSignature()
+
         return LayoutDefinition(
             id = "emoji_auto",
             name = "Device Emojis ($catIcon)",
-            version = "1.0",
+            version = sysVersionStr,
             author = "Gretchen Maculo",
+            description = "Auto-generated for $sysBuildSig",
             metadata = LayoutMetadata(
                 scrollDirection = "VERTICAL",
                 maxVisibleRows = 4
