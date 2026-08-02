@@ -102,17 +102,13 @@ class KeyboardView @JvmOverloads constructor(
 
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = (calculatedHeight * aspectRatio).toInt()
-        val isPrimaryFullWidth = isPrimaryFullWidthLayout()
-
         val measuredWidth = when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
             com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED,
             com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
             com.programmerkeyboard.model.FormFactorMode.SPLIT,
             com.programmerkeyboard.model.FormFactorMode.FLOATING -> width
-            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                if (isPrimaryFullWidth) width else minOf(width, idealWidth)
-            }
+            com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> minOf(width, idealWidth)
         }
 
         setMeasuredDimension(measuredWidth, calculatedHeight)

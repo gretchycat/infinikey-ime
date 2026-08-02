@@ -40,7 +40,9 @@ class ProgrammerInputMethodService : InputMethodService() {
             key == "pref_theme_preset_idx" ||
             key == "pref_keyboard_height_percent" ||
             key == "pref_keyboard_aspect_ratio" ||
+            key == "pref_form_factor" ||
             key == "pref_form_factor_mode" ||
+            key == "pref_keyboard_layout_target" ||
             key?.startsWith("pref_row_vis_") == true) {
             reloadKeyboardLayoutAndTheme()
         }
@@ -53,14 +55,18 @@ class ProgrammerInputMethodService : InputMethodService() {
             val newHeightPercent = prefs.getInt("pref_keyboard_height_percent", 30)
             keyboardView.heightPercentage = newHeightPercent
 
-            val formFactorStr = prefs.getString("pref_form_factor_mode", "FULL_WIDTH_DOCKED") ?: "FULL_WIDTH_DOCKED"
-            keyboardState.formFactorMode = when (formFactorStr) {
+            val formFactorStr = prefs.getString("pref_form_factor", null)
+                ?: prefs.getString("pref_form_factor_mode", "FULL_WIDTH_DOCKED")
+                ?: "FULL_WIDTH_DOCKED"
+
+            val targetFormFactor = when (formFactorStr) {
                 "LEFT_DOCKED", "SIDE_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED
                 "RIGHT_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED
                 "FLOATING" -> com.programmerkeyboard.model.FormFactorMode.FLOATING
                 "SPLIT" -> com.programmerkeyboard.model.FormFactorMode.SPLIT
                 else -> com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED
             }
+            keyboardState.formFactorMode = targetFormFactor
 
             val currentLayout = keyboardView.layoutDefinition
             if (currentLayout != null) {
