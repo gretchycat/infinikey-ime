@@ -198,6 +198,7 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     private fun handleKeyAction(action: KeyAction) {
         val inputConnection = currentInputConnection ?: return
+        val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
 
         when (action) {
             is KeyAction.SendText -> {
@@ -264,8 +265,28 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
             }
             is KeyAction.SwitchLayout -> {
-                val layoutFile = if (action.target.endsWith(".json")) action.target else "${action.target}.json"
-                keyboardView.layoutDefinition = LayoutParser.loadLayoutFromAsset(this, layoutFile)
+                val lastPrimary = prefs.getString("pref_last_primary_layout_target", "mobile") ?: "mobile"
+                val target = if (action.target == "previous" || action.target == "back") {
+                    lastPrimary
+                } else {
+                    action.target
+                }
+
+                if (!target.equals("mobile_symbol", ignoreCase = true) &&
+                    !target.equals("mobile_number", ignoreCase = true) &&
+                    !target.equals("meta", ignoreCase = true)) {
+                    prefs.edit().putString("pref_last_primary_layout_target", target).apply()
+                }
+
+                val layoutFile = if (target.endsWith(".json")) target else "${target}.json"
+                val customLayoutJson = prefs.getString("pref_custom_layout_json_$target", null)
+                    ?: if (target == "main") prefs.getString("pref_custom_layout_json", null) else null
+                val rawLayout = if (!customLayoutJson.isNullOrEmpty()) {
+                    try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile) }
+                } else {
+                    LayoutParser.loadLayoutFromAsset(this, layoutFile)
+                }
+                keyboardView.layoutDefinition = LayoutParser.applyThemeOverrides(this, rawLayout)
             }
             is KeyAction.ToggleModifier -> {
                 toggleModifierState(action.modifier)
@@ -303,6 +324,13 @@ class ProgrammerInputMethodService : InputMethodService() {
                         startActivity(intent)
                     }
                     "EMOJI_PICKER", "EMOJI", "EMOJI_KEYBOARD" -> {
+                        val currentTarget = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: "mobile"
+                        if (!currentTarget.equals("mobile_symbol", ignoreCase = true) &&
+                            !currentTarget.equals("mobile_number", ignoreCase = true) &&
+                            !currentTarget.equals("meta", ignoreCase = true)) {
+                            prefs.edit().putString("pref_last_primary_layout_target", currentTarget).apply()
+                        }
+
                         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
                         val token = window?.window?.attributes?.token
                         var switchedToEmojiIme = false
@@ -321,6 +349,8 @@ class ProgrammerInputMethodService : InputMethodService() {
                             }
                             if (emojiIme != null) {
                                 try {
+                                    val lastPrimary = prefs.getString("pref_last_primary_layout_target", "mobile") ?: "mobile"
+                                    prefs.edit().putString("pref_keyboard_layout_target", lastPrimary).apply()
                                     imm.setInputMethod(token, emojiIme.id)
                                     switchedToEmojiIme = true
                                 } catch (_: Exception) {}
