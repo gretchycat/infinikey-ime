@@ -336,6 +336,12 @@ object LayoutParser {
             ?: metadataObj?.get("enableKeyPreview")?.asBoolean
             ?: true
         val maxFontSize = parseDimensionValue(metadataObj?.get("maxFontSize"))
+        val scrollDir = metadataObj?.get("scrollDirection")?.asString
+            ?: metadataObj?.get("scroll")?.asString
+        val maxRows = metadataObj?.get("maxVisibleRows")?.asInt
+            ?: metadataObj?.get("scrollRows")?.asInt
+        val maxCols = metadataObj?.get("maxVisibleColumns")?.asInt
+            ?: metadataObj?.get("scrollColumns")?.asInt
 
         val metadata = LayoutMetadata(
             horizontalSpacing = hSpacing,
@@ -346,7 +352,10 @@ object LayoutParser {
             autoRepeatIntervalMs = autoRepeatMs,
             splitClusterRatio = splitClusterRatio,
             showKeyPreview = showKeyPreview,
-            maxFontSize = maxFontSize
+            maxFontSize = maxFontSize,
+            scrollDirection = scrollDir,
+            maxVisibleRows = maxRows,
+            maxVisibleColumns = maxCols
         )
 
         // Theme

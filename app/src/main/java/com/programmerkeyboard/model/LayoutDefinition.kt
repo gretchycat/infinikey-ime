@@ -12,7 +12,10 @@ data class LayoutMetadata(
     val autoRepeatIntervalMs: Long = 50L,
     val splitClusterRatio: Float? = null,
     val showKeyPreview: Boolean = true,
-    val maxFontSize: DimensionValue? = null
+    val maxFontSize: DimensionValue? = null,
+    val scrollDirection: String? = null,
+    val maxVisibleRows: Int? = null,
+    val maxVisibleColumns: Int? = null
 )
 
 /**

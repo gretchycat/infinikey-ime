@@ -41,7 +41,7 @@ object EmojiLayoutGenerator {
         val chunkSize = 8
         var rowIdCounter = 1
 
-        supportedEmojis.chunked(chunkSize).take(4).forEach { chunk ->
+        supportedEmojis.chunked(chunkSize).forEach { chunk ->
             val keysList = chunk.map { emoji ->
                 KeyDefinition(
                     primaryLabel = emoji,
@@ -52,7 +52,7 @@ object EmojiLayoutGenerator {
             rowsList.add(KeyRow(id = rowIdCounter++, keys = keysList))
         }
 
-        // Category Switcher Bar (Row 5)
+        // Category Switcher Bar
         val catRowKeys = mutableListOf<KeyDefinition>()
         masterCategories.forEachIndexed { idx, pair ->
             catRowKeys.add(KeyDefinition(
@@ -95,6 +95,10 @@ object EmojiLayoutGenerator {
             name = "Device Emojis ($catIcon)",
             version = "1.0",
             author = "Gretchen Maculo",
+            metadata = LayoutMetadata(
+                scrollDirection = "VERTICAL",
+                maxVisibleRows = 4
+            ),
             rows = rowsList
         )
     }
