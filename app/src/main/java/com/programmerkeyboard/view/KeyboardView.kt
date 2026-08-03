@@ -404,18 +404,12 @@ class KeyboardView @JvmOverloads constructor(
         rowGearBoundsList.clear()
 
         val formFactor = keyboardState.formFactorMode
-        val aspectRatio = getKeyboardAspectRatio()
-        val idealWidth = h * aspectRatio
-        val dockedWidth = (w * 0.70f).coerceIn(160f * density, maxOf(160f * density, w * 0.75f))
-        val dockedRowHeight = rowHeight * (dockedWidth / w)
+        val widthRatio = getKeyboardAspectRatio()
+        val ratioWidth = (widthRatio * h).coerceIn(120f * density, w)
 
         val targetWidth = when (formFactor) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> w
-            com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> dockedWidth
-            com.programmerkeyboard.model.FormFactorMode.FLOATING -> dockedWidth
-            com.programmerkeyboard.model.FormFactorMode.SPLIT -> minOf(w, idealWidth)
+            else -> ratioWidth
         }
         val activeWidth = targetWidth
 
@@ -435,25 +429,24 @@ class KeyboardView @JvmOverloads constructor(
 
                 val (startX, keysStartY, floatRowHeight) = when (formFactor) {
                     com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> {
-                        val sx = (w - targetWidth) / 2f
-                        Triple(sx, vSpacingPx, rowHeight)
+                        Triple(0f, vSpacingPx, rowHeight)
                     }
                     com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
                     com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED -> {
-                        Triple(0f, vSpacingPx, dockedRowHeight)
+                        Triple(0f, vSpacingPx, rowHeight)
                     }
                     com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> {
-                        Triple(w - targetWidth, vSpacingPx, dockedRowHeight)
+                        Triple(w - targetWidth, vSpacingPx, rowHeight)
                     }
                     com.programmerkeyboard.model.FormFactorMode.FLOATING -> {
                         val baseStartX = (w - activeWidth) / 2f
                         val sx = (baseStartX + floatingOffsetX).coerceIn(4f, maxOf(4f, w - activeWidth - 4f))
                         val topHandlePadding = 26f * density
-                        val totalKeysHeight = (dockedRowHeight + vSpacingPx) * currentRows.size
+                        val totalKeysHeight = (rowHeight + vSpacingPx) * currentRows.size
                         val baseStartY = (h - totalKeysHeight) / 2f
                         val cardTop = (baseStartY + floatingOffsetY).coerceIn(4f, maxOf(4f, h - totalKeysHeight - topHandlePadding - 4f))
                         val sy = cardTop + topHandlePadding
-                        Triple(sx, sy, dockedRowHeight)
+                        Triple(sx, sy, rowHeight)
                     }
                     else -> Triple(0f, vSpacingPx, rowHeight)
                 }
@@ -481,10 +474,6 @@ class KeyboardView @JvmOverloads constructor(
                         }
                     } else if (formFactor == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
                         keysStartY + rowIndex * (floatRowHeight + vSpacingPx)
-                    } else if (formFactor == com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED ||
-                               formFactor == com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED ||
-                               formFactor == com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED) {
-                        vSpacingPx + rowIndex * (dockedRowHeight + vSpacingPx)
                     } else {
                         vSpacingPx + rowIndex * (rowHeight + vSpacingPx)
                     }
