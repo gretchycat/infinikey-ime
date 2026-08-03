@@ -1564,6 +1564,10 @@ class KeyboardView @JvmOverloads constructor(
                         initialPointersDistance = currentDist
                         initialPointersCenterX = centerX
                         initialPointersCenterY = centerY
+                    } else if (deltaY < -80f) {
+                        setFormFactorMode(com.programmerkeyboard.model.FormFactorMode.FLOATING)
+                        initialPointersCenterY = centerY
+                        initialPointersCenterX = centerX
                     } else if (deltaY > 80f) {
                         setFormFactorMode(com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED)
                         initialPointersCenterY = centerY
