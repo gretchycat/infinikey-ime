@@ -1,0 +1,10 @@
+InfiniKey IME is an open-source, extensible Android input method designed for developers, terminal power users, and custom layout enthusiasts.
+
+Features:
+• Fully customizable JSON layout descriptors (Main, Function, Mobile Alphabetic, Code Symbol, Emoji).
+• Authentic Mechvibes mechanical keyboard audio switch sound packs (Cherry MX Blue/Brown/Red/Black, NovelKeys Cream, IBM Model M Buckling Spring).
+• Vector keycap icon rendering (TTS, Microphone, UTF-8 Glyphs).
+• Docked, Split, Left-Handed, and Right-Handed form factor modes.
+• Embedded Voice-to-Text and TTS speech integration.
+• Advanced key preview overlays, long-press options, auto-repeat customization, and trackpad cursor navigation.
+• 100% offline and privacy-first with zero analytics or internet tracking.
