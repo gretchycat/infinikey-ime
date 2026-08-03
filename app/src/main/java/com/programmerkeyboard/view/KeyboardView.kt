@@ -746,15 +746,30 @@ class KeyboardView @JvmOverloads constructor(
                 val cardRect = RectF(startX + 4f, cardTop, startX + activeWidth - 4f, cardBottom)
                 canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBgPaint)
 
-                val handleWidth = 40f * density
+                // Prominent Grab Handle Pill & Grip Header
+                val handleWidth = 64f * density
+                val handleHeight = 6f * density
                 val handleX = cardRect.centerX() - handleWidth / 2f
                 val handleY = cardRect.top + 8f * density
+
                 val handlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = android.graphics.Color.parseColor("#475569")
+                    color = android.graphics.Color.parseColor("#38BDF8")
                     style = Paint.Style.FILL
                 }
-                val handleRect = RectF(handleX, handleY, handleX + handleWidth, handleY + 4f * density)
-                canvas.drawRoundRect(handleRect, 2f * density, 2f * density, handlePaint)
+                val handleRect = RectF(handleX, handleY, handleX + handleWidth, handleY + handleHeight)
+                canvas.drawRoundRect(handleRect, 3f * density, 3f * density, handlePaint)
+
+                val gripPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = android.graphics.Color.parseColor("#0284C7")
+                    style = Paint.Style.FILL
+                }
+                val gripRadius = 1.5f * density
+                val gripSpacing = 8f * density
+                val cX = handleRect.centerX()
+                val cY = handleRect.centerY()
+                canvas.drawCircle(cX - gripSpacing, cY, gripRadius, gripPaint)
+                canvas.drawCircle(cX, cY, gripRadius, gripPaint)
+                canvas.drawCircle(cX + gripSpacing, cY, gripRadius, gripPaint)
             }
             else -> {
                 // Draw full unsplit background box across the entire keyboard area
@@ -1528,6 +1543,30 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isDraggingFloatingWindow) {
+            when (event.action) {
+                MotionEvent.ACTION_MOVE -> {
+                    val dx = event.rawX - dragStartX
+                    val dy = event.rawY - dragStartY
+                    floatingOffsetX = initialFloatingOffsetX + dx
+                    floatingOffsetY = initialFloatingOffsetY + dy
+                    recalculateKeyBounds()
+                    invalidate()
+                    onFloatingBoundsChangedListener?.invoke()
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    isDraggingFloatingWindow = false
+                    val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+                    prefs.edit()
+                        .putFloat("pref_floating_offset_x", floatingOffsetX)
+                        .putFloat("pref_floating_offset_y", floatingOffsetY)
+                        .apply()
+                    onFloatingBoundsChangedListener?.invoke()
+                }
+            }
+            return true
+        }
+
         // Multi-touch two-finger surface gesture
         if (event.pointerCount > 1) {
             if (isTrackpadActive || isSpacebarTrackpad) {
