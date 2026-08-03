@@ -57,9 +57,11 @@ class SettingsActivity : AppCompatActivity() {
         val panelThemes = findViewById<View>(R.id.panelThemes)
 
         val cardThemeImportExport = findViewById<View>(R.id.cardThemeImportExport)
+        val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
         if (!com.programmerkeyboard.BuildConfig.DEBUG) {
             cardThemeImportExport?.visibility = View.GONE
+            btnGrantOverlayPermission?.visibility = View.GONE
             if (tabLayout.tabCount > 5) {
                 tabLayout.removeTabAt(5)
             }
@@ -83,7 +85,6 @@ class SettingsActivity : AppCompatActivity() {
         val btnEnableIme = findViewById<Button>(R.id.btnEnableIme)
         val btnSelectIme = findViewById<Button>(R.id.btnSelectIme)
         val btnGrantMicPermission = findViewById<Button>(R.id.btnGrantMicPermission)
-        val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
         btnEnableIme?.setOnClickListener {
             startActivity(Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS))
@@ -268,13 +269,15 @@ class SettingsActivity : AppCompatActivity() {
 
         // 4. Form Factor Spinner (Docked, Split, Left-Docked, Right-Docked)
         val spFormFactor = findViewById<Spinner>(R.id.spFormFactor)
-        val formFactorOptions = listOf(
+        val formFactorOptions = mutableListOf(
             getString(R.string.setting_docked),
             getString(R.string.setting_split),
             getString(R.string.setting_left_docked),
-            getString(R.string.setting_right_docked),
-            "Floating Window Mode"
+            getString(R.string.setting_right_docked)
         )
+        if (com.programmerkeyboard.BuildConfig.DEBUG) {
+            formFactorOptions.add("Floating Window Mode [Debug]")
+        }
         val formFactorAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, formFactorOptions)
         spFormFactor.adapter = formFactorAdapter
 
@@ -283,7 +286,7 @@ class SettingsActivity : AppCompatActivity() {
             "SPLIT" -> 1
             "LEFT_DOCKED", "SIDE_DOCKED" -> 2
             "RIGHT_DOCKED" -> 3
-            "FLOATING" -> 4
+            "FLOATING" -> if (com.programmerkeyboard.BuildConfig.DEBUG) 4 else 0
             else -> 0
         }
         spFormFactor.setSelection(initialFormIdx)
@@ -294,7 +297,7 @@ class SettingsActivity : AppCompatActivity() {
                     1 -> "SPLIT"
                     2 -> "LEFT_DOCKED"
                     3 -> "RIGHT_DOCKED"
-                    4 -> "FLOATING"
+                    4 -> if (com.programmerkeyboard.BuildConfig.DEBUG) "FLOATING" else "FULL_WIDTH_DOCKED"
                     else -> "FULL_WIDTH_DOCKED"
                 }
 
