@@ -224,6 +224,17 @@ class KeyboardView @JvmOverloads constructor(
 
     fun getFloatingCardBounds(): RectF? {
         if (keyboardState.formFactorMode != com.programmerkeyboard.model.FormFactorMode.FLOATING) return null
+        if (keyBoundsList.isNotEmpty()) {
+            val minLeft = keyBoundsList.minOf { it.rect.left }
+            val maxRight = keyBoundsList.maxOf { it.rect.right }
+            val minTop = keyBoundsList.minOf { it.rect.top }
+            val maxBottom = keyBoundsList.maxOf { it.rect.bottom }
+            val d = resources.displayMetrics.density
+            val topHandleH = 26f * d
+            val pad = 8f * d
+            return RectF(minLeft - pad, minTop - topHandleH, maxRight + pad, maxBottom + pad)
+        }
+
         val w = width.toFloat()
         val h = height.toFloat()
         if (w <= 0 || h <= 0) return null
@@ -726,6 +737,12 @@ class KeyboardView @JvmOverloads constructor(
         val density = context.resources.displayMetrics.density
         val aspectRatio = getKeyboardAspectRatio()
         val activeWidth = (w * (aspectRatio / 2.0f)).coerceIn(150f, w)
+        if (keyBoundsList.isEmpty()) {
+            recalculateKeyBounds()
+        }
+
+        if (keyBoundsList.isEmpty()) return
+
         val themeBg = layoutDefinition?.theme?.backgroundColor
         val bgColor = themeBg ?: ContextCompat.getColor(context, R.color.keyboard_background)
 
@@ -736,52 +753,41 @@ class KeyboardView @JvmOverloads constructor(
 
         when (keyboardState.formFactorMode) {
             com.programmerkeyboard.model.FormFactorMode.FLOATING -> {
-                val baseStartX = (w - activeWidth) / 2f
-                val startX = (baseStartX + floatingOffsetX).coerceIn(4f, maxOf(4f, w - activeWidth - 4f))
-                val floatCardHeight = (activeWidth / aspectRatio).coerceIn(120f * density, h * 0.70f)
-                val baseStartY = (h - floatCardHeight) / 2f
-                val cardTop = (baseStartY + floatingOffsetY).coerceIn(4f, maxOf(4f, h - floatCardHeight - 4f))
-                val cardBottom = cardTop + floatCardHeight
+                val cardRect = getFloatingCardBounds()
+                if (cardRect != null) {
+                    canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBgPaint)
 
-                val cardRect = RectF(startX + 4f, cardTop, startX + activeWidth - 4f, cardBottom)
-                canvas.drawRoundRect(cardRect, 20f * density, 20f * density, cardBgPaint)
+                    // Prominent Grab Handle Pill & Grip Header
+                    val handleWidth = 64f * density
+                    val handleHeight = 6f * density
+                    val handleX = cardRect.centerX() - handleWidth / 2f
+                    val handleY = cardRect.top + 8f * density
 
-                // Prominent Grab Handle Pill & Grip Header
-                val handleWidth = 64f * density
-                val handleHeight = 6f * density
-                val handleX = cardRect.centerX() - handleWidth / 2f
-                val handleY = cardRect.top + 8f * density
+                    val handlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.parseColor("#38BDF8")
+                        style = Paint.Style.FILL
+                    }
+                    val handleRect = RectF(handleX, handleY, handleX + handleWidth, handleY + handleHeight)
+                    canvas.drawRoundRect(handleRect, 3f * density, 3f * density, handlePaint)
 
-                val handlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = android.graphics.Color.parseColor("#38BDF8")
-                    style = Paint.Style.FILL
+                    val gripPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.parseColor("#0284C7")
+                        style = Paint.Style.FILL
+                    }
+                    val gripRadius = 1.5f * density
+                    val gripSpacing = 8f * density
+                    val cX = handleRect.centerX()
+                    val cY = handleRect.centerY()
+                    canvas.drawCircle(cX - gripSpacing, cY, gripRadius, gripPaint)
+                    canvas.drawCircle(cX, cY, gripRadius, gripPaint)
+                    canvas.drawCircle(cX + gripSpacing, cY, gripRadius, gripPaint)
                 }
-                val handleRect = RectF(handleX, handleY, handleX + handleWidth, handleY + handleHeight)
-                canvas.drawRoundRect(handleRect, 3f * density, 3f * density, handlePaint)
-
-                val gripPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = android.graphics.Color.parseColor("#0284C7")
-                    style = Paint.Style.FILL
-                }
-                val gripRadius = 1.5f * density
-                val gripSpacing = 8f * density
-                val cX = handleRect.centerX()
-                val cY = handleRect.centerY()
-                canvas.drawCircle(cX - gripSpacing, cY, gripRadius, gripPaint)
-                canvas.drawCircle(cX, cY, gripRadius, gripPaint)
-                canvas.drawCircle(cX + gripSpacing, cY, gripRadius, gripPaint)
             }
             else -> {
                 // Draw full unsplit background box across the entire keyboard area
                 canvas.drawRect(0f, 0f, w, h, cardBgPaint)
             }
         }
-
-        if (keyBoundsList.isEmpty()) {
-            recalculateKeyBounds()
-        }
-
-        if (keyBoundsList.isEmpty()) return
 
         val currentRows = (layoutDefinition?.rows ?: emptyList()).filter { isRowVisible(it) }
         val rowCount = if (currentRows.isNotEmpty()) currentRows.size else 5
