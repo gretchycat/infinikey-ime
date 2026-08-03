@@ -158,10 +158,42 @@ class ProgrammerInputMethodService : InputMethodService() {
                 keyboardView.requestLayout()
                 keyboardView.invalidate()
             }
+            onFloatingBoundsChangedListener = {
+                window?.window?.decorView?.post {
+                    requestApplyInsets()
+                }
+            }
         }
 
         rootLayout.addView(keyboardView)
         return rootLayout
+    }
+
+    override fun onComputeInsets(outInsets: android.inputmethodservice.InputMethodService.Insets) {
+        super.onComputeInsets(outInsets)
+        if (::keyboardView.isInitialized) {
+            val formFactor = keyboardView.keyboardState.formFactorMode
+            if (formFactor == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
+                val decorView = window?.window?.decorView ?: return
+                val h = decorView.height
+                if (h > 0) {
+                    outInsets.contentTopInsets = h
+                    outInsets.visibleTopInsets = h
+
+                    val floatCard = keyboardView.getFloatingCardBounds()
+                    if (floatCard != null && !floatCard.isEmpty) {
+                        outInsets.touchableInsets = android.inputmethodservice.InputMethodService.Insets.TOUCHABLE_INSETS_REGION
+                        val rect = android.graphics.Rect(
+                            floatCard.left.toInt().coerceAtLeast(0),
+                            floatCard.top.toInt().coerceAtLeast(0),
+                            floatCard.right.toInt().coerceAtMost(decorView.width),
+                            floatCard.bottom.toInt().coerceAtMost(h)
+                        )
+                        outInsets.touchableRegion.set(rect)
+                    }
+                }
+            }
+        }
     }
 
     private fun isTerminalApp(editorInfo: android.view.inputmethod.EditorInfo?): Boolean {

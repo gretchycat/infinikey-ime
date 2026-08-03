@@ -214,8 +214,32 @@ class KeyboardView @JvmOverloads constructor(
     private var initialFloatingOffsetX = 0f
     private var initialFloatingOffsetY = 0f
 
-    private fun isInTrackpadZone(x: Float, y: Float): Boolean {
-        return false
+    var onFloatingBoundsChangedListener: (() -> Unit)? = null
+
+    init {
+        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        floatingOffsetX = prefs.getFloat("pref_floating_offset_x", 0f)
+        floatingOffsetY = prefs.getFloat("pref_floating_offset_y", 0f)
+    }
+
+    fun getFloatingCardBounds(): RectF? {
+        if (keyboardState.formFactorMode != com.programmerkeyboard.model.FormFactorMode.FLOATING) return null
+        val w = width.toFloat()
+        val h = height.toFloat()
+        if (w <= 0 || h <= 0) return null
+
+        val d = resources.displayMetrics.density
+        val aspectRatio = getKeyboardAspectRatio()
+        val idealWidth = h * aspectRatio
+        val activeWidth = minOf(w, idealWidth)
+        val baseStartX = (w - activeWidth) / 2f
+        val startX = (baseStartX + floatingOffsetX).coerceIn(4f, maxOf(4f, w - activeWidth - 4f))
+        val floatCardHeight = (activeWidth / aspectRatio).coerceIn(120f * d, h * 0.70f)
+        val baseStartY = (h - floatCardHeight) / 2f
+        val cardTop = (baseStartY + floatingOffsetY).coerceIn(4f, maxOf(4f, h - floatCardHeight - 4f))
+        val cardBottom = cardTop + floatCardHeight
+
+        return RectF(startX + 4f, cardTop, startX + activeWidth - 4f, cardBottom)
     }
 
     var onFormFactorModeChangeListener: ((com.programmerkeyboard.model.FormFactorMode) -> Unit)? = null
@@ -1591,6 +1615,24 @@ class KeyboardView @JvmOverloads constructor(
                 isScrollDragging = false
                 lastScrollTouchY = event.y
 
+                if (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
+                    val cardBounds = getFloatingCardBounds()
+                    if (cardBounds != null) {
+                        val d = resources.displayMetrics.density
+                        val topHandleZone = RectF(cardBounds.left, cardBounds.top, cardBounds.right, cardBounds.top + 36f * d)
+                        val hitKey = findHitKeyBounds(event.x, event.y)
+                        if (topHandleZone.contains(event.x, event.y) || (hitKey == null && cardBounds.contains(event.x, event.y))) {
+                            isDraggingFloatingWindow = true
+                            dragStartX = event.rawX
+                            dragStartY = event.rawY
+                            initialFloatingOffsetX = floatingOffsetX
+                            initialFloatingOffsetY = floatingOffsetY
+                            performKeypressHapticFeedback()
+                            return true
+                        }
+                    }
+                }
+
                 if (isEditorPreviewMode) {
                     val hitGear = rowGearBoundsList.firstOrNull { it.rect.contains(event.x, event.y) }
                     if (hitGear != null) {
@@ -1599,21 +1641,6 @@ class KeyboardView @JvmOverloads constructor(
                     }
                 }
                 
-                if (isInTrackpadZone(event.x, event.y)) {
-                    isTrackpadActive = true
-                    isSpacebarTrackpad = false
-                    pressedKeyBounds = null
-                    trackpadLastX = event.x
-                    trackpadLastY = event.y
-                    trackpadTouchX = event.x
-                    trackpadTouchY = event.y
-                    trackpadAccumulatedDx = 0f
-                    trackpadAccumulatedDy = 0f
-                    performKeypressHapticFeedback()
-                    invalidate()
-                    return true
-                }
-
                 pressedKeyBounds = findHitKeyBounds(event.x, event.y)
                 if (pressedKeyBounds != null) {
                     performKeypressHapticFeedback()
@@ -1625,6 +1652,17 @@ class KeyboardView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
+                if (isDraggingFloatingWindow) {
+                    val dx = event.rawX - dragStartX
+                    val dy = event.rawY - dragStartY
+                    floatingOffsetX = initialFloatingOffsetX + dx
+                    floatingOffsetY = initialFloatingOffsetY + dy
+                    recalculateKeyBounds()
+                    invalidate()
+                    onFloatingBoundsChangedListener?.invoke()
+                    return true
+                }
+
                 if (maxScrollOffsetY > 0f) {
                     val density = context.resources.displayMetrics.density
                     val h = height.toFloat()
@@ -1670,6 +1708,16 @@ class KeyboardView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (isDraggingFloatingWindow) {
+                    isDraggingFloatingWindow = false
+                    val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+                    prefs.edit()
+                        .putFloat("pref_floating_offset_x", floatingOffsetX)
+                        .putFloat("pref_floating_offset_y", floatingOffsetY)
+                        .apply()
+                    onFloatingBoundsChangedListener?.invoke()
+                    return true
+                }
                 if (isScrollDragging) {
                     isScrollDragging = false
                     pressedKeyBounds = null
