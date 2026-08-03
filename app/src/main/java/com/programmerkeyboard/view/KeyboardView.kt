@@ -406,13 +406,16 @@ class KeyboardView @JvmOverloads constructor(
         val formFactor = keyboardState.formFactorMode
         val aspectRatio = getKeyboardAspectRatio()
         val idealWidth = h * aspectRatio
+        val dockedWidth = (w * 0.70f).coerceIn(160f * density, maxOf(160f * density, w * 0.75f))
+        val dockedRowHeight = rowHeight * (dockedWidth / w)
+
         val targetWidth = when (formFactor) {
             com.programmerkeyboard.model.FormFactorMode.FULL_WIDTH_DOCKED -> w
             com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
             com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED,
-            com.programmerkeyboard.model.FormFactorMode.SPLIT,
-            com.programmerkeyboard.model.FormFactorMode.FLOATING -> minOf(w, idealWidth)
+            com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> dockedWidth
+            com.programmerkeyboard.model.FormFactorMode.FLOATING -> dockedWidth
+            com.programmerkeyboard.model.FormFactorMode.SPLIT -> minOf(w, idealWidth)
         }
         val activeWidth = targetWidth
 
@@ -435,20 +438,22 @@ class KeyboardView @JvmOverloads constructor(
                         val sx = (w - targetWidth) / 2f
                         Triple(sx, vSpacingPx, rowHeight)
                     }
+                    com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED,
+                    com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED -> {
+                        Triple(0f, vSpacingPx, dockedRowHeight)
+                    }
                     com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED -> {
-                        Triple(w - targetWidth, vSpacingPx, rowHeight)
+                        Triple(w - targetWidth, vSpacingPx, dockedRowHeight)
                     }
                     com.programmerkeyboard.model.FormFactorMode.FLOATING -> {
                         val baseStartX = (w - activeWidth) / 2f
                         val sx = (baseStartX + floatingOffsetX).coerceIn(4f, maxOf(4f, w - activeWidth - 4f))
-                        val topHandlePadding = 20f * density
-                        val floatCardHeight = (activeWidth / aspectRatio).coerceIn(120f * density, h * 0.70f)
-                        val baseStartY = (h - floatCardHeight) / 2f
-                        val cardTop = (baseStartY + floatingOffsetY).coerceIn(4f, maxOf(4f, h - floatCardHeight - 4f))
+                        val topHandlePadding = 26f * density
+                        val totalKeysHeight = (dockedRowHeight + vSpacingPx) * currentRows.size
+                        val baseStartY = (h - totalKeysHeight) / 2f
+                        val cardTop = (baseStartY + floatingOffsetY).coerceIn(4f, maxOf(4f, h - totalKeysHeight - topHandlePadding - 4f))
                         val sy = cardTop + topHandlePadding
-                        val floatAvailableHeight = floatCardHeight - topHandlePadding - 12f * density
-                        val rh = maxOf(10f, floatAvailableHeight / currentRows.size)
-                        Triple(sx, sy, rh)
+                        Triple(sx, sy, dockedRowHeight)
                     }
                     else -> Triple(0f, vSpacingPx, rowHeight)
                 }
@@ -476,6 +481,10 @@ class KeyboardView @JvmOverloads constructor(
                         }
                     } else if (formFactor == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
                         keysStartY + rowIndex * (floatRowHeight + vSpacingPx)
+                    } else if (formFactor == com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED ||
+                               formFactor == com.programmerkeyboard.model.FormFactorMode.SIDE_DOCKED ||
+                               formFactor == com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED) {
+                        vSpacingPx + rowIndex * (dockedRowHeight + vSpacingPx)
                     } else {
                         vSpacingPx + rowIndex * (rowHeight + vSpacingPx)
                     }
