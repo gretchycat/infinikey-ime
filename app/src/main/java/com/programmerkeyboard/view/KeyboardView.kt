@@ -164,6 +164,8 @@ class KeyboardView @JvmOverloads constructor(
 
     private val keyBoundsList = mutableListOf<KeyBounds>()
     private var pressedKeyBounds: KeyBounds? = null
+    private var lastKeyTapTimeMs: Long = 0L
+    private var lastKeyTapLabel: String = ""
 
     // Long press and popup overlay handlers
     private val handler = Handler(Looper.getMainLooper())
@@ -2034,6 +2036,17 @@ class KeyboardView @JvmOverloads constructor(
                 
                 pressedKeyBounds = findHitKeyBounds(event.x, event.y)
                 if (pressedKeyBounds != null) {
+                    val targetKeyLabel = pressedKeyBounds!!.key.primaryLabel
+                    val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+                    val debounceMs = prefs.getInt("pref_key_debounce_ms", 35)
+                    val now = System.currentTimeMillis()
+                    if (debounceMs > 0 && targetKeyLabel == lastKeyTapLabel && (now - lastKeyTapTimeMs) < debounceMs) {
+                        // Debounce duplicate rapid touch bounce!
+                        return true
+                    }
+                    lastKeyTapTimeMs = now
+                    lastKeyTapLabel = targetKeyLabel
+
                     performKeypressHapticFeedback()
                     playKeyClickSound()
                     showKeyPreview(pressedKeyBounds!!.key, pressedKeyBounds!!.rect)

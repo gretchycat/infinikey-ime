@@ -193,6 +193,30 @@ class SettingsActivity : AppCompatActivity() {
             }
         })
 
+        // 2b. Key Tap Debounce Filter Spinner (Disabled, 15ms, 25ms, 35ms Default, 50ms, 70ms)
+        val spKeyDebounce = findViewById<Spinner>(R.id.spKeyDebounce)
+        val debounceOptions = arrayOf("Disabled (0ms)", "15 ms", "25 ms", "35 ms (Default)", "50 ms", "70 ms")
+        val debounceValues = intArrayOf(0, 15, 25, 35, 50, 70)
+
+        val debounceAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, debounceOptions).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spKeyDebounce?.adapter = debounceAdapter
+
+        val savedDebounceMs = prefs.getInt("pref_key_debounce_ms", 35)
+        val selectedDebounceIdx = debounceValues.indexOf(savedDebounceMs).let { if (it >= 0) it else 2 }
+        spKeyDebounce?.setSelection(selectedDebounceIdx)
+
+        spKeyDebounce?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (position in debounceValues.indices) {
+                    val ms = debounceValues[position]
+                    prefs.edit().putInt("pref_key_debounce_ms", ms).apply()
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
         // 3. Auto-Repeat Interval Slider + Editable Text Input (20 ms - 200 ms)
         val sbAutoRepeat = findViewById<SeekBar>(R.id.sbAutoRepeat)
         val etAutoRepeatValue = findViewById<EditText>(R.id.etAutoRepeatValue)

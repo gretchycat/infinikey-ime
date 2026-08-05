@@ -123,9 +123,20 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
     }
 
+    private var lastClipChangeTimeMs: Long = 0L
+    private var lastClipText: String = ""
+
     private fun addClipboardHistoryItem(text: String) {
         val clean = text.trim()
         if (clean.isEmpty()) return
+
+        val now = System.currentTimeMillis()
+        if (now - lastClipChangeTimeMs < 300L && clean == lastClipText) {
+            return
+        }
+        lastClipChangeTimeMs = now
+        lastClipText = clean
+
         clipboardHistoryList.remove(clean)
         clipboardHistoryList.add(0, clean)
         while (clipboardHistoryList.size > 30) {

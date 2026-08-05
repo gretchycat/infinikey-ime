@@ -936,6 +936,41 @@
                         android:thumbTint="@color/key_text_accent"
                         android:layout_marginBottom="16dp" />
 
+                    <!-- Key Debounce Filter Setting -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Key Tap Debounce Filter:"
+                            android:textColor="@color/key_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <Spinner
+                            android:id="@+id/spKeyDebounce"
+                            android:layout_width="150dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_spinner_card"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ignores accidental rapid duplicate key bounces on sensitive screens."
+                        android:textColor="@color/settings_text_sub"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="16dp" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
