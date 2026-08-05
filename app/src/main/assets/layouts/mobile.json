@@ -57,7 +57,7 @@
       "id": 3,
       "splitIndex": 5,
       "keys": [
-        { "label": "⇧", "style": "modifierKey", "weight": 1.25, "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
+        { "label": "⇧", "style": "modifierKey", "weight": 1.25, "flexible": true, "maxWeight": 1.5, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
         { "label": "z", "alternates": ["_"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "z" } },
         { "label": "x", "alternates": ["="], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "x" } },
         { "label": "c", "alternates": ["ç", "¢", "©", "χ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "c" } },
@@ -65,7 +65,7 @@
         { "label": "b", "alternates": [">"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "b" } },
         { "label": "n", "alternates": ["ñ", "ν"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "n" } },
         { "label": "m", "alternates": ["µ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "m" } },
-        { "label": "⌫", "style": "actionKey", "weight": 1.25, "flexible": true, "onPress": { "type": "SEND_CODE", "code": 67 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 } }
+        { "label": "⌫", "style": "actionKey", "weight": 1.25, "flexible": true, "maxWeight": 1.5, "onPress": { "type": "SEND_CODE", "code": 67 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 } }
       ]
     },
     {
@@ -73,11 +73,11 @@
       "splitIndex": 4,
       "splitKey": true,
       "keys": [
+        { "label": "?123", "style": "modifierKey", "weight": 1.25, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile_number" } },
         { "label": "⌨", "icon": "keyboard", "style": "functionKey", "onPress": { "type": "SWITCH_LAYOUT", "target": "main" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
         { "label": "📋", "icon": "clipboard", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SHOW_POPUP", "options": ["Select All", "Copy", "Cut", "Paste"] }, "onLongPress": { "type": "SHOW_POPUP", "options": ["Select All", "Copy", "Cut", "Paste"] } },
-        { "label": "?123", "style": "modifierKey", "weight": 1.25, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile_number" } },
         { "label": "🎙", "icon": "mic", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT_CONTINUOUS" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
-        { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "NONE" } },
+        { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 2.0, "splitRightWeight": 2.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "NONE" } },
         { "label": ".", "alternates": [",", "!", "?", ":", ";", "-"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "." } },
         { "label": "😀", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "emoji_auto" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "EMOJI_PICKER" } },
         { "label": "↵", "style": "actionKey", "weight": 1.25, "onPress": { "type": "SEND_CODE", "code": 66 } }

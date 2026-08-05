@@ -510,7 +510,8 @@ class KeyboardView @JvmOverloads constructor(
                         currentX += keyOffsetPx
 
                         val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
-                        val effectiveWeight = baseW + (if (key.isFlexible) flexBonus else 0f)
+                        val rawWeight = baseW + (if (key.isFlexible) flexBonus else 0f)
+                        val effectiveWeight = key.maxWeight?.let { rawWeight.coerceAtMost(it) } ?: rawWeight
 
                         val keyWidth = when (key.widthWeight) {
                             is DimensionValue.Ratio -> (globalBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
@@ -633,7 +634,8 @@ class KeyboardView @JvmOverloads constructor(
                         currentX += keyOffsetPx
 
                         val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
-                        val effectiveWeight = baseW + (if (key.isFlexible) leftFlexBonus else 0f)
+                        val rawWeight = baseW + (if (key.isFlexible) leftFlexBonus else 0f)
+                        val effectiveWeight = key.maxWeight?.let { rawWeight.coerceAtMost(it) } ?: rawWeight
 
                         val keyWidth = when (key.widthWeight) {
                             is DimensionValue.Ratio -> (globalLeftBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
@@ -652,7 +654,8 @@ class KeyboardView @JvmOverloads constructor(
                             else -> 0f
                         }
                         val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
-                        val effectiveWeight = baseW + (if (key.isFlexible) rightFlexBonus else 0f)
+                        val rawWeight = baseW + (if (key.isFlexible) rightFlexBonus else 0f)
+                        val effectiveWeight = key.maxWeight?.let { rawWeight.coerceAtMost(it) } ?: rawWeight
 
                         val kw = when (key.widthWeight) {
                             is DimensionValue.Ratio -> (globalRightBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
@@ -672,7 +675,8 @@ class KeyboardView @JvmOverloads constructor(
                         currentX += keyOffsetPx
 
                         val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
-                        val effectiveWeight = baseW + (if (key.isFlexible) rightFlexBonus else 0f)
+                        val rawWeight = baseW + (if (key.isFlexible) rightFlexBonus else 0f)
+                        val effectiveWeight = key.maxWeight?.let { rawWeight.coerceAtMost(it) } ?: rawWeight
 
                         val keyWidth = when (key.widthWeight) {
                             is DimensionValue.Ratio -> (globalRightBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)

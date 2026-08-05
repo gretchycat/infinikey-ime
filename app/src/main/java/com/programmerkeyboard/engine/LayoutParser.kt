@@ -480,6 +480,7 @@ object LayoutParser {
                         ?: kObj.get("grow")?.asBoolean
                         ?: kObj.get("canGrow")?.asBoolean
                         ?: false
+                    val maxWeight = kObj.get("maxWeight")?.asFloat ?: kObj.get("maxWidth")?.asFloat
                     val isSpacer = kObj.get("spacer")?.asBoolean
                         ?: (styleName == "spacer" || (label.isEmpty() && kObj.getAsJsonObject("onPress") == null))
                     val showPreview = kObj.get("showPreview")?.asBoolean
@@ -549,6 +550,7 @@ object LayoutParser {
                         splitLeftWeight = splitLeftWeight,
                         splitRightWeight = splitRightWeight,
                         isFlexible = isFlexible,
+                        maxWeight = maxWeight,
                         isSpacer = isSpacer,
                         showPreview = showPreview,
                         alternates = alternatesList,

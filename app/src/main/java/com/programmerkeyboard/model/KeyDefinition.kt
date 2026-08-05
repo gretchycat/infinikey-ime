@@ -133,6 +133,7 @@ data class KeyDefinition(
     val splitLeftWeight: DimensionValue? = null,
     val splitRightWeight: DimensionValue? = null,
     val isFlexible: Boolean = false,
+    val maxWeight: Float? = null,
     val isSpacer: Boolean = false,
     val showPreview: Boolean? = null,
     val alternates: List<String> = emptyList(),
