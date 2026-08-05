@@ -106,7 +106,7 @@
         { "label": "🎙", "icon": "mic", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
         { "label": "Alt", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" } },
         { "label": "❖", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" } },
-        { "label": "␣", "style": "alphaKey", "weight": 3.0, "isSplitKey": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" } },
+        { "label": "␣", "style": "alphaKey", "weight": 3.0, "isSplitKey": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "NONE" } },
         {
           "label": "Fn",
           "style": "modifierKey",
