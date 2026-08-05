@@ -1,7 +1,7 @@
-# Programmer Keyboard Architecture Specification
+# Infinikey IME Architecture Specification
 
 ## Overview
-Programmer Keyboard is a high-performance, layout-driven, customizable Android Input Method Editor (IME). It provides a full desktop-class programming layout with function keys, navigation keys, custom alternate keys, interactive themes, mechanical switch audio feedback, and an integrated real-time WYSIWYG layout editor.
+Infinikey IME is a high-performance, layout-driven, customizable Android Input Method Editor (IME). It provides desktop-grade programming layouts, dedicated function keys, clipboard history management, vector SVG icon rendering, interactive form factor switching, mechanical switch audio feedback, and an integrated real-time WYSIWYG layout editor.
 
 ---
 
@@ -11,46 +11,55 @@ Programmer Keyboard is a high-performance, layout-driven, customizable Android I
                                +-------------------------------------+
                                |   ProgrammerInputMethodService      |
                                |    (Android IME Lifecycle Engine)   |
-                               +------------------+------------------+
-                                                  |
-                                                  v
-                               +------------------+------------------+
-                               |            KeyboardView             |
-                               |  (Custom Dynamic Render Surface)    |
-                               +--------+-------------------+--------+
-                                        |                   |
-                                        v                   v
-                     +------------------+----+         +----+-------------------+
-                     |     LayoutParser      |         |  Sound & Haptic Engine |
-                     | (JSON Descriptor)     |         |  (SoundPool & Assets)  |
-                     +-----------------------+         +------------------------+
+                               +----+---------------+----------------+
+                                    |               |
+                                    v               v
+                   +----------------+--+         +--+-------------------+
+                   |   KeyboardView    |         | ClipboardHistory     |
+                   | (Render Surface)  |         |      Overlay         |
+                   +--------+----------+         +----------------------+
+                            |
+           +----------------+----------------+
+           |                |                |
+           v                v                v
+   +-------+------+  +------+-------+  +-----+--------+
+   | KeyPopup     |  | LayoutParser |  | SoundPool &  |
+   | Overlay      |  | (JSON Engine)|  | Haptic Engine|
+   +--------------+  +--------------+  +--------------+
 ```
 
 ### 1. `ProgrammerInputMethodService` (`com.programmerkeyboard`)
-* **Role**: Primary entry point implementing `InputMethodService`.
+* **Role**: Primary entry point implementing Android `InputMethodService`.
 * **Responsibilities**:
-  - Handles key code dispatches to `InputConnection` (`sendText`, `sendDownUpKeyEvents`, `performEditorAction`).
-  - Manages active modifier state (`SHIFT`, `CTRL`, `ALT`, `SUPER`, `META`).
-  - Executes special key actions (layout switching, clipboard operations, IME switching, voice input).
+  - Manages `InputConnection` dispatches (`commitText`, `sendDownUpKeyEvents`, `performEditorAction`).
+  - Target application detection via `isTerminalTarget()` to differentiate between raw terminal shells (`TYPE_NULL`) and text fields.
+  - Monitors system clipboard changes with `ClipboardManager.OnPrimaryClipChangedListener` and persists up to 30 clipboard entries in `SharedPreferences`.
+  - Manages active modifier states (`SHIFT`, `CTRL`, `ALT`, `SUPER`, `META`).
+  - Handles screen mode transitions (`FULL_WIDTH_DOCKED`, `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, `FLOATING`).
 
 ### 2. `KeyboardView` (`com.programmerkeyboard.view`)
-* **Role**: Custom high-fps canvas surface for dynamic key layout rendering and touch handling.
+* **Role**: Custom high-FPS canvas surface for dynamic key layout rendering and touch interaction.
 * **Responsibilities**:
-  - Renders rows, keycaps, primary/secondary labels, latched/locked modifier dots, and active visual themes.
-  - Multi-touch gesture processing (swipe-up for alternate symbols, swipe-down, long-press popups).
-  - Integrates `SoundPool` for asset-based audio feedback and `Vibrator` for haptics.
+  - Renders staggered and rectangular key rows, keycaps, primary/secondary labels, and native SVG vector icon paths (`drawSvgCopyIcon`, `drawSvgCutIcon`, `drawSvgPasteIcon`, `drawSvgSelectAllIcon`, `drawSvgPaperclipIcon`, `drawSvgClipboardIcon`, `drawSvgMicIcon`, `drawSvgTtsIcon`).
+  - Multi-touch gesture processing (swipe-up for secondary symbols, swipe-down, long-press popups, trackpad gestures).
+  - Integrates `SoundPool` for asset-based mechanical switch audio feedback and `Vibrator` for haptics.
 
-### 3. `LayoutParser` (`com.programmerkeyboard.engine`)
+### 3. `KeyPopupOverlay` & `ClipboardHistoryOverlay` (`com.programmerkeyboard.view`)
+* **Role**: Floating overlay windows for action menus and history management.
+* **Responsibilities**:
+  - **`KeyPopupOverlay`**: Renders 3D tactile button caps with SVG vector icons and relaxed gesture tracking (28dp movement threshold, 40% hysteresis, and direct tap-to-select support).
+  - **`ClipboardHistoryOverlay`**: Renders a floating scrollable history view displaying index numbers, character lengths, individual item deletion (`🗑`), long-press removal, clear-all, and quick paste.
+
+### 4. `LayoutParser` (`com.programmerkeyboard.engine`)
 * **Role**: Declarative JSON layout parser and theme engine.
 * **Responsibilities**:
-  - Parses JSON layout descriptors (`main.json`, `function.json`, `mobile.json`, `meta.json`).
-  - Merges themes, style overrides, and preset color themes (`themes.json`).
+  - Parses JSON layout descriptors (`main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`).
+  - Merges styles, row offsets, split keys, and preset color themes (`themes.json`).
   - Implements System Dynamic Day/Night theme resolution.
 
-### 4. `InteractiveLayoutEditorView` & `SettingsActivity` (`com.programmerkeyboard.settings`)
+### 5. `InteractiveLayoutEditorView` & `SettingsActivity` (`com.programmerkeyboard.settings`)
 * **Role**: WYSIWYG layout editor and configuration manager.
 * **Responsibilities**:
-  - Provides a 5-tab configuration UI (WYSIWYG Editor, Geometry, Behavior, Audio/Haptics, Themes).
-  - Interactive touch drag-and-drop key reordering.
-  - Real-time undo/redo history stack (`ArrayDeque<LayoutDefinition>`).
-  - Modal key property editor dialogs.
+  - Provides a 6-tab configuration UI (Geometry, Behavior, Haptics, Audio, Themes, Layout Editor).
+  - Displays App Version (`v0.0.2`) and Build Number in Tab 1 (Geometry).
+  - Real-time drag-and-drop key reordering and undo/redo history stack (`ArrayDeque<LayoutDefinition>`).

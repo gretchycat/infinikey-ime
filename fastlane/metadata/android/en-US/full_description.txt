@@ -2,9 +2,12 @@ InfiniKey IME is an open-source, extensible Android input method designed for de
 
 Features:
 • Fully customizable JSON layout descriptors (Main, Function, Mobile Alphabetic, Code Symbol, Emoji).
+• Built-in Clipboard History Manager saving up to 30 copied items with individual item deletion (🗑) and instant echo-paste into text fields and raw terminal shells (Termux, VNC, SSH).
+• Native Canvas Vector SVG Icon Rendering (Paperclip, Clipboard, Copy, Cut, Paste, Select All, Microphone, TTS).
+• 3D Tactile Popup Overlays with relaxed gesture tracking (28dp drag threshold, hysteresis deadzone, and direct tap-to-select support).
+• Smart Target Detection automatically adjusting clipboard dispatches between standard Android text boxes and raw TYPE_NULL terminal streams.
+• Docked, Split-Thumb Cluster, Left-Handed, Right-Handed, and Floating form factor modes with spacebar long-press split toggling.
 • Authentic Mechvibes mechanical keyboard audio switch sound packs (Cherry MX Blue/Brown/Red/Black, NovelKeys Cream, IBM Model M Buckling Spring).
-• Vector keycap icon rendering (TTS, Microphone, UTF-8 Glyphs).
-• Docked, Split, Left-Handed, and Right-Handed form factor modes.
 • Embedded Voice-to-Text and TTS speech integration.
 • Advanced key preview overlays, long-press options, auto-repeat customization, and trackpad cursor navigation.
 • 100% offline and privacy-first with zero analytics or internet tracking.

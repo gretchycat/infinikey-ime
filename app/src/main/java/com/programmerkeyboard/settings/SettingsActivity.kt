@@ -81,6 +81,10 @@ class SettingsActivity : AppCompatActivity() {
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
         })
 
+        // Display Version & Build Info on Tab 1 (Geometry)
+        val tvSettingsVersionInfo = findViewById<TextView>(R.id.tvSettingsVersionInfo)
+        tvSettingsVersionInfo?.text = "Version ${com.programmerkeyboard.BuildConfig.VERSION_NAME} • Build ${com.programmerkeyboard.BuildConfig.VERSION_CODE}"
+
         // Required Permissions & Setup Buttons
         val btnEnableIme = findViewById<Button>(R.id.btnEnableIme)
         val btnSelectIme = findViewById<Button>(R.id.btnSelectIme)
