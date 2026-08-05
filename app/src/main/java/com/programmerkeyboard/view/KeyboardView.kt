@@ -90,7 +90,13 @@ class KeyboardView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val displayMetrics = context.resources.displayMetrics
-        val effectiveHeightPercent = heightPercentage.coerceIn(20, 35)
+        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+
+        val defaultHeight = if (isLandscape) 45 else 30
+        val heightKey = if (isLandscape) "pref_keyboard_height_percent_landscape" else "pref_keyboard_height_percent_portrait"
+        val fallbackHeight = prefs.getInt("pref_keyboard_height_percent", defaultHeight)
+        val effectiveHeightPercent = prefs.getInt(heightKey, fallbackHeight).coerceIn(15, 65)
 
         val calculatedHeight = if (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
             (displayMetrics.heightPixels * 0.45f).toInt()
@@ -352,7 +358,11 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun getKeyboardAspectRatio(): Float {
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-        return prefs.getFloat("pref_keyboard_aspect_ratio", 2.2f).coerceIn(1.0f, 5.0f)
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        val aspectKey = if (isLandscape) "pref_keyboard_aspect_ratio_landscape" else "pref_keyboard_aspect_ratio_portrait"
+        val defaultRatio = if (isLandscape) 3.0f else 1.75f
+        val fallbackRatio = prefs.getFloat("pref_keyboard_aspect_ratio", defaultRatio)
+        return prefs.getFloat(aspectKey, fallbackRatio).coerceIn(1.0f, 5.0f)
     }
 
     data class RowGearBounds(val rowIdx: Int, val row: com.programmerkeyboard.model.KeyRow, val rect: RectF)

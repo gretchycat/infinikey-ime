@@ -116,30 +116,30 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        // 1. Keyboard Height Slider + Editable Text Input (20% - 35%)
-        val sbHeight = findViewById<SeekBar>(R.id.sbHeight)
-        val etHeightValue = findViewById<EditText>(R.id.etHeightValue)
-        val currentHeight = prefs.getInt("pref_keyboard_height_percent", 30).coerceIn(20, 35)
+        // 1a. Portrait Keyboard Height Slider + Editable Text Input (20% - 40%, default 30%)
+        val sbHeightPortrait = findViewById<SeekBar>(R.id.sbHeightPortrait)
+        val etHeightValuePortrait = findViewById<EditText>(R.id.etHeightValuePortrait)
+        val currentHeightPortrait = prefs.getInt("pref_keyboard_height_percent_portrait", prefs.getInt("pref_keyboard_height_percent", 30)).coerceIn(20, 40)
 
-        sbHeight.max = 15
-        sbHeight.progress = currentHeight - 20
-        etHeightValue.setText("$currentHeight")
+        sbHeightPortrait?.max = 20
+        sbHeightPortrait?.progress = (currentHeightPortrait - 20).coerceIn(0, 20)
+        etHeightValuePortrait?.setText("$currentHeightPortrait")
 
-        sbHeight.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        sbHeightPortrait?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val heightPct = 20 + progress
                 if (fromUser) {
                     isUpdatingHeightFromText = true
-                    etHeightValue.setText("$heightPct")
+                    etHeightValuePortrait?.setText("$heightPct")
                     isUpdatingHeightFromText = false
                 }
-                prefs.edit().putInt("pref_keyboard_height_percent", heightPct).apply()
+                prefs.edit().putInt("pref_keyboard_height_percent_portrait", heightPct).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        etHeightValue.addTextChangedListener(object : TextWatcher {
+        etHeightValuePortrait?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -147,9 +147,47 @@ class SettingsActivity : AppCompatActivity() {
                 val inputStr = s?.toString() ?: ""
                 val inputVal = inputStr.toIntOrNull()
                 if (inputVal != null) {
-                    val clamped = inputVal.coerceIn(20, 35)
-                    sbHeight.progress = clamped - 20
-                    prefs.edit().putInt("pref_keyboard_height_percent", clamped).apply()
+                    val clamped = inputVal.coerceIn(20, 40)
+                    sbHeightPortrait?.progress = clamped - 20
+                    prefs.edit().putInt("pref_keyboard_height_percent_portrait", clamped).apply()
+                }
+            }
+        })
+
+        // 1b. Landscape Keyboard Height Slider + Editable Text Input (25% - 65%, default 45%)
+        val sbHeightLandscape = findViewById<SeekBar>(R.id.sbHeightLandscape)
+        val etHeightValueLandscape = findViewById<EditText>(R.id.etHeightValueLandscape)
+        val currentHeightLandscape = prefs.getInt("pref_keyboard_height_percent_landscape", 45).coerceIn(25, 65)
+
+        sbHeightLandscape?.max = 40
+        sbHeightLandscape?.progress = (currentHeightLandscape - 25).coerceIn(0, 40)
+        etHeightValueLandscape?.setText("$currentHeightLandscape")
+
+        sbHeightLandscape?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val heightPct = 25 + progress
+                if (fromUser) {
+                    isUpdatingHeightFromText = true
+                    etHeightValueLandscape?.setText("$heightPct")
+                    isUpdatingHeightFromText = false
+                }
+                prefs.edit().putInt("pref_keyboard_height_percent_landscape", heightPct).apply()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        etHeightValueLandscape?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdatingHeightFromText) return
+                val inputStr = s?.toString() ?: ""
+                val inputVal = inputStr.toIntOrNull()
+                if (inputVal != null) {
+                    val clamped = inputVal.coerceIn(25, 65)
+                    sbHeightLandscape?.progress = clamped - 25
+                    prefs.edit().putInt("pref_keyboard_height_percent_landscape", clamped).apply()
                 }
             }
         })
@@ -256,30 +294,31 @@ class SettingsActivity : AppCompatActivity() {
             }
         })
 
-        // 4. Aspect Ratio Slider + Editable Text Input (1.5 to 2.5, default 1.75)
-        val sbAspectRatio = findViewById<SeekBar>(R.id.sbAspectRatio)
-        val etAspectRatioValue = findViewById<EditText>(R.id.etAspectRatioValue)
-        val currentRatio = prefs.getFloat("pref_keyboard_aspect_ratio", 1.75f).coerceIn(1.5f, 2.5f)
+        // 4a. Portrait Key Aspect Ratio Slider (1.2 to 2.5, default 1.75)
+        val sbAspectRatioPortrait = findViewById<SeekBar>(R.id.sbAspectRatioPortrait)
+        val etAspectRatioValuePortrait = findViewById<EditText>(R.id.etAspectRatioValuePortrait)
+        val currentRatioPortrait = prefs.getFloat("pref_keyboard_aspect_ratio_portrait", prefs.getFloat("pref_keyboard_aspect_ratio", 1.75f)).coerceIn(1.2f, 2.5f)
 
-        val initialRatioProg = ((currentRatio - 1.5f) * 20f).toInt().coerceIn(0, 20)
-        sbAspectRatio.progress = initialRatioProg
-        etAspectRatioValue.setText(String.format(java.util.Locale.US, "%.2f", currentRatio))
+        val initialRatioProgPortrait = ((currentRatioPortrait - 1.2f) * 20f).toInt().coerceIn(0, 20)
+        sbAspectRatioPortrait?.max = 20
+        sbAspectRatioPortrait?.progress = initialRatioProgPortrait
+        etAspectRatioValuePortrait?.setText(String.format(java.util.Locale.US, "%.2f", currentRatioPortrait))
 
-        sbAspectRatio.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        sbAspectRatioPortrait?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val ratioVal = 1.5f + (progress / 20f)
+                val ratioVal = 1.2f + (progress / 20f)
                 if (fromUser) {
                     isUpdatingAspectRatioFromText = true
-                    etAspectRatioValue.setText(String.format(java.util.Locale.US, "%.2f", ratioVal))
+                    etAspectRatioValuePortrait?.setText(String.format(java.util.Locale.US, "%.2f", ratioVal))
                     isUpdatingAspectRatioFromText = false
                 }
-                prefs.edit().putFloat("pref_keyboard_aspect_ratio", ratioVal).apply()
+                prefs.edit().putFloat("pref_keyboard_aspect_ratio_portrait", ratioVal).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        etAspectRatioValue.addTextChangedListener(object : TextWatcher {
+        etAspectRatioValuePortrait?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -287,10 +326,50 @@ class SettingsActivity : AppCompatActivity() {
                 val inputStr = s?.toString() ?: ""
                 val inputVal = inputStr.toFloatOrNull()
                 if (inputVal != null) {
-                    val clamped = inputVal.coerceIn(1.5f, 2.5f)
-                    val prog = ((clamped - 1.5f) * 20f).toInt().coerceIn(0, 20)
-                    sbAspectRatio.progress = prog
-                    prefs.edit().putFloat("pref_keyboard_aspect_ratio", clamped).apply()
+                    val clamped = inputVal.coerceIn(1.2f, 2.5f)
+                    val prog = ((clamped - 1.2f) * 20f).toInt().coerceIn(0, 20)
+                    sbAspectRatioPortrait?.progress = prog
+                    prefs.edit().putFloat("pref_keyboard_aspect_ratio_portrait", clamped).apply()
+                }
+            }
+        })
+
+        // 4b. Landscape Key Aspect Ratio Slider (1.8 to 4.5, default 3.00)
+        val sbAspectRatioLandscape = findViewById<SeekBar>(R.id.sbAspectRatioLandscape)
+        val etAspectRatioValueLandscape = findViewById<EditText>(R.id.etAspectRatioValueLandscape)
+        val currentRatioLandscape = prefs.getFloat("pref_keyboard_aspect_ratio_landscape", 3.00f).coerceIn(1.8f, 4.5f)
+
+        val initialRatioProgLandscape = ((currentRatioLandscape - 1.8f) * 11.11f).toInt().coerceIn(0, 30)
+        sbAspectRatioLandscape?.max = 30
+        sbAspectRatioLandscape?.progress = initialRatioProgLandscape
+        etAspectRatioValueLandscape?.setText(String.format(java.util.Locale.US, "%.2f", currentRatioLandscape))
+
+        sbAspectRatioLandscape?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val ratioVal = 1.8f + (progress / 11.11f)
+                if (fromUser) {
+                    isUpdatingAspectRatioFromText = true
+                    etAspectRatioValueLandscape?.setText(String.format(java.util.Locale.US, "%.2f", ratioVal))
+                    isUpdatingAspectRatioFromText = false
+                }
+                prefs.edit().putFloat("pref_keyboard_aspect_ratio_landscape", ratioVal).apply()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        etAspectRatioValueLandscape?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdatingAspectRatioFromText) return
+                val inputStr = s?.toString() ?: ""
+                val inputVal = inputStr.toFloatOrNull()
+                if (inputVal != null) {
+                    val clamped = inputVal.coerceIn(1.8f, 4.5f)
+                    val prog = ((clamped - 1.8f) * 11.11f).toInt().coerceIn(0, 30)
+                    sbAspectRatioLandscape?.progress = prog
+                    prefs.edit().putFloat("pref_keyboard_aspect_ratio_landscape", clamped).apply()
                 }
             }
         })
@@ -753,9 +832,9 @@ class SettingsActivity : AppCompatActivity() {
                 }
 
                 val newJsonStr = rootObj.toString()
-                prefs.edit().putString("pref_custom_theme_json", newJsonStr).putInt("pref_theme_preset_idx", 5).apply()
-                if (spThemePreset.selectedItemPosition != 5) {
-                    spThemePreset.setSelection(5)
+                prefs.edit().putString("pref_custom_theme_json", newJsonStr).putInt("pref_theme_preset_idx", 7).apply()
+                if (spThemePreset.selectedItemPosition != 7) {
+                    spThemePreset.setSelection(7)
                 }
             } catch (_: Exception) {}
         }
@@ -1033,8 +1112,8 @@ class SettingsActivity : AppCompatActivity() {
                     val jsonStr = contentResolver.openInputStream(fileUri)?.bufferedReader()?.use { it.readText() }
                     if (!jsonStr.isNullOrEmpty()) {
                         com.google.gson.JsonParser.parseString(jsonStr)
-                        prefs.edit().putString("pref_custom_theme_json", jsonStr).putInt("pref_theme_preset_idx", 5).apply()
-                        spThemePreset.setSelection(5)
+                        prefs.edit().putString("pref_custom_theme_json", jsonStr).putInt("pref_theme_preset_idx", 7).apply()
+                        spThemePreset.setSelection(7)
                         Toast.makeText(this, "Theme JSON imported from file!", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
@@ -1125,8 +1204,8 @@ class SettingsActivity : AppCompatActivity() {
                             if (!clipText.isNullOrEmpty()) {
                                 try {
                                     com.google.gson.JsonParser.parseString(clipText)
-                                    prefs.edit().putString("pref_custom_theme_json", clipText).putInt("pref_theme_preset_idx", 5).apply()
-                                    spThemePreset.setSelection(5)
+                                    prefs.edit().putString("pref_custom_theme_json", clipText).putInt("pref_theme_preset_idx", 7).apply()
+                                    spThemePreset.setSelection(7)
                                     val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 4)]
                                     loadCategoryStyleValues(catName)
                                     Toast.makeText(this, "Theme JSON pasted & applied!", Toast.LENGTH_SHORT).show()
@@ -1154,8 +1233,8 @@ class SettingsActivity : AppCompatActivity() {
                                     if (text.isNotEmpty()) {
                                         try {
                                             com.google.gson.JsonParser.parseString(text)
-                                            prefs.edit().putString("pref_custom_theme_json", text).putInt("pref_theme_preset_idx", 5).apply()
-                                            spThemePreset.setSelection(5)
+                                            prefs.edit().putString("pref_custom_theme_json", text).putInt("pref_theme_preset_idx", 7).apply()
+                                            spThemePreset.setSelection(7)
                                             val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
                                             loadCategoryStyleValues(catName)
                                             Toast.makeText(this, "Theme JSON updated & applied!", Toast.LENGTH_SHORT).show()

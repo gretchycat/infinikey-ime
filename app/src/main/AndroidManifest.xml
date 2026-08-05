@@ -22,6 +22,7 @@
             android:icon="@mipmap/ic_launcher"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:theme="@style/Theme.ProgrammerKeyboard.IME"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density|uiMode"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />

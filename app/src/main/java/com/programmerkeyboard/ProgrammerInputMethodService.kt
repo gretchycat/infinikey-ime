@@ -62,7 +62,11 @@ class ProgrammerInputMethodService : InputMethodService() {
         if (key == "pref_custom_theme_json" ||
             key == "pref_theme_preset_idx" ||
             key == "pref_keyboard_height_percent" ||
+            key == "pref_keyboard_height_percent_portrait" ||
+            key == "pref_keyboard_height_percent_landscape" ||
             key == "pref_keyboard_aspect_ratio" ||
+            key == "pref_keyboard_aspect_ratio_portrait" ||
+            key == "pref_keyboard_aspect_ratio_landscape" ||
             key == "pref_form_factor" ||
             key == "pref_form_factor_mode" ||
             key == "pref_keyboard_layout_target" ||
@@ -71,11 +75,29 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
     }
 
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        reloadKeyboardLayoutAndTheme()
+        try {
+            showWindow(true)
+        } catch (_: Exception) {}
+    }
+
+    override fun onInitializeInterface() {
+        super.onInitializeInterface()
+        reloadKeyboardLayoutAndTheme()
+    }
+
     private fun reloadKeyboardLayoutAndTheme() {
         if (::keyboardView.isInitialized) {
             val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+            val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
 
-            val newHeightPercent = prefs.getInt("pref_keyboard_height_percent", 30).coerceIn(20, 35)
+            val defaultHeight = if (isLandscape) 45 else 30
+            val heightKey = if (isLandscape) "pref_keyboard_height_percent_landscape" else "pref_keyboard_height_percent_portrait"
+            val fallbackHeight = prefs.getInt("pref_keyboard_height_percent", defaultHeight)
+            val newHeightPercent = prefs.getInt(heightKey, fallbackHeight).coerceIn(15, 65)
+
             keyboardView.heightPercentage = newHeightPercent
 
             val formFactorStr = prefs.getString("pref_form_factor", null)
@@ -301,12 +323,28 @@ class ProgrammerInputMethodService : InputMethodService() {
         return false
     }
 
+    override fun onStartInput(attribute: android.view.inputmethod.EditorInfo?, restarting: Boolean) {
+        super.onStartInput(attribute, restarting)
+        if (restarting) {
+            try {
+                showWindow(true)
+            } catch (_: Exception) {}
+        }
+    }
+
     override fun onStartInputView(info: android.view.inputmethod.EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+        try {
+            showWindow(true)
+        } catch (_: Exception) {}
         currentEditorInfo = info
 
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-        val heightPercent = prefs.getInt("pref_keyboard_height_percent", 30)
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        val defaultHeight = if (isLandscape) 45 else 30
+        val heightKey = if (isLandscape) "pref_keyboard_height_percent_landscape" else "pref_keyboard_height_percent_portrait"
+        val fallbackHeight = prefs.getInt("pref_keyboard_height_percent", defaultHeight)
+        val heightPercent = prefs.getInt(heightKey, fallbackHeight).coerceIn(15, 65)
         val isShiftLock = prefs.getBoolean("pref_is_shift_lock", false)
         val formFactorStr = prefs.getString("pref_form_factor", "FULL_WIDTH_DOCKED") ?: "FULL_WIDTH_DOCKED"
 
@@ -864,7 +902,10 @@ class ProgrammerInputMethodService : InputMethodService() {
     }
 
     override fun onEvaluateInputViewShown(): Boolean {
-        super.onEvaluateInputViewShown()
+        return true
+    }
+
+    override fun onShowInputRequested(flags: Int, configChange: Boolean): Boolean {
         return true
     }
 

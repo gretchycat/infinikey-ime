@@ -739,7 +739,7 @@
                         android:background="@color/settings_divider"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Keyboard Height Percentage Setting -->
+                    <!-- PORTRAIT Keyboard Height Percentage Setting -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -751,13 +751,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/setting_height_title"
+                            android:text="📱 Portrait Keyboard Height:"
                             android:textColor="@color/key_text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <EditText
-                            android:id="@+id/etHeightValue"
+                            android:id="@+id/etHeightValuePortrait"
                             android:layout_width="56dp"
                             android:layout_height="36dp"
                             android:background="@drawable/bg_spinner_card"
@@ -780,22 +780,16 @@
                     </LinearLayout>
 
                     <SeekBar
-                        android:id="@+id/sbHeight"
+                        android:id="@+id/sbHeightPortrait"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:max="45"
-                        android:progress="15"
+                        android:max="20"
+                        android:progress="10"
                         android:progressTint="@color/key_text_accent"
                         android:thumbTint="@color/key_text_accent"
                         android:layout_marginBottom="16dp" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/settings_divider"
-                        android:layout_marginBottom="16dp" />
-
-                    <!-- Aspect Ratio Setting -->
+                    <!-- LANDSCAPE Keyboard Height Percentage Setting -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -807,13 +801,69 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/setting_aspect_ratio_title"
+                            android:text="🔄 Landscape Keyboard Height:"
                             android:textColor="@color/key_text_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <EditText
-                            android:id="@+id/etAspectRatioValue"
+                            android:id="@+id/etHeightValueLandscape"
+                            android:layout_width="56dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/bg_spinner_card"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLength="2"
+                            android:text="45"
+                            android:textColor="@color/key_text_accent"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="%"
+                            android:textColor="@color/key_text_accent"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+
+                    <SeekBar
+                        android:id="@+id/sbHeightLandscape"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="40"
+                        android:progress="20"
+                        android:progressTint="@color/key_text_accent"
+                        android:thumbTint="@color/key_text_accent"
+                        android:layout_marginBottom="16dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/settings_divider"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- PORTRAIT Aspect Ratio Setting -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="📱 Portrait Key Aspect Ratio:"
+                            android:textColor="@color/key_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/etAspectRatioValuePortrait"
                             android:layout_width="68dp"
                             android:layout_height="36dp"
                             android:background="@drawable/bg_spinner_card"
@@ -836,11 +886,61 @@
                     </LinearLayout>
 
                     <SeekBar
-                        android:id="@+id/sbAspectRatio"
+                        android:id="@+id/sbAspectRatioPortrait"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:max="20"
                         android:progress="10"
+                        android:progressTint="@color/key_text_accent"
+                        android:thumbTint="@color/key_text_accent"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- LANDSCAPE Aspect Ratio Setting -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🔄 Landscape Key Aspect Ratio:"
+                            android:textColor="@color/key_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/etAspectRatioValueLandscape"
+                            android:layout_width="68dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/bg_spinner_card"
+                            android:gravity="center"
+                            android:inputType="numberDecimal"
+                            android:maxLength="4"
+                            android:text="3.00"
+                            android:textColor="@color/key_text_accent"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=": 1"
+                            android:textColor="@color/key_text_accent"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+
+                    <SeekBar
+                        android:id="@+id/sbAspectRatioLandscape"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="30"
+                        android:progress="15"
                         android:progressTint="@color/key_text_accent"
                         android:thumbTint="@color/key_text_accent" />
                 </LinearLayout>
