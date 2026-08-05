@@ -87,7 +87,7 @@
       "keys": [
         { "label": "ABC", "style": "modifierKey", "weight": 1.5, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
         { "label": ",", "alternates": ["<", "«", "‹", "≤"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "," } },
-        { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " } },
+        { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" } },
         { "label": ".", "alternates": [">", "»", "›", "≥", "…"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "." } },
         { "label": "↵", "style": "actionKey", "weight": 1.5, "onPress": { "type": "SEND_CODE", "code": 66 } }
       ]

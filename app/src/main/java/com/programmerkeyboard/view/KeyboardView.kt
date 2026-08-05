@@ -204,6 +204,16 @@ class KeyboardView @JvmOverloads constructor(
     private var trackpadAccumulatedDy = 0f
     private var trackpadTouchX = 0f
     private var trackpadTouchY = 0f
+    private var trackpadBlinkStep = 0
+    private var trackpadBlinkTime = 0L
+    private val trackpadBlinkColors = intArrayOf(
+        android.graphics.Color.parseColor("#00F0FF"),
+        android.graphics.Color.parseColor("#10B981"),
+        android.graphics.Color.parseColor("#A855F7"),
+        android.graphics.Color.parseColor("#F59E0B"),
+        android.graphics.Color.parseColor("#EC4899"),
+        android.graphics.Color.parseColor("#3B82F6")
+    )
 
     // Floating Window Draggable Position Offsets
     private var floatingOffsetX = 0f
@@ -288,6 +298,7 @@ class KeyboardView @JvmOverloads constructor(
                 return@Runnable
             }
             isLongPressTriggered = true
+            performKeypressHapticFeedback()
             executeAction(key.onLongPressAction, key)
         }
     }
@@ -883,15 +894,10 @@ class KeyboardView @JvmOverloads constructor(
             val displayLabel = if (keyboardState.isShiftActive && key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()) {
                 key.primaryLabel.uppercase()
             } else if (keyboardState.isShiftActive) {
-                val lpAct = key.onLongPressAction
                 val upAct = key.onSwipeUpAction
                 when {
                     !key.secondaryLabel.isNullOrEmpty() -> if (key.secondaryLabel.any { it.isLowerCase() }) key.secondaryLabel.uppercase() else key.secondaryLabel
                     upAct is KeyAction.SendText -> if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text
-                    lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> {
-                        val opt = lpAct.options.first()
-                        if (opt.any { it.isLowerCase() }) opt.uppercase() else opt
-                    }
                     else -> key.primaryLabel
                 }
             } else {
@@ -948,7 +954,6 @@ class KeyboardView @JvmOverloads constructor(
             val lpAction = key.onLongPressAction
             val upAction = key.onSwipeUpAction
             val rawSecToDraw = key.topRightLabel ?: firstAlt ?: when {
-                lpAction is KeyAction.ShowPopup && lpAction.options.isNotEmpty() -> lpAction.options.first()
                 !key.secondaryLabel.isNullOrEmpty() -> key.secondaryLabel
                 upAction is KeyAction.SendText -> upAction.text
                 lpAction is KeyAction.SendText -> lpAction.text
@@ -1060,6 +1065,107 @@ class KeyboardView @JvmOverloads constructor(
                 canvas.drawRoundRect(thumbRect, trackWidth / 2f, trackWidth / 2f, scrollbarPaint)
             }
         }
+
+        // Draw Interactive Trackpad Joystick Widget Feedback Overlay
+        drawTrackpadJoystickOverlay(canvas)
+    }
+
+    private fun drawTrackpadJoystickOverlay(canvas: Canvas) {
+        if (!isSpacebarTrackpad) return
+
+        val density = context.resources.displayMetrics.density
+        val outerRadius = 52f * density
+        val maxKnobOffset = 34f * density
+        val knobRadius = 18f * density
+
+        val originX = trackpadTouchX
+        val originY = trackpadTouchY
+
+        // Extract theme colors from the target touched key or theme fallback
+        val currentKey = pressedKeyBounds?.key
+        val keyBgColor = currentKey?.bgColor ?: keyPaint.color
+        val keyPressedBgColor = currentKey?.pressedBgColor ?: ContextCompat.getColor(context, R.color.key_background_pressed)
+        val keyFgColor = currentKey?.fgColor ?: textPaint.color
+
+        // Calculate 360-degree knob offset relative to touch origin
+        val deltaX = trackpadLastX - originX
+        val deltaY = trackpadLastY - originY
+        val dist = kotlin.math.hypot(deltaX, deltaY)
+        val angle = kotlin.math.atan2(deltaY, deltaX)
+        val clampedDist = kotlin.math.min(dist, maxKnobOffset)
+        val knobX = originX + clampedDist * kotlin.math.cos(angle).toFloat()
+        val knobY = originY + clampedDist * kotlin.math.sin(angle).toFloat()
+
+        // Position shift blink state (flashes key's Pressed background color on each step move tick)
+        val now = System.currentTimeMillis()
+        val timeSinceBlink = now - trackpadBlinkTime
+        val isBlinking = timeSinceBlink < 160L
+
+        // 1. Outer Ring Glassmorphic Background Circle (uses same background color as the key)
+        val outerBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = keyBgColor
+            style = Paint.Style.FILL
+            alpha = 230
+        }
+        canvas.drawCircle(originX, originY, outerRadius, outerBgPaint)
+
+        // 2. Outer Ring Accent Border (flashes to Pressed background color on shift ticks)
+        val outerBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = if (isBlinking) keyPressedBgColor else keyFgColor
+            style = Paint.Style.STROKE
+            strokeWidth = if (isBlinking) 4.5f * density else 2.5f * density
+            alpha = if (isBlinking) 255 else 180
+        }
+        canvas.drawCircle(originX, originY, outerRadius, outerBorderPaint)
+
+        // 3. Directional Arrow Indicators (▲ ▼ ◀ ▶)
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = if (isBlinking) keyPressedBgColor else keyFgColor
+            textSize = 14f * density
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            textAlign = Paint.Align.CENTER
+            alpha = if (isBlinking) 255 else 160
+        }
+        val arrowDist = outerRadius - (14f * density)
+        canvas.drawText("▲", originX, originY - arrowDist + (5f * density), textPaint)
+        canvas.drawText("▼", originX, originY + arrowDist + (5f * density), textPaint)
+        canvas.drawText("◀", originX - arrowDist, originY + (5f * density), textPaint)
+        canvas.drawText("▶", originX + arrowDist, originY + (5f * density), textPaint)
+
+        // 4. Connecting vector line from origin to knob
+        val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = if (isBlinking) keyPressedBgColor else keyFgColor
+            style = Paint.Style.STROKE
+            strokeWidth = 2f * density
+            alpha = if (isBlinking) 220 else 120
+        }
+        canvas.drawLine(originX, originY, knobX, knobY, linePaint)
+
+        // 5. Inner Joystick Knob Circle (same background color as key, blinks to Pressed background color)
+        val knobFillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = if (isBlinking) keyPressedBgColor else keyBgColor
+            style = Paint.Style.FILL
+            alpha = if (isBlinking) 255 else 220
+        }
+        canvas.drawCircle(knobX, knobY, knobRadius, knobFillPaint)
+
+        val knobBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = if (isBlinking) keyFgColor else keyPressedBgColor
+            style = Paint.Style.STROKE
+            strokeWidth = 2f * density
+        }
+        canvas.drawCircle(knobX, knobY, knobRadius, knobBorderPaint)
+
+        // Inner core dot
+        val coreDotPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = keyFgColor
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(knobX, knobY, 4f * density, coreDotPaint)
+
+        if (isBlinking) {
+            postInvalidateDelayed(30L)
+        }
     }
 
     private fun resolveDimension(value: DimensionValue?, parentSize: Float, density: Float, fallbackPx: Float): Float {
@@ -1150,10 +1256,231 @@ class KeyboardView @JvmOverloads constructor(
         canvas.restoreToCount(saveCount)
     }
 
+    private fun drawSvgPaperclipIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 24f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        val clipPath = android.graphics.Path().apply {
+            moveTo(21.44f, 11.05f)
+            lineTo(12.25f, 20.24f)
+            cubicTo(9.9f, 22.59f, 6.1f, 22.59f, 3.76f, 20.24f)
+            cubicTo(1.41f, 17.89f, 1.41f, 14.09f, 3.76f, 11.75f)
+            lineTo(12.33f, 3.18f)
+            cubicTo(13.89f, 1.62f, 16.42f, 1.62f, 17.99f, 3.18f)
+            cubicTo(19.55f, 4.74f, 19.55f, 7.27f, 17.99f, 8.84f)
+            lineTo(9.4f, 17.42f)
+            cubicTo(8.62f, 18.2f, 7.35f, 18.2f, 6.57f, 17.42f)
+            cubicTo(5.79f, 16.64f, 5.79f, 15.37f, 6.57f, 14.59f)
+            lineTo(14.45f, 6.71f)
+        }
+        canvas.drawPath(clipPath, strokePaint)
+        canvas.restoreToCount(saveCount)
+    }
+
+    private fun drawSvgClipboardIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 24f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        canvas.drawRoundRect(RectF(8f, 2f, 16f, 6f), 1f, 1f, strokePaint)
+        val boardPath = android.graphics.Path().apply {
+            moveTo(16f, 4f)
+            lineTo(18f, 4f)
+            cubicTo(19.1f, 4f, 20f, 4.9f, 20f, 6f)
+            lineTo(20f, 20f)
+            cubicTo(20f, 21.1f, 19.1f, 22f, 18f, 22f)
+            lineTo(6f, 22f)
+            cubicTo(4.9f, 22f, 4f, 21.1f, 4f, 20f)
+            lineTo(4f, 6f)
+            cubicTo(4f, 4.9f, 4.9f, 4f, 6f, 4f)
+            lineTo(8f, 4f)
+        }
+        canvas.drawPath(boardPath, strokePaint)
+        canvas.drawLine(12f, 11f, 16f, 11f, strokePaint)
+        canvas.drawLine(12f, 16f, 16f, 16f, strokePaint)
+        canvas.drawLine(8f, 11f, 8.1f, 11f, strokePaint)
+        canvas.drawLine(8f, 16f, 8.1f, 16f, strokePaint)
+
+        canvas.restoreToCount(saveCount)
+    }
+
+    private fun drawSvgCopyIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 24f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        canvas.drawRoundRect(RectF(8f, 8f, 22f, 22f), 2f, 2f, strokePaint)
+        val backCard = android.graphics.Path().apply {
+            moveTo(4f, 16f)
+            cubicTo(2.9f, 16f, 2f, 15.1f, 2f, 14f)
+            lineTo(2f, 4f)
+            cubicTo(2f, 2.9f, 2.9f, 2f, 4f, 2f)
+            lineTo(14f, 2f)
+            cubicTo(15.1f, 2f, 16f, 2.9f, 16f, 4f)
+        }
+        canvas.drawPath(backCard, strokePaint)
+
+        canvas.restoreToCount(saveCount)
+    }
+
+    private fun drawSvgCutIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 24f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        canvas.drawCircle(6f, 6f, 3f, strokePaint)
+        canvas.drawCircle(6f, 18f, 3f, strokePaint)
+        canvas.drawLine(20f, 4f, 8.12f, 15.88f, strokePaint)
+        canvas.drawLine(14.47f, 14.48f, 20f, 20f, strokePaint)
+        canvas.drawLine(8.12f, 8.12f, 12f, 12f, strokePaint)
+
+        canvas.restoreToCount(saveCount)
+    }
+
+    private fun drawSvgPasteIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 24f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        val boardPath = android.graphics.Path().apply {
+            moveTo(16f, 4f)
+            lineTo(18f, 4f)
+            cubicTo(19.1f, 4f, 20f, 4.9f, 20f, 6f)
+            lineTo(20f, 20f)
+            cubicTo(20f, 21.1f, 19.1f, 22f, 18f, 22f)
+            lineTo(6f, 22f)
+            cubicTo(4.9f, 22f, 4f, 21.1f, 4f, 20f)
+            lineTo(4f, 6f)
+            cubicTo(4f, 4.9f, 4.9f, 4f, 6f, 4f)
+            lineTo(8f, 4f)
+        }
+        canvas.drawPath(boardPath, strokePaint)
+        canvas.drawRoundRect(RectF(8f, 2f, 16f, 6f), 1f, 1f, strokePaint)
+
+        // Arrow pointing down into board
+        canvas.drawLine(12f, 11f, 12f, 17f, strokePaint)
+        val arrowHead = android.graphics.Path().apply {
+            moveTo(9f, 14f)
+            lineTo(12f, 17f)
+            lineTo(15f, 14f)
+        }
+        canvas.drawPath(arrowHead, strokePaint)
+
+        canvas.restoreToCount(saveCount)
+    }
+
+    private fun drawSvgSelectAllIcon(canvas: Canvas, rect: RectF, paint: Paint) {
+        val iconSize = minOf(rect.width(), rect.height()) * 0.48f
+        val scale = iconSize / 24f
+        val offsetX = rect.centerX() - (iconSize / 2f)
+        val offsetY = rect.centerY() - (iconSize / 2f)
+
+        val saveCount = canvas.save()
+        canvas.translate(offsetX, offsetY)
+        canvas.scale(scale, scale)
+
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = paint.color
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
+        }
+
+        // Selection Corners
+        canvas.drawLine(3f, 3f, 7f, 3f, strokePaint)
+        canvas.drawLine(3f, 3f, 3f, 7f, strokePaint)
+
+        canvas.drawLine(21f, 3f, 17f, 3f, strokePaint)
+        canvas.drawLine(21f, 3f, 21f, 7f, strokePaint)
+
+        canvas.drawLine(3f, 21f, 7f, 21f, strokePaint)
+        canvas.drawLine(3f, 21f, 3f, 17f, strokePaint)
+
+        canvas.drawLine(21f, 21f, 17f, 21f, strokePaint)
+        canvas.drawLine(21f, 21f, 21f, 17f, strokePaint)
+
+        canvas.drawRoundRect(RectF(8f, 8f, 16f, 16f), 1f, 1f, strokePaint)
+
+        canvas.restoreToCount(saveCount)
+    }
+
     private fun drawKeyIconOrLabel(canvas: Canvas, key: KeyDefinition, displayLabel: String, rect: RectF, paint: Paint) {
         val iconType = key.iconName?.lowercase() ?: when (displayLabel.trim()) {
             "🎙", "🎙️", "🎤" -> "mic"
             "🗣", "🗣️", "🔊" -> "tts"
+            "📎", "🖇" -> "paperclip"
+            "📋" -> "clipboard"
+            "📄", "copy" -> "copy"
+            "✂️", "✂", "cut" -> "cut"
+            "📥", "paste" -> "paste"
+            "✨", "select_all" -> "select_all"
             else -> null
         }
 
@@ -1169,6 +1496,30 @@ class KeyboardView @JvmOverloads constructor(
                 }
                 "tts", "read_text", "speech", "tts.svg", "assets/images/tts.svg" -> {
                     drawSvgTtsIcon(canvas, rect, paint)
+                    return
+                }
+                "paperclip", "clip", "paperclip.svg", "assets/images/paperclip.svg" -> {
+                    drawSvgPaperclipIcon(canvas, rect, paint)
+                    return
+                }
+                "clipboard", "clipboard_history", "clipboard.svg", "assets/images/clipboard.svg" -> {
+                    drawSvgClipboardIcon(canvas, rect, paint)
+                    return
+                }
+                "copy", "copy.svg", "assets/images/copy.svg" -> {
+                    drawSvgCopyIcon(canvas, rect, paint)
+                    return
+                }
+                "cut", "cut.svg", "assets/images/cut.svg" -> {
+                    drawSvgCutIcon(canvas, rect, paint)
+                    return
+                }
+                "paste", "paste.svg", "assets/images/paste.svg" -> {
+                    drawSvgPasteIcon(canvas, rect, paint)
+                    return
+                }
+                "select_all", "select_all.svg", "assets/images/select_all.svg" -> {
+                    drawSvgSelectAllIcon(canvas, rect, paint)
                     return
                 }
                 "keyboard" -> {
@@ -1257,8 +1608,13 @@ class KeyboardView @JvmOverloads constructor(
                 } else {
                     actionToExecute.options
                 }
-                keyPopupOverlay = KeyPopupOverlay(context) { selected ->
-                    onKeyActionListener?.invoke(KeyAction.SendText(selected))
+                keyPopupOverlay = KeyPopupOverlay(context) { selectedIndex, selectedLabel ->
+                    val actionToRun = if (selectedIndex in actionToExecute.actions.indices && actionToExecute.actions[selectedIndex] !is KeyAction.SendText) {
+                        actionToExecute.actions[selectedIndex]
+                    } else {
+                        resolveActionFromLabel(selectedLabel)
+                    }
+                    executeAction(actionToRun, sourceKey)
                 }.also {
                     it.show(this, rect, optionsToDisplay)
                 }
@@ -1337,7 +1693,7 @@ class KeyboardView @JvmOverloads constructor(
             is KeyAction.ToggleModifier -> {
                 onKeyActionListener?.invoke(actionToExecute)
             }
-            is KeyAction.SelectAll, is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.SwitchIme -> {
+            is KeyAction.SelectAll, is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.PasteEcho, is KeyAction.SwitchIme -> {
                 onKeyActionListener?.invoke(actionToExecute)
             }
             is KeyAction.None -> {}
@@ -1643,17 +1999,11 @@ class KeyboardView @JvmOverloads constructor(
             return true
         }
 
-        if (!isTrackpadActive && !isSpacebarTrackpad && gestureDetector.onTouchEvent(event)) {
-            dismissKeyPreview()
-            handler.removeCallbacks(longPressRunnable)
-            stopAutoRepeat()
-            return true
-        }
-
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 isLongPressTriggered = false
                 isScrollDragging = false
+                isSpacebarTrackpad = false
                 lastScrollTouchY = event.y
 
                 if (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
@@ -1688,6 +2038,15 @@ class KeyboardView @JvmOverloads constructor(
                     playKeyClickSound()
                     showKeyPreview(pressedKeyBounds!!.key, pressedKeyBounds!!.rect)
                     handler.postDelayed(longPressRunnable, getLongPressTimeoutMs())
+
+                    if (isTrackpadEligibleKey(pressedKeyBounds?.key)) {
+                        trackpadTouchX = event.x
+                        trackpadTouchY = event.y
+                        trackpadLastX = event.x
+                        trackpadLastY = event.y
+                        trackpadAccumulatedDx = 0f
+                        trackpadAccumulatedDy = 0f
+                    }
                 }
                 invalidate()
                 return true
@@ -1702,6 +2061,62 @@ class KeyboardView @JvmOverloads constructor(
                     invalidate()
                     onFloatingBoundsChangedListener?.invoke()
                     return true
+                }
+
+                if (isTrackpadEligibleKey(pressedKeyBounds?.key)) {
+                    val density = context.resources.displayMetrics.density
+                    val threshold = 12f * density
+                    val totalDx = event.x - trackpadTouchX
+                    val totalDy = event.y - trackpadTouchY
+
+                    if (!isSpacebarTrackpad && (kotlin.math.abs(totalDx) > threshold || kotlin.math.abs(totalDy) > threshold)) {
+                        isSpacebarTrackpad = true
+                        handler.removeCallbacks(longPressRunnable)
+                        stopAutoRepeat()
+                        dismissKeyPreview()
+                    }
+
+                    if (isSpacebarTrackpad) {
+                        val dx = event.x - trackpadLastX
+                        val dy = event.y - trackpadLastY
+                        trackpadLastX = event.x
+                        trackpadLastY = event.y
+
+                        trackpadAccumulatedDx += dx
+                        trackpadAccumulatedDy += dy
+
+                        val step = 14f * density
+                        while (trackpadAccumulatedDx >= step) {
+                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_RIGHT))
+                            performKeypressHapticFeedback()
+                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                            trackpadBlinkTime = System.currentTimeMillis()
+                            trackpadAccumulatedDx -= step
+                        }
+                        while (trackpadAccumulatedDx <= -step) {
+                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_LEFT))
+                            performKeypressHapticFeedback()
+                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                            trackpadBlinkTime = System.currentTimeMillis()
+                            trackpadAccumulatedDx += step
+                        }
+                        while (trackpadAccumulatedDy >= step) {
+                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_DOWN))
+                            performKeypressHapticFeedback()
+                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                            trackpadBlinkTime = System.currentTimeMillis()
+                            trackpadAccumulatedDy -= step
+                        }
+                        while (trackpadAccumulatedDy <= -step) {
+                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_UP))
+                            performKeypressHapticFeedback()
+                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                            trackpadBlinkTime = System.currentTimeMillis()
+                            trackpadAccumulatedDy += step
+                        }
+                        invalidate()
+                        return true
+                    }
                 }
 
                 if (maxScrollOffsetY > 0f) {
@@ -1734,7 +2149,7 @@ class KeyboardView @JvmOverloads constructor(
                     return true
                 }
                 val hoveredBounds = findHitKeyBounds(event.x, event.y)
-                if (hoveredBounds != pressedKeyBounds) {
+                if (hoveredBounds?.key != pressedKeyBounds?.key) {
                     dismissKeyPreview()
                     handler.removeCallbacks(longPressRunnable)
                     stopAutoRepeat()
@@ -1749,6 +2164,16 @@ class KeyboardView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (isSpacebarTrackpad) {
+                    isSpacebarTrackpad = false
+                    pressedKeyBounds = null
+                    isLongPressTriggered = false
+                    dismissKeyPreview()
+                    handler.removeCallbacks(longPressRunnable)
+                    stopAutoRepeat()
+                    invalidate()
+                    return true
+                }
                 if (isDraggingFloatingWindow) {
                     isDraggingFloatingWindow = false
                     val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
@@ -1830,5 +2255,39 @@ class KeyboardView @JvmOverloads constructor(
             "RightArrow", "→" -> KeyEvent.KEYCODE_DPAD_RIGHT
             else -> KeyEvent.KEYCODE_DPAD_CENTER
         }
+    }
+
+    private fun resolveActionFromLabel(label: String): KeyAction {
+        val clean = label.replace("✨", "").replace("📄", "").replace("✂️", "").replace("📥", "").replace("📢", "").replace("⌨", "").trim().uppercase()
+        return when (clean) {
+            "ALL", "SELECT ALL", "SELECT_ALL", "全选" -> KeyAction.SelectAll
+            "COPY", "复制" -> KeyAction.Copy
+            "CUT", "剪切" -> KeyAction.Cut
+            "PASTE", "粘贴" -> KeyAction.Paste
+            "ECHO", "PASTE ECHO", "ECHO_CLIPBOARD", "PASTE_ECHO", "PASTE_TEXT", "📋", "📎" -> KeyAction.PasteEcho
+            "IME", "SWITCH IME", "SWITCH_IME", "KEYBOARD" -> KeyAction.SwitchIme
+            else -> KeyAction.SendText(label)
+        }
+    }
+
+    private fun isTrackpadEligibleKey(key: KeyDefinition?): Boolean {
+        if (key == null) return false
+        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val isSpacebarTrackpadEnabled = prefs.getBoolean("pref_enable_spacebar_trackpad", true)
+        val isArrowTrackpadEnabled = prefs.getBoolean("pref_enable_arrow_trackpad", true)
+
+        val label = key.primaryLabel
+        val isSpace = label == "␣" || label.equals("space", ignoreCase = true) || key.isSplitKey
+        if (isSpace) return isSpacebarTrackpadEnabled
+
+        val isArrowLabel = label in listOf("←", "↑", "↓", "→", "UpArrow", "DownArrow", "LeftArrow", "RightArrow")
+        val press = key.onPressAction
+        val isArrowCode = (press is KeyAction.SendCode) && (press.code == KeyEvent.KEYCODE_DPAD_UP ||
+                press.code == KeyEvent.KEYCODE_DPAD_DOWN || press.code == KeyEvent.KEYCODE_DPAD_LEFT ||
+                press.code == KeyEvent.KEYCODE_DPAD_RIGHT)
+
+        if (isArrowLabel || isArrowCode) return isArrowTrackpadEnabled
+
+        return false
     }
 }

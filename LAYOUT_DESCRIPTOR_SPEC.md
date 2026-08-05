@@ -151,6 +151,8 @@ Actions are strongly-typed JSON objects with a `type` field:
 | `"AUTO_REPEAT"` | `"code"` (`int`), `"intervalMs"` (`int`) | Auto-repeats keycode action continuously while held. |
 | `"TOGGLE_ROW"` | `"rowId"` (`int` \| `string`) | Toggles visibility state of row(s). |
 | `"TOGGLE_MODIFIER"` | `"modifier"` (`string`) | Toggles modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`). |
+| `"PASTE"` | None | Performs context menu paste action. |
+| `"PASTE_ECHO"` | None | Reads primary clip from ClipboardManager and commits text directly to the input connection. |
 | `"NONE"` | None | No operation. |
 
 ---

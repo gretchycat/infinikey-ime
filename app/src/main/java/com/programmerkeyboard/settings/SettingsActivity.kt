@@ -338,6 +338,18 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit().putBoolean("pref_minimal_voice_feedback", isChecked).apply()
         }
 
+        val cbEnableSpacebarTrackpad = findViewById<android.widget.CheckBox>(R.id.cbEnableSpacebarTrackpad)
+        cbEnableSpacebarTrackpad.isChecked = prefs.getBoolean("pref_enable_spacebar_trackpad", true)
+        cbEnableSpacebarTrackpad.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("pref_enable_spacebar_trackpad", isChecked).apply()
+        }
+
+        val cbEnableArrowTrackpad = findViewById<android.widget.CheckBox>(R.id.cbEnableArrowTrackpad)
+        cbEnableArrowTrackpad.isChecked = prefs.getBoolean("pref_enable_arrow_trackpad", true)
+        cbEnableArrowTrackpad.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("pref_enable_arrow_trackpad", isChecked).apply()
+        }
+
         // 6. Haptic Feedback CheckBox
         val cbHapticFeedback = findViewById<android.widget.CheckBox>(R.id.cbHapticFeedback)
         val isHapticEnabled = prefs.getBoolean("pref_haptic_feedback_enabled", true)
@@ -1520,7 +1532,7 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.SwitchLayout -> 5
             is KeyAction.ShowWidget -> 6
             is KeyAction.SetScreenMode -> 7
-            is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.SelectAll -> 8
+            is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.PasteEcho, is KeyAction.SelectAll -> 8
             else -> 0
         }
     }
@@ -1537,6 +1549,7 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.Copy -> "COPY"
             is KeyAction.Cut -> "CUT"
             is KeyAction.Paste -> "PASTE"
+            is KeyAction.PasteEcho -> "PASTE_ECHO"
             is KeyAction.SelectAll -> "SELECT_ALL"
             else -> ""
         }
@@ -1557,6 +1570,7 @@ class SettingsActivity : AppCompatActivity() {
                 "COPY" -> KeyAction.Copy
                 "CUT" -> KeyAction.Cut
                 "PASTE" -> KeyAction.Paste
+                "PASTE_ECHO", "ECHO_CLIPBOARD" -> KeyAction.PasteEcho
                 else -> KeyAction.SelectAll
             }
             else -> KeyAction.SendText(defaultText)
@@ -1865,6 +1879,7 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.Copy -> obj.addProperty("type", "COPY")
             is KeyAction.Cut -> obj.addProperty("type", "CUT")
             is KeyAction.Paste -> obj.addProperty("type", "PASTE")
+            is KeyAction.PasteEcho -> obj.addProperty("type", "PASTE_ECHO")
             is KeyAction.SelectAll -> obj.addProperty("type", "SELECT_ALL")
             is KeyAction.SwitchIme -> obj.addProperty("type", "SWITCH_IME")
             is KeyAction.ToggleRow -> {

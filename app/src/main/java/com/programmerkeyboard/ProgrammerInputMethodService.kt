@@ -32,6 +32,16 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     private val appProfiles = mutableMapOf<String, AppProfile>()
     private var currentPackageName: String = "default"
+    private var currentEditorInfo: android.view.inputmethod.EditorInfo? = null
+
+    fun isTerminalTarget(): Boolean {
+        val info = currentEditorInfo ?: return false
+        val pkg = (info.packageName ?: "").lowercase()
+        val inputType = info.inputType
+        return pkg.contains("termux") || pkg.contains("terminal") || pkg.contains("connectbot") ||
+               pkg.contains("juicessh") || pkg.contains("vnc") || pkg.contains("ssh") ||
+               inputType == android.text.InputType.TYPE_NULL
+    }
 
     private var lastNonMetaLayout: String = "main"
     private val layoutStack = java.util.ArrayDeque<String>()
@@ -93,10 +103,81 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
     }
 
+    private val clipboardHistoryList = mutableListOf<String>()
+
+    private fun initClipboardHistoryListener() {
+        loadClipboardHistoryFromPrefs()
+        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+        clipboardManager?.addPrimaryClipChangedListener {
+            try {
+                val clip = clipboardManager.primaryClip
+                if (clip != null && clip.itemCount > 0) {
+                    val text = clip.getItemAt(0).text?.toString() ?: clip.getItemAt(0).coerceToText(this)?.toString()
+                    if (!text.isNullOrEmpty()) {
+                        addClipboardHistoryItem(text)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun addClipboardHistoryItem(text: String) {
+        val clean = text.trim()
+        if (clean.isEmpty()) return
+        clipboardHistoryList.remove(clean)
+        clipboardHistoryList.add(0, clean)
+        while (clipboardHistoryList.size > 30) {
+            clipboardHistoryList.removeAt(clipboardHistoryList.size - 1)
+        }
+        saveClipboardHistoryToPrefs()
+    }
+
+    private fun saveClipboardHistoryToPrefs() {
+        val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val jsonArray = org.json.JSONArray()
+        clipboardHistoryList.forEach { jsonArray.put(it) }
+        prefs.edit().putString("pref_clipboard_history_json", jsonArray.toString()).apply()
+    }
+
+    private fun loadClipboardHistoryFromPrefs() {
+        clipboardHistoryList.clear()
+        val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val jsonStr = prefs.getString("pref_clipboard_history_json", null) ?: return
+        try {
+            val jsonArray = org.json.JSONArray(jsonStr)
+            for (i in 0 until jsonArray.length()) {
+                clipboardHistoryList.add(jsonArray.getString(i))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun showClipboardHistoryOverlay() {
+        loadClipboardHistoryFromPrefs()
+        com.programmerkeyboard.view.ClipboardHistoryOverlay(
+            context = this,
+            historyItems = clipboardHistoryList,
+            onItemPicked = { selectedText ->
+                currentInputConnection?.commitText(selectedText, 1)
+            },
+            onDeleteItem = { idx, deletedText ->
+                saveClipboardHistoryToPrefs()
+            },
+            onClearHistory = {
+                clipboardHistoryList.clear()
+                saveClipboardHistoryToPrefs()
+            }
+        ).show(keyboardView)
+    }
+
     override fun onCreate() {
         super.onCreate()
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         prefs.registerOnSharedPreferenceChangeListener(prefChangeListener)
+        initClipboardHistoryListener()
     }
 
     override fun onCreateInputView(): View {
@@ -211,6 +292,7 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     override fun onStartInputView(info: android.view.inputmethod.EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
+        currentEditorInfo = info
 
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val heightPercent = prefs.getInt("pref_keyboard_height_percent", 30)
@@ -438,6 +520,29 @@ class ProgrammerInputMethodService : InputMethodService() {
                     sendShortcutKey(inputConnection, KeyEvent.KEYCODE_V)
                 }
             }
+            is KeyAction.PasteEcho -> {
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                var textToCommit: String? = null
+
+                if (clipboard != null && clipboard.hasPrimaryClip()) {
+                    val clipData = clipboard.primaryClip
+                    if (clipData != null && clipData.itemCount > 0) {
+                        val item = clipData.getItemAt(0)
+                        textToCommit = item.text?.toString() ?: item.coerceToText(this)?.toString()
+                    }
+                }
+
+                if (!textToCommit.isNullOrEmpty()) {
+                    inputConnection.commitText(textToCommit, 1)
+                } else {
+                    if (!inputConnection.performContextMenuAction(android.R.id.paste)) {
+                        sendShortcutKey(inputConnection, KeyEvent.KEYCODE_V)
+                    }
+                }
+                if (keyboardState.consumeOneShotModifiers()) {
+                    keyboardView.invalidate()
+                }
+            }
             is KeyAction.SwitchIme -> {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
                 imm?.showInputMethodPicker()
@@ -465,17 +570,26 @@ class ProgrammerInputMethodService : InputMethodService() {
                     "READ_TEXT", "TEXT_TO_SPEECH", "READ_SELECTION" -> {
                         speakSelectedOrCurrentText()
                     }
+                    "CLIPBOARD_HISTORY", "CLIPBOARD_MANAGER", "CLIPBOARD_LIST", "CLIPBOARD" -> {
+                        showClipboardHistoryOverlay()
+                    }
                 }
             }
             is KeyAction.SetScreenMode -> {
                 val mode = action.mode
-                if (mode == "FLOATING") {
+                val currentMode = prefs.getString("pref_form_factor", "FULL_WIDTH_DOCKED") ?: "FULL_WIDTH_DOCKED"
+                val targetModeStr = if (mode == "SPLIT") {
+                    if (currentMode == "SPLIT") "FULL_WIDTH_DOCKED" else "SPLIT"
+                } else {
+                    mode
+                }
+                if (targetModeStr == "FLOATING") {
                     if (!com.programmerkeyboard.util.OverlayPermissionUtil.hasOverlayPermission(this)) {
                         com.programmerkeyboard.util.OverlayPermissionUtil.requestOverlayPermission(this)
                     }
                 }
-                prefs.edit().putString("pref_form_factor", mode).apply()
-                val formFactorMode = when (mode) {
+                prefs.edit().putString("pref_form_factor", targetModeStr).apply()
+                val formFactorMode = when (targetModeStr) {
                     "SPLIT" -> com.programmerkeyboard.model.FormFactorMode.SPLIT
                     "LEFT_DOCKED", "SIDE_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.LEFT_DOCKED
                     "RIGHT_DOCKED" -> com.programmerkeyboard.model.FormFactorMode.RIGHT_DOCKED

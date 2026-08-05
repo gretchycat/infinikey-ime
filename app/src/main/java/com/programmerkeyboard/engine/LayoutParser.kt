@@ -610,7 +610,13 @@ object LayoutParser {
             )
             "SHOW_POPUP" -> {
                 val opts = obj.getAsJsonArray("options")?.map { it.asString } ?: emptyList()
-                KeyAction.ShowPopup(opts)
+                val actionsArray = obj.getAsJsonArray("actions")
+                val actionsList = if (actionsArray != null) {
+                    actionsArray.map { if (it.isJsonObject) parseAction(it.asJsonObject) else resolveActionFromLabel(it.asString) }
+                } else {
+                    opts.map { resolveActionFromLabel(it) }
+                }
+                KeyAction.ShowPopup(opts, actionsList)
             }
             "SHOW_WIDGET" -> KeyAction.ShowWidget(obj.get("widget")?.asString ?: "JOYSTICK")
             "AUTO_REPEAT" -> KeyAction.AutoRepeat(
@@ -631,8 +637,21 @@ object LayoutParser {
             "COPY" -> KeyAction.Copy
             "CUT" -> KeyAction.Cut
             "PASTE" -> KeyAction.Paste
+            "PASTE_ECHO", "ECHO_CLIPBOARD", "PASTE_TEXT" -> KeyAction.PasteEcho
             "SWITCH_IME" -> KeyAction.SwitchIme
             else -> KeyAction.None
+        }
+    }
+
+    private fun resolveActionFromLabel(label: String): KeyAction {
+        return when (label.trim().uppercase()) {
+            "SELECT ALL", "SELECT_ALL", "全选" -> KeyAction.SelectAll
+            "COPY", "复制" -> KeyAction.Copy
+            "CUT", "剪切" -> KeyAction.Cut
+            "PASTE", "粘贴" -> KeyAction.Paste
+            "PASTE ECHO", "ECHO", "ECHO_CLIPBOARD", "PASTE_ECHO", "PASTE_TEXT", "📋" -> KeyAction.PasteEcho
+            "SWITCH IME", "SWITCH_IME", "KEYBOARD", "⌨" -> KeyAction.SwitchIme
+            else -> KeyAction.SendText(label)
         }
     }
 
@@ -683,6 +702,7 @@ object LayoutParser {
             "Copy" -> KeyAction.Copy
             "Cut" -> KeyAction.Cut
             "Paste" -> KeyAction.Paste
+            "PasteEcho" -> KeyAction.PasteEcho
             "🌐", "ImePicker", "SwitchIme" -> KeyAction.SwitchIme
             "UpArrow" -> KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_UP)
             "DownArrow" -> KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_DOWN)
@@ -766,8 +786,8 @@ object LayoutParser {
         ))
         if (isNav) return "navigationKey"
 
-        val isEdit = trimmed in listOf("Ins", "Insert", "Del", "Delete", "Cut", "Copy", "Paste", "SelAll")
-                || onPressAction is KeyAction.Cut || onPressAction is KeyAction.Copy || onPressAction is KeyAction.Paste || onPressAction is KeyAction.SelectAll
+        val isEdit = trimmed in listOf("Ins", "Insert", "Del", "Delete", "Cut", "Copy", "Paste", "PasteEcho", "SelAll")
+                || onPressAction is KeyAction.Cut || onPressAction is KeyAction.Copy || onPressAction is KeyAction.Paste || onPressAction is KeyAction.PasteEcho || onPressAction is KeyAction.SelectAll
                 || (onPressAction is KeyAction.SendCode && onPressAction.code == android.view.KeyEvent.KEYCODE_INSERT)
         if (isEdit) return "editingKey"
 

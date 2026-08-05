@@ -992,6 +992,32 @@
                         android:textStyle="bold"
                         android:buttonTint="@color/key_text_accent"
                         android:checked="true" />
+
+                    <!-- Spacebar Trackpad CheckBox -->
+                    <CheckBox
+                        android:id="@+id/cbEnableSpacebarTrackpad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Enable Space Bar Trackpad Drag Navigation"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:buttonTint="@color/key_text_accent"
+                        android:checked="true"
+                        android:layout_marginTop="8dp" />
+
+                    <!-- Arrow Key Trackpad CheckBox -->
+                    <CheckBox
+                        android:id="@+id/cbEnableArrowTrackpad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Enable Arrow Keys Trackpad Drag Navigation"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:buttonTint="@color/key_text_accent"
+                        android:checked="true"
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </LinearLayout>
 

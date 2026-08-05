@@ -48,6 +48,7 @@ enum class KeyActionType {
     @SerializedName("COPY") COPY,
     @SerializedName("CUT") CUT,
     @SerializedName("PASTE") PASTE,
+    @SerializedName("PASTE_ECHO") PASTE_ECHO,
     @SerializedName("SWITCH_IME") SWITCH_IME,
     @SerializedName("NONE") NONE
 }
@@ -61,7 +62,7 @@ sealed class KeyAction {
     data class SwitchLayout(val target: String) : KeyAction()
     data class SetScreenMode(val mode: String) : KeyAction()
     data class AdjustHeight(val delta: Int? = null, val percentage: Int? = null) : KeyAction()
-    data class ShowPopup(val options: List<String>) : KeyAction()
+    data class ShowPopup(val options: List<String>, val actions: List<KeyAction> = emptyList()) : KeyAction()
     data class ShowWidget(val widget: String) : KeyAction()
     data class AutoRepeat(val code: Int, val intervalMs: Long = 50L) : KeyAction()
     data class ToggleRow(val rowId: Any) : KeyAction()
@@ -70,6 +71,7 @@ sealed class KeyAction {
     object Copy : KeyAction()
     object Cut : KeyAction()
     object Paste : KeyAction()
+    object PasteEcho : KeyAction()
     object SwitchIme : KeyAction()
     object None : KeyAction()
 }
