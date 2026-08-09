@@ -1142,9 +1142,10 @@ class KeyboardView @JvmOverloads constructor(
         val keyPressedBgColor = currentKey?.pressedBgColor ?: ContextCompat.getColor(context, R.color.key_background_pressed)
         val keyFgColor = currentKey?.fgColor ?: textPaint.color
 
-        // Calculate 360-degree knob offset relative to touch origin
+        // Calculate 360-degree knob offset relative to touch origin (locked horizontally for space trackpad)
+        val isSpaceActive = currentKey != null && (currentKey.primaryLabel == "␣" || currentKey.primaryLabel.equals("space", ignoreCase = true) || currentKey.isSplitKey)
         val deltaX = trackpadLastX - originX
-        val deltaY = trackpadLastY - originY
+        val deltaY = if (isSpaceActive) 0f else trackpadLastY - originY
         val dist = kotlin.math.hypot(deltaX, deltaY)
         val angle = kotlin.math.atan2(deltaY, deltaX)
         val clampedDist = kotlin.math.min(dist, maxKnobOffset)
@@ -2227,7 +2228,12 @@ class KeyboardView @JvmOverloads constructor(
                         trackpadLastY = event.y
 
                         trackpadAccumulatedDx += dx
-                        trackpadAccumulatedDy += dy
+                        
+                        val activeKey = pressedKeyBounds?.key
+                        val isSpaceActive = activeKey != null && (activeKey.primaryLabel == "␣" || activeKey.primaryLabel.equals("space", ignoreCase = true) || activeKey.isSplitKey)
+                        if (!isSpaceActive) {
+                            trackpadAccumulatedDy += dy
+                        }
 
                         val step = 14f * density
                         while (trackpadAccumulatedDx >= step) {
@@ -2244,19 +2250,21 @@ class KeyboardView @JvmOverloads constructor(
                             trackpadBlinkTime = System.currentTimeMillis()
                             trackpadAccumulatedDx += step
                         }
-                        while (trackpadAccumulatedDy >= step) {
-                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_DOWN))
-                            performKeypressHapticFeedback()
-                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
-                            trackpadBlinkTime = System.currentTimeMillis()
-                            trackpadAccumulatedDy -= step
-                        }
-                        while (trackpadAccumulatedDy <= -step) {
-                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_UP))
-                            performKeypressHapticFeedback()
-                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
-                            trackpadBlinkTime = System.currentTimeMillis()
-                            trackpadAccumulatedDy += step
+                        if (!isSpaceActive) {
+                            while (trackpadAccumulatedDy >= step) {
+                                onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_DOWN))
+                                performKeypressHapticFeedback()
+                                trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                                trackpadBlinkTime = System.currentTimeMillis()
+                                trackpadAccumulatedDy -= step
+                            }
+                            while (trackpadAccumulatedDy <= -step) {
+                                onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_UP))
+                                performKeypressHapticFeedback()
+                                trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                                trackpadBlinkTime = System.currentTimeMillis()
+                                trackpadAccumulatedDy += step
+                            }
                         }
                         invalidate()
                         return true
@@ -2436,7 +2444,7 @@ class KeyboardView @JvmOverloads constructor(
         if (key == null) return false
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val isSpacebarTrackpadEnabled = prefs.getBoolean("pref_enable_spacebar_trackpad", true)
-        val isArrowTrackpadEnabled = prefs.getBoolean("pref_enable_arrow_trackpad", true)
+        val isArrowTrackpadEnabled = prefs.getBoolean("pref_enable_arrow_trackpad", false)
 
         val label = key.primaryLabel
         val isSpace = label == "␣" || label.equals("space", ignoreCase = true) || key.isSplitKey

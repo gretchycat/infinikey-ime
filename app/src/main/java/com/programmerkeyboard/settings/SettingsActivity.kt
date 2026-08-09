@@ -498,7 +498,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val cbEnableArrowTrackpad = findViewById<android.widget.CheckBox>(R.id.cbEnableArrowTrackpad)
-        cbEnableArrowTrackpad.isChecked = prefs.getBoolean("pref_enable_arrow_trackpad", true)
+        cbEnableArrowTrackpad.isChecked = prefs.getBoolean("pref_enable_arrow_trackpad", false)
         cbEnableArrowTrackpad.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("pref_enable_arrow_trackpad", isChecked).apply()
         }
