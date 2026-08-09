@@ -423,17 +423,6 @@
           }
         },
         {
-          "label": "🌶️",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🌶️"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        },
-        {
           "label": "🌶",
           "style": "alphaKey",
           "onPress": {
@@ -498,12 +487,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "keys": [
+        },
         {
           "label": "🧅",
           "style": "alphaKey",
@@ -514,7 +498,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "keys": [
         {
           "label": "🥜",
           "style": "alphaKey",
@@ -591,12 +580,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "keys": [
+        },
         {
           "label": "🍞",
           "style": "alphaKey",
@@ -607,7 +591,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "keys": [
         {
           "label": "🥐",
           "style": "alphaKey",
@@ -684,12 +673,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "keys": [
+        },
         {
           "label": "🧀",
           "style": "alphaKey",
@@ -700,7 +684,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "keys": [
         {
           "label": "🍖",
           "style": "alphaKey",
@@ -777,12 +766,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "keys": [
+        },
         {
           "label": "🌭",
           "style": "alphaKey",
@@ -793,7 +777,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "keys": [
         {
           "label": "🥪",
           "style": "alphaKey",
@@ -870,12 +859,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "keys": [
+        },
         {
           "label": "🍳",
           "style": "alphaKey",
@@ -886,7 +870,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "keys": [
         {
           "label": "🥘",
           "style": "alphaKey",
@@ -963,12 +952,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 11,
-      "keys": [
+        },
         {
           "label": "🧂",
           "style": "alphaKey",
@@ -979,7 +963,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "keys": [
         {
           "label": "🥫",
           "style": "alphaKey",
@@ -1056,12 +1045,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "keys": [
+        },
         {
           "label": "🍝",
           "style": "alphaKey",
@@ -1072,7 +1056,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "keys": [
         {
           "label": "🍠",
           "style": "alphaKey",
@@ -1149,12 +1138,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "keys": [
+        },
         {
           "label": "🥟",
           "style": "alphaKey",
@@ -1165,7 +1149,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "keys": [
         {
           "label": "🥠",
           "style": "alphaKey",
@@ -1242,12 +1231,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "keys": [
+        },
         {
           "label": "🎂",
           "style": "alphaKey",
@@ -1258,7 +1242,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "keys": [
         {
           "label": "🍰",
           "style": "alphaKey",
@@ -1335,12 +1324,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 15,
-      "keys": [
+        },
         {
           "label": "🍯",
           "style": "alphaKey",
@@ -1351,7 +1335,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "keys": [
         {
           "label": "🍼",
           "style": "alphaKey",
@@ -1428,12 +1417,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 16,
-      "keys": [
+        },
         {
           "label": "🍷",
           "style": "alphaKey",
@@ -1444,7 +1428,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "keys": [
         {
           "label": "🍸",
           "style": "alphaKey",
@@ -1521,12 +1510,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 17,
-      "keys": [
+        },
         {
           "label": "🥤",
           "style": "alphaKey",
@@ -1537,7 +1521,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "keys": [
         {
           "label": "🧋",
           "style": "alphaKey",
@@ -1594,17 +1583,6 @@
           }
         },
         {
-          "label": "🍽️",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🍽️"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        },
-        {
           "label": "🍽",
           "style": "alphaKey",
           "onPress": {
@@ -1614,12 +1592,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 18,
-      "keys": [
+        },
         {
           "label": "🍴",
           "style": "alphaKey",
@@ -1641,7 +1614,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "keys": [
         {
           "label": "🔪",
           "style": "alphaKey",

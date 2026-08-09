@@ -177,17 +177,6 @@
           }
         },
         {
-          "label": "🏳️",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🏳️"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        },
-        {
           "label": "🏳",
           "style": "alphaKey",
           "onPress": {
@@ -199,60 +188,11 @@
           }
         },
         {
-          "label": "🏳️‍🌈",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🏳️‍🌈"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        },
-        {
           "label": "🏳‍🌈",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
             "text": "🏳‍🌈"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "keys": [
-        {
-          "label": "🏳️‍⚧️",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🏳️‍⚧️"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        },
-        {
-          "label": "🏳‍⚧️",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🏳‍⚧️"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        },
-        {
-          "label": "🏳️‍⚧",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🏳️‍⚧"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -270,17 +210,6 @@
           }
         },
         {
-          "label": "🏴‍☠️",
-          "style": "alphaKey",
-          "onPress": {
-            "type": "SEND_TEXT",
-            "text": "🏴‍☠️"
-          },
-          "onLongPress": {
-            "type": "SHOW_ZOOM_PREVIEW"
-          }
-        },
-        {
           "label": "🏴‍☠",
           "style": "alphaKey",
           "onPress": {
@@ -290,7 +219,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
         {
           "label": "🇦🇨",
           "style": "alphaKey",
@@ -312,12 +246,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "keys": [
+        },
         {
           "label": "🇦🇪",
           "style": "alphaKey",
@@ -383,7 +312,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
         {
           "label": "🇦🇴",
           "style": "alphaKey",
@@ -405,12 +339,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "keys": [
+        },
         {
           "label": "🇦🇷",
           "style": "alphaKey",
@@ -476,7 +405,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
         {
           "label": "🇦🇿",
           "style": "alphaKey",
@@ -498,12 +432,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "keys": [
+        },
         {
           "label": "🇧🇧",
           "style": "alphaKey",
@@ -569,7 +498,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "keys": [
         {
           "label": "🇧🇮",
           "style": "alphaKey",
@@ -591,12 +525,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "keys": [
+        },
         {
           "label": "🇧🇱",
           "style": "alphaKey",
@@ -662,7 +591,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "keys": [
         {
           "label": "🇧🇸",
           "style": "alphaKey",
@@ -684,12 +618,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "keys": [
+        },
         {
           "label": "🇧🇻",
           "style": "alphaKey",
@@ -755,7 +684,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "keys": [
         {
           "label": "🇨🇩",
           "style": "alphaKey",
@@ -777,12 +711,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "keys": [
+        },
         {
           "label": "🇨🇬",
           "style": "alphaKey",
@@ -848,7 +777,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "keys": [
         {
           "label": "🇨🇳",
           "style": "alphaKey",
@@ -870,12 +804,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "keys": [
+        },
         {
           "label": "🇨🇵",
           "style": "alphaKey",
@@ -941,7 +870,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "keys": [
         {
           "label": "🇨🇽",
           "style": "alphaKey",
@@ -963,12 +897,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 11,
-      "keys": [
+        },
         {
           "label": "🇨🇿",
           "style": "alphaKey",
@@ -1034,7 +963,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "keys": [
         {
           "label": "🇩🇴",
           "style": "alphaKey",
@@ -1056,12 +990,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "keys": [
+        },
         {
           "label": "🇪🇦",
           "style": "alphaKey",
@@ -1127,7 +1056,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "keys": [
         {
           "label": "🇪🇸",
           "style": "alphaKey",
@@ -1149,12 +1083,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "keys": [
+        },
         {
           "label": "🇪🇺",
           "style": "alphaKey",
@@ -1220,7 +1149,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "keys": [
         {
           "label": "🇫🇷",
           "style": "alphaKey",
@@ -1242,12 +1176,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "keys": [
+        },
         {
           "label": "🇬🇧",
           "style": "alphaKey",
@@ -1313,7 +1242,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "keys": [
         {
           "label": "🇬🇮",
           "style": "alphaKey",
@@ -1335,12 +1269,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 15,
-      "keys": [
+        },
         {
           "label": "🇬🇲",
           "style": "alphaKey",
@@ -1406,7 +1335,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "keys": [
         {
           "label": "🇬🇹",
           "style": "alphaKey",
@@ -1428,12 +1362,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 16,
-      "keys": [
+        },
         {
           "label": "🇬🇼",
           "style": "alphaKey",
@@ -1499,7 +1428,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "keys": [
         {
           "label": "🇭🇹",
           "style": "alphaKey",
@@ -1521,12 +1455,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 17,
-      "keys": [
+        },
         {
           "label": "🇮🇨",
           "style": "alphaKey",
@@ -1592,7 +1521,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "keys": [
         {
           "label": "🇮🇴",
           "style": "alphaKey",
@@ -1614,12 +1548,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 18,
-      "keys": [
+        },
         {
           "label": "🇮🇷",
           "style": "alphaKey",
@@ -1685,7 +1614,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "keys": [
         {
           "label": "🇯🇵",
           "style": "alphaKey",
@@ -1707,12 +1641,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 19,
-      "keys": [
+        },
         {
           "label": "🇰🇬",
           "style": "alphaKey",
@@ -1778,7 +1707,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "keys": [
         {
           "label": "🇰🇷",
           "style": "alphaKey",
@@ -1800,12 +1734,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 20,
-      "keys": [
+        },
         {
           "label": "🇰🇾",
           "style": "alphaKey",
@@ -1871,7 +1800,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "keys": [
         {
           "label": "🇱🇰",
           "style": "alphaKey",
@@ -1893,12 +1827,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 21,
-      "keys": [
+        },
         {
           "label": "🇱🇸",
           "style": "alphaKey",
@@ -1964,7 +1893,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "keys": [
         {
           "label": "🇲🇨",
           "style": "alphaKey",
@@ -1986,12 +1920,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 22,
-      "keys": [
+        },
         {
           "label": "🇲🇪",
           "style": "alphaKey",
@@ -2057,7 +1986,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "keys": [
         {
           "label": "🇲🇲",
           "style": "alphaKey",
@@ -2079,12 +2013,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 23,
-      "keys": [
+        },
         {
           "label": "🇲🇴",
           "style": "alphaKey",
@@ -2150,7 +2079,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "keys": [
         {
           "label": "🇲🇺",
           "style": "alphaKey",
@@ -2172,12 +2106,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 24,
-      "keys": [
+        },
         {
           "label": "🇲🇼",
           "style": "alphaKey",
@@ -2243,7 +2172,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "keys": [
         {
           "label": "🇳🇪",
           "style": "alphaKey",
@@ -2265,12 +2199,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 25,
-      "keys": [
+        },
         {
           "label": "🇳🇬",
           "style": "alphaKey",
@@ -2336,7 +2265,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "keys": [
         {
           "label": "🇳🇺",
           "style": "alphaKey",
@@ -2358,12 +2292,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 26,
-      "keys": [
+        },
         {
           "label": "🇴🇲",
           "style": "alphaKey",
@@ -2429,7 +2358,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "keys": [
         {
           "label": "🇵🇰",
           "style": "alphaKey",
@@ -2451,12 +2385,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 27,
-      "keys": [
+        },
         {
           "label": "🇵🇲",
           "style": "alphaKey",
@@ -2522,7 +2451,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "keys": [
         {
           "label": "🇵🇾",
           "style": "alphaKey",
@@ -2544,12 +2478,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 28,
-      "keys": [
+        },
         {
           "label": "🇷🇪",
           "style": "alphaKey",
@@ -2615,7 +2544,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "keys": [
         {
           "label": "🇸🇧",
           "style": "alphaKey",
@@ -2637,12 +2571,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 29,
-      "keys": [
+        },
         {
           "label": "🇸🇩",
           "style": "alphaKey",
@@ -2708,7 +2637,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "keys": [
         {
           "label": "🇸🇰",
           "style": "alphaKey",
@@ -2730,12 +2664,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 30,
-      "keys": [
+        },
         {
           "label": "🇸🇲",
           "style": "alphaKey",
@@ -2801,7 +2730,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "keys": [
         {
           "label": "🇸🇻",
           "style": "alphaKey",
@@ -2823,12 +2757,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 31,
-      "keys": [
+        },
         {
           "label": "🇸🇾",
           "style": "alphaKey",
@@ -2894,7 +2823,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "keys": [
         {
           "label": "🇹🇬",
           "style": "alphaKey",
@@ -2916,12 +2850,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 32,
-      "keys": [
+        },
         {
           "label": "🇹🇯",
           "style": "alphaKey",
@@ -2987,7 +2916,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "keys": [
         {
           "label": "🇹🇷",
           "style": "alphaKey",
@@ -3009,12 +2943,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 33,
-      "keys": [
+        },
         {
           "label": "🇹🇻",
           "style": "alphaKey",
@@ -3080,7 +3009,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "keys": [
         {
           "label": "🇺🇳",
           "style": "alphaKey",
@@ -3102,12 +3036,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 34,
-      "keys": [
+        },
         {
           "label": "🇺🇾",
           "style": "alphaKey",
@@ -3173,7 +3102,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "keys": [
         {
           "label": "🇻🇮",
           "style": "alphaKey",
@@ -3195,12 +3129,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 35,
-      "keys": [
+        },
         {
           "label": "🇻🇺",
           "style": "alphaKey",
@@ -3266,7 +3195,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "keys": [
         {
           "label": "🇿🇦",
           "style": "alphaKey",
@@ -3288,12 +3222,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 36,
-      "keys": [
+        },
         {
           "label": "🇿🇼",
           "style": "alphaKey",
@@ -3341,7 +3270,7 @@
       ]
     },
     {
-      "id": 37,
+      "id": 36,
       "keys": [
         {
           "label": "⌨ ABC",

@@ -56,6 +56,8 @@ CATEGORY_MAPPING = {
 SKIN_TONE_MODIFIERS = [chr(0x1F3FB), chr(0x1F3FC), chr(0x1F3FD), chr(0x1F3FE), chr(0x1F3FF)]
 
 def get_base_and_modifier(emoji_char):
+    # Strip variation selectors globally to deduplicate identical glyphs (e.g. 🎗️ vs 🎗, ♠️ vs ♠)
+    emoji_char = emoji_char.replace("\ufe0f", "").replace("\ufe0e", "")
     found_modifier = None
     for mod in SKIN_TONE_MODIFIERS:
         if mod in emoji_char:
