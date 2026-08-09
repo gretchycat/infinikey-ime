@@ -56,8 +56,6 @@ CATEGORY_MAPPING = {
 SKIN_TONE_MODIFIERS = [chr(0x1F3FB), chr(0x1F3FC), chr(0x1F3FD), chr(0x1F3FE), chr(0x1F3FF)]
 
 def get_base_and_modifier(emoji_char):
-    # Strip variation selectors globally to deduplicate identical glyphs (e.g. 🎗️ vs 🎗, ♠️ vs ♠)
-    emoji_char = emoji_char.replace("\ufe0f", "").replace("\ufe0e", "")
     found_modifier = None
     for mod in SKIN_TONE_MODIFIERS:
         if mod in emoji_char:
@@ -107,12 +105,14 @@ def main():
             char = item.get("char")
             if char:
                 base, variant = get_base_and_modifier(char)
-                # Deduplicate base emojis globally (handles playing cards, symbols variations)
-                if base in seen_emojis and not variant:
+                
+                # Deduplicate base emojis globally by comparing variation-selector-stripped strings
+                stripped_base = base.replace("\ufe0f", "").replace("\ufe0e", "")
+                if stripped_base in seen_emojis and not variant:
                     continue
                 
-                if base not in seen_emojis:
-                    seen_emojis.add(base)
+                if stripped_base not in seen_emojis:
+                    seen_emojis.add(stripped_base)
 
                 if base not in grouped_emojis[matched_cat]:
                     grouped_emojis[matched_cat][base] = []

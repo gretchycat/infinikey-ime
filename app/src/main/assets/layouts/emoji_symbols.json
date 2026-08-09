@@ -281,11 +281,11 @@
           }
         },
         {
-          "label": "⚠",
+          "label": "⚠️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⚠"
+            "text": "⚠️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -412,88 +412,88 @@
       "id": 5,
       "keys": [
         {
-          "label": "☢",
+          "label": "☢️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☢"
+            "text": "☢️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "☣",
+          "label": "☣️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☣"
+            "text": "☣️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⬆",
+          "label": "⬆️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⬆"
+            "text": "⬆️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↗",
+          "label": "↗️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↗"
+            "text": "↗️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "➡",
+          "label": "➡️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "➡"
+            "text": "➡️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↘",
+          "label": "↘️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↘"
+            "text": "↘️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⬇",
+          "label": "⬇️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⬇"
+            "text": "⬇️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↙",
+          "label": "↙️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↙"
+            "text": "↙️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -505,88 +505,88 @@
       "id": 6,
       "keys": [
         {
-          "label": "⬅",
+          "label": "⬅️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⬅"
+            "text": "⬅️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↖",
+          "label": "↖️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↖"
+            "text": "↖️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↕",
+          "label": "↕️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↕"
+            "text": "↕️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↔",
+          "label": "↔️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↔"
+            "text": "↔️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↩",
+          "label": "↩️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↩"
+            "text": "↩️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "↪",
+          "label": "↪️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "↪"
+            "text": "↪️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⤴",
+          "label": "⤴️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⤴"
+            "text": "⤴️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⤵",
+          "label": "⤵️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⤵"
+            "text": "⤵️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -691,88 +691,88 @@
       "id": 8,
       "keys": [
         {
-          "label": "⚛",
+          "label": "⚛️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⚛"
+            "text": "⚛️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "🕉",
+          "label": "🕉️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "🕉"
+            "text": "🕉️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "✡",
+          "label": "✡️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "✡"
+            "text": "✡️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "☸",
+          "label": "☸️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☸"
+            "text": "☸️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "☯",
+          "label": "☯️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☯"
+            "text": "☯️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "✝",
+          "label": "✝️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "✝"
+            "text": "✝️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "☦",
+          "label": "☦️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☦"
+            "text": "☦️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "☪",
+          "label": "☪️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☪"
+            "text": "☪️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -784,11 +784,11 @@
       "id": 9,
       "keys": [
         {
-          "label": "☮",
+          "label": "☮️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☮"
+            "text": "☮️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1014,11 +1014,11 @@
           }
         },
         {
-          "label": "▶",
+          "label": "▶️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "▶"
+            "text": "▶️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1036,22 +1036,22 @@
           }
         },
         {
-          "label": "⏭",
+          "label": "⏭️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⏭"
+            "text": "⏭️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⏯",
+          "label": "⏯️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⏯"
+            "text": "⏯️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1063,11 +1063,11 @@
       "id": 12,
       "keys": [
         {
-          "label": "◀",
+          "label": "◀️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "◀"
+            "text": "◀️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1085,11 +1085,11 @@
           }
         },
         {
-          "label": "⏮",
+          "label": "⏮️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⏮"
+            "text": "⏮️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1140,11 +1140,11 @@
           }
         },
         {
-          "label": "⏸",
+          "label": "⏸️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⏸"
+            "text": "⏸️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1156,33 +1156,33 @@
       "id": 13,
       "keys": [
         {
-          "label": "⏹",
+          "label": "⏹️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⏹"
+            "text": "⏹️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⏺",
+          "label": "⏺️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⏺"
+            "text": "⏺️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⏏",
+          "label": "⏏️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⏏"
+            "text": "⏏️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1271,44 +1271,44 @@
           }
         },
         {
-          "label": "♀",
+          "label": "♀️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "♀"
+            "text": "♀️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "♂",
+          "label": "♂️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "♂"
+            "text": "♂️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⚧",
+          "label": "⚧️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⚧"
+            "text": "⚧️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "✖",
+          "label": "✖️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "✖"
+            "text": "✖️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1364,33 +1364,33 @@
           }
         },
         {
-          "label": "♾",
+          "label": "♾️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "♾"
+            "text": "♾️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "‼",
+          "label": "‼️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "‼"
+            "text": "‼️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⁉",
+          "label": "⁉️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⁉"
+            "text": "⁉️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1446,11 +1446,11 @@
           }
         },
         {
-          "label": "〰",
+          "label": "〰️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "〰"
+            "text": "〰️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1479,33 +1479,33 @@
           }
         },
         {
-          "label": "⚕",
+          "label": "⚕️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⚕"
+            "text": "⚕️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "♻",
+          "label": "♻️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "♻"
+            "text": "♻️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "⚜",
+          "label": "⚜️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "⚜"
+            "text": "⚜️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1572,22 +1572,22 @@
           }
         },
         {
-          "label": "☑",
+          "label": "☑️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "☑"
+            "text": "☑️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "✔",
+          "label": "✔️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "✔"
+            "text": "✔️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1643,66 +1643,66 @@
           }
         },
         {
-          "label": "〽",
+          "label": "〽️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "〽"
+            "text": "〽️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "✳",
+          "label": "✳️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "✳"
+            "text": "✳️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "✴",
+          "label": "✴️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "✴"
+            "text": "✴️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "❇",
+          "label": "❇️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "❇"
+            "text": "❇️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "©",
+          "label": "©️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "©"
+            "text": "©️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "®",
+          "label": "®️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "®"
+            "text": "®️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1714,11 +1714,11 @@
       "id": 19,
       "keys": [
         {
-          "label": "™",
+          "label": "™️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "™"
+            "text": "™️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1736,66 +1736,66 @@
           }
         },
         {
-          "label": "#⃣",
+          "label": "#️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "#⃣"
+            "text": "#️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "*⃣",
+          "label": "*️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "*⃣"
+            "text": "*️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "0⃣",
+          "label": "0️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "0⃣"
+            "text": "0️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "1⃣",
+          "label": "1️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "1⃣"
+            "text": "1️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "2⃣",
+          "label": "2️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "2⃣"
+            "text": "2️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "3⃣",
+          "label": "3️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "3⃣"
+            "text": "3️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1807,66 +1807,66 @@
       "id": 20,
       "keys": [
         {
-          "label": "4⃣",
+          "label": "4️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "4⃣"
+            "text": "4️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "5⃣",
+          "label": "5️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "5⃣"
+            "text": "5️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "6⃣",
+          "label": "6️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "6⃣"
+            "text": "6️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "7⃣",
+          "label": "7️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "7⃣"
+            "text": "7️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "8⃣",
+          "label": "8️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "8⃣"
+            "text": "8️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "9⃣",
+          "label": "9️⃣",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "9⃣"
+            "text": "9️⃣"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1944,11 +1944,11 @@
           }
         },
         {
-          "label": "🅰",
+          "label": "🅰️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "🅰"
+            "text": "🅰️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -1966,11 +1966,11 @@
           }
         },
         {
-          "label": "🅱",
+          "label": "🅱️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "🅱"
+            "text": "🅱️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2015,11 +2015,11 @@
           }
         },
         {
-          "label": "ℹ",
+          "label": "ℹ️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "ℹ"
+            "text": "ℹ️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2037,11 +2037,11 @@
           }
         },
         {
-          "label": "Ⓜ",
+          "label": "Ⓜ️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "Ⓜ"
+            "text": "Ⓜ️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2070,11 +2070,11 @@
           }
         },
         {
-          "label": "🅾",
+          "label": "🅾️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "🅾"
+            "text": "🅾️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2097,11 +2097,11 @@
           }
         },
         {
-          "label": "🅿",
+          "label": "🅿️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "🅿"
+            "text": "🅿️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2152,22 +2152,22 @@
           }
         },
         {
-          "label": "🈂",
+          "label": "🈂️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "🈂"
+            "text": "🈂️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "🈷",
+          "label": "🈷️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "🈷"
+            "text": "🈷️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2294,22 +2294,22 @@
           }
         },
         {
-          "label": "㊗",
+          "label": "㊗️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "㊗"
+            "text": "㊗️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "㊙",
+          "label": "㊙️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "㊙"
+            "text": "㊙️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2551,22 +2551,22 @@
       "id": 28,
       "keys": [
         {
-          "label": "◼",
+          "label": "◼️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "◼"
+            "text": "◼️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "◻",
+          "label": "◻️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "◻"
+            "text": "◻️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
@@ -2595,22 +2595,22 @@
           }
         },
         {
-          "label": "▪",
+          "label": "▪️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "▪"
+            "text": "▪️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
         },
         {
-          "label": "▫",
+          "label": "▫️",
           "style": "alphaKey",
           "onPress": {
             "type": "SEND_TEXT",
-            "text": "▫"
+            "text": "▫️"
           },
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
