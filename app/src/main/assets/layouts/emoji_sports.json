@@ -132,157 +132,1117 @@
     {
       "id": 2,
       "keys": [
-        "🎃",
-        "🎄",
-        "🎆",
-        "🎇",
-        "🧨",
-        "✨",
-        "🎈",
-        "🎉"
+        {
+          "label": "🎃",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎃"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎄",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎄"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎆",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎆"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎇",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎇"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🧨",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧨"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "✨",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "✨"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎈",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎈"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎉",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎉"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 3,
       "keys": [
-        "🎊",
-        "🎋",
-        "🎍",
-        "🎎",
-        "🎏",
-        "🎐",
-        "🎑",
-        "🧧"
+        {
+          "label": "🎊",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎊"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎋",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎋"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎍",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎍"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎎",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎎"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎏",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎏"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎐",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎐"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎑",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎑"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🧧",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧧"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 4,
       "keys": [
-        "🎀",
-        "🎁",
-        "🎗️",
-        "🎗",
-        "🎟️",
-        "🎟",
-        "🎫",
-        "🎖️"
+        {
+          "label": "🎀",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎀"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎁",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎁"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎗️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎗️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎗",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎗"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎟️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎟️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎟",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎟"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎫",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎫"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎖️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎖️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 5,
       "keys": [
-        "🎖",
-        "🏆",
-        "🏅",
-        "🥇",
-        "🥈",
-        "🥉",
-        "⚽",
-        "⚾"
+        {
+          "label": "🎖",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎖"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏆",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏆"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏅",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏅"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥇",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥇"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥈",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥈"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥉",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥉"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "⚽",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⚽"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "⚾",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⚾"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 6,
       "keys": [
-        "🥎",
-        "🏀",
-        "🏐",
-        "🏈",
-        "🏉",
-        "🎾",
-        "🥏",
-        "🎳"
+        {
+          "label": "🥎",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥎"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏀",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏀"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏐",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏐"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏈",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏈"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏉",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏉"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎾",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎾"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥏",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥏"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎳",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎳"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 7,
       "keys": [
-        "🏏",
-        "🏑",
-        "🏒",
-        "🥍",
-        "🏓",
-        "🏸",
-        "🥊",
-        "🥋"
+        {
+          "label": "🏏",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏏"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏑",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏑"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏒",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏒"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥍",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥍"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏓",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏓"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🏸",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏸"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥊",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥊"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥋",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥋"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 8,
       "keys": [
-        "🥅",
-        "⛳",
-        "⛸️",
-        "⛸",
-        "🎣",
-        "🤿",
-        "🎽",
-        "🎿"
+        {
+          "label": "🥅",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥅"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "⛳",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⛳"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "⛸️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⛸️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "⛸",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⛸"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎣",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎣"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🤿",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤿"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎽",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎽"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎿",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎿"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 9,
       "keys": [
-        "🛷",
-        "🥌",
-        "🎯",
-        "🪀",
-        "🪁",
-        "🔫",
-        "🎱",
-        "🔮"
+        {
+          "label": "🛷",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🛷"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🥌",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥌"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎯",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎯"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🪀",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪀"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🪁",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪁"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🔫",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🔫"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎱",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎱"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🔮",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🔮"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 10,
       "keys": [
-        "🪄",
-        "🎮",
-        "🕹️",
-        "🕹",
-        "🎰",
-        "🎲",
-        "🧩",
-        "🧸"
+        {
+          "label": "🪄",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪄"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎮",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎮"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🕹️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🕹️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🕹",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🕹"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎰",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎰"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎲",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎲"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🧩",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧩"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🧸",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧸"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 11,
       "keys": [
-        "🪅",
-        "🪩",
-        "🪆",
-        "♠️",
-        "♠",
-        "♥️",
-        "♥",
-        "♦️"
+        {
+          "label": "🪅",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪅"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🪩",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪩"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🪆",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪆"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♠️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♠️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♠",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♠"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♥️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♥️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♥",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♥"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♦️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♦️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 12,
       "keys": [
-        "♦",
-        "♣️",
-        "♣",
-        "♟️",
-        "♟",
-        "🃏",
-        "🀄",
-        "🎴"
+        {
+          "label": "♦",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♦"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♣️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♣️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♣",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♣"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♟️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♟️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "♟",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "♟"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🃏",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🃏"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🀄",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🀄"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎴",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎴"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {
       "id": 13,
       "keys": [
-        "🎭",
-        "🖼️",
-        "🖼",
-        "🎨",
-        "🧵",
-        "🪡",
-        "🧶",
-        "🪢"
+        {
+          "label": "🎭",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎭"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🖼️",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🖼️"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🖼",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🖼"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🎨",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎨"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🧵",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧵"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🪡",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪡"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🧶",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧶"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        },
+        {
+          "label": "🪢",
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🪢"
+          },
+          "onLongPress": {
+            "type": "SHOW_ZOOM_PREVIEW"
+          }
+        }
       ]
     },
     {

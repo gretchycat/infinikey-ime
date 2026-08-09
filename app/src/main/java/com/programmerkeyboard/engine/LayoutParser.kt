@@ -617,6 +617,7 @@ object LayoutParser {
                 KeyAction.ShowPopup(opts, actionsList)
             }
             "SHOW_WIDGET" -> KeyAction.ShowWidget(obj.get("widget")?.asString ?: "JOYSTICK")
+            "SHOW_ZOOM_PREVIEW", "ZOOM_PREVIEW" -> KeyAction.ShowZoomPreview(obj.get("text")?.asString)
             "AUTO_REPEAT" -> KeyAction.AutoRepeat(
                 code = obj.get("code")?.asInt ?: KeyEvent.KEYCODE_DEL,
                 intervalMs = obj.get("intervalMs")?.asLong ?: 50L

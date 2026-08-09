@@ -73,6 +73,7 @@ sealed class KeyAction {
     object Paste : KeyAction()
     object PasteEcho : KeyAction()
     object SwitchIme : KeyAction()
+    data class ShowZoomPreview(val text: String? = null) : KeyAction()
     object None : KeyAction()
 }
 

@@ -1630,6 +1630,11 @@ class KeyboardView @JvmOverloads constructor(
                 actionToExecute.percentage?.let { heightPercentage = it }
                 actionToExecute.delta?.let { heightPercentage = (heightPercentage + it).coerceIn(15, 60) }
             }
+            is KeyAction.ShowZoomPreview -> {
+                val text = actionToExecute.text ?: sourceKey?.primaryLabel ?: return
+                val bounds = pressedKeyBounds ?: sourceKey?.let { k -> keyBoundsList.firstOrNull { it.key == k } } ?: return
+                showZoomPreview(text, bounds.rect)
+            }
             is KeyAction.ShowPopup -> {
                 if (layoutDefinition?.id == "phone") return
                 val rect = (sourceKey?.let { k -> keyBoundsList.firstOrNull { it.key == k } } ?: pressedKeyBounds)?.rect ?: return
