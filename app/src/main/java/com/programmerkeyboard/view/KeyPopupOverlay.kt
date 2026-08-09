@@ -119,7 +119,7 @@ class KeyPopupOverlay(
 
     private class PopupContentView(
         context: Context,
-        private val options: List<String>,
+        val options: List<String>,
         private val fontSize: Float,
         private val onItemSelected: (Int, String) -> Unit,
         private val onDismissRequest: () -> Unit,
