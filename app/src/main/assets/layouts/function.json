@@ -93,7 +93,7 @@
         { "label": ".", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "." } },
         { "label": "+", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "+" } },
         { "label": "PgDn", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 93 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 93, "intervalMs": 50 } },
-        { "label": "↑", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 19 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 19, "intervalMs": 50 } },
+        { "label": "△", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 19 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 19, "intervalMs": 50 } },
         { "label": "🌐", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SWITCH_IME" } }
       ]
     },
@@ -114,9 +114,9 @@
           "onPress": { "type": "SWITCH_LAYOUT", "target": "main" },
           "onLongPress": { "type": "TOGGLE_ROW", "rowId": 1 }
         },
-        { "label": "←", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 21 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 21, "intervalMs": 50 } },
-        { "label": "↓", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 20 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 20, "intervalMs": 50 } },
-        { "label": "→", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 22 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 22, "intervalMs": 50 } }
+        { "label": "◁", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 21 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 21, "intervalMs": 50 } },
+        { "label": "▽", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 20 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 20, "intervalMs": 50 } },
+        { "label": "▷", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 22 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 22, "intervalMs": 50 } }
       ]
     }
   ]

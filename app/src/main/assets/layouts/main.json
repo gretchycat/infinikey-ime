@@ -133,7 +133,7 @@
         { "label": ".", "secondaryLabel": ">", "alternates": [">", "»", "›", "≥", "…"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "." }, "onSwipeUp": { "type": "SEND_TEXT", "text": ">" } },
         { "label": "/", "secondaryLabel": "?", "alternates": ["?", "¿", "‽", "÷"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "/" }, "onSwipeUp": { "type": "SEND_TEXT", "text": "?" } },
         {
-          "label": "↑",
+          "label": "△",
           "style": "navigationKey",
           "onPress": { "type": "SEND_CODE", "code": 19 },
           "onLongPress": { "type": "AUTO_REPEAT", "code": 19, "intervalMs": 50 }
@@ -160,9 +160,9 @@
           "onLongPress": { "type": "TOGGLE_ROW", "rowId": 1 }
         },
         { "label": "😀", "style": "modifierKey", "onPress": { "type": "SWITCH_LAYOUT", "target": "emoji_auto" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "EMOJI_PICKER" } },
-        { "label": "←", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 21 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 21, "intervalMs": 50 } },
-        { "label": "↓", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 20 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 20, "intervalMs": 50 } },
-        { "label": "→", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 22 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 22, "intervalMs": 50 } }
+        { "label": "◁", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 21 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 21, "intervalMs": 50 } },
+        { "label": "▽", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 20 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 20, "intervalMs": 50 } },
+        { "label": "▷", "style": "navigationKey", "onPress": { "type": "SEND_CODE", "code": 22 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 22, "intervalMs": 50 } }
       ]
     }
   ]

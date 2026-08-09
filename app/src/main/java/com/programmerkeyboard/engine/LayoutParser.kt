@@ -143,11 +143,7 @@ object LayoutParser {
         // Re-apply merged category styles onto every KeyDefinition across all rows
         val updatedRows = layout.rows.map { row ->
             val updatedKeys = row.keys.map { key ->
-                val inferredCategory = inferKeyStyleName(key.primaryLabel, key.onPressAction)
-                val categoryStyle = (key.styleName?.let { mergedStyles[it] })
-                    ?: mergedStyles[inferredCategory]
-                    ?: (if (key.styleName in listOf("arrowKey", "pagingKey", "homeEndKey")) mergedStyles["navigationKey"] else null)
-                    ?: (if (key.styleName == "clipboardKey") mergedStyles["editingKey"] else null)
+                val categoryStyle = key.styleName?.let { mergedStyles[it] }
 
                 if (categoryStyle != null) {
                     key.copy(
@@ -470,8 +466,7 @@ object LayoutParser {
                     val onSwipeLeftAction = if (onSwipeLeftObj != null) parseAction(onSwipeLeftObj) else KeyAction.None
                     val onSwipeRightAction = if (onSwipeRightObj != null) parseAction(onSwipeRightObj) else KeyAction.None
 
-                    val inferredStyleName = inferKeyStyleName(label, onPressAction)
-                    val styleObj = styleName?.let { stylesMap[it] } ?: stylesMap[inferredStyleName]
+                    val styleObj = styleName?.let { stylesMap[it] }
 
                     val isSplitKey = kObj.get("isSplitKey")?.asBoolean ?: (label.equals("space", ignoreCase = true) || label == "␣")
                     val splitLeftWeight = parseDimensionValue(kObj.get("splitLeftWeight"))
@@ -772,43 +767,7 @@ object LayoutParser {
         )
     }
 
-    private fun inferKeyStyleName(label: String, onPressAction: KeyAction): String {
-        val trimmed = label.trim()
 
-        val isNav = trimmed in listOf("PgUp", "PgDn", "PageUp", "PageDown", "Home", "End", "←", "↑", "↓", "→", "Left", "Right", "Up", "Down")
-                || (onPressAction is KeyAction.SendCode && onPressAction.code in listOf(
-            android.view.KeyEvent.KEYCODE_PAGE_UP,
-            android.view.KeyEvent.KEYCODE_PAGE_DOWN,
-            android.view.KeyEvent.KEYCODE_MOVE_HOME,
-            android.view.KeyEvent.KEYCODE_MOVE_END,
-            android.view.KeyEvent.KEYCODE_DPAD_LEFT,
-            android.view.KeyEvent.KEYCODE_DPAD_RIGHT,
-            android.view.KeyEvent.KEYCODE_DPAD_UP,
-            android.view.KeyEvent.KEYCODE_DPAD_DOWN
-        ))
-        if (isNav) return "navigationKey"
-
-        val isEdit = trimmed in listOf("Ins", "Insert", "Del", "Delete", "Cut", "Copy", "Paste", "PasteEcho", "SelAll")
-                || onPressAction is KeyAction.Cut || onPressAction is KeyAction.Copy || onPressAction is KeyAction.Paste || onPressAction is KeyAction.PasteEcho || onPressAction is KeyAction.SelectAll
-                || (onPressAction is KeyAction.SendCode && onPressAction.code == android.view.KeyEvent.KEYCODE_INSERT)
-        if (isEdit) return "editingKey"
-
-        val isMod = trimmed in listOf("Shift", "Ctrl", "Alt", "Meta", "Super", "Caps", "Fn", "⇧", "⇪")
-                || onPressAction is KeyAction.ToggleModifier
-        if (isMod) return "modifierKey"
-
-        val isFn = (trimmed.length in 2..3 && trimmed.startsWith("F", ignoreCase = true) && trimmed.substring(1).toIntOrNull() != null)
-                || trimmed in listOf("Esc", "Tab")
-        if (isFn) return "functionKey"
-
-        val isAct = trimmed in listOf("Enter", "Return", "Space", "␣", "Backspace", "⌫")
-                || (onPressAction is KeyAction.SendCode && (onPressAction.code == android.view.KeyEvent.KEYCODE_ENTER || onPressAction.code == android.view.KeyEvent.KEYCODE_DEL || onPressAction.code == android.view.KeyEvent.KEYCODE_SPACE))
-        if (isAct) return "actionKey"
-
-        if (trimmed.length == 1 && (trimmed[0].isDigit() || trimmed == "=" || trimmed == "+")) return "numberKey"
-
-        return "alphaKey"
-    }
 
     private fun fallbackSimpleLayout(context: Context): LayoutDefinition {
         return try {

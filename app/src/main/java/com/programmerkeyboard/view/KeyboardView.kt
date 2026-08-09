@@ -1488,17 +1488,7 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun drawKeyIconOrLabel(canvas: Canvas, key: KeyDefinition, displayLabel: String, rect: RectF, paint: Paint) {
-        val iconType = key.iconName?.lowercase() ?: when (displayLabel.trim()) {
-            "🎙", "🎙️", "🎤" -> "mic"
-            "🗣", "🗣️", "🔊" -> "tts"
-            "📎", "🖇" -> "paperclip"
-            "📋" -> "clipboard"
-            "📄", "copy" -> "copy"
-            "✂️", "✂", "cut" -> "cut"
-            "📥", "paste" -> "paste"
-            "✨", "select_all" -> "select_all"
-            else -> null
-        }
+        val iconType = key.iconName?.lowercase()
 
         if (iconType != null) {
             val centerX = rect.centerX()
@@ -2276,10 +2266,10 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun getArrowKeyCode(label: String): Int {
         return when (label) {
-            "UpArrow", "↑" -> KeyEvent.KEYCODE_DPAD_UP
-            "DownArrow", "↓" -> KeyEvent.KEYCODE_DPAD_DOWN
-            "LeftArrow", "←" -> KeyEvent.KEYCODE_DPAD_LEFT
-            "RightArrow", "→" -> KeyEvent.KEYCODE_DPAD_RIGHT
+            "UpArrow", "↑", "△" -> KeyEvent.KEYCODE_DPAD_UP
+            "DownArrow", "↓", "▽" -> KeyEvent.KEYCODE_DPAD_DOWN
+            "LeftArrow", "←", "◁" -> KeyEvent.KEYCODE_DPAD_LEFT
+            "RightArrow", "→", "▷" -> KeyEvent.KEYCODE_DPAD_RIGHT
             else -> KeyEvent.KEYCODE_DPAD_CENTER
         }
     }
