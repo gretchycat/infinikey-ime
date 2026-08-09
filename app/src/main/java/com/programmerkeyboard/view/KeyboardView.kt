@@ -321,8 +321,8 @@ class KeyboardView @JvmOverloads constructor(
         if (layoutDefinition?.id == "phone") return@Runnable
         pressedKeyBounds?.let { bounds ->
             val key = bounds.key
-            val isEmojiLayout = layoutDefinition?.id?.startsWith("emoji") == true
-            if (isEmojiLayout && (key.onLongPressAction is KeyAction.None || key.onLongPressAction == null)) {
+            val isEmoji = isEmojiKey(key)
+            if (isEmoji && (key.onLongPressAction is KeyAction.None || key.onLongPressAction == null)) {
                 isLongPressTriggered = true
                 performKeypressHapticFeedback()
                 showZoomPreview(key.primaryLabel, bounds.rect)
@@ -1648,8 +1648,8 @@ class KeyboardView @JvmOverloads constructor(
                     }
                     executeAction(actionToRun, sourceKey)
                 }, { hoveredIndex, hoveredLabel ->
-                    val isEmojiLayout = layoutDefinition?.id?.startsWith("emoji") == true
-                    if (isEmojiLayout) {
+                    val isEmoji = isEmojiKey(sourceKey ?: pressedKeyBounds?.key ?: return@KeyPopupOverlay)
+                    if (isEmoji) {
                         val itemRect = keyPopupOverlay?.getItemRect(hoveredIndex)
                         if (itemRect != null) {
                             showZoomPreview(hoveredLabel, itemRect)
@@ -2393,6 +2393,21 @@ class KeyboardView @JvmOverloads constructor(
         if (isArrowLabel || isArrowCode) return isArrowTrackpadEnabled
 
         return false
+    }
+
+    private fun isEmojiKey(key: KeyDefinition?): Boolean {
+        if (key == null) return false
+        if (layoutDefinition?.id?.startsWith("emoji") == true) return true
+        val label = key.primaryLabel
+        if (label.isEmpty()) return false
+        val firstCodePoint = label.codePointAt(0)
+        return Character.getType(firstCodePoint).toByte() == Character.SURROGATE ||
+               firstCodePoint in 0x1F300..0x1F9FF ||
+               firstCodePoint in 0x1F600..0x1F64F ||
+               firstCodePoint in 0x1F680..0x1F6FF ||
+               firstCodePoint in 0x2600..0x27BF ||
+               firstCodePoint in 0x1F1E6..0x1F1FF ||
+               firstCodePoint in 0x1FA70..0x1FAFF
     }
 
     private fun startInertialScroll(initialVelocityY: Float) {
