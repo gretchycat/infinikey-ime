@@ -323,6 +323,15 @@ class ProgrammerInputMethodService : InputMethodService() {
         return false
     }
 
+    private fun isMultiLineTextField(): Boolean {
+        val info = currentInputEditorInfo ?: return false
+        val inputType = info.inputType
+        val mask = android.text.InputType.TYPE_MASK_CLASS
+        val textClass = android.text.InputType.TYPE_CLASS_TEXT
+        val multiLineFlag = android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        return (inputType and mask) == textClass && (inputType and multiLineFlag) != 0
+    }
+
     override fun onStartInput(attribute: android.view.inputmethod.EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
         if (restarting) {
@@ -477,10 +486,41 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
             }
             is KeyAction.SendCode -> {
-                if (action.code == KeyEvent.KEYCODE_ENTER) {
-                    val isCtrl = keyboardState.isCtrlActive
-                    val terminal = isTerminalApp(currentInputEditorInfo)
+                val code = action.code
+                val terminal = isTerminalApp(currentInputEditorInfo)
 
+                if (!terminal) {
+                    if (code == KeyEvent.KEYCODE_DPAD_LEFT) {
+                        val textBefore = inputConnection.getTextBeforeCursor(1, 0)
+                        if (textBefore.isNullOrEmpty()) {
+                            return
+                        }
+                    } else if (code == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        val textAfter = inputConnection.getTextAfterCursor(1, 0)
+                        if (textAfter.isNullOrEmpty()) {
+                            return
+                        }
+                    } else if (code == KeyEvent.KEYCODE_DPAD_UP) {
+                        if (!isMultiLineTextField()) {
+                            return
+                        }
+                        val textBefore = inputConnection.getTextBeforeCursor(1000, 0)?.toString() ?: ""
+                        if (!textBefore.contains("\n")) {
+                            return
+                        }
+                    } else if (code == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        if (!isMultiLineTextField()) {
+                            return
+                        }
+                        val textAfter = inputConnection.getTextAfterCursor(1000, 0)?.toString() ?: ""
+                        if (!textAfter.contains("\n")) {
+                            return
+                        }
+                    }
+                }
+
+                if (code == KeyEvent.KEYCODE_ENTER) {
+                    val isCtrl = keyboardState.isCtrlActive
                     if (isCtrl && !terminal) {
                         val imeOptions = currentInputEditorInfo?.imeOptions ?: 0
                         val actionId = imeOptions and android.view.inputmethod.EditorInfo.IME_MASK_ACTION
@@ -497,10 +537,10 @@ class ProgrammerInputMethodService : InputMethodService() {
                 val metaState = keyboardState.getMetaState()
                 val eventTime = System.currentTimeMillis()
                 inputConnection.sendKeyEvent(
-                    KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, action.code, 0, metaState)
+                    KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, metaState)
                 )
                 inputConnection.sendKeyEvent(
-                    KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, action.code, 0, metaState)
+                    KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, code, 0, metaState)
                 )
 
                 if (keyboardState.consumeOneShotModifiers()) {

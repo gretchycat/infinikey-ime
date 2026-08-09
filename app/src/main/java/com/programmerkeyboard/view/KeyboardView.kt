@@ -1142,10 +1142,9 @@ class KeyboardView @JvmOverloads constructor(
         val keyPressedBgColor = currentKey?.pressedBgColor ?: ContextCompat.getColor(context, R.color.key_background_pressed)
         val keyFgColor = currentKey?.fgColor ?: textPaint.color
 
-        // Calculate 360-degree knob offset relative to touch origin (locked horizontally for space trackpad)
-        val isSpaceActive = currentKey != null && (currentKey.primaryLabel == "␣" || currentKey.primaryLabel.equals("space", ignoreCase = true) || currentKey.isSplitKey)
+        // Calculate 360-degree knob offset relative to touch origin
         val deltaX = trackpadLastX - originX
-        val deltaY = if (isSpaceActive) 0f else trackpadLastY - originY
+        val deltaY = trackpadLastY - originY
         val dist = kotlin.math.hypot(deltaX, deltaY)
         val angle = kotlin.math.atan2(deltaY, deltaX)
         val clampedDist = kotlin.math.min(dist, maxKnobOffset)
@@ -2228,12 +2227,7 @@ class KeyboardView @JvmOverloads constructor(
                         trackpadLastY = event.y
 
                         trackpadAccumulatedDx += dx
-                        
-                        val activeKey = pressedKeyBounds?.key
-                        val isSpaceActive = activeKey != null && (activeKey.primaryLabel == "␣" || activeKey.primaryLabel.equals("space", ignoreCase = true) || activeKey.isSplitKey)
-                        if (!isSpaceActive) {
-                            trackpadAccumulatedDy += dy
-                        }
+                        trackpadAccumulatedDy += dy
 
                         val step = 14f * density
                         while (trackpadAccumulatedDx >= step) {
@@ -2250,21 +2244,19 @@ class KeyboardView @JvmOverloads constructor(
                             trackpadBlinkTime = System.currentTimeMillis()
                             trackpadAccumulatedDx += step
                         }
-                        if (!isSpaceActive) {
-                            while (trackpadAccumulatedDy >= step) {
-                                onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_DOWN))
-                                performKeypressHapticFeedback()
-                                trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
-                                trackpadBlinkTime = System.currentTimeMillis()
-                                trackpadAccumulatedDy -= step
-                            }
-                            while (trackpadAccumulatedDy <= -step) {
-                                onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_UP))
-                                performKeypressHapticFeedback()
-                                trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
-                                trackpadBlinkTime = System.currentTimeMillis()
-                                trackpadAccumulatedDy += step
-                            }
+                        while (trackpadAccumulatedDy >= step) {
+                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_DOWN))
+                            performKeypressHapticFeedback()
+                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                            trackpadBlinkTime = System.currentTimeMillis()
+                            trackpadAccumulatedDy -= step
+                        }
+                        while (trackpadAccumulatedDy <= -step) {
+                            onKeyActionListener?.invoke(KeyAction.SendCode(KeyEvent.KEYCODE_DPAD_UP))
+                            performKeypressHapticFeedback()
+                            trackpadBlinkStep = (trackpadBlinkStep + 1) % trackpadBlinkColors.size
+                            trackpadBlinkTime = System.currentTimeMillis()
+                            trackpadAccumulatedDy += step
                         }
                         invalidate()
                         return true
