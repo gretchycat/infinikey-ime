@@ -82,4 +82,11 @@
     <string name="setting_theme_custom">Custom Theme (JSON / Editor)</string>
     <string name="setting_export_theme">Export Theme JSON</string>
     <string name="setting_import_theme">Import Theme JSON</string>
+
+    <string name="setting_default_unseen_layout_title">Default Layout for Unseen Apps</string>
+    <string name="setting_layout_main">Main / Terminal Layout (main.json)</string>
+    <string name="setting_layout_mobile">Mobile Layout (mobile.json)</string>
+    <string name="setting_layout_mobile_number">Mobile Numbers (mobile_number.json)</string>
+    <string name="setting_layout_mobile_symbol">Mobile Symbols (mobile_symbol.json)</string>
+    <string name="setting_layout_function">Function / Fn Layer (function.json)</string>
 </resources>

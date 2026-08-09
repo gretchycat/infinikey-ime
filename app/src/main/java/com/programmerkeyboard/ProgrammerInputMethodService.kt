@@ -366,7 +366,7 @@ class ProgrammerInputMethodService : InputMethodService() {
                 profile.rowVisibility["main:1"] = true
                 profile.rowVisibility["1"] = true
             } else {
-                profile.layoutTarget = prefs.getString("pref_last_actual_layout", "main") ?: "main"
+                profile.layoutTarget = prefs.getString("pref_default_unseen_layout", "mobile") ?: "mobile"
             }
         }
 
@@ -529,6 +529,8 @@ class ProgrammerInputMethodService : InputMethodService() {
                         .putString("pref_last_actual_layout", target)
                         .putString("pref_keyboard_layout_target", target)
                         .apply()
+                    val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
+                    profile.layoutTarget = target
                 }
 
                 val layoutFile = if (target.endsWith(".json")) target else "${target}.json"

@@ -439,6 +439,52 @@ class SettingsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+        // 6. Default Layout for Unseen Apps Spinner
+        val spDefaultUnseenLayout = findViewById<Spinner>(R.id.spDefaultUnseenLayout)
+        val unseenLayoutOptions = listOf(
+            getString(R.string.setting_layout_main),
+            getString(R.string.setting_layout_mobile),
+            getString(R.string.setting_layout_mobile_number),
+            getString(R.string.setting_layout_mobile_symbol),
+            getString(R.string.setting_layout_function)
+        )
+        val unseenLayoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, unseenLayoutOptions)
+        spDefaultUnseenLayout.adapter = unseenLayoutAdapter
+
+        val currentDefaultUnseen = prefs.getString("pref_default_unseen_layout", "mobile") ?: "mobile"
+        val initialUnseenPos = when (currentDefaultUnseen) {
+            "main" -> 0
+            "mobile" -> 1
+            "mobile_number" -> 2
+            "mobile_symbol" -> 3
+            "function" -> 4
+            else -> 1
+        }
+        spDefaultUnseenLayout.setSelection(initialUnseenPos)
+
+        spDefaultUnseenLayout.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val layoutKey = when (position) {
+                    0 -> "main"
+                    1 -> "mobile"
+                    2 -> "position2"
+                    3 -> "position3"
+                    4 -> "position4"
+                    else -> "mobile"
+                }
+                val actualLayout = when (layoutKey) {
+                    "main" -> "main"
+                    "mobile" -> "mobile"
+                    "position2" -> "mobile_number"
+                    "position3" -> "mobile_symbol"
+                    "position4" -> "function"
+                    else -> "mobile"
+                }
+                prefs.edit().putString("pref_default_unseen_layout", actualLayout).apply()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
         val cbMinimalVoiceFeedback = findViewById<android.widget.CheckBox>(R.id.cbMinimalVoiceFeedback)
         cbMinimalVoiceFeedback.isChecked = prefs.getBoolean("pref_minimal_voice_feedback", true)
         cbMinimalVoiceFeedback.setOnCheckedChangeListener { _, isChecked ->

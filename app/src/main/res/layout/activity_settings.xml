@@ -1158,6 +1158,31 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp" />
 
+                    <!-- Default Layout for Unseen Apps Dropdown -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_default_unseen_layout_title"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <Spinner
+                        android:id="@+id/spDefaultUnseenLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/settings_divider"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp" />
+
                     <!-- Minimal Voice Feedback CheckBox -->
                     <CheckBox
                         android:id="@+id/cbMinimalVoiceFeedback"
