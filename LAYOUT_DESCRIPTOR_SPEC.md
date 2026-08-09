@@ -88,6 +88,20 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, spa
 
 ---
 
+## 2b. Layout Metadata Parameters (`metadata`)
+
+The `metadata` block specifies keyboard constraints, dimensions, scaling, and scrolling features:
+
+* **`horizontalSpacing`**: Gap space between adjacent keys in a row (`int` for dp, `float` for ratio).
+* **`verticalSpacing`**: Gap space between adjacent rows (`int` for dp, `float` for ratio).
+* **`defaultScreenMode`** (`string`): Initial screen dock mode (`"FULL_WIDTH_DOCKED"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`, `"SPLIT"`).
+* **`defaultHeightPercentage`** (`int`): Default vertical height percentage of the screen space (from `15` to `60`).
+* **`showKeyPreview`** (`boolean`): Whether to display pop-up key magnification bubbles on tap.
+* **`scrollDirection`** (`string`, optional): Set to `"VERTICAL"` or `"HORIZONTAL"` to enable scrolling of rows (e.g. for emojis).
+* **`maxVisibleRows`** (`int`, optional): When vertical scrolling is enabled, specifies how many middle rows are rendered concurrently within the scrolling viewport between the top pinned row (row index 0) and the bottom pinned row (last row).
+
+---
+
 ## 3. Key Style Classes (`styles`)
 
 The root `styles` dictionary defines named style classes. Each key object can specify a `"style": "styleName"` property to inherit visual attributes, while still retaining the ability to provide custom property overrides.

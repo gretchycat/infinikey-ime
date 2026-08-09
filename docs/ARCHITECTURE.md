@@ -62,6 +62,7 @@ Infinikey IME is a high-performance, layout-driven, customizable Android Input M
 * **Responsibilities**:
     - Provides a 6-tab configuration UI (Geometry, Behavior, Haptics, Audio, Themes, Layout Editor).
     - Displays App Version (`v0.1.0`) and Build Number in Tab 1 (Geometry).
+    - Features a package-aware default layout setting in Tab 2 (Behavior) using spinner preference `pref_default_unseen_layout` (defaulting to the mobile keyboard layout) to serve unseen apps.
     - Real-time drag-and-drop key reordering and undo/redo history stack (`ArrayDeque<LayoutDefinition>`).
 
 ---
