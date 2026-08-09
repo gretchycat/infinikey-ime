@@ -29,10 +29,11 @@ object LayoutParser {
         if (cleanName.equals("meta", ignoreCase = true)) {
             return createMetaLayout(context, previousLayoutId)
         }
-        if (cleanName.startsWith("emoji_auto") || cleanName.equals("emoji", ignoreCase = true) || cleanName.equals("emoji_picker", ignoreCase = true)) {
-            val catIdx = cleanName.removePrefix("emoji_auto_").removePrefix("emoji_auto").toIntOrNull() ?: 0
-            val rawEmojiLayout = EmojiLayoutGenerator.generateSupportedEmojiLayout(context, catIdx)
-            return applyThemeOverrides(context, rawEmojiLayout)
+        if (cleanName.equals("emoji_recents", ignoreCase = true)) {
+            return generateRecentEmojisLayout(context, previousLayoutId)
+        }
+        if (cleanName.startsWith("emoji_auto") || cleanName.equals("emoji_picker", ignoreCase = true)) {
+            return loadLayoutFromAsset(context, "emoji_recents.json", previousLayoutId)
         }
         val layout = try {
             val assetPath = if (fileName.startsWith("layouts/")) fileName else "layouts/$fileName"
@@ -782,5 +783,91 @@ object LayoutParser {
                 rows = emptyList()
             )
         }
+    }
+
+    fun generateRecentEmojisLayout(context: Context, previousLayoutId: String): LayoutDefinition {
+        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val recentStr = prefs.getString("pref_recent_emojis", "") ?: ""
+        var recentList = if (recentStr.isEmpty()) emptyList() else recentStr.split(",")
+        if (recentList.isEmpty()) {
+            recentList = listOf("😀", "❤️", "👍", "🔥", "😊", "😂", "✨", "✔️", "🎉", "🙏", "🤣", "🙌", "💡", "🚀", "🐶", "🍕", "⚽", "🚩")
+        }
+
+        val rowsList = mutableListOf<KeyRow>()
+        var rowIdCounter = 1
+
+        val catRowKeys = mutableListOf<KeyDefinition>()
+        catRowKeys.add(KeyDefinition(
+            primaryLabel = "🕒",
+            styleName = "actionKey",
+            onPressAction = KeyAction.SwitchLayout("emoji_recents")
+        ))
+        
+        val categories = listOf(
+            Pair("😀", "emoji"),
+            Pair("👋", "emoji_body"),
+            Pair("🐶", "emoji_animals"),
+            Pair("🍕", "emoji_food"),
+            Pair("⚽", "emoji_sports"),
+            Pair("🚀", "emoji_travel"),
+            Pair("💡", "emoji_objects"),
+            Pair("🚩", "emoji_symbols")
+        )
+        
+        categories.forEach { pair ->
+            catRowKeys.add(KeyDefinition(
+                primaryLabel = pair.first,
+                styleName = "functionKey",
+                onPressAction = KeyAction.SwitchLayout(pair.second)
+            ))
+        }
+        rowsList.add(KeyRow(id = rowIdCounter++, keys = catRowKeys))
+
+        recentList.chunked(8).forEach { chunk ->
+            val keysList = chunk.map { emoji ->
+                KeyDefinition(
+                    primaryLabel = emoji,
+                    styleName = "alphaKey",
+                    fontSize = DimensionValue.Absolute(26),
+                    onPressAction = KeyAction.SendText(emoji)
+                )
+            }.toMutableList()
+            rowsList.add(KeyRow(id = rowIdCounter++, keys = keysList))
+        }
+
+        val bottomRowKeys = mutableListOf<KeyDefinition>()
+        bottomRowKeys.add(KeyDefinition(
+            primaryLabel = "⌨ ABC",
+            styleName = "modifierKey",
+            widthWeight = DimensionValue.Ratio(1.5f),
+            onPressAction = KeyAction.SwitchLayout("[last]")
+        ))
+        bottomRowKeys.add(KeyDefinition(
+            primaryLabel = "␣",
+            styleName = "alphaKey",
+            isFlexible = true,
+            onPressAction = KeyAction.SendText(" ")
+        ))
+        bottomRowKeys.add(KeyDefinition(
+            primaryLabel = "⌫",
+            styleName = "actionKey",
+            widthWeight = DimensionValue.Ratio(1.5f),
+            onPressAction = KeyAction.SendCode(android.view.KeyEvent.KEYCODE_DEL),
+            onLongPressAction = KeyAction.AutoRepeat(android.view.KeyEvent.KEYCODE_DEL, 50)
+        ))
+        rowsList.add(KeyRow(id = rowIdCounter, keys = bottomRowKeys))
+
+        return LayoutDefinition(
+            id = "emoji_recents",
+            name = "Recent Emojis",
+            version = "1.0",
+            author = "Dynamic Emoji Recents",
+            description = "Dynamically loaded recently used emojis.",
+            metadata = LayoutMetadata(
+                scrollDirection = "VERTICAL",
+                maxVisibleRows = 4
+            ),
+            rows = rowsList
+        )
     }
 }

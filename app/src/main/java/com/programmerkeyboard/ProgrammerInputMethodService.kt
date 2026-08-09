@@ -48,7 +48,7 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     private fun isGeneratedLayoutId(layoutId: String): Boolean {
         val clean = layoutId.removePrefix("layouts/").removeSuffix(".json")
-        return clean.equals("meta", ignoreCase = true) || clean.startsWith("emoji_auto", ignoreCase = true)
+        return clean.equals("meta", ignoreCase = true) || clean.startsWith("emoji_auto", ignoreCase = true) || clean.startsWith("emoji", ignoreCase = true)
     }
 
     private fun pushCurrentLayoutToStack() {
@@ -460,6 +460,16 @@ class ProgrammerInputMethodService : InputMethodService() {
                         text
                     }
                     inputConnection.commitText(textToCommit, 1)
+
+                    val currentLayoutId = keyboardView.layoutDefinition?.id ?: ""
+                    if (currentLayoutId.startsWith("emoji")) {
+                        val currentRecentStr = prefs.getString("pref_recent_emojis", "") ?: ""
+                        val recentList = if (currentRecentStr.isEmpty()) mutableListOf() else currentRecentStr.split(",").toMutableList()
+                        recentList.remove(text)
+                        recentList.add(0, text)
+                        val trimmedList = recentList.take(24)
+                        prefs.edit().putString("pref_recent_emojis", trimmedList.joinToString(",")).apply()
+                    }
                 }
 
                 if (keyboardState.consumeOneShotModifiers()) {

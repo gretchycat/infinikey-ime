@@ -37,6 +37,24 @@ class KeyboardView @JvmOverloads constructor(
     private var lastScrollTouchX = 0f
     private var scrollViewportHeight = 0f
     private var totalScrollContentHeight = 0f
+    private var isTouchInScrollableRegion = false
+    private var velocityTracker: android.view.VelocityTracker? = null
+
+    private val inertialScrollRunnable = object : Runnable {
+        var velocityY = 0f
+        override fun run() {
+            if (Math.abs(velocityY) < 50f) return
+            velocityY *= 0.90f
+            val dy = -velocityY * 0.016f
+            val newOffset = (scrollOffsetY + dy).coerceIn(0f, maxScrollOffsetY)
+            if (newOffset != scrollOffsetY) {
+                scrollOffsetY = newOffset
+                recalculateKeyBounds()
+                invalidate()
+                handler.postDelayed(this, 16)
+            }
+        }
+    }
 
     var layoutDefinition: LayoutDefinition? = null
         set(value) {
@@ -816,25 +834,25 @@ class KeyboardView @JvmOverloads constructor(
 
         val currentRows = (layoutDefinition?.rows ?: emptyList()).filter { isRowVisible(it) }
         val rowCount = if (currentRows.isNotEmpty()) currentRows.size else 5
-        val availableHeight = height.toFloat() - (resolveDimension(layoutDefinition?.metadata?.verticalSpacing, height.toFloat(), density, 4f) * (rowCount + 1))
-        val rowHeight = availableHeight / rowCount
-
         val isVerticalScroll = layoutDefinition?.metadata?.scrollDirection.equals("VERTICAL", ignoreCase = true)
         val maxVisRows = layoutDefinition?.metadata?.maxVisibleRows ?: 4
-        val effectiveRowCount = maxVisRows + 2
-        val availableH = h - (resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f) * (effectiveRowCount + 1))
-        val rHeight = availableH / effectiveRowCount
-        val vSpacing = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
+        val fixedTopRowsCount = if (isVerticalScroll && currentRows.size > 2) 1 else 0
+        val fixedBottomRowsCount = if (isVerticalScroll && currentRows.size > 2) 1 else 0
+        val effectiveVisibleRowCount = if (isVerticalScroll) (maxVisRows + fixedTopRowsCount + fixedBottomRowsCount) else rowCount
 
-        val topBarBottom = vSpacing + rHeight + (vSpacing / 2f)
-        val bottomNavTop = h - rHeight - (vSpacing * 1.5f)
+        val availableHeight = height.toFloat() - (resolveDimension(layoutDefinition?.metadata?.verticalSpacing, height.toFloat(), density, 4f) * (effectiveVisibleRowCount + 1))
+        val rowHeight = availableHeight / effectiveVisibleRowCount
+
+        val vSpacing = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
+        val topBarBottom = vSpacing + rowHeight + (vSpacing / 2f)
+        val bottomNavTop = h - rowHeight - (vSpacing * 1.5f)
 
         keyBoundsList.forEach { keyBounds ->
             val key = keyBounds.key
             if (key.isSpacer) return@forEach
             val rect = keyBounds.rect
 
-            val isMiddleScrollableKey = isVerticalScroll && (rect.top >= topBarBottom - 10f && rect.bottom <= bottomNavTop + 10f)
+            val isMiddleScrollableKey = isVerticalScroll && !keyBounds.isFixedRow
             val saveCount = if (isVerticalScroll && isMiddleScrollableKey) {
                 val sc = canvas.save()
                 canvas.clipRect(0f, topBarBottom, w, bottomNavTop)
@@ -2007,10 +2025,33 @@ class KeyboardView @JvmOverloads constructor(
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                handler.removeCallbacks(inertialScrollRunnable)
                 isLongPressTriggered = false
                 isScrollDragging = false
                 isSpacebarTrackpad = false
                 lastScrollTouchY = event.y
+                isTouchInScrollableRegion = false
+
+                velocityTracker?.recycle()
+                velocityTracker = android.view.VelocityTracker.obtain()
+                velocityTracker?.addMovement(event)
+
+                if (maxScrollOffsetY > 0f) {
+                    val density = resources.displayMetrics.density
+                    val h = height.toFloat()
+                    val vSpacingPx = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
+                    val maxVisRows = layoutDefinition?.metadata?.maxVisibleRows ?: 4
+                    val effectiveRowCount = maxVisRows + 2
+                    val availableHeight = h - (vSpacingPx * (effectiveRowCount + 1))
+                    val rowHeight = availableHeight / effectiveRowCount
+
+                    val topBarBottom = vSpacingPx + rowHeight + (vSpacingPx / 2f)
+                    val bottomNavTop = h - rowHeight - (vSpacingPx * 1.5f)
+
+                    if (event.y >= topBarBottom && event.y <= bottomNavTop) {
+                        isTouchInScrollableRegion = true
+                    }
+                }
 
                 if (keyboardState.formFactorMode == com.programmerkeyboard.model.FormFactorMode.FLOATING) {
                     val cardBounds = getFloatingCardBounds()
@@ -2045,14 +2086,15 @@ class KeyboardView @JvmOverloads constructor(
                     val debounceMs = prefs.getInt("pref_key_debounce_ms", 35)
                     val now = System.currentTimeMillis()
                     if (debounceMs > 0 && targetKeyLabel == lastKeyTapLabel && (now - lastKeyTapTimeMs) < debounceMs) {
-                        // Debounce duplicate rapid touch bounce!
                         return true
                     }
                     lastKeyTapTimeMs = now
                     lastKeyTapLabel = targetKeyLabel
 
-                    performKeypressHapticFeedback()
-                    playKeyClickSound()
+                    if (!isTouchInScrollableRegion) {
+                        performKeypressHapticFeedback()
+                        playKeyClickSound()
+                    }
                     showKeyPreview(pressedKeyBounds!!.key, pressedKeyBounds!!.rect)
                     handler.postDelayed(longPressRunnable, getLongPressTimeoutMs())
 
@@ -2069,6 +2111,7 @@ class KeyboardView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
+                velocityTracker?.addMovement(event)
                 if (isDraggingFloatingWindow) {
                     val dx = event.rawX - dragStartX
                     val dy = event.rawY - dragStartY
@@ -2151,6 +2194,7 @@ class KeyboardView @JvmOverloads constructor(
                     val dy = lastScrollTouchY - event.y
                     if (event.y >= topBarBottom && event.y <= bottomNavTop && (kotlin.math.abs(dy) > 12f || isScrollDragging)) {
                         isScrollDragging = true
+                        pressedKeyBounds = null
                         scrollOffsetY = (scrollOffsetY + dy).coerceIn(0f, maxScrollOffsetY)
                         lastScrollTouchY = event.y
                         dismissKeyPreview()
@@ -2181,6 +2225,12 @@ class KeyboardView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                velocityTracker?.addMovement(event)
+                velocityTracker?.computeCurrentVelocity(1000)
+                val initialVelocityY = velocityTracker?.yVelocity ?: 0f
+                velocityTracker?.recycle()
+                velocityTracker = null
+
                 if (isSpacebarTrackpad) {
                     isSpacebarTrackpad = false
                     pressedKeyBounds = null
@@ -2204,6 +2254,9 @@ class KeyboardView @JvmOverloads constructor(
                 if (isScrollDragging) {
                     isScrollDragging = false
                     pressedKeyBounds = null
+                    if (kotlin.math.abs(initialVelocityY) > 150f) {
+                        startInertialScroll(initialVelocityY)
+                    }
                     invalidate()
                     return true
                 }
@@ -2225,6 +2278,10 @@ class KeyboardView @JvmOverloads constructor(
 
                 if (!isLongPressTriggered) {
                     releasedBounds?.key?.let { key ->
+                        if (isTouchInScrollableRegion) {
+                            performKeypressHapticFeedback()
+                            playKeyClickSound()
+                        }
                         executeAction(key.onPressAction, key)
                     }
                 }
@@ -2306,5 +2363,11 @@ class KeyboardView @JvmOverloads constructor(
         if (isArrowLabel || isArrowCode) return isArrowTrackpadEnabled
 
         return false
+    }
+
+    private fun startInertialScroll(initialVelocityY: Float) {
+        handler.removeCallbacks(inertialScrollRunnable)
+        inertialScrollRunnable.velocityY = initialVelocityY
+        handler.post(inertialScrollRunnable)
     }
 }

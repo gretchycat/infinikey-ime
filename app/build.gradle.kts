@@ -77,3 +77,12 @@ dependencies {
     implementation(libs.material)
     implementation(libs.gson)
 }
+
+tasks.register<Exec>("generateEmojiLayouts") {
+    workingDir = project.rootDir
+    commandLine = listOf("python3", "scripts/generate_emoji_layouts.py")
+}
+
+tasks.named("preBuild") {
+    dependsOn("generateEmojiLayouts")
+}

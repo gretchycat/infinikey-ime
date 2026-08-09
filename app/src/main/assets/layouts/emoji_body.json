@@ -1,0 +1,8598 @@
+{
+  "id": "emoji_body",
+  "name": "Emoji - Hands & Body",
+  "version": "1.0",
+  "author": "Dynamic Emoji Generator",
+  "description": "Generated from amio/emoji.json for category People & Body.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30,
+    "showKeyPreview": false,
+    "scrollDirection": "VERTICAL",
+    "maxVisibleRows": 4
+  },
+  "styles": {
+    "alphaKey": {
+      "cornerRadius": 8,
+      "fontSize": 26,
+      "showPreview": false
+    },
+    "functionKey": {
+      "cornerRadius": 8,
+      "fontSize": 22,
+      "showPreview": false
+    },
+    "modifierKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    },
+    "actionKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "keys": [
+        {
+          "label": "🕒",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_recents"
+          }
+        },
+        {
+          "label": "😀",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji"
+          }
+        },
+        {
+          "label": "👋",
+          "style": "actionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_body"
+          }
+        },
+        {
+          "label": "🐶",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_animals"
+          }
+        },
+        {
+          "label": "🍕",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_food"
+          }
+        },
+        {
+          "label": "⚽",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_sports"
+          }
+        },
+        {
+          "label": "🚀",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_travel"
+          }
+        },
+        {
+          "label": "💡",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_objects"
+          }
+        },
+        {
+          "label": "🚩",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_symbols"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "keys": [
+        {
+          "label": "👋",
+          "alternates": [
+            "👋🏻",
+            "👋🏼",
+            "👋🏽",
+            "👋🏾",
+            "👋🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👋"
+          }
+        },
+        {
+          "label": "🤚",
+          "alternates": [
+            "🤚🏻",
+            "🤚🏼",
+            "🤚🏽",
+            "🤚🏾",
+            "🤚🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤚"
+          }
+        },
+        "🖐️",
+        {
+          "label": "🖐",
+          "alternates": [
+            "🖐🏻",
+            "🖐🏼",
+            "🖐🏽",
+            "🖐🏾",
+            "🖐🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🖐"
+          }
+        },
+        {
+          "label": "✋",
+          "alternates": [
+            "✋🏻",
+            "✋🏼",
+            "✋🏽",
+            "✋🏾",
+            "✋🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "✋"
+          }
+        },
+        {
+          "label": "🖖",
+          "alternates": [
+            "🖖🏻",
+            "🖖🏼",
+            "🖖🏽",
+            "🖖🏾",
+            "🖖🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🖖"
+          }
+        },
+        {
+          "label": "🫱",
+          "alternates": [
+            "🫱🏻",
+            "🫱🏼",
+            "🫱🏽",
+            "🫱🏾",
+            "🫱🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱"
+          }
+        },
+        {
+          "label": "🫲",
+          "alternates": [
+            "🫲🏻",
+            "🫲🏼",
+            "🫲🏽",
+            "🫲🏾",
+            "🫲🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫲"
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
+        {
+          "label": "🫳",
+          "alternates": [
+            "🫳🏻",
+            "🫳🏼",
+            "🫳🏽",
+            "🫳🏾",
+            "🫳🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫳"
+          }
+        },
+        {
+          "label": "🫴",
+          "alternates": [
+            "🫴🏻",
+            "🫴🏼",
+            "🫴🏽",
+            "🫴🏾",
+            "🫴🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫴"
+          }
+        },
+        {
+          "label": "🫷",
+          "alternates": [
+            "🫷🏻",
+            "🫷🏼",
+            "🫷🏽",
+            "🫷🏾",
+            "🫷🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫷"
+          }
+        },
+        {
+          "label": "🫸",
+          "alternates": [
+            "🫸🏻",
+            "🫸🏼",
+            "🫸🏽",
+            "🫸🏾",
+            "🫸🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫸"
+          }
+        },
+        {
+          "label": "👌",
+          "alternates": [
+            "👌🏻",
+            "👌🏼",
+            "👌🏽",
+            "👌🏾",
+            "👌🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👌"
+          }
+        },
+        {
+          "label": "🤌",
+          "alternates": [
+            "🤌🏻",
+            "🤌🏼",
+            "🤌🏽",
+            "🤌🏾",
+            "🤌🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤌"
+          }
+        },
+        {
+          "label": "🤏",
+          "alternates": [
+            "🤏🏻",
+            "🤏🏼",
+            "🤏🏽",
+            "🤏🏾",
+            "🤏🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤏"
+          }
+        },
+        "✌️"
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
+        {
+          "label": "✌",
+          "alternates": [
+            "✌🏻",
+            "✌🏼",
+            "✌🏽",
+            "✌🏾",
+            "✌🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "✌"
+          }
+        },
+        {
+          "label": "🤞",
+          "alternates": [
+            "🤞🏻",
+            "🤞🏼",
+            "🤞🏽",
+            "🤞🏾",
+            "🤞🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤞"
+          }
+        },
+        {
+          "label": "🫰",
+          "alternates": [
+            "🫰🏻",
+            "🫰🏼",
+            "🫰🏽",
+            "🫰🏾",
+            "🫰🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫰"
+          }
+        },
+        {
+          "label": "🤟",
+          "alternates": [
+            "🤟🏻",
+            "🤟🏼",
+            "🤟🏽",
+            "🤟🏾",
+            "🤟🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤟"
+          }
+        },
+        {
+          "label": "🤘",
+          "alternates": [
+            "🤘🏻",
+            "🤘🏼",
+            "🤘🏽",
+            "🤘🏾",
+            "🤘🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤘"
+          }
+        },
+        {
+          "label": "🤙",
+          "alternates": [
+            "🤙🏻",
+            "🤙🏼",
+            "🤙🏽",
+            "🤙🏾",
+            "🤙🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤙"
+          }
+        },
+        {
+          "label": "👈",
+          "alternates": [
+            "👈🏻",
+            "👈🏼",
+            "👈🏽",
+            "👈🏾",
+            "👈🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👈"
+          }
+        },
+        {
+          "label": "👉",
+          "alternates": [
+            "👉🏻",
+            "👉🏼",
+            "👉🏽",
+            "👉🏾",
+            "👉🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👉"
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
+        {
+          "label": "👆",
+          "alternates": [
+            "👆🏻",
+            "👆🏼",
+            "👆🏽",
+            "👆🏾",
+            "👆🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👆"
+          }
+        },
+        {
+          "label": "🖕",
+          "alternates": [
+            "🖕🏻",
+            "🖕🏼",
+            "🖕🏽",
+            "🖕🏾",
+            "🖕🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🖕"
+          }
+        },
+        {
+          "label": "👇",
+          "alternates": [
+            "👇🏻",
+            "👇🏼",
+            "👇🏽",
+            "👇🏾",
+            "👇🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👇"
+          }
+        },
+        "☝️",
+        {
+          "label": "☝",
+          "alternates": [
+            "☝🏻",
+            "☝🏼",
+            "☝🏽",
+            "☝🏾",
+            "☝🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "☝"
+          }
+        },
+        {
+          "label": "🫵",
+          "alternates": [
+            "🫵🏻",
+            "🫵🏼",
+            "🫵🏽",
+            "🫵🏾",
+            "🫵🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫵"
+          }
+        },
+        {
+          "label": "👍",
+          "alternates": [
+            "👍🏻",
+            "👍🏼",
+            "👍🏽",
+            "👍🏾",
+            "👍🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👍"
+          }
+        },
+        {
+          "label": "👎",
+          "alternates": [
+            "👎🏻",
+            "👎🏼",
+            "👎🏽",
+            "👎🏾",
+            "👎🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👎"
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "keys": [
+        {
+          "label": "✊",
+          "alternates": [
+            "✊🏻",
+            "✊🏼",
+            "✊🏽",
+            "✊🏾",
+            "✊🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "✊"
+          }
+        },
+        {
+          "label": "👊",
+          "alternates": [
+            "👊🏻",
+            "👊🏼",
+            "👊🏽",
+            "👊🏾",
+            "👊🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👊"
+          }
+        },
+        {
+          "label": "🤛",
+          "alternates": [
+            "🤛🏻",
+            "🤛🏼",
+            "🤛🏽",
+            "🤛🏾",
+            "🤛🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤛"
+          }
+        },
+        {
+          "label": "🤜",
+          "alternates": [
+            "🤜🏻",
+            "🤜🏼",
+            "🤜🏽",
+            "🤜🏾",
+            "🤜🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤜"
+          }
+        },
+        {
+          "label": "👏",
+          "alternates": [
+            "👏🏻",
+            "👏🏼",
+            "👏🏽",
+            "👏🏾",
+            "👏🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👏"
+          }
+        },
+        {
+          "label": "🙌",
+          "alternates": [
+            "🙌🏻",
+            "🙌🏼",
+            "🙌🏽",
+            "🙌🏾",
+            "🙌🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙌"
+          }
+        },
+        {
+          "label": "🫶",
+          "alternates": [
+            "🫶🏻",
+            "🫶🏼",
+            "🫶🏽",
+            "🫶🏾",
+            "🫶🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫶"
+          }
+        },
+        {
+          "label": "👐",
+          "alternates": [
+            "👐🏻",
+            "👐🏼",
+            "👐🏽",
+            "👐🏾",
+            "👐🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👐"
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "keys": [
+        {
+          "label": "🤲",
+          "alternates": [
+            "🤲🏻",
+            "🤲🏼",
+            "🤲🏽",
+            "🤲🏾",
+            "🤲🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤲"
+          }
+        },
+        {
+          "label": "🤝",
+          "alternates": [
+            "🤝🏻",
+            "🤝🏼",
+            "🤝🏽",
+            "🤝🏾",
+            "🤝🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤝"
+          }
+        },
+        {
+          "label": "🫱‍🫲🏼",
+          "alternates": [
+            "🫱🏻‍🫲🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱‍🫲🏼"
+          }
+        },
+        {
+          "label": "🫱‍🫲🏽",
+          "alternates": [
+            "🫱🏻‍🫲🏽",
+            "🫱🏼‍🫲🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱‍🫲🏽"
+          }
+        },
+        {
+          "label": "🫱‍🫲🏾",
+          "alternates": [
+            "🫱🏻‍🫲🏾",
+            "🫱🏼‍🫲🏾",
+            "🫱🏽‍🫲🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱‍🫲🏾"
+          }
+        },
+        {
+          "label": "🫱‍🫲🏿",
+          "alternates": [
+            "🫱🏻‍🫲🏿",
+            "🫱🏼‍🫲🏿",
+            "🫱🏽‍🫲🏿",
+            "🫱🏾‍🫲🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱‍🫲🏿"
+          }
+        },
+        {
+          "label": "🫱🏼‍🫲",
+          "alternates": [
+            "🫱🏼‍🫲🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱🏼‍🫲"
+          }
+        },
+        {
+          "label": "🫱🏽‍🫲",
+          "alternates": [
+            "🫱🏽‍🫲🏻",
+            "🫱🏽‍🫲🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱🏽‍🫲"
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "keys": [
+        {
+          "label": "🫱🏾‍🫲",
+          "alternates": [
+            "🫱🏾‍🫲🏻",
+            "🫱🏾‍🫲🏼",
+            "🫱🏾‍🫲🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱🏾‍🫲"
+          }
+        },
+        {
+          "label": "🫱🏿‍🫲",
+          "alternates": [
+            "🫱🏿‍🫲🏻",
+            "🫱🏿‍🫲🏼",
+            "🫱🏿‍🫲🏽",
+            "🫱🏿‍🫲🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫱🏿‍🫲"
+          }
+        },
+        {
+          "label": "🙏",
+          "alternates": [
+            "🙏🏻",
+            "🙏🏼",
+            "🙏🏽",
+            "🙏🏾",
+            "🙏🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙏"
+          }
+        },
+        "✍️",
+        {
+          "label": "✍",
+          "alternates": [
+            "✍🏻",
+            "✍🏼",
+            "✍🏽",
+            "✍🏾",
+            "✍🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "✍"
+          }
+        },
+        {
+          "label": "💅",
+          "alternates": [
+            "💅🏻",
+            "💅🏼",
+            "💅🏽",
+            "💅🏾",
+            "💅🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💅"
+          }
+        },
+        {
+          "label": "🤳",
+          "alternates": [
+            "🤳🏻",
+            "🤳🏼",
+            "🤳🏽",
+            "🤳🏾",
+            "🤳🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤳"
+          }
+        },
+        {
+          "label": "💪",
+          "alternates": [
+            "💪🏻",
+            "💪🏼",
+            "💪🏽",
+            "💪🏾",
+            "💪🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💪"
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "keys": [
+        "🦾",
+        "🦿",
+        {
+          "label": "🦵",
+          "alternates": [
+            "🦵🏻",
+            "🦵🏼",
+            "🦵🏽",
+            "🦵🏾",
+            "🦵🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦵"
+          }
+        },
+        {
+          "label": "🦶",
+          "alternates": [
+            "🦶🏻",
+            "🦶🏼",
+            "🦶🏽",
+            "🦶🏾",
+            "🦶🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦶"
+          }
+        },
+        {
+          "label": "👂",
+          "alternates": [
+            "👂🏻",
+            "👂🏼",
+            "👂🏽",
+            "👂🏾",
+            "👂🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👂"
+          }
+        },
+        {
+          "label": "🦻",
+          "alternates": [
+            "🦻🏻",
+            "🦻🏼",
+            "🦻🏽",
+            "🦻🏾",
+            "🦻🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦻"
+          }
+        },
+        {
+          "label": "👃",
+          "alternates": [
+            "👃🏻",
+            "👃🏼",
+            "👃🏽",
+            "👃🏾",
+            "👃🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👃"
+          }
+        },
+        "🧠"
+      ]
+    },
+    {
+      "id": 10,
+      "keys": [
+        "🫀",
+        "🫁",
+        "🦷",
+        "🦴",
+        "👀",
+        "👁️",
+        "👁",
+        "👅"
+      ]
+    },
+    {
+      "id": 11,
+      "keys": [
+        "👄",
+        "🫦",
+        {
+          "label": "👶",
+          "alternates": [
+            "👶🏻",
+            "👶🏼",
+            "👶🏽",
+            "👶🏾",
+            "👶🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👶"
+          }
+        },
+        {
+          "label": "🧒",
+          "alternates": [
+            "🧒🏻",
+            "🧒🏼",
+            "🧒🏽",
+            "🧒🏾",
+            "🧒🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧒"
+          }
+        },
+        {
+          "label": "👦",
+          "alternates": [
+            "👦🏻",
+            "👦🏼",
+            "👦🏽",
+            "👦🏾",
+            "👦🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👦"
+          }
+        },
+        {
+          "label": "👧",
+          "alternates": [
+            "👧🏻",
+            "👧🏼",
+            "👧🏽",
+            "👧🏾",
+            "👧🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👧"
+          }
+        },
+        {
+          "label": "🧑",
+          "alternates": [
+            "🧑🏻",
+            "🧑🏼",
+            "🧑🏽",
+            "🧑🏾",
+            "🧑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑"
+          }
+        },
+        {
+          "label": "👱",
+          "alternates": [
+            "👱🏻",
+            "👱🏼",
+            "👱🏽",
+            "👱🏾",
+            "👱🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👱"
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "keys": [
+        {
+          "label": "👨",
+          "alternates": [
+            "👨🏻",
+            "👨🏼",
+            "👨🏽",
+            "👨🏾",
+            "👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨"
+          }
+        },
+        {
+          "label": "🧔",
+          "alternates": [
+            "🧔🏻",
+            "🧔🏼",
+            "🧔🏽",
+            "🧔🏾",
+            "🧔🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧔"
+          }
+        },
+        "🧔‍♂️",
+        {
+          "label": "🧔‍♂",
+          "alternates": [
+            "🧔🏻‍♂️",
+            "🧔🏻‍♂",
+            "🧔🏼‍♂️",
+            "🧔🏼‍♂",
+            "🧔🏽‍♂️",
+            "🧔🏽‍♂",
+            "🧔🏾‍♂️",
+            "🧔🏾‍♂",
+            "🧔🏿‍♂️",
+            "🧔🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧔‍♂"
+          }
+        },
+        "🧔‍♀️",
+        {
+          "label": "🧔‍♀",
+          "alternates": [
+            "🧔🏻‍♀️",
+            "🧔🏻‍♀",
+            "🧔🏼‍♀️",
+            "🧔🏼‍♀",
+            "🧔🏽‍♀️",
+            "🧔🏽‍♀",
+            "🧔🏾‍♀️",
+            "🧔🏾‍♀",
+            "🧔🏿‍♀️",
+            "🧔🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧔‍♀"
+          }
+        },
+        {
+          "label": "👨‍🦰",
+          "alternates": [
+            "👨🏻‍🦰",
+            "👨🏼‍🦰",
+            "👨🏽‍🦰",
+            "👨🏾‍🦰",
+            "👨🏿‍🦰"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦰"
+          }
+        },
+        {
+          "label": "👨‍🦱",
+          "alternates": [
+            "👨🏻‍🦱",
+            "👨🏼‍🦱",
+            "👨🏽‍🦱",
+            "👨🏾‍🦱",
+            "👨🏿‍🦱"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦱"
+          }
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "keys": [
+        {
+          "label": "👨‍🦳",
+          "alternates": [
+            "👨🏻‍🦳",
+            "👨🏼‍🦳",
+            "👨🏽‍🦳",
+            "👨🏾‍🦳",
+            "👨🏿‍🦳"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦳"
+          }
+        },
+        {
+          "label": "👨‍🦲",
+          "alternates": [
+            "👨🏻‍🦲",
+            "👨🏼‍🦲",
+            "👨🏽‍🦲",
+            "👨🏾‍🦲",
+            "👨🏿‍🦲"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦲"
+          }
+        },
+        {
+          "label": "👩",
+          "alternates": [
+            "👩🏻",
+            "👩🏼",
+            "👩🏽",
+            "👩🏾",
+            "👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩"
+          }
+        },
+        {
+          "label": "👩‍🦰",
+          "alternates": [
+            "👩🏻‍🦰",
+            "👩🏼‍🦰",
+            "👩🏽‍🦰",
+            "👩🏾‍🦰",
+            "👩🏿‍🦰"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦰"
+          }
+        },
+        {
+          "label": "🧑‍🦰",
+          "alternates": [
+            "🧑🏻‍🦰",
+            "🧑🏼‍🦰",
+            "🧑🏽‍🦰",
+            "🧑🏾‍🦰",
+            "🧑🏿‍🦰"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦰"
+          }
+        },
+        {
+          "label": "👩‍🦱",
+          "alternates": [
+            "👩🏻‍🦱",
+            "👩🏼‍🦱",
+            "👩🏽‍🦱",
+            "👩🏾‍🦱",
+            "👩🏿‍🦱"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦱"
+          }
+        },
+        {
+          "label": "🧑‍🦱",
+          "alternates": [
+            "🧑🏻‍🦱",
+            "🧑🏼‍🦱",
+            "🧑🏽‍🦱",
+            "🧑🏾‍🦱",
+            "🧑🏿‍🦱"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦱"
+          }
+        },
+        {
+          "label": "👩‍🦳",
+          "alternates": [
+            "👩🏻‍🦳",
+            "👩🏼‍🦳",
+            "👩🏽‍🦳",
+            "👩🏾‍🦳",
+            "👩🏿‍🦳"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦳"
+          }
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "keys": [
+        {
+          "label": "🧑‍🦳",
+          "alternates": [
+            "🧑🏻‍🦳",
+            "🧑🏼‍🦳",
+            "🧑🏽‍🦳",
+            "🧑🏾‍🦳",
+            "🧑🏿‍🦳"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦳"
+          }
+        },
+        {
+          "label": "👩‍🦲",
+          "alternates": [
+            "👩🏻‍🦲",
+            "👩🏼‍🦲",
+            "👩🏽‍🦲",
+            "👩🏾‍🦲",
+            "👩🏿‍🦲"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦲"
+          }
+        },
+        {
+          "label": "🧑‍🦲",
+          "alternates": [
+            "🧑🏻‍🦲",
+            "🧑🏼‍🦲",
+            "🧑🏽‍🦲",
+            "🧑🏾‍🦲",
+            "🧑🏿‍🦲"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦲"
+          }
+        },
+        "👱‍♀️",
+        {
+          "label": "👱‍♀",
+          "alternates": [
+            "👱🏻‍♀️",
+            "👱🏻‍♀",
+            "👱🏼‍♀️",
+            "👱🏼‍♀",
+            "👱🏽‍♀️",
+            "👱🏽‍♀",
+            "👱🏾‍♀️",
+            "👱🏾‍♀",
+            "👱🏿‍♀️",
+            "👱🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👱‍♀"
+          }
+        },
+        "👱‍♂️",
+        {
+          "label": "👱‍♂",
+          "alternates": [
+            "👱🏻‍♂️",
+            "👱🏻‍♂",
+            "👱🏼‍♂️",
+            "👱🏼‍♂",
+            "👱🏽‍♂️",
+            "👱🏽‍♂",
+            "👱🏾‍♂️",
+            "👱🏾‍♂",
+            "👱🏿‍♂️",
+            "👱🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👱‍♂"
+          }
+        },
+        {
+          "label": "🧓",
+          "alternates": [
+            "🧓🏻",
+            "🧓🏼",
+            "🧓🏽",
+            "🧓🏾",
+            "🧓🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧓"
+          }
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "keys": [
+        {
+          "label": "👴",
+          "alternates": [
+            "👴🏻",
+            "👴🏼",
+            "👴🏽",
+            "👴🏾",
+            "👴🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👴"
+          }
+        },
+        {
+          "label": "👵",
+          "alternates": [
+            "👵🏻",
+            "👵🏼",
+            "👵🏽",
+            "👵🏾",
+            "👵🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👵"
+          }
+        },
+        {
+          "label": "🙍",
+          "alternates": [
+            "🙍🏻",
+            "🙍🏼",
+            "🙍🏽",
+            "🙍🏾",
+            "🙍🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙍"
+          }
+        },
+        "🙍‍♂️",
+        {
+          "label": "🙍‍♂",
+          "alternates": [
+            "🙍🏻‍♂️",
+            "🙍🏻‍♂",
+            "🙍🏼‍♂️",
+            "🙍🏼‍♂",
+            "🙍🏽‍♂️",
+            "🙍🏽‍♂",
+            "🙍🏾‍♂️",
+            "🙍🏾‍♂",
+            "🙍🏿‍♂️",
+            "🙍🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙍‍♂"
+          }
+        },
+        "🙍‍♀️",
+        {
+          "label": "🙍‍♀",
+          "alternates": [
+            "🙍🏻‍♀️",
+            "🙍🏻‍♀",
+            "🙍🏼‍♀️",
+            "🙍🏼‍♀",
+            "🙍🏽‍♀️",
+            "🙍🏽‍♀",
+            "🙍🏾‍♀️",
+            "🙍🏾‍♀",
+            "🙍🏿‍♀️",
+            "🙍🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙍‍♀"
+          }
+        },
+        {
+          "label": "🙎",
+          "alternates": [
+            "🙎🏻",
+            "🙎🏼",
+            "🙎🏽",
+            "🙎🏾",
+            "🙎🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙎"
+          }
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "keys": [
+        "🙎‍♂️",
+        {
+          "label": "🙎‍♂",
+          "alternates": [
+            "🙎🏻‍♂️",
+            "🙎🏻‍♂",
+            "🙎🏼‍♂️",
+            "🙎🏼‍♂",
+            "🙎🏽‍♂️",
+            "🙎🏽‍♂",
+            "🙎🏾‍♂️",
+            "🙎🏾‍♂",
+            "🙎🏿‍♂️",
+            "🙎🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙎‍♂"
+          }
+        },
+        "🙎‍♀️",
+        {
+          "label": "🙎‍♀",
+          "alternates": [
+            "🙎🏻‍♀️",
+            "🙎🏻‍♀",
+            "🙎🏼‍♀️",
+            "🙎🏼‍♀",
+            "🙎🏽‍♀️",
+            "🙎🏽‍♀",
+            "🙎🏾‍♀️",
+            "🙎🏾‍♀",
+            "🙎🏿‍♀️",
+            "🙎🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙎‍♀"
+          }
+        },
+        {
+          "label": "🙅",
+          "alternates": [
+            "🙅🏻",
+            "🙅🏼",
+            "🙅🏽",
+            "🙅🏾",
+            "🙅🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙅"
+          }
+        },
+        "🙅‍♂️",
+        {
+          "label": "🙅‍♂",
+          "alternates": [
+            "🙅🏻‍♂️",
+            "🙅🏻‍♂",
+            "🙅🏼‍♂️",
+            "🙅🏼‍♂",
+            "🙅🏽‍♂️",
+            "🙅🏽‍♂",
+            "🙅🏾‍♂️",
+            "🙅🏾‍♂",
+            "🙅🏿‍♂️",
+            "🙅🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙅‍♂"
+          }
+        },
+        "🙅‍♀️"
+      ]
+    },
+    {
+      "id": 17,
+      "keys": [
+        {
+          "label": "🙅‍♀",
+          "alternates": [
+            "🙅🏻‍♀️",
+            "🙅🏻‍♀",
+            "🙅🏼‍♀️",
+            "🙅🏼‍♀",
+            "🙅🏽‍♀️",
+            "🙅🏽‍♀",
+            "🙅🏾‍♀️",
+            "🙅🏾‍♀",
+            "🙅🏿‍♀️",
+            "🙅🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙅‍♀"
+          }
+        },
+        {
+          "label": "🙆",
+          "alternates": [
+            "🙆🏻",
+            "🙆🏼",
+            "🙆🏽",
+            "🙆🏾",
+            "🙆🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙆"
+          }
+        },
+        "🙆‍♂️",
+        {
+          "label": "🙆‍♂",
+          "alternates": [
+            "🙆🏻‍♂️",
+            "🙆🏻‍♂",
+            "🙆🏼‍♂️",
+            "🙆🏼‍♂",
+            "🙆🏽‍♂️",
+            "🙆🏽‍♂",
+            "🙆🏾‍♂️",
+            "🙆🏾‍♂",
+            "🙆🏿‍♂️",
+            "🙆🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙆‍♂"
+          }
+        },
+        "🙆‍♀️",
+        {
+          "label": "🙆‍♀",
+          "alternates": [
+            "🙆🏻‍♀️",
+            "🙆🏻‍♀",
+            "🙆🏼‍♀️",
+            "🙆🏼‍♀",
+            "🙆🏽‍♀️",
+            "🙆🏽‍♀",
+            "🙆🏾‍♀️",
+            "🙆🏾‍♀",
+            "🙆🏿‍♀️",
+            "🙆🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙆‍♀"
+          }
+        },
+        {
+          "label": "💁",
+          "alternates": [
+            "💁🏻",
+            "💁🏼",
+            "💁🏽",
+            "💁🏾",
+            "💁🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💁"
+          }
+        },
+        "💁‍♂️"
+      ]
+    },
+    {
+      "id": 18,
+      "keys": [
+        {
+          "label": "💁‍♂",
+          "alternates": [
+            "💁🏻‍♂️",
+            "💁🏻‍♂",
+            "💁🏼‍♂️",
+            "💁🏼‍♂",
+            "💁🏽‍♂️",
+            "💁🏽‍♂",
+            "💁🏾‍♂️",
+            "💁🏾‍♂",
+            "💁🏿‍♂️",
+            "💁🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💁‍♂"
+          }
+        },
+        "💁‍♀️",
+        {
+          "label": "💁‍♀",
+          "alternates": [
+            "💁🏻‍♀️",
+            "💁🏻‍♀",
+            "💁🏼‍♀️",
+            "💁🏼‍♀",
+            "💁🏽‍♀️",
+            "💁🏽‍♀",
+            "💁🏾‍♀️",
+            "💁🏾‍♀",
+            "💁🏿‍♀️",
+            "💁🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💁‍♀"
+          }
+        },
+        {
+          "label": "🙋",
+          "alternates": [
+            "🙋🏻",
+            "🙋🏼",
+            "🙋🏽",
+            "🙋🏾",
+            "🙋🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙋"
+          }
+        },
+        "🙋‍♂️",
+        {
+          "label": "🙋‍♂",
+          "alternates": [
+            "🙋🏻‍♂️",
+            "🙋🏻‍♂",
+            "🙋🏼‍♂️",
+            "🙋🏼‍♂",
+            "🙋🏽‍♂️",
+            "🙋🏽‍♂",
+            "🙋🏾‍♂️",
+            "🙋🏾‍♂",
+            "🙋🏿‍♂️",
+            "🙋🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙋‍♂"
+          }
+        },
+        "🙋‍♀️",
+        {
+          "label": "🙋‍♀",
+          "alternates": [
+            "🙋🏻‍♀️",
+            "🙋🏻‍♀",
+            "🙋🏼‍♀️",
+            "🙋🏼‍♀",
+            "🙋🏽‍♀️",
+            "🙋🏽‍♀",
+            "🙋🏾‍♀️",
+            "🙋🏾‍♀",
+            "🙋🏿‍♀️",
+            "🙋🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙋‍♀"
+          }
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "keys": [
+        {
+          "label": "🧏",
+          "alternates": [
+            "🧏🏻",
+            "🧏🏼",
+            "🧏🏽",
+            "🧏🏾",
+            "🧏🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧏"
+          }
+        },
+        "🧏‍♂️",
+        {
+          "label": "🧏‍♂",
+          "alternates": [
+            "🧏🏻‍♂️",
+            "🧏🏻‍♂",
+            "🧏🏼‍♂️",
+            "🧏🏼‍♂",
+            "🧏🏽‍♂️",
+            "🧏🏽‍♂",
+            "🧏🏾‍♂️",
+            "🧏🏾‍♂",
+            "🧏🏿‍♂️",
+            "🧏🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧏‍♂"
+          }
+        },
+        "🧏‍♀️",
+        {
+          "label": "🧏‍♀",
+          "alternates": [
+            "🧏🏻‍♀️",
+            "🧏🏻‍♀",
+            "🧏🏼‍♀️",
+            "🧏🏼‍♀",
+            "🧏🏽‍♀️",
+            "🧏🏽‍♀",
+            "🧏🏾‍♀️",
+            "🧏🏾‍♀",
+            "🧏🏿‍♀️",
+            "🧏🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧏‍♀"
+          }
+        },
+        {
+          "label": "🙇",
+          "alternates": [
+            "🙇🏻",
+            "🙇🏼",
+            "🙇🏽",
+            "🙇🏾",
+            "🙇🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙇"
+          }
+        },
+        "🙇‍♂️",
+        {
+          "label": "🙇‍♂",
+          "alternates": [
+            "🙇🏻‍♂️",
+            "🙇🏻‍♂",
+            "🙇🏼‍♂️",
+            "🙇🏼‍♂",
+            "🙇🏽‍♂️",
+            "🙇🏽‍♂",
+            "🙇🏾‍♂️",
+            "🙇🏾‍♂",
+            "🙇🏿‍♂️",
+            "🙇🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙇‍♂"
+          }
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "keys": [
+        "🙇‍♀️",
+        {
+          "label": "🙇‍♀",
+          "alternates": [
+            "🙇🏻‍♀️",
+            "🙇🏻‍♀",
+            "🙇🏼‍♀️",
+            "🙇🏼‍♀",
+            "🙇🏽‍♀️",
+            "🙇🏽‍♀",
+            "🙇🏾‍♀️",
+            "🙇🏾‍♀",
+            "🙇🏿‍♀️",
+            "🙇🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🙇‍♀"
+          }
+        },
+        {
+          "label": "🤦",
+          "alternates": [
+            "🤦🏻",
+            "🤦🏼",
+            "🤦🏽",
+            "🤦🏾",
+            "🤦🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤦"
+          }
+        },
+        "🤦‍♂️",
+        {
+          "label": "🤦‍♂",
+          "alternates": [
+            "🤦🏻‍♂️",
+            "🤦🏻‍♂",
+            "🤦🏼‍♂️",
+            "🤦🏼‍♂",
+            "🤦🏽‍♂️",
+            "🤦🏽‍♂",
+            "🤦🏾‍♂️",
+            "🤦🏾‍♂",
+            "🤦🏿‍♂️",
+            "🤦🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤦‍♂"
+          }
+        },
+        "🤦‍♀️",
+        {
+          "label": "🤦‍♀",
+          "alternates": [
+            "🤦🏻‍♀️",
+            "🤦🏻‍♀",
+            "🤦🏼‍♀️",
+            "🤦🏼‍♀",
+            "🤦🏽‍♀️",
+            "🤦🏽‍♀",
+            "🤦🏾‍♀️",
+            "🤦🏾‍♀",
+            "🤦🏿‍♀️",
+            "🤦🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤦‍♀"
+          }
+        },
+        {
+          "label": "🤷",
+          "alternates": [
+            "🤷🏻",
+            "🤷🏼",
+            "🤷🏽",
+            "🤷🏾",
+            "🤷🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤷"
+          }
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "keys": [
+        "🤷‍♂️",
+        {
+          "label": "🤷‍♂",
+          "alternates": [
+            "🤷🏻‍♂️",
+            "🤷🏻‍♂",
+            "🤷🏼‍♂️",
+            "🤷🏼‍♂",
+            "🤷🏽‍♂️",
+            "🤷🏽‍♂",
+            "🤷🏾‍♂️",
+            "🤷🏾‍♂",
+            "🤷🏿‍♂️",
+            "🤷🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤷‍♂"
+          }
+        },
+        "🤷‍♀️",
+        {
+          "label": "🤷‍♀",
+          "alternates": [
+            "🤷🏻‍♀️",
+            "🤷🏻‍♀",
+            "🤷🏼‍♀️",
+            "🤷🏼‍♀",
+            "🤷🏽‍♀️",
+            "🤷🏽‍♀",
+            "🤷🏾‍♀️",
+            "🤷🏾‍♀",
+            "🤷🏿‍♀️",
+            "🤷🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤷‍♀"
+          }
+        },
+        "🧑‍⚕️",
+        {
+          "label": "🧑‍⚕",
+          "alternates": [
+            "🧑🏻‍⚕️",
+            "🧑🏻‍⚕",
+            "🧑🏼‍⚕️",
+            "🧑🏼‍⚕",
+            "🧑🏽‍⚕️",
+            "🧑🏽‍⚕",
+            "🧑🏾‍⚕️",
+            "🧑🏾‍⚕",
+            "🧑🏿‍⚕️",
+            "🧑🏿‍⚕"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍⚕"
+          }
+        },
+        "👨‍⚕️",
+        {
+          "label": "👨‍⚕",
+          "alternates": [
+            "👨🏻‍⚕️",
+            "👨🏻‍⚕",
+            "👨🏼‍⚕️",
+            "👨🏼‍⚕",
+            "👨🏽‍⚕️",
+            "👨🏽‍⚕",
+            "👨🏾‍⚕️",
+            "👨🏾‍⚕",
+            "👨🏿‍⚕️",
+            "👨🏿‍⚕"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍⚕"
+          }
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "keys": [
+        "👩‍⚕️",
+        {
+          "label": "👩‍⚕",
+          "alternates": [
+            "👩🏻‍⚕️",
+            "👩🏻‍⚕",
+            "👩🏼‍⚕️",
+            "👩🏼‍⚕",
+            "👩🏽‍⚕️",
+            "👩🏽‍⚕",
+            "👩🏾‍⚕️",
+            "👩🏾‍⚕",
+            "👩🏿‍⚕️",
+            "👩🏿‍⚕"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍⚕"
+          }
+        },
+        {
+          "label": "🧑‍🎓",
+          "alternates": [
+            "🧑🏻‍🎓",
+            "🧑🏼‍🎓",
+            "🧑🏽‍🎓",
+            "🧑🏾‍🎓",
+            "🧑🏿‍🎓"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🎓"
+          }
+        },
+        {
+          "label": "👨‍🎓",
+          "alternates": [
+            "👨🏻‍🎓",
+            "👨🏼‍🎓",
+            "👨🏽‍🎓",
+            "👨🏾‍🎓",
+            "👨🏿‍🎓"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🎓"
+          }
+        },
+        {
+          "label": "👩‍🎓",
+          "alternates": [
+            "👩🏻‍🎓",
+            "👩🏼‍🎓",
+            "👩🏽‍🎓",
+            "👩🏾‍🎓",
+            "👩🏿‍🎓"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🎓"
+          }
+        },
+        {
+          "label": "🧑‍🏫",
+          "alternates": [
+            "🧑🏻‍🏫",
+            "🧑🏼‍🏫",
+            "🧑🏽‍🏫",
+            "🧑🏾‍🏫",
+            "🧑🏿‍🏫"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🏫"
+          }
+        },
+        {
+          "label": "👨‍🏫",
+          "alternates": [
+            "👨🏻‍🏫",
+            "👨🏼‍🏫",
+            "👨🏽‍🏫",
+            "👨🏾‍🏫",
+            "👨🏿‍🏫"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🏫"
+          }
+        },
+        {
+          "label": "👩‍🏫",
+          "alternates": [
+            "👩🏻‍🏫",
+            "👩🏼‍🏫",
+            "👩🏽‍🏫",
+            "👩🏾‍🏫",
+            "👩🏿‍🏫"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🏫"
+          }
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "keys": [
+        "🧑‍⚖️",
+        {
+          "label": "🧑‍⚖",
+          "alternates": [
+            "🧑🏻‍⚖️",
+            "🧑🏻‍⚖",
+            "🧑🏼‍⚖️",
+            "🧑🏼‍⚖",
+            "🧑🏽‍⚖️",
+            "🧑🏽‍⚖",
+            "🧑🏾‍⚖️",
+            "🧑🏾‍⚖",
+            "🧑🏿‍⚖️",
+            "🧑🏿‍⚖"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍⚖"
+          }
+        },
+        "👨‍⚖️",
+        {
+          "label": "👨‍⚖",
+          "alternates": [
+            "👨🏻‍⚖️",
+            "👨🏻‍⚖",
+            "👨🏼‍⚖️",
+            "👨🏼‍⚖",
+            "👨🏽‍⚖️",
+            "👨🏽‍⚖",
+            "👨🏾‍⚖️",
+            "👨🏾‍⚖",
+            "👨🏿‍⚖️",
+            "👨🏿‍⚖"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍⚖"
+          }
+        },
+        "👩‍⚖️",
+        {
+          "label": "👩‍⚖",
+          "alternates": [
+            "👩🏻‍⚖️",
+            "👩🏻‍⚖",
+            "👩🏼‍⚖️",
+            "👩🏼‍⚖",
+            "👩🏽‍⚖️",
+            "👩🏽‍⚖",
+            "👩🏾‍⚖️",
+            "👩🏾‍⚖",
+            "👩🏿‍⚖️",
+            "👩🏿‍⚖"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍⚖"
+          }
+        },
+        {
+          "label": "🧑‍🌾",
+          "alternates": [
+            "🧑🏻‍🌾",
+            "🧑🏼‍🌾",
+            "🧑🏽‍🌾",
+            "🧑🏾‍🌾",
+            "🧑🏿‍🌾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🌾"
+          }
+        },
+        {
+          "label": "👨‍🌾",
+          "alternates": [
+            "👨🏻‍🌾",
+            "👨🏼‍🌾",
+            "👨🏽‍🌾",
+            "👨🏾‍🌾",
+            "👨🏿‍🌾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🌾"
+          }
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "keys": [
+        {
+          "label": "👩‍🌾",
+          "alternates": [
+            "👩🏻‍🌾",
+            "👩🏼‍🌾",
+            "👩🏽‍🌾",
+            "👩🏾‍🌾",
+            "👩🏿‍🌾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🌾"
+          }
+        },
+        {
+          "label": "🧑‍🍳",
+          "alternates": [
+            "🧑🏻‍🍳",
+            "🧑🏼‍🍳",
+            "🧑🏽‍🍳",
+            "🧑🏾‍🍳",
+            "🧑🏿‍🍳"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🍳"
+          }
+        },
+        {
+          "label": "👨‍🍳",
+          "alternates": [
+            "👨🏻‍🍳",
+            "👨🏼‍🍳",
+            "👨🏽‍🍳",
+            "👨🏾‍🍳",
+            "👨🏿‍🍳"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🍳"
+          }
+        },
+        {
+          "label": "👩‍🍳",
+          "alternates": [
+            "👩🏻‍🍳",
+            "👩🏼‍🍳",
+            "👩🏽‍🍳",
+            "👩🏾‍🍳",
+            "👩🏿‍🍳"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🍳"
+          }
+        },
+        {
+          "label": "🧑‍🔧",
+          "alternates": [
+            "🧑🏻‍🔧",
+            "🧑🏼‍🔧",
+            "🧑🏽‍🔧",
+            "🧑🏾‍🔧",
+            "🧑🏿‍🔧"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🔧"
+          }
+        },
+        {
+          "label": "👨‍🔧",
+          "alternates": [
+            "👨🏻‍🔧",
+            "👨🏼‍🔧",
+            "👨🏽‍🔧",
+            "👨🏾‍🔧",
+            "👨🏿‍🔧"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🔧"
+          }
+        },
+        {
+          "label": "👩‍🔧",
+          "alternates": [
+            "👩🏻‍🔧",
+            "👩🏼‍🔧",
+            "👩🏽‍🔧",
+            "👩🏾‍🔧",
+            "👩🏿‍🔧"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🔧"
+          }
+        },
+        {
+          "label": "🧑‍🏭",
+          "alternates": [
+            "🧑🏻‍🏭",
+            "🧑🏼‍🏭",
+            "🧑🏽‍🏭",
+            "🧑🏾‍🏭",
+            "🧑🏿‍🏭"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🏭"
+          }
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "keys": [
+        {
+          "label": "👨‍🏭",
+          "alternates": [
+            "👨🏻‍🏭",
+            "👨🏼‍🏭",
+            "👨🏽‍🏭",
+            "👨🏾‍🏭",
+            "👨🏿‍🏭"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🏭"
+          }
+        },
+        {
+          "label": "👩‍🏭",
+          "alternates": [
+            "👩🏻‍🏭",
+            "👩🏼‍🏭",
+            "👩🏽‍🏭",
+            "👩🏾‍🏭",
+            "👩🏿‍🏭"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🏭"
+          }
+        },
+        {
+          "label": "🧑‍💼",
+          "alternates": [
+            "🧑🏻‍💼",
+            "🧑🏼‍💼",
+            "🧑🏽‍💼",
+            "🧑🏾‍💼",
+            "🧑🏿‍💼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍💼"
+          }
+        },
+        {
+          "label": "👨‍💼",
+          "alternates": [
+            "👨🏻‍💼",
+            "👨🏼‍💼",
+            "👨🏽‍💼",
+            "👨🏾‍💼",
+            "👨🏿‍💼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍💼"
+          }
+        },
+        {
+          "label": "👩‍💼",
+          "alternates": [
+            "👩🏻‍💼",
+            "👩🏼‍💼",
+            "👩🏽‍💼",
+            "👩🏾‍💼",
+            "👩🏿‍💼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍💼"
+          }
+        },
+        {
+          "label": "🧑‍🔬",
+          "alternates": [
+            "🧑🏻‍🔬",
+            "🧑🏼‍🔬",
+            "🧑🏽‍🔬",
+            "🧑🏾‍🔬",
+            "🧑🏿‍🔬"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🔬"
+          }
+        },
+        {
+          "label": "👨‍🔬",
+          "alternates": [
+            "👨🏻‍🔬",
+            "👨🏼‍🔬",
+            "👨🏽‍🔬",
+            "👨🏾‍🔬",
+            "👨🏿‍🔬"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🔬"
+          }
+        },
+        {
+          "label": "👩‍🔬",
+          "alternates": [
+            "👩🏻‍🔬",
+            "👩🏼‍🔬",
+            "👩🏽‍🔬",
+            "👩🏾‍🔬",
+            "👩🏿‍🔬"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🔬"
+          }
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "keys": [
+        {
+          "label": "🧑‍💻",
+          "alternates": [
+            "🧑🏻‍💻",
+            "🧑🏼‍💻",
+            "🧑🏽‍💻",
+            "🧑🏾‍💻",
+            "🧑🏿‍💻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍💻"
+          }
+        },
+        {
+          "label": "👨‍💻",
+          "alternates": [
+            "👨🏻‍💻",
+            "👨🏼‍💻",
+            "👨🏽‍💻",
+            "👨🏾‍💻",
+            "👨🏿‍💻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍💻"
+          }
+        },
+        {
+          "label": "👩‍💻",
+          "alternates": [
+            "👩🏻‍💻",
+            "👩🏼‍💻",
+            "👩🏽‍💻",
+            "👩🏾‍💻",
+            "👩🏿‍💻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍💻"
+          }
+        },
+        {
+          "label": "🧑‍🎤",
+          "alternates": [
+            "🧑🏻‍🎤",
+            "🧑🏼‍🎤",
+            "🧑🏽‍🎤",
+            "🧑🏾‍🎤",
+            "🧑🏿‍🎤"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🎤"
+          }
+        },
+        {
+          "label": "👨‍🎤",
+          "alternates": [
+            "👨🏻‍🎤",
+            "👨🏼‍🎤",
+            "👨🏽‍🎤",
+            "👨🏾‍🎤",
+            "👨🏿‍🎤"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🎤"
+          }
+        },
+        {
+          "label": "👩‍🎤",
+          "alternates": [
+            "👩🏻‍🎤",
+            "👩🏼‍🎤",
+            "👩🏽‍🎤",
+            "👩🏾‍🎤",
+            "👩🏿‍🎤"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🎤"
+          }
+        },
+        {
+          "label": "🧑‍🎨",
+          "alternates": [
+            "🧑🏻‍🎨",
+            "🧑🏼‍🎨",
+            "🧑🏽‍🎨",
+            "🧑🏾‍🎨",
+            "🧑🏿‍🎨"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🎨"
+          }
+        },
+        {
+          "label": "👨‍🎨",
+          "alternates": [
+            "👨🏻‍🎨",
+            "👨🏼‍🎨",
+            "👨🏽‍🎨",
+            "👨🏾‍🎨",
+            "👨🏿‍🎨"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🎨"
+          }
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "keys": [
+        {
+          "label": "👩‍🎨",
+          "alternates": [
+            "👩🏻‍🎨",
+            "👩🏼‍🎨",
+            "👩🏽‍🎨",
+            "👩🏾‍🎨",
+            "👩🏿‍🎨"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🎨"
+          }
+        },
+        "🧑‍✈️",
+        {
+          "label": "🧑‍✈",
+          "alternates": [
+            "🧑🏻‍✈️",
+            "🧑🏻‍✈",
+            "🧑🏼‍✈️",
+            "🧑🏼‍✈",
+            "🧑🏽‍✈️",
+            "🧑🏽‍✈",
+            "🧑🏾‍✈️",
+            "🧑🏾‍✈",
+            "🧑🏿‍✈️",
+            "🧑🏿‍✈"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍✈"
+          }
+        },
+        "👨‍✈️",
+        {
+          "label": "👨‍✈",
+          "alternates": [
+            "👨🏻‍✈️",
+            "👨🏻‍✈",
+            "👨🏼‍✈️",
+            "👨🏼‍✈",
+            "👨🏽‍✈️",
+            "👨🏽‍✈",
+            "👨🏾‍✈️",
+            "👨🏾‍✈",
+            "👨🏿‍✈️",
+            "👨🏿‍✈"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍✈"
+          }
+        },
+        "👩‍✈️",
+        {
+          "label": "👩‍✈",
+          "alternates": [
+            "👩🏻‍✈️",
+            "👩🏻‍✈",
+            "👩🏼‍✈️",
+            "👩🏼‍✈",
+            "👩🏽‍✈️",
+            "👩🏽‍✈",
+            "👩🏾‍✈️",
+            "👩🏾‍✈",
+            "👩🏿‍✈️",
+            "👩🏿‍✈"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍✈"
+          }
+        },
+        {
+          "label": "🧑‍🚀",
+          "alternates": [
+            "🧑🏻‍🚀",
+            "🧑🏼‍🚀",
+            "🧑🏽‍🚀",
+            "🧑🏾‍🚀",
+            "🧑🏿‍🚀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🚀"
+          }
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "keys": [
+        {
+          "label": "👨‍🚀",
+          "alternates": [
+            "👨🏻‍🚀",
+            "👨🏼‍🚀",
+            "👨🏽‍🚀",
+            "👨🏾‍🚀",
+            "👨🏿‍🚀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🚀"
+          }
+        },
+        {
+          "label": "👩‍🚀",
+          "alternates": [
+            "👩🏻‍🚀",
+            "👩🏼‍🚀",
+            "👩🏽‍🚀",
+            "👩🏾‍🚀",
+            "👩🏿‍🚀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🚀"
+          }
+        },
+        {
+          "label": "🧑‍🚒",
+          "alternates": [
+            "🧑🏻‍🚒",
+            "🧑🏼‍🚒",
+            "🧑🏽‍🚒",
+            "🧑🏾‍🚒",
+            "🧑🏿‍🚒"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🚒"
+          }
+        },
+        {
+          "label": "👨‍🚒",
+          "alternates": [
+            "👨🏻‍🚒",
+            "👨🏼‍🚒",
+            "👨🏽‍🚒",
+            "👨🏾‍🚒",
+            "👨🏿‍🚒"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🚒"
+          }
+        },
+        {
+          "label": "👩‍🚒",
+          "alternates": [
+            "👩🏻‍🚒",
+            "👩🏼‍🚒",
+            "👩🏽‍🚒",
+            "👩🏾‍🚒",
+            "👩🏿‍🚒"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🚒"
+          }
+        },
+        {
+          "label": "👮",
+          "alternates": [
+            "👮🏻",
+            "👮🏼",
+            "👮🏽",
+            "👮🏾",
+            "👮🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👮"
+          }
+        },
+        "👮‍♂️",
+        {
+          "label": "👮‍♂",
+          "alternates": [
+            "👮🏻‍♂️",
+            "👮🏻‍♂",
+            "👮🏼‍♂️",
+            "👮🏼‍♂",
+            "👮🏽‍♂️",
+            "👮🏽‍♂",
+            "👮🏾‍♂️",
+            "👮🏾‍♂",
+            "👮🏿‍♂️",
+            "👮🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👮‍♂"
+          }
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "keys": [
+        "👮‍♀️",
+        {
+          "label": "👮‍♀",
+          "alternates": [
+            "👮🏻‍♀️",
+            "👮🏻‍♀",
+            "👮🏼‍♀️",
+            "👮🏼‍♀",
+            "👮🏽‍♀️",
+            "👮🏽‍♀",
+            "👮🏾‍♀️",
+            "👮🏾‍♀",
+            "👮🏿‍♀️",
+            "👮🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👮‍♀"
+          }
+        },
+        "🕵️",
+        {
+          "label": "🕵",
+          "alternates": [
+            "🕵🏻",
+            "🕵🏼",
+            "🕵🏽",
+            "🕵🏾",
+            "🕵🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🕵"
+          }
+        },
+        "🕵️‍♂️",
+        "🕵‍♂️",
+        "🕵️‍♂",
+        {
+          "label": "🕵‍♂",
+          "alternates": [
+            "🕵🏻‍♂️",
+            "🕵🏻‍♂",
+            "🕵🏼‍♂️",
+            "🕵🏼‍♂",
+            "🕵🏽‍♂️",
+            "🕵🏽‍♂",
+            "🕵🏾‍♂️",
+            "🕵🏾‍♂",
+            "🕵🏿‍♂️",
+            "🕵🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🕵‍♂"
+          }
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "keys": [
+        "🕵️‍♀️",
+        "🕵‍♀️",
+        "🕵️‍♀",
+        {
+          "label": "🕵‍♀",
+          "alternates": [
+            "🕵🏻‍♀️",
+            "🕵🏻‍♀",
+            "🕵🏼‍♀️",
+            "🕵🏼‍♀",
+            "🕵🏽‍♀️",
+            "🕵🏽‍♀",
+            "🕵🏾‍♀️",
+            "🕵🏾‍♀",
+            "🕵🏿‍♀️",
+            "🕵🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🕵‍♀"
+          }
+        },
+        {
+          "label": "💂",
+          "alternates": [
+            "💂🏻",
+            "💂🏼",
+            "💂🏽",
+            "💂🏾",
+            "💂🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💂"
+          }
+        },
+        "💂‍♂️",
+        {
+          "label": "💂‍♂",
+          "alternates": [
+            "💂🏻‍♂️",
+            "💂🏻‍♂",
+            "💂🏼‍♂️",
+            "💂🏼‍♂",
+            "💂🏽‍♂️",
+            "💂🏽‍♂",
+            "💂🏾‍♂️",
+            "💂🏾‍♂",
+            "💂🏿‍♂️",
+            "💂🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💂‍♂"
+          }
+        },
+        "💂‍♀️"
+      ]
+    },
+    {
+      "id": 31,
+      "keys": [
+        {
+          "label": "💂‍♀",
+          "alternates": [
+            "💂🏻‍♀️",
+            "💂🏻‍♀",
+            "💂🏼‍♀️",
+            "💂🏼‍♀",
+            "💂🏽‍♀️",
+            "💂🏽‍♀",
+            "💂🏾‍♀️",
+            "💂🏾‍♀",
+            "💂🏿‍♀️",
+            "💂🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💂‍♀"
+          }
+        },
+        {
+          "label": "🥷",
+          "alternates": [
+            "🥷🏻",
+            "🥷🏼",
+            "🥷🏽",
+            "🥷🏾",
+            "🥷🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🥷"
+          }
+        },
+        {
+          "label": "👷",
+          "alternates": [
+            "👷🏻",
+            "👷🏼",
+            "👷🏽",
+            "👷🏾",
+            "👷🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👷"
+          }
+        },
+        "👷‍♂️",
+        {
+          "label": "👷‍♂",
+          "alternates": [
+            "👷🏻‍♂️",
+            "👷🏻‍♂",
+            "👷🏼‍♂️",
+            "👷🏼‍♂",
+            "👷🏽‍♂️",
+            "👷🏽‍♂",
+            "👷🏾‍♂️",
+            "👷🏾‍♂",
+            "👷🏿‍♂️",
+            "👷🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👷‍♂"
+          }
+        },
+        "👷‍♀️",
+        {
+          "label": "👷‍♀",
+          "alternates": [
+            "👷🏻‍♀️",
+            "👷🏻‍♀",
+            "👷🏼‍♀️",
+            "👷🏼‍♀",
+            "👷🏽‍♀️",
+            "👷🏽‍♀",
+            "👷🏾‍♀️",
+            "👷🏾‍♀",
+            "👷🏿‍♀️",
+            "👷🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👷‍♀"
+          }
+        },
+        {
+          "label": "🫅",
+          "alternates": [
+            "🫅🏻",
+            "🫅🏼",
+            "🫅🏽",
+            "🫅🏾",
+            "🫅🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫅"
+          }
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "keys": [
+        {
+          "label": "🤴",
+          "alternates": [
+            "🤴🏻",
+            "🤴🏼",
+            "🤴🏽",
+            "🤴🏾",
+            "🤴🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤴"
+          }
+        },
+        {
+          "label": "👸",
+          "alternates": [
+            "👸🏻",
+            "👸🏼",
+            "👸🏽",
+            "👸🏾",
+            "👸🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👸"
+          }
+        },
+        {
+          "label": "👳",
+          "alternates": [
+            "👳🏻",
+            "👳🏼",
+            "👳🏽",
+            "👳🏾",
+            "👳🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👳"
+          }
+        },
+        "👳‍♂️",
+        {
+          "label": "👳‍♂",
+          "alternates": [
+            "👳🏻‍♂️",
+            "👳🏻‍♂",
+            "👳🏼‍♂️",
+            "👳🏼‍♂",
+            "👳🏽‍♂️",
+            "👳🏽‍♂",
+            "👳🏾‍♂️",
+            "👳🏾‍♂",
+            "👳🏿‍♂️",
+            "👳🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👳‍♂"
+          }
+        },
+        "👳‍♀️",
+        {
+          "label": "👳‍♀",
+          "alternates": [
+            "👳🏻‍♀️",
+            "👳🏻‍♀",
+            "👳🏼‍♀️",
+            "👳🏼‍♀",
+            "👳🏽‍♀️",
+            "👳🏽‍♀",
+            "👳🏾‍♀️",
+            "👳🏾‍♀",
+            "👳🏿‍♀️",
+            "👳🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👳‍♀"
+          }
+        },
+        {
+          "label": "👲",
+          "alternates": [
+            "👲🏻",
+            "👲🏼",
+            "👲🏽",
+            "👲🏾",
+            "👲🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👲"
+          }
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "keys": [
+        {
+          "label": "🧕",
+          "alternates": [
+            "🧕🏻",
+            "🧕🏼",
+            "🧕🏽",
+            "🧕🏾",
+            "🧕🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧕"
+          }
+        },
+        {
+          "label": "🤵",
+          "alternates": [
+            "🤵🏻",
+            "🤵🏼",
+            "🤵🏽",
+            "🤵🏾",
+            "🤵🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤵"
+          }
+        },
+        "🤵‍♂️",
+        {
+          "label": "🤵‍♂",
+          "alternates": [
+            "🤵🏻‍♂️",
+            "🤵🏻‍♂",
+            "🤵🏼‍♂️",
+            "🤵🏼‍♂",
+            "🤵🏽‍♂️",
+            "🤵🏽‍♂",
+            "🤵🏾‍♂️",
+            "🤵🏾‍♂",
+            "🤵🏿‍♂️",
+            "🤵🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤵‍♂"
+          }
+        },
+        "🤵‍♀️",
+        {
+          "label": "🤵‍♀",
+          "alternates": [
+            "🤵🏻‍♀️",
+            "🤵🏻‍♀",
+            "🤵🏼‍♀️",
+            "🤵🏼‍♀",
+            "🤵🏽‍♀️",
+            "🤵🏽‍♀",
+            "🤵🏾‍♀️",
+            "🤵🏾‍♀",
+            "🤵🏿‍♀️",
+            "🤵🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤵‍♀"
+          }
+        },
+        {
+          "label": "👰",
+          "alternates": [
+            "👰🏻",
+            "👰🏼",
+            "👰🏽",
+            "👰🏾",
+            "👰🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👰"
+          }
+        },
+        "👰‍♂️"
+      ]
+    },
+    {
+      "id": 34,
+      "keys": [
+        {
+          "label": "👰‍♂",
+          "alternates": [
+            "👰🏻‍♂️",
+            "👰🏻‍♂",
+            "👰🏼‍♂️",
+            "👰🏼‍♂",
+            "👰🏽‍♂️",
+            "👰🏽‍♂",
+            "👰🏾‍♂️",
+            "👰🏾‍♂",
+            "👰🏿‍♂️",
+            "👰🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👰‍♂"
+          }
+        },
+        "👰‍♀️",
+        {
+          "label": "👰‍♀",
+          "alternates": [
+            "👰🏻‍♀️",
+            "👰🏻‍♀",
+            "👰🏼‍♀️",
+            "👰🏼‍♀",
+            "👰🏽‍♀️",
+            "👰🏽‍♀",
+            "👰🏾‍♀️",
+            "👰🏾‍♀",
+            "👰🏿‍♀️",
+            "👰🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👰‍♀"
+          }
+        },
+        {
+          "label": "🤰",
+          "alternates": [
+            "🤰🏻",
+            "🤰🏼",
+            "🤰🏽",
+            "🤰🏾",
+            "🤰🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤰"
+          }
+        },
+        {
+          "label": "🫃",
+          "alternates": [
+            "🫃🏻",
+            "🫃🏼",
+            "🫃🏽",
+            "🫃🏾",
+            "🫃🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫃"
+          }
+        },
+        {
+          "label": "🫄",
+          "alternates": [
+            "🫄🏻",
+            "🫄🏼",
+            "🫄🏽",
+            "🫄🏾",
+            "🫄🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🫄"
+          }
+        },
+        {
+          "label": "🤱",
+          "alternates": [
+            "🤱🏻",
+            "🤱🏼",
+            "🤱🏽",
+            "🤱🏾",
+            "🤱🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤱"
+          }
+        },
+        {
+          "label": "👩‍🍼",
+          "alternates": [
+            "👩🏻‍🍼",
+            "👩🏼‍🍼",
+            "👩🏽‍🍼",
+            "👩🏾‍🍼",
+            "👩🏿‍🍼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🍼"
+          }
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "keys": [
+        {
+          "label": "👨‍🍼",
+          "alternates": [
+            "👨🏻‍🍼",
+            "👨🏼‍🍼",
+            "👨🏽‍🍼",
+            "👨🏾‍🍼",
+            "👨🏿‍🍼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🍼"
+          }
+        },
+        {
+          "label": "🧑‍🍼",
+          "alternates": [
+            "🧑🏻‍🍼",
+            "🧑🏼‍🍼",
+            "🧑🏽‍🍼",
+            "🧑🏾‍🍼",
+            "🧑🏿‍🍼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🍼"
+          }
+        },
+        {
+          "label": "👼",
+          "alternates": [
+            "👼🏻",
+            "👼🏼",
+            "👼🏽",
+            "👼🏾",
+            "👼🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👼"
+          }
+        },
+        {
+          "label": "🎅",
+          "alternates": [
+            "🎅🏻",
+            "🎅🏼",
+            "🎅🏽",
+            "🎅🏾",
+            "🎅🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🎅"
+          }
+        },
+        {
+          "label": "🤶",
+          "alternates": [
+            "🤶🏻",
+            "🤶🏼",
+            "🤶🏽",
+            "🤶🏾",
+            "🤶🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤶"
+          }
+        },
+        {
+          "label": "🧑‍🎄",
+          "alternates": [
+            "🧑🏻‍🎄",
+            "🧑🏼‍🎄",
+            "🧑🏽‍🎄",
+            "🧑🏾‍🎄",
+            "🧑🏿‍🎄"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🎄"
+          }
+        },
+        {
+          "label": "🦸",
+          "alternates": [
+            "🦸🏻",
+            "🦸🏼",
+            "🦸🏽",
+            "🦸🏾",
+            "🦸🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦸"
+          }
+        },
+        "🦸‍♂️"
+      ]
+    },
+    {
+      "id": 36,
+      "keys": [
+        {
+          "label": "🦸‍♂",
+          "alternates": [
+            "🦸🏻‍♂️",
+            "🦸🏻‍♂",
+            "🦸🏼‍♂️",
+            "🦸🏼‍♂",
+            "🦸🏽‍♂️",
+            "🦸🏽‍♂",
+            "🦸🏾‍♂️",
+            "🦸🏾‍♂",
+            "🦸🏿‍♂️",
+            "🦸🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦸‍♂"
+          }
+        },
+        "🦸‍♀️",
+        {
+          "label": "🦸‍♀",
+          "alternates": [
+            "🦸🏻‍♀️",
+            "🦸🏻‍♀",
+            "🦸🏼‍♀️",
+            "🦸🏼‍♀",
+            "🦸🏽‍♀️",
+            "🦸🏽‍♀",
+            "🦸🏾‍♀️",
+            "🦸🏾‍♀",
+            "🦸🏿‍♀️",
+            "🦸🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦸‍♀"
+          }
+        },
+        {
+          "label": "🦹",
+          "alternates": [
+            "🦹🏻",
+            "🦹🏼",
+            "🦹🏽",
+            "🦹🏾",
+            "🦹🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦹"
+          }
+        },
+        "🦹‍♂️",
+        {
+          "label": "🦹‍♂",
+          "alternates": [
+            "🦹🏻‍♂️",
+            "🦹🏻‍♂",
+            "🦹🏼‍♂️",
+            "🦹🏼‍♂",
+            "🦹🏽‍♂️",
+            "🦹🏽‍♂",
+            "🦹🏾‍♂️",
+            "🦹🏾‍♂",
+            "🦹🏿‍♂️",
+            "🦹🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦹‍♂"
+          }
+        },
+        "🦹‍♀️",
+        {
+          "label": "🦹‍♀",
+          "alternates": [
+            "🦹🏻‍♀️",
+            "🦹🏻‍♀",
+            "🦹🏼‍♀️",
+            "🦹🏼‍♀",
+            "🦹🏽‍♀️",
+            "🦹🏽‍♀",
+            "🦹🏾‍♀️",
+            "🦹🏾‍♀",
+            "🦹🏿‍♀️",
+            "🦹🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🦹‍♀"
+          }
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "keys": [
+        {
+          "label": "🧙",
+          "alternates": [
+            "🧙🏻",
+            "🧙🏼",
+            "🧙🏽",
+            "🧙🏾",
+            "🧙🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧙"
+          }
+        },
+        "🧙‍♂️",
+        {
+          "label": "🧙‍♂",
+          "alternates": [
+            "🧙🏻‍♂️",
+            "🧙🏻‍♂",
+            "🧙🏼‍♂️",
+            "🧙🏼‍♂",
+            "🧙🏽‍♂️",
+            "🧙🏽‍♂",
+            "🧙🏾‍♂️",
+            "🧙🏾‍♂",
+            "🧙🏿‍♂️",
+            "🧙🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧙‍♂"
+          }
+        },
+        "🧙‍♀️",
+        {
+          "label": "🧙‍♀",
+          "alternates": [
+            "🧙🏻‍♀️",
+            "🧙🏻‍♀",
+            "🧙🏼‍♀️",
+            "🧙🏼‍♀",
+            "🧙🏽‍♀️",
+            "🧙🏽‍♀",
+            "🧙🏾‍♀️",
+            "🧙🏾‍♀",
+            "🧙🏿‍♀️",
+            "🧙🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧙‍♀"
+          }
+        },
+        {
+          "label": "🧚",
+          "alternates": [
+            "🧚🏻",
+            "🧚🏼",
+            "🧚🏽",
+            "🧚🏾",
+            "🧚🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧚"
+          }
+        },
+        "🧚‍♂️",
+        {
+          "label": "🧚‍♂",
+          "alternates": [
+            "🧚🏻‍♂️",
+            "🧚🏻‍♂",
+            "🧚🏼‍♂️",
+            "🧚🏼‍♂",
+            "🧚🏽‍♂️",
+            "🧚🏽‍♂",
+            "🧚🏾‍♂️",
+            "🧚🏾‍♂",
+            "🧚🏿‍♂️",
+            "🧚🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧚‍♂"
+          }
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "keys": [
+        "🧚‍♀️",
+        {
+          "label": "🧚‍♀",
+          "alternates": [
+            "🧚🏻‍♀️",
+            "🧚🏻‍♀",
+            "🧚🏼‍♀️",
+            "🧚🏼‍♀",
+            "🧚🏽‍♀️",
+            "🧚🏽‍♀",
+            "🧚🏾‍♀️",
+            "🧚🏾‍♀",
+            "🧚🏿‍♀️",
+            "🧚🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧚‍♀"
+          }
+        },
+        {
+          "label": "🧛",
+          "alternates": [
+            "🧛🏻",
+            "🧛🏼",
+            "🧛🏽",
+            "🧛🏾",
+            "🧛🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧛"
+          }
+        },
+        "🧛‍♂️",
+        {
+          "label": "🧛‍♂",
+          "alternates": [
+            "🧛🏻‍♂️",
+            "🧛🏻‍♂",
+            "🧛🏼‍♂️",
+            "🧛🏼‍♂",
+            "🧛🏽‍♂️",
+            "🧛🏽‍♂",
+            "🧛🏾‍♂️",
+            "🧛🏾‍♂",
+            "🧛🏿‍♂️",
+            "🧛🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧛‍♂"
+          }
+        },
+        "🧛‍♀️",
+        {
+          "label": "🧛‍♀",
+          "alternates": [
+            "🧛🏻‍♀️",
+            "🧛🏻‍♀",
+            "🧛🏼‍♀️",
+            "🧛🏼‍♀",
+            "🧛🏽‍♀️",
+            "🧛🏽‍♀",
+            "🧛🏾‍♀️",
+            "🧛🏾‍♀",
+            "🧛🏿‍♀️",
+            "🧛🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧛‍♀"
+          }
+        },
+        {
+          "label": "🧜",
+          "alternates": [
+            "🧜🏻",
+            "🧜🏼",
+            "🧜🏽",
+            "🧜🏾",
+            "🧜🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧜"
+          }
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "keys": [
+        "🧜‍♂️",
+        {
+          "label": "🧜‍♂",
+          "alternates": [
+            "🧜🏻‍♂️",
+            "🧜🏻‍♂",
+            "🧜🏼‍♂️",
+            "🧜🏼‍♂",
+            "🧜🏽‍♂️",
+            "🧜🏽‍♂",
+            "🧜🏾‍♂️",
+            "🧜🏾‍♂",
+            "🧜🏿‍♂️",
+            "🧜🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧜‍♂"
+          }
+        },
+        "🧜‍♀️",
+        {
+          "label": "🧜‍♀",
+          "alternates": [
+            "🧜🏻‍♀️",
+            "🧜🏻‍♀",
+            "🧜🏼‍♀️",
+            "🧜🏼‍♀",
+            "🧜🏽‍♀️",
+            "🧜🏽‍♀",
+            "🧜🏾‍♀️",
+            "🧜🏾‍♀",
+            "🧜🏿‍♀️",
+            "🧜🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧜‍♀"
+          }
+        },
+        {
+          "label": "🧝",
+          "alternates": [
+            "🧝🏻",
+            "🧝🏼",
+            "🧝🏽",
+            "🧝🏾",
+            "🧝🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧝"
+          }
+        },
+        "🧝‍♂️",
+        {
+          "label": "🧝‍♂",
+          "alternates": [
+            "🧝🏻‍♂️",
+            "🧝🏻‍♂",
+            "🧝🏼‍♂️",
+            "🧝🏼‍♂",
+            "🧝🏽‍♂️",
+            "🧝🏽‍♂",
+            "🧝🏾‍♂️",
+            "🧝🏾‍♂",
+            "🧝🏿‍♂️",
+            "🧝🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧝‍♂"
+          }
+        },
+        "🧝‍♀️"
+      ]
+    },
+    {
+      "id": 40,
+      "keys": [
+        {
+          "label": "🧝‍♀",
+          "alternates": [
+            "🧝🏻‍♀️",
+            "🧝🏻‍♀",
+            "🧝🏼‍♀️",
+            "🧝🏼‍♀",
+            "🧝🏽‍♀️",
+            "🧝🏽‍♀",
+            "🧝🏾‍♀️",
+            "🧝🏾‍♀",
+            "🧝🏿‍♀️",
+            "🧝🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧝‍♀"
+          }
+        },
+        "🧞",
+        "🧞‍♂️",
+        "🧞‍♂",
+        "🧞‍♀️",
+        "🧞‍♀",
+        "🧟",
+        "🧟‍♂️"
+      ]
+    },
+    {
+      "id": 41,
+      "keys": [
+        "🧟‍♂",
+        "🧟‍♀️",
+        "🧟‍♀",
+        "🧌",
+        {
+          "label": "💆",
+          "alternates": [
+            "💆🏻",
+            "💆🏼",
+            "💆🏽",
+            "💆🏾",
+            "💆🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💆"
+          }
+        },
+        "💆‍♂️",
+        {
+          "label": "💆‍♂",
+          "alternates": [
+            "💆🏻‍♂️",
+            "💆🏻‍♂",
+            "💆🏼‍♂️",
+            "💆🏼‍♂",
+            "💆🏽‍♂️",
+            "💆🏽‍♂",
+            "💆🏾‍♂️",
+            "💆🏾‍♂",
+            "💆🏿‍♂️",
+            "💆🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💆‍♂"
+          }
+        },
+        "💆‍♀️"
+      ]
+    },
+    {
+      "id": 42,
+      "keys": [
+        {
+          "label": "💆‍♀",
+          "alternates": [
+            "💆🏻‍♀️",
+            "💆🏻‍♀",
+            "💆🏼‍♀️",
+            "💆🏼‍♀",
+            "💆🏽‍♀️",
+            "💆🏽‍♀",
+            "💆🏾‍♀️",
+            "💆🏾‍♀",
+            "💆🏿‍♀️",
+            "💆🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💆‍♀"
+          }
+        },
+        {
+          "label": "💇",
+          "alternates": [
+            "💇🏻",
+            "💇🏼",
+            "💇🏽",
+            "💇🏾",
+            "💇🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💇"
+          }
+        },
+        "💇‍♂️",
+        {
+          "label": "💇‍♂",
+          "alternates": [
+            "💇🏻‍♂️",
+            "💇🏻‍♂",
+            "💇🏼‍♂️",
+            "💇🏼‍♂",
+            "💇🏽‍♂️",
+            "💇🏽‍♂",
+            "💇🏾‍♂️",
+            "💇🏾‍♂",
+            "💇🏿‍♂️",
+            "💇🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💇‍♂"
+          }
+        },
+        "💇‍♀️",
+        {
+          "label": "💇‍♀",
+          "alternates": [
+            "💇🏻‍♀️",
+            "💇🏻‍♀",
+            "💇🏼‍♀️",
+            "💇🏼‍♀",
+            "💇🏽‍♀️",
+            "💇🏽‍♀",
+            "💇🏾‍♀️",
+            "💇🏾‍♀",
+            "💇🏿‍♀️",
+            "💇🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💇‍♀"
+          }
+        },
+        {
+          "label": "🚶",
+          "alternates": [
+            "🚶🏻",
+            "🚶🏼",
+            "🚶🏽",
+            "🚶🏾",
+            "🚶🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶"
+          }
+        },
+        "🚶‍♂️"
+      ]
+    },
+    {
+      "id": 43,
+      "keys": [
+        {
+          "label": "🚶‍♂",
+          "alternates": [
+            "🚶🏻‍♂️",
+            "🚶🏻‍♂",
+            "🚶🏼‍♂️",
+            "🚶🏼‍♂",
+            "🚶🏽‍♂️",
+            "🚶🏽‍♂",
+            "🚶🏾‍♂️",
+            "🚶🏾‍♂",
+            "🚶🏿‍♂️",
+            "🚶🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶‍♂"
+          }
+        },
+        "🚶‍♀️",
+        {
+          "label": "🚶‍♀",
+          "alternates": [
+            "🚶🏻‍♀️",
+            "🚶🏻‍♀",
+            "🚶🏼‍♀️",
+            "🚶🏼‍♀",
+            "🚶🏽‍♀️",
+            "🚶🏽‍♀",
+            "🚶🏾‍♀️",
+            "🚶🏾‍♀",
+            "🚶🏿‍♀️",
+            "🚶🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶‍♀"
+          }
+        },
+        "🚶‍➡️",
+        {
+          "label": "🚶‍➡",
+          "alternates": [
+            "🚶🏻‍➡️",
+            "🚶🏻‍➡",
+            "🚶🏼‍➡️",
+            "🚶🏼‍➡",
+            "🚶🏽‍➡️",
+            "🚶🏽‍➡",
+            "🚶🏾‍➡️",
+            "🚶🏾‍➡",
+            "🚶🏿‍➡️",
+            "🚶🏿‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶‍➡"
+          }
+        },
+        "🚶‍♀️‍➡️",
+        "🚶‍♀‍➡️",
+        {
+          "label": "🚶‍♀️‍➡",
+          "alternates": [
+            "🚶🏻‍♀️‍➡️",
+            "🚶🏻‍♀️‍➡",
+            "🚶🏼‍♀️‍➡️",
+            "🚶🏼‍♀️‍➡",
+            "🚶🏽‍♀️‍➡️",
+            "🚶🏽‍♀️‍➡",
+            "🚶🏾‍♀️‍➡️",
+            "🚶🏾‍♀️‍➡",
+            "🚶🏿‍♀️‍➡️",
+            "🚶🏿‍♀️‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶‍♀️‍➡"
+          }
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "keys": [
+        {
+          "label": "🚶‍♀‍➡",
+          "alternates": [
+            "🚶🏻‍♀‍➡️",
+            "🚶🏻‍♀‍➡",
+            "🚶🏼‍♀‍➡️",
+            "🚶🏼‍♀‍➡",
+            "🚶🏽‍♀‍➡️",
+            "🚶🏽‍♀‍➡",
+            "🚶🏾‍♀‍➡️",
+            "🚶🏾‍♀‍➡",
+            "🚶🏿‍♀‍➡️",
+            "🚶🏿‍♀‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶‍♀‍➡"
+          }
+        },
+        "🚶‍♂️‍➡️",
+        "🚶‍♂‍➡️",
+        {
+          "label": "🚶‍♂️‍➡",
+          "alternates": [
+            "🚶🏻‍♂️‍➡️",
+            "🚶🏻‍♂️‍➡",
+            "🚶🏼‍♂️‍➡️",
+            "🚶🏼‍♂️‍➡",
+            "🚶🏽‍♂️‍➡️",
+            "🚶🏽‍♂️‍➡",
+            "🚶🏾‍♂️‍➡️",
+            "🚶🏾‍♂️‍➡",
+            "🚶🏿‍♂️‍➡️",
+            "🚶🏿‍♂️‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶‍♂️‍➡"
+          }
+        },
+        {
+          "label": "🚶‍♂‍➡",
+          "alternates": [
+            "🚶🏻‍♂‍➡️",
+            "🚶🏻‍♂‍➡",
+            "🚶🏼‍♂‍➡️",
+            "🚶🏼‍♂‍➡",
+            "🚶🏽‍♂‍➡️",
+            "🚶🏽‍♂‍➡",
+            "🚶🏾‍♂‍➡️",
+            "🚶🏾‍♂‍➡",
+            "🚶🏿‍♂‍➡️",
+            "🚶🏿‍♂‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚶‍♂‍➡"
+          }
+        },
+        {
+          "label": "🧍",
+          "alternates": [
+            "🧍🏻",
+            "🧍🏼",
+            "🧍🏽",
+            "🧍🏾",
+            "🧍🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧍"
+          }
+        },
+        "🧍‍♂️",
+        {
+          "label": "🧍‍♂",
+          "alternates": [
+            "🧍🏻‍♂️",
+            "🧍🏻‍♂",
+            "🧍🏼‍♂️",
+            "🧍🏼‍♂",
+            "🧍🏽‍♂️",
+            "🧍🏽‍♂",
+            "🧍🏾‍♂️",
+            "🧍🏾‍♂",
+            "🧍🏿‍♂️",
+            "🧍🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧍‍♂"
+          }
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "keys": [
+        "🧍‍♀️",
+        {
+          "label": "🧍‍♀",
+          "alternates": [
+            "🧍🏻‍♀️",
+            "🧍🏻‍♀",
+            "🧍🏼‍♀️",
+            "🧍🏼‍♀",
+            "🧍🏽‍♀️",
+            "🧍🏽‍♀",
+            "🧍🏾‍♀️",
+            "🧍🏾‍♀",
+            "🧍🏿‍♀️",
+            "🧍🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧍‍♀"
+          }
+        },
+        {
+          "label": "🧎",
+          "alternates": [
+            "🧎🏻",
+            "🧎🏼",
+            "🧎🏽",
+            "🧎🏾",
+            "🧎🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎"
+          }
+        },
+        "🧎‍♂️",
+        {
+          "label": "🧎‍♂",
+          "alternates": [
+            "🧎🏻‍♂️",
+            "🧎🏻‍♂",
+            "🧎🏼‍♂️",
+            "🧎🏼‍♂",
+            "🧎🏽‍♂️",
+            "🧎🏽‍♂",
+            "🧎🏾‍♂️",
+            "🧎🏾‍♂",
+            "🧎🏿‍♂️",
+            "🧎🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎‍♂"
+          }
+        },
+        "🧎‍♀️",
+        {
+          "label": "🧎‍♀",
+          "alternates": [
+            "🧎🏻‍♀️",
+            "🧎🏻‍♀",
+            "🧎🏼‍♀️",
+            "🧎🏼‍♀",
+            "🧎🏽‍♀️",
+            "🧎🏽‍♀",
+            "🧎🏾‍♀️",
+            "🧎🏾‍♀",
+            "🧎🏿‍♀️",
+            "🧎🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎‍♀"
+          }
+        },
+        "🧎‍➡️"
+      ]
+    },
+    {
+      "id": 46,
+      "keys": [
+        {
+          "label": "🧎‍➡",
+          "alternates": [
+            "🧎🏻‍➡️",
+            "🧎🏻‍➡",
+            "🧎🏼‍➡️",
+            "🧎🏼‍➡",
+            "🧎🏽‍➡️",
+            "🧎🏽‍➡",
+            "🧎🏾‍➡️",
+            "🧎🏾‍➡",
+            "🧎🏿‍➡️",
+            "🧎🏿‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎‍➡"
+          }
+        },
+        "🧎‍♀️‍➡️",
+        "🧎‍♀‍➡️",
+        {
+          "label": "🧎‍♀️‍➡",
+          "alternates": [
+            "🧎🏻‍♀️‍➡️",
+            "🧎🏻‍♀️‍➡",
+            "🧎🏼‍♀️‍➡️",
+            "🧎🏼‍♀️‍➡",
+            "🧎🏽‍♀️‍➡️",
+            "🧎🏽‍♀️‍➡",
+            "🧎🏾‍♀️‍➡️",
+            "🧎🏾‍♀️‍➡",
+            "🧎🏿‍♀️‍➡️",
+            "🧎🏿‍♀️‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎‍♀️‍➡"
+          }
+        },
+        {
+          "label": "🧎‍♀‍➡",
+          "alternates": [
+            "🧎🏻‍♀‍➡️",
+            "🧎🏻‍♀‍➡",
+            "🧎🏼‍♀‍➡️",
+            "🧎🏼‍♀‍➡",
+            "🧎🏽‍♀‍➡️",
+            "🧎🏽‍♀‍➡",
+            "🧎🏾‍♀‍➡️",
+            "🧎🏾‍♀‍➡",
+            "🧎🏿‍♀‍➡️",
+            "🧎🏿‍♀‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎‍♀‍➡"
+          }
+        },
+        "🧎‍♂️‍➡️",
+        "🧎‍♂‍➡️",
+        {
+          "label": "🧎‍♂️‍➡",
+          "alternates": [
+            "🧎🏻‍♂️‍➡️",
+            "🧎🏻‍♂️‍➡",
+            "🧎🏼‍♂️‍➡️",
+            "🧎🏼‍♂️‍➡",
+            "🧎🏽‍♂️‍➡️",
+            "🧎🏽‍♂️‍➡",
+            "🧎🏾‍♂️‍➡️",
+            "🧎🏾‍♂️‍➡",
+            "🧎🏿‍♂️‍➡️",
+            "🧎🏿‍♂️‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎‍♂️‍➡"
+          }
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "keys": [
+        {
+          "label": "🧎‍♂‍➡",
+          "alternates": [
+            "🧎🏻‍♂‍➡️",
+            "🧎🏻‍♂‍➡",
+            "🧎🏼‍♂‍➡️",
+            "🧎🏼‍♂‍➡",
+            "🧎🏽‍♂‍➡️",
+            "🧎🏽‍♂‍➡",
+            "🧎🏾‍♂‍➡️",
+            "🧎🏾‍♂‍➡",
+            "🧎🏿‍♂‍➡️",
+            "🧎🏿‍♂‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧎‍♂‍➡"
+          }
+        },
+        {
+          "label": "🧑‍🦯",
+          "alternates": [
+            "🧑🏻‍🦯",
+            "🧑🏼‍🦯",
+            "🧑🏽‍🦯",
+            "🧑🏾‍🦯",
+            "🧑🏿‍🦯"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦯"
+          }
+        },
+        "🧑‍🦯‍➡️",
+        {
+          "label": "🧑‍🦯‍➡",
+          "alternates": [
+            "🧑🏻‍🦯‍➡️",
+            "🧑🏻‍🦯‍➡",
+            "🧑🏼‍🦯‍➡️",
+            "🧑🏼‍🦯‍➡",
+            "🧑🏽‍🦯‍➡️",
+            "🧑🏽‍🦯‍➡",
+            "🧑🏾‍🦯‍➡️",
+            "🧑🏾‍🦯‍➡",
+            "🧑🏿‍🦯‍➡️",
+            "🧑🏿‍🦯‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦯‍➡"
+          }
+        },
+        {
+          "label": "👨‍🦯",
+          "alternates": [
+            "👨🏻‍🦯",
+            "👨🏼‍🦯",
+            "👨🏽‍🦯",
+            "👨🏾‍🦯",
+            "👨🏿‍🦯"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦯"
+          }
+        },
+        "👨‍🦯‍➡️",
+        {
+          "label": "👨‍🦯‍➡",
+          "alternates": [
+            "👨🏻‍🦯‍➡️",
+            "👨🏻‍🦯‍➡",
+            "👨🏼‍🦯‍➡️",
+            "👨🏼‍🦯‍➡",
+            "👨🏽‍🦯‍➡️",
+            "👨🏽‍🦯‍➡",
+            "👨🏾‍🦯‍➡️",
+            "👨🏾‍🦯‍➡",
+            "👨🏿‍🦯‍➡️",
+            "👨🏿‍🦯‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦯‍➡"
+          }
+        },
+        {
+          "label": "👩‍🦯",
+          "alternates": [
+            "👩🏻‍🦯",
+            "👩🏼‍🦯",
+            "👩🏽‍🦯",
+            "👩🏾‍🦯",
+            "👩🏿‍🦯"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦯"
+          }
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "keys": [
+        "👩‍🦯‍➡️",
+        {
+          "label": "👩‍🦯‍➡",
+          "alternates": [
+            "👩🏻‍🦯‍➡️",
+            "👩🏻‍🦯‍➡",
+            "👩🏼‍🦯‍➡️",
+            "👩🏼‍🦯‍➡",
+            "👩🏽‍🦯‍➡️",
+            "👩🏽‍🦯‍➡",
+            "👩🏾‍🦯‍➡️",
+            "👩🏾‍🦯‍➡",
+            "👩🏿‍🦯‍➡️",
+            "👩🏿‍🦯‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦯‍➡"
+          }
+        },
+        {
+          "label": "🧑‍🦼",
+          "alternates": [
+            "🧑🏻‍🦼",
+            "🧑🏼‍🦼",
+            "🧑🏽‍🦼",
+            "🧑🏾‍🦼",
+            "🧑🏿‍🦼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦼"
+          }
+        },
+        "🧑‍🦼‍➡️",
+        {
+          "label": "🧑‍🦼‍➡",
+          "alternates": [
+            "🧑🏻‍🦼‍➡️",
+            "🧑🏻‍🦼‍➡",
+            "🧑🏼‍🦼‍➡️",
+            "🧑🏼‍🦼‍➡",
+            "🧑🏽‍🦼‍➡️",
+            "🧑🏽‍🦼‍➡",
+            "🧑🏾‍🦼‍➡️",
+            "🧑🏾‍🦼‍➡",
+            "🧑🏿‍🦼‍➡️",
+            "🧑🏿‍🦼‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦼‍➡"
+          }
+        },
+        {
+          "label": "👨‍🦼",
+          "alternates": [
+            "👨🏻‍🦼",
+            "👨🏼‍🦼",
+            "👨🏽‍🦼",
+            "👨🏾‍🦼",
+            "👨🏿‍🦼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦼"
+          }
+        },
+        "👨‍🦼‍➡️",
+        {
+          "label": "👨‍🦼‍➡",
+          "alternates": [
+            "👨🏻‍🦼‍➡️",
+            "👨🏻‍🦼‍➡",
+            "👨🏼‍🦼‍➡️",
+            "👨🏼‍🦼‍➡",
+            "👨🏽‍🦼‍➡️",
+            "👨🏽‍🦼‍➡",
+            "👨🏾‍🦼‍➡️",
+            "👨🏾‍🦼‍➡",
+            "👨🏿‍🦼‍➡️",
+            "👨🏿‍🦼‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦼‍➡"
+          }
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "keys": [
+        {
+          "label": "👩‍🦼",
+          "alternates": [
+            "👩🏻‍🦼",
+            "👩🏼‍🦼",
+            "👩🏽‍🦼",
+            "👩🏾‍🦼",
+            "👩🏿‍🦼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦼"
+          }
+        },
+        "👩‍🦼‍➡️",
+        {
+          "label": "👩‍🦼‍➡",
+          "alternates": [
+            "👩🏻‍🦼‍➡️",
+            "👩🏻‍🦼‍➡",
+            "👩🏼‍🦼‍➡️",
+            "👩🏼‍🦼‍➡",
+            "👩🏽‍🦼‍➡️",
+            "👩🏽‍🦼‍➡",
+            "👩🏾‍🦼‍➡️",
+            "👩🏾‍🦼‍➡",
+            "👩🏿‍🦼‍➡️",
+            "👩🏿‍🦼‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦼‍➡"
+          }
+        },
+        {
+          "label": "🧑‍🦽",
+          "alternates": [
+            "🧑🏻‍🦽",
+            "🧑🏼‍🦽",
+            "🧑🏽‍🦽",
+            "🧑🏾‍🦽",
+            "🧑🏿‍🦽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦽"
+          }
+        },
+        "🧑‍🦽‍➡️",
+        {
+          "label": "🧑‍🦽‍➡",
+          "alternates": [
+            "🧑🏻‍🦽‍➡️",
+            "🧑🏻‍🦽‍➡",
+            "🧑🏼‍🦽‍➡️",
+            "🧑🏼‍🦽‍➡",
+            "🧑🏽‍🦽‍➡️",
+            "🧑🏽‍🦽‍➡",
+            "🧑🏾‍🦽‍➡️",
+            "🧑🏾‍🦽‍➡",
+            "🧑🏿‍🦽‍➡️",
+            "🧑🏿‍🦽‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🦽‍➡"
+          }
+        },
+        {
+          "label": "👨‍🦽",
+          "alternates": [
+            "👨🏻‍🦽",
+            "👨🏼‍🦽",
+            "👨🏽‍🦽",
+            "👨🏾‍🦽",
+            "👨🏿‍🦽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦽"
+          }
+        },
+        "👨‍🦽‍➡️"
+      ]
+    },
+    {
+      "id": 50,
+      "keys": [
+        {
+          "label": "👨‍🦽‍➡",
+          "alternates": [
+            "👨🏻‍🦽‍➡️",
+            "👨🏻‍🦽‍➡",
+            "👨🏼‍🦽‍➡️",
+            "👨🏼‍🦽‍➡",
+            "👨🏽‍🦽‍➡️",
+            "👨🏽‍🦽‍➡",
+            "👨🏾‍🦽‍➡️",
+            "👨🏾‍🦽‍➡",
+            "👨🏿‍🦽‍➡️",
+            "👨🏿‍🦽‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🦽‍➡"
+          }
+        },
+        {
+          "label": "👩‍🦽",
+          "alternates": [
+            "👩🏻‍🦽",
+            "👩🏼‍🦽",
+            "👩🏽‍🦽",
+            "👩🏾‍🦽",
+            "👩🏿‍🦽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦽"
+          }
+        },
+        "👩‍🦽‍➡️",
+        {
+          "label": "👩‍🦽‍➡",
+          "alternates": [
+            "👩🏻‍🦽‍➡️",
+            "👩🏻‍🦽‍➡",
+            "👩🏼‍🦽‍➡️",
+            "👩🏼‍🦽‍➡",
+            "👩🏽‍🦽‍➡️",
+            "👩🏽‍🦽‍➡",
+            "👩🏾‍🦽‍➡️",
+            "👩🏾‍🦽‍➡",
+            "👩🏿‍🦽‍➡️",
+            "👩🏿‍🦽‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🦽‍➡"
+          }
+        },
+        {
+          "label": "🏃",
+          "alternates": [
+            "🏃🏻",
+            "🏃🏼",
+            "🏃🏽",
+            "🏃🏾",
+            "🏃🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃"
+          }
+        },
+        "🏃‍♂️",
+        {
+          "label": "🏃‍♂",
+          "alternates": [
+            "🏃🏻‍♂️",
+            "🏃🏻‍♂",
+            "🏃🏼‍♂️",
+            "🏃🏼‍♂",
+            "🏃🏽‍♂️",
+            "🏃🏽‍♂",
+            "🏃🏾‍♂️",
+            "🏃🏾‍♂",
+            "🏃🏿‍♂️",
+            "🏃🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃‍♂"
+          }
+        },
+        "🏃‍♀️"
+      ]
+    },
+    {
+      "id": 51,
+      "keys": [
+        {
+          "label": "🏃‍♀",
+          "alternates": [
+            "🏃🏻‍♀️",
+            "🏃🏻‍♀",
+            "🏃🏼‍♀️",
+            "🏃🏼‍♀",
+            "🏃🏽‍♀️",
+            "🏃🏽‍♀",
+            "🏃🏾‍♀️",
+            "🏃🏾‍♀",
+            "🏃🏿‍♀️",
+            "🏃🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃‍♀"
+          }
+        },
+        "🏃‍➡️",
+        {
+          "label": "🏃‍➡",
+          "alternates": [
+            "🏃🏻‍➡️",
+            "🏃🏻‍➡",
+            "🏃🏼‍➡️",
+            "🏃🏼‍➡",
+            "🏃🏽‍➡️",
+            "🏃🏽‍➡",
+            "🏃🏾‍➡️",
+            "🏃🏾‍➡",
+            "🏃🏿‍➡️",
+            "🏃🏿‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃‍➡"
+          }
+        },
+        "🏃‍♀️‍➡️",
+        "🏃‍♀‍➡️",
+        {
+          "label": "🏃‍♀️‍➡",
+          "alternates": [
+            "🏃🏻‍♀️‍➡️",
+            "🏃🏻‍♀️‍➡",
+            "🏃🏼‍♀️‍➡️",
+            "🏃🏼‍♀️‍➡",
+            "🏃🏽‍♀️‍➡️",
+            "🏃🏽‍♀️‍➡",
+            "🏃🏾‍♀️‍➡️",
+            "🏃🏾‍♀️‍➡",
+            "🏃🏿‍♀️‍➡️",
+            "🏃🏿‍♀️‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃‍♀️‍➡"
+          }
+        },
+        {
+          "label": "🏃‍♀‍➡",
+          "alternates": [
+            "🏃🏻‍♀‍➡️",
+            "🏃🏻‍♀‍➡",
+            "🏃🏼‍♀‍➡️",
+            "🏃🏼‍♀‍➡",
+            "🏃🏽‍♀‍➡️",
+            "🏃🏽‍♀‍➡",
+            "🏃🏾‍♀‍➡️",
+            "🏃🏾‍♀‍➡",
+            "🏃🏿‍♀‍➡️",
+            "🏃🏿‍♀‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃‍♀‍➡"
+          }
+        },
+        "🏃‍♂️‍➡️"
+      ]
+    },
+    {
+      "id": 52,
+      "keys": [
+        "🏃‍♂‍➡️",
+        {
+          "label": "🏃‍♂️‍➡",
+          "alternates": [
+            "🏃🏻‍♂️‍➡️",
+            "🏃🏻‍♂️‍➡",
+            "🏃🏼‍♂️‍➡️",
+            "🏃🏼‍♂️‍➡",
+            "🏃🏽‍♂️‍➡️",
+            "🏃🏽‍♂️‍➡",
+            "🏃🏾‍♂️‍➡️",
+            "🏃🏾‍♂️‍➡",
+            "🏃🏿‍♂️‍➡️",
+            "🏃🏿‍♂️‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃‍♂️‍➡"
+          }
+        },
+        {
+          "label": "🏃‍♂‍➡",
+          "alternates": [
+            "🏃🏻‍♂‍➡️",
+            "🏃🏻‍♂‍➡",
+            "🏃🏼‍♂‍➡️",
+            "🏃🏼‍♂‍➡",
+            "🏃🏽‍♂‍➡️",
+            "🏃🏽‍♂‍➡",
+            "🏃🏾‍♂‍➡️",
+            "🏃🏾‍♂‍➡",
+            "🏃🏿‍♂‍➡️",
+            "🏃🏿‍♂‍➡"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏃‍♂‍➡"
+          }
+        },
+        {
+          "label": "💃",
+          "alternates": [
+            "💃🏻",
+            "💃🏼",
+            "💃🏽",
+            "💃🏾",
+            "💃🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💃"
+          }
+        },
+        {
+          "label": "🕺",
+          "alternates": [
+            "🕺🏻",
+            "🕺🏼",
+            "🕺🏽",
+            "🕺🏾",
+            "🕺🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🕺"
+          }
+        },
+        "🕴️",
+        {
+          "label": "🕴",
+          "alternates": [
+            "🕴🏻",
+            "🕴🏼",
+            "🕴🏽",
+            "🕴🏾",
+            "🕴🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🕴"
+          }
+        },
+        "👯"
+      ]
+    },
+    {
+      "id": 53,
+      "keys": [
+        "👯‍♂️",
+        "👯‍♂",
+        "👯‍♀️",
+        "👯‍♀",
+        {
+          "label": "🧖",
+          "alternates": [
+            "🧖🏻",
+            "🧖🏼",
+            "🧖🏽",
+            "🧖🏾",
+            "🧖🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧖"
+          }
+        },
+        "🧖‍♂️",
+        {
+          "label": "🧖‍♂",
+          "alternates": [
+            "🧖🏻‍♂️",
+            "🧖🏻‍♂",
+            "🧖🏼‍♂️",
+            "🧖🏼‍♂",
+            "🧖🏽‍♂️",
+            "🧖🏽‍♂",
+            "🧖🏾‍♂️",
+            "🧖🏾‍♂",
+            "🧖🏿‍♂️",
+            "🧖🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧖‍♂"
+          }
+        },
+        "🧖‍♀️"
+      ]
+    },
+    {
+      "id": 54,
+      "keys": [
+        {
+          "label": "🧖‍♀",
+          "alternates": [
+            "🧖🏻‍♀️",
+            "🧖🏻‍♀",
+            "🧖🏼‍♀️",
+            "🧖🏼‍♀",
+            "🧖🏽‍♀️",
+            "🧖🏽‍♀",
+            "🧖🏾‍♀️",
+            "🧖🏾‍♀",
+            "🧖🏿‍♀️",
+            "🧖🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧖‍♀"
+          }
+        },
+        {
+          "label": "🧗",
+          "alternates": [
+            "🧗🏻",
+            "🧗🏼",
+            "🧗🏽",
+            "🧗🏾",
+            "🧗🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧗"
+          }
+        },
+        "🧗‍♂️",
+        {
+          "label": "🧗‍♂",
+          "alternates": [
+            "🧗🏻‍♂️",
+            "🧗🏻‍♂",
+            "🧗🏼‍♂️",
+            "🧗🏼‍♂",
+            "🧗🏽‍♂️",
+            "🧗🏽‍♂",
+            "🧗🏾‍♂️",
+            "🧗🏾‍♂",
+            "🧗🏿‍♂️",
+            "🧗🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧗‍♂"
+          }
+        },
+        "🧗‍♀️",
+        {
+          "label": "🧗‍♀",
+          "alternates": [
+            "🧗🏻‍♀️",
+            "🧗🏻‍♀",
+            "🧗🏼‍♀️",
+            "🧗🏼‍♀",
+            "🧗🏽‍♀️",
+            "🧗🏽‍♀",
+            "🧗🏾‍♀️",
+            "🧗🏾‍♀",
+            "🧗🏿‍♀️",
+            "🧗🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧗‍♀"
+          }
+        },
+        "🤺",
+        {
+          "label": "🏇",
+          "alternates": [
+            "🏇🏻",
+            "🏇🏼",
+            "🏇🏽",
+            "🏇🏾",
+            "🏇🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏇"
+          }
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "keys": [
+        "⛷️",
+        "⛷",
+        {
+          "label": "🏂",
+          "alternates": [
+            "🏂🏻",
+            "🏂🏼",
+            "🏂🏽",
+            "🏂🏾",
+            "🏂🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏂"
+          }
+        },
+        "🏌️",
+        {
+          "label": "🏌",
+          "alternates": [
+            "🏌🏻",
+            "🏌🏼",
+            "🏌🏽",
+            "🏌🏾",
+            "🏌🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏌"
+          }
+        },
+        "🏌️‍♂️",
+        "🏌‍♂️",
+        "🏌️‍♂"
+      ]
+    },
+    {
+      "id": 56,
+      "keys": [
+        {
+          "label": "🏌‍♂",
+          "alternates": [
+            "🏌🏻‍♂️",
+            "🏌🏻‍♂",
+            "🏌🏼‍♂️",
+            "🏌🏼‍♂",
+            "🏌🏽‍♂️",
+            "🏌🏽‍♂",
+            "🏌🏾‍♂️",
+            "🏌🏾‍♂",
+            "🏌🏿‍♂️",
+            "🏌🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏌‍♂"
+          }
+        },
+        "🏌️‍♀️",
+        "🏌‍♀️",
+        "🏌️‍♀",
+        {
+          "label": "🏌‍♀",
+          "alternates": [
+            "🏌🏻‍♀️",
+            "🏌🏻‍♀",
+            "🏌🏼‍♀️",
+            "🏌🏼‍♀",
+            "🏌🏽‍♀️",
+            "🏌🏽‍♀",
+            "🏌🏾‍♀️",
+            "🏌🏾‍♀",
+            "🏌🏿‍♀️",
+            "🏌🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏌‍♀"
+          }
+        },
+        {
+          "label": "🏄",
+          "alternates": [
+            "🏄🏻",
+            "🏄🏼",
+            "🏄🏽",
+            "🏄🏾",
+            "🏄🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏄"
+          }
+        },
+        "🏄‍♂️",
+        {
+          "label": "🏄‍♂",
+          "alternates": [
+            "🏄🏻‍♂️",
+            "🏄🏻‍♂",
+            "🏄🏼‍♂️",
+            "🏄🏼‍♂",
+            "🏄🏽‍♂️",
+            "🏄🏽‍♂",
+            "🏄🏾‍♂️",
+            "🏄🏾‍♂",
+            "🏄🏿‍♂️",
+            "🏄🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏄‍♂"
+          }
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "keys": [
+        "🏄‍♀️",
+        {
+          "label": "🏄‍♀",
+          "alternates": [
+            "🏄🏻‍♀️",
+            "🏄🏻‍♀",
+            "🏄🏼‍♀️",
+            "🏄🏼‍♀",
+            "🏄🏽‍♀️",
+            "🏄🏽‍♀",
+            "🏄🏾‍♀️",
+            "🏄🏾‍♀",
+            "🏄🏿‍♀️",
+            "🏄🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏄‍♀"
+          }
+        },
+        {
+          "label": "🚣",
+          "alternates": [
+            "🚣🏻",
+            "🚣🏼",
+            "🚣🏽",
+            "🚣🏾",
+            "🚣🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚣"
+          }
+        },
+        "🚣‍♂️",
+        {
+          "label": "🚣‍♂",
+          "alternates": [
+            "🚣🏻‍♂️",
+            "🚣🏻‍♂",
+            "🚣🏼‍♂️",
+            "🚣🏼‍♂",
+            "🚣🏽‍♂️",
+            "🚣🏽‍♂",
+            "🚣🏾‍♂️",
+            "🚣🏾‍♂",
+            "🚣🏿‍♂️",
+            "🚣🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚣‍♂"
+          }
+        },
+        "🚣‍♀️",
+        {
+          "label": "🚣‍♀",
+          "alternates": [
+            "🚣🏻‍♀️",
+            "🚣🏻‍♀",
+            "🚣🏼‍♀️",
+            "🚣🏼‍♀",
+            "🚣🏽‍♀️",
+            "🚣🏽‍♀",
+            "🚣🏾‍♀️",
+            "🚣🏾‍♀",
+            "🚣🏿‍♀️",
+            "🚣🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚣‍♀"
+          }
+        },
+        {
+          "label": "🏊",
+          "alternates": [
+            "🏊🏻",
+            "🏊🏼",
+            "🏊🏽",
+            "🏊🏾",
+            "🏊🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏊"
+          }
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "keys": [
+        "🏊‍♂️",
+        {
+          "label": "🏊‍♂",
+          "alternates": [
+            "🏊🏻‍♂️",
+            "🏊🏻‍♂",
+            "🏊🏼‍♂️",
+            "🏊🏼‍♂",
+            "🏊🏽‍♂️",
+            "🏊🏽‍♂",
+            "🏊🏾‍♂️",
+            "🏊🏾‍♂",
+            "🏊🏿‍♂️",
+            "🏊🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏊‍♂"
+          }
+        },
+        "🏊‍♀️",
+        {
+          "label": "🏊‍♀",
+          "alternates": [
+            "🏊🏻‍♀️",
+            "🏊🏻‍♀",
+            "🏊🏼‍♀️",
+            "🏊🏼‍♀",
+            "🏊🏽‍♀️",
+            "🏊🏽‍♀",
+            "🏊🏾‍♀️",
+            "🏊🏾‍♀",
+            "🏊🏿‍♀️",
+            "🏊🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏊‍♀"
+          }
+        },
+        "⛹️",
+        {
+          "label": "⛹",
+          "alternates": [
+            "⛹🏻",
+            "⛹🏼",
+            "⛹🏽",
+            "⛹🏾",
+            "⛹🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⛹"
+          }
+        },
+        "⛹️‍♂️",
+        "⛹‍♂️"
+      ]
+    },
+    {
+      "id": 59,
+      "keys": [
+        "⛹️‍♂",
+        {
+          "label": "⛹‍♂",
+          "alternates": [
+            "⛹🏻‍♂️",
+            "⛹🏻‍♂",
+            "⛹🏼‍♂️",
+            "⛹🏼‍♂",
+            "⛹🏽‍♂️",
+            "⛹🏽‍♂",
+            "⛹🏾‍♂️",
+            "⛹🏾‍♂",
+            "⛹🏿‍♂️",
+            "⛹🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⛹‍♂"
+          }
+        },
+        "⛹️‍♀️",
+        "⛹‍♀️",
+        "⛹️‍♀",
+        {
+          "label": "⛹‍♀",
+          "alternates": [
+            "⛹🏻‍♀️",
+            "⛹🏻‍♀",
+            "⛹🏼‍♀️",
+            "⛹🏼‍♀",
+            "⛹🏽‍♀️",
+            "⛹🏽‍♀",
+            "⛹🏾‍♀️",
+            "⛹🏾‍♀",
+            "⛹🏿‍♀️",
+            "⛹🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "⛹‍♀"
+          }
+        },
+        "🏋️",
+        {
+          "label": "🏋",
+          "alternates": [
+            "🏋🏻",
+            "🏋🏼",
+            "🏋🏽",
+            "🏋🏾",
+            "🏋🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏋"
+          }
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "keys": [
+        "🏋️‍♂️",
+        "🏋‍♂️",
+        "🏋️‍♂",
+        {
+          "label": "🏋‍♂",
+          "alternates": [
+            "🏋🏻‍♂️",
+            "🏋🏻‍♂",
+            "🏋🏼‍♂️",
+            "🏋🏼‍♂",
+            "🏋🏽‍♂️",
+            "🏋🏽‍♂",
+            "🏋🏾‍♂️",
+            "🏋🏾‍♂",
+            "🏋🏿‍♂️",
+            "🏋🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏋‍♂"
+          }
+        },
+        "🏋️‍♀️",
+        "🏋‍♀️",
+        "🏋️‍♀",
+        {
+          "label": "🏋‍♀",
+          "alternates": [
+            "🏋🏻‍♀️",
+            "🏋🏻‍♀",
+            "🏋🏼‍♀️",
+            "🏋🏼‍♀",
+            "🏋🏽‍♀️",
+            "🏋🏽‍♀",
+            "🏋🏾‍♀️",
+            "🏋🏾‍♀",
+            "🏋🏿‍♀️",
+            "🏋🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🏋‍♀"
+          }
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "keys": [
+        {
+          "label": "🚴",
+          "alternates": [
+            "🚴🏻",
+            "🚴🏼",
+            "🚴🏽",
+            "🚴🏾",
+            "🚴🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚴"
+          }
+        },
+        "🚴‍♂️",
+        {
+          "label": "🚴‍♂",
+          "alternates": [
+            "🚴🏻‍♂️",
+            "🚴🏻‍♂",
+            "🚴🏼‍♂️",
+            "🚴🏼‍♂",
+            "🚴🏽‍♂️",
+            "🚴🏽‍♂",
+            "🚴🏾‍♂️",
+            "🚴🏾‍♂",
+            "🚴🏿‍♂️",
+            "🚴🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚴‍♂"
+          }
+        },
+        "🚴‍♀️",
+        {
+          "label": "🚴‍♀",
+          "alternates": [
+            "🚴🏻‍♀️",
+            "🚴🏻‍♀",
+            "🚴🏼‍♀️",
+            "🚴🏼‍♀",
+            "🚴🏽‍♀️",
+            "🚴🏽‍♀",
+            "🚴🏾‍♀️",
+            "🚴🏾‍♀",
+            "🚴🏿‍♀️",
+            "🚴🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚴‍♀"
+          }
+        },
+        {
+          "label": "🚵",
+          "alternates": [
+            "🚵🏻",
+            "🚵🏼",
+            "🚵🏽",
+            "🚵🏾",
+            "🚵🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚵"
+          }
+        },
+        "🚵‍♂️",
+        {
+          "label": "🚵‍♂",
+          "alternates": [
+            "🚵🏻‍♂️",
+            "🚵🏻‍♂",
+            "🚵🏼‍♂️",
+            "🚵🏼‍♂",
+            "🚵🏽‍♂️",
+            "🚵🏽‍♂",
+            "🚵🏾‍♂️",
+            "🚵🏾‍♂",
+            "🚵🏿‍♂️",
+            "🚵🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚵‍♂"
+          }
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "keys": [
+        "🚵‍♀️",
+        {
+          "label": "🚵‍♀",
+          "alternates": [
+            "🚵🏻‍♀️",
+            "🚵🏻‍♀",
+            "🚵🏼‍♀️",
+            "🚵🏼‍♀",
+            "🚵🏽‍♀️",
+            "🚵🏽‍♀",
+            "🚵🏾‍♀️",
+            "🚵🏾‍♀",
+            "🚵🏿‍♀️",
+            "🚵🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🚵‍♀"
+          }
+        },
+        {
+          "label": "🤸",
+          "alternates": [
+            "🤸🏻",
+            "🤸🏼",
+            "🤸🏽",
+            "🤸🏾",
+            "🤸🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤸"
+          }
+        },
+        "🤸‍♂️",
+        {
+          "label": "🤸‍♂",
+          "alternates": [
+            "🤸🏻‍♂️",
+            "🤸🏻‍♂",
+            "🤸🏼‍♂️",
+            "🤸🏼‍♂",
+            "🤸🏽‍♂️",
+            "🤸🏽‍♂",
+            "🤸🏾‍♂️",
+            "🤸🏾‍♂",
+            "🤸🏿‍♂️",
+            "🤸🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤸‍♂"
+          }
+        },
+        "🤸‍♀️",
+        {
+          "label": "🤸‍♀",
+          "alternates": [
+            "🤸🏻‍♀️",
+            "🤸🏻‍♀",
+            "🤸🏼‍♀️",
+            "🤸🏼‍♀",
+            "🤸🏽‍♀️",
+            "🤸🏽‍♀",
+            "🤸🏾‍♀️",
+            "🤸🏾‍♀",
+            "🤸🏿‍♀️",
+            "🤸🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤸‍♀"
+          }
+        },
+        "🤼"
+      ]
+    },
+    {
+      "id": 63,
+      "keys": [
+        "🤼‍♂️",
+        "🤼‍♂",
+        "🤼‍♀️",
+        "🤼‍♀",
+        {
+          "label": "🤽",
+          "alternates": [
+            "🤽🏻",
+            "🤽🏼",
+            "🤽🏽",
+            "🤽🏾",
+            "🤽🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤽"
+          }
+        },
+        "🤽‍♂️",
+        {
+          "label": "🤽‍♂",
+          "alternates": [
+            "🤽🏻‍♂️",
+            "🤽🏻‍♂",
+            "🤽🏼‍♂️",
+            "🤽🏼‍♂",
+            "🤽🏽‍♂️",
+            "🤽🏽‍♂",
+            "🤽🏾‍♂️",
+            "🤽🏾‍♂",
+            "🤽🏿‍♂️",
+            "🤽🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤽‍♂"
+          }
+        },
+        "🤽‍♀️"
+      ]
+    },
+    {
+      "id": 64,
+      "keys": [
+        {
+          "label": "🤽‍♀",
+          "alternates": [
+            "🤽🏻‍♀️",
+            "🤽🏻‍♀",
+            "🤽🏼‍♀️",
+            "🤽🏼‍♀",
+            "🤽🏽‍♀️",
+            "🤽🏽‍♀",
+            "🤽🏾‍♀️",
+            "🤽🏾‍♀",
+            "🤽🏿‍♀️",
+            "🤽🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤽‍♀"
+          }
+        },
+        {
+          "label": "🤾",
+          "alternates": [
+            "🤾🏻",
+            "🤾🏼",
+            "🤾🏽",
+            "🤾🏾",
+            "🤾🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤾"
+          }
+        },
+        "🤾‍♂️",
+        {
+          "label": "🤾‍♂",
+          "alternates": [
+            "🤾🏻‍♂️",
+            "🤾🏻‍♂",
+            "🤾🏼‍♂️",
+            "🤾🏼‍♂",
+            "🤾🏽‍♂️",
+            "🤾🏽‍♂",
+            "🤾🏾‍♂️",
+            "🤾🏾‍♂",
+            "🤾🏿‍♂️",
+            "🤾🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤾‍♂"
+          }
+        },
+        "🤾‍♀️",
+        {
+          "label": "🤾‍♀",
+          "alternates": [
+            "🤾🏻‍♀️",
+            "🤾🏻‍♀",
+            "🤾🏼‍♀️",
+            "🤾🏼‍♀",
+            "🤾🏽‍♀️",
+            "🤾🏽‍♀",
+            "🤾🏾‍♀️",
+            "🤾🏾‍♀",
+            "🤾🏿‍♀️",
+            "🤾🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤾‍♀"
+          }
+        },
+        {
+          "label": "🤹",
+          "alternates": [
+            "🤹🏻",
+            "🤹🏼",
+            "🤹🏽",
+            "🤹🏾",
+            "🤹🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤹"
+          }
+        },
+        "🤹‍♂️"
+      ]
+    },
+    {
+      "id": 65,
+      "keys": [
+        {
+          "label": "🤹‍♂",
+          "alternates": [
+            "🤹🏻‍♂️",
+            "🤹🏻‍♂",
+            "🤹🏼‍♂️",
+            "🤹🏼‍♂",
+            "🤹🏽‍♂️",
+            "🤹🏽‍♂",
+            "🤹🏾‍♂️",
+            "🤹🏾‍♂",
+            "🤹🏿‍♂️",
+            "🤹🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤹‍♂"
+          }
+        },
+        "🤹‍♀️",
+        {
+          "label": "🤹‍♀",
+          "alternates": [
+            "🤹🏻‍♀️",
+            "🤹🏻‍♀",
+            "🤹🏼‍♀️",
+            "🤹🏼‍♀",
+            "🤹🏽‍♀️",
+            "🤹🏽‍♀",
+            "🤹🏾‍♀️",
+            "🤹🏾‍♀",
+            "🤹🏿‍♀️",
+            "🤹🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🤹‍♀"
+          }
+        },
+        {
+          "label": "🧘",
+          "alternates": [
+            "🧘🏻",
+            "🧘🏼",
+            "🧘🏽",
+            "🧘🏾",
+            "🧘🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧘"
+          }
+        },
+        "🧘‍♂️",
+        {
+          "label": "🧘‍♂",
+          "alternates": [
+            "🧘🏻‍♂️",
+            "🧘🏻‍♂",
+            "🧘🏼‍♂️",
+            "🧘🏼‍♂",
+            "🧘🏽‍♂️",
+            "🧘🏽‍♂",
+            "🧘🏾‍♂️",
+            "🧘🏾‍♂",
+            "🧘🏿‍♂️",
+            "🧘🏿‍♂"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧘‍♂"
+          }
+        },
+        "🧘‍♀️",
+        {
+          "label": "🧘‍♀",
+          "alternates": [
+            "🧘🏻‍♀️",
+            "🧘🏻‍♀",
+            "🧘🏼‍♀️",
+            "🧘🏼‍♀",
+            "🧘🏽‍♀️",
+            "🧘🏽‍♀",
+            "🧘🏾‍♀️",
+            "🧘🏾‍♀",
+            "🧘🏿‍♀️",
+            "🧘🏿‍♀"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧘‍♀"
+          }
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "keys": [
+        {
+          "label": "🛀",
+          "alternates": [
+            "🛀🏻",
+            "🛀🏼",
+            "🛀🏽",
+            "🛀🏾",
+            "🛀🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🛀"
+          }
+        },
+        {
+          "label": "🛌",
+          "alternates": [
+            "🛌🏻",
+            "🛌🏼",
+            "🛌🏽",
+            "🛌🏾",
+            "🛌🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🛌"
+          }
+        },
+        {
+          "label": "🧑‍🤝‍🧑",
+          "alternates": [
+            "🧑🏻‍🤝‍🧑🏻",
+            "🧑🏼‍🤝‍🧑🏼",
+            "🧑🏽‍🤝‍🧑🏽",
+            "🧑🏾‍🤝‍🧑🏾",
+            "🧑🏿‍🤝‍🧑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🤝‍🧑"
+          }
+        },
+        {
+          "label": "🧑‍🤝‍🧑🏼",
+          "alternates": [
+            "🧑🏻‍🤝‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🤝‍🧑🏼"
+          }
+        },
+        {
+          "label": "🧑‍🤝‍🧑🏽",
+          "alternates": [
+            "🧑🏻‍🤝‍🧑🏽",
+            "🧑🏼‍🤝‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🤝‍🧑🏽"
+          }
+        },
+        {
+          "label": "🧑‍🤝‍🧑🏾",
+          "alternates": [
+            "🧑🏻‍🤝‍🧑🏾",
+            "🧑🏼‍🤝‍🧑🏾",
+            "🧑🏽‍🤝‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🤝‍🧑🏾"
+          }
+        },
+        {
+          "label": "🧑‍🤝‍🧑🏿",
+          "alternates": [
+            "🧑🏻‍🤝‍🧑🏿",
+            "🧑🏼‍🤝‍🧑🏿",
+            "🧑🏽‍🤝‍🧑🏿",
+            "🧑🏾‍🤝‍🧑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍🤝‍🧑🏿"
+          }
+        },
+        {
+          "label": "🧑🏼‍🤝‍🧑",
+          "alternates": [
+            "🧑🏼‍🤝‍🧑🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏼‍🤝‍🧑"
+          }
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "keys": [
+        {
+          "label": "🧑🏽‍🤝‍🧑",
+          "alternates": [
+            "🧑🏽‍🤝‍🧑🏻",
+            "🧑🏽‍🤝‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏽‍🤝‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏾‍🤝‍🧑",
+          "alternates": [
+            "🧑🏾‍🤝‍🧑🏻",
+            "🧑🏾‍🤝‍🧑🏼",
+            "🧑🏾‍🤝‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏾‍🤝‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏿‍🤝‍🧑",
+          "alternates": [
+            "🧑🏿‍🤝‍🧑🏻",
+            "🧑🏿‍🤝‍🧑🏼",
+            "🧑🏿‍🤝‍🧑🏽",
+            "🧑🏿‍🤝‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏿‍🤝‍🧑"
+          }
+        },
+        {
+          "label": "👭",
+          "alternates": [
+            "👭🏻",
+            "👭🏼",
+            "👭🏽",
+            "👭🏾",
+            "👭🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👭"
+          }
+        },
+        {
+          "label": "👩‍🤝‍👩🏼",
+          "alternates": [
+            "👩🏻‍🤝‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👩🏼"
+          }
+        },
+        {
+          "label": "👩‍🤝‍👩🏽",
+          "alternates": [
+            "👩🏻‍🤝‍👩🏽",
+            "👩🏼‍🤝‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👩🏽"
+          }
+        },
+        {
+          "label": "👩‍🤝‍👩🏾",
+          "alternates": [
+            "👩🏻‍🤝‍👩🏾",
+            "👩🏼‍🤝‍👩🏾",
+            "👩🏽‍🤝‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👩🏾"
+          }
+        },
+        {
+          "label": "👩‍🤝‍👩🏿",
+          "alternates": [
+            "👩🏻‍🤝‍👩🏿",
+            "👩🏼‍🤝‍👩🏿",
+            "👩🏽‍🤝‍👩🏿",
+            "👩🏾‍🤝‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👩🏿"
+          }
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "keys": [
+        {
+          "label": "👩🏼‍🤝‍👩",
+          "alternates": [
+            "👩🏼‍🤝‍👩🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍🤝‍👩"
+          }
+        },
+        {
+          "label": "👩🏽‍🤝‍👩",
+          "alternates": [
+            "👩🏽‍🤝‍👩🏻",
+            "👩🏽‍🤝‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍🤝‍👩"
+          }
+        },
+        {
+          "label": "👩🏾‍🤝‍👩",
+          "alternates": [
+            "👩🏾‍🤝‍👩🏻",
+            "👩🏾‍🤝‍👩🏼",
+            "👩🏾‍🤝‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍🤝‍👩"
+          }
+        },
+        {
+          "label": "👩🏿‍🤝‍👩",
+          "alternates": [
+            "👩🏿‍🤝‍👩🏻",
+            "👩🏿‍🤝‍👩🏼",
+            "👩🏿‍🤝‍👩🏽",
+            "👩🏿‍🤝‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍🤝‍👩"
+          }
+        },
+        {
+          "label": "👫",
+          "alternates": [
+            "👫🏻",
+            "👫🏼",
+            "👫🏽",
+            "👫🏾",
+            "👫🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👫"
+          }
+        },
+        {
+          "label": "👩‍🤝‍👨🏼",
+          "alternates": [
+            "👩🏻‍🤝‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👨🏼"
+          }
+        },
+        {
+          "label": "👩‍🤝‍👨🏽",
+          "alternates": [
+            "👩🏻‍🤝‍👨🏽",
+            "👩🏼‍🤝‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👨🏽"
+          }
+        },
+        {
+          "label": "👩‍🤝‍👨🏾",
+          "alternates": [
+            "👩🏻‍🤝‍👨🏾",
+            "👩🏼‍🤝‍👨🏾",
+            "👩🏽‍🤝‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👨🏾"
+          }
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "keys": [
+        {
+          "label": "👩‍🤝‍👨🏿",
+          "alternates": [
+            "👩🏻‍🤝‍👨🏿",
+            "👩🏼‍🤝‍👨🏿",
+            "👩🏽‍🤝‍👨🏿",
+            "👩🏾‍🤝‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍🤝‍👨🏿"
+          }
+        },
+        {
+          "label": "👩🏼‍🤝‍👨",
+          "alternates": [
+            "👩🏼‍🤝‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍🤝‍👨"
+          }
+        },
+        {
+          "label": "👩🏽‍🤝‍👨",
+          "alternates": [
+            "👩🏽‍🤝‍👨🏻",
+            "👩🏽‍🤝‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍🤝‍👨"
+          }
+        },
+        {
+          "label": "👩🏾‍🤝‍👨",
+          "alternates": [
+            "👩🏾‍🤝‍👨🏻",
+            "👩🏾‍🤝‍👨🏼",
+            "👩🏾‍🤝‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍🤝‍👨"
+          }
+        },
+        {
+          "label": "👩🏿‍🤝‍👨",
+          "alternates": [
+            "👩🏿‍🤝‍👨🏻",
+            "👩🏿‍🤝‍👨🏼",
+            "👩🏿‍🤝‍👨🏽",
+            "👩🏿‍🤝‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍🤝‍👨"
+          }
+        },
+        {
+          "label": "👬",
+          "alternates": [
+            "👬🏻",
+            "👬🏼",
+            "👬🏽",
+            "👬🏾",
+            "👬🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👬"
+          }
+        },
+        {
+          "label": "👨‍🤝‍👨🏼",
+          "alternates": [
+            "👨🏻‍🤝‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🤝‍👨🏼"
+          }
+        },
+        {
+          "label": "👨‍🤝‍👨🏽",
+          "alternates": [
+            "👨🏻‍🤝‍👨🏽",
+            "👨🏼‍🤝‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🤝‍👨🏽"
+          }
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "keys": [
+        {
+          "label": "👨‍🤝‍👨🏾",
+          "alternates": [
+            "👨🏻‍🤝‍👨🏾",
+            "👨🏼‍🤝‍👨🏾",
+            "👨🏽‍🤝‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🤝‍👨🏾"
+          }
+        },
+        {
+          "label": "👨‍🤝‍👨🏿",
+          "alternates": [
+            "👨🏻‍🤝‍👨🏿",
+            "👨🏼‍🤝‍👨🏿",
+            "👨🏽‍🤝‍👨🏿",
+            "👨🏾‍🤝‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍🤝‍👨🏿"
+          }
+        },
+        {
+          "label": "👨🏼‍🤝‍👨",
+          "alternates": [
+            "👨🏼‍🤝‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏼‍🤝‍👨"
+          }
+        },
+        {
+          "label": "👨🏽‍🤝‍👨",
+          "alternates": [
+            "👨🏽‍🤝‍👨🏻",
+            "👨🏽‍🤝‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏽‍🤝‍👨"
+          }
+        },
+        {
+          "label": "👨🏾‍🤝‍👨",
+          "alternates": [
+            "👨🏾‍🤝‍👨🏻",
+            "👨🏾‍🤝‍👨🏼",
+            "👨🏾‍🤝‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏾‍🤝‍👨"
+          }
+        },
+        {
+          "label": "👨🏿‍🤝‍👨",
+          "alternates": [
+            "👨🏿‍🤝‍👨🏻",
+            "👨🏿‍🤝‍👨🏼",
+            "👨🏿‍🤝‍👨🏽",
+            "👨🏿‍🤝‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏿‍🤝‍👨"
+          }
+        },
+        {
+          "label": "💏",
+          "alternates": [
+            "💏🏻",
+            "💏🏼",
+            "💏🏽",
+            "💏🏾",
+            "💏🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💏"
+          }
+        },
+        {
+          "label": "🧑‍❤️‍💋‍🧑🏼",
+          "alternates": [
+            "🧑🏻‍❤️‍💋‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍💋‍🧑🏼"
+          }
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "keys": [
+        {
+          "label": "🧑‍❤‍💋‍🧑🏼",
+          "alternates": [
+            "🧑🏻‍❤‍💋‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍💋‍🧑🏼"
+          }
+        },
+        {
+          "label": "🧑‍❤️‍💋‍🧑🏽",
+          "alternates": [
+            "🧑🏻‍❤️‍💋‍🧑🏽",
+            "🧑🏼‍❤️‍💋‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍💋‍🧑🏽"
+          }
+        },
+        {
+          "label": "🧑‍❤‍💋‍🧑🏽",
+          "alternates": [
+            "🧑🏻‍❤‍💋‍🧑🏽",
+            "🧑🏼‍❤‍💋‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍💋‍🧑🏽"
+          }
+        },
+        {
+          "label": "🧑‍❤️‍💋‍🧑🏾",
+          "alternates": [
+            "🧑🏻‍❤️‍💋‍🧑🏾",
+            "🧑🏼‍❤️‍💋‍🧑🏾",
+            "🧑🏽‍❤️‍💋‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍💋‍🧑🏾"
+          }
+        },
+        {
+          "label": "🧑‍❤‍💋‍🧑🏾",
+          "alternates": [
+            "🧑🏻‍❤‍💋‍🧑🏾",
+            "🧑🏼‍❤‍💋‍🧑🏾",
+            "🧑🏽‍❤‍💋‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍💋‍🧑🏾"
+          }
+        },
+        {
+          "label": "🧑‍❤️‍💋‍🧑🏿",
+          "alternates": [
+            "🧑🏻‍❤️‍💋‍🧑🏿",
+            "🧑🏼‍❤️‍💋‍🧑🏿",
+            "🧑🏽‍❤️‍💋‍🧑🏿",
+            "🧑🏾‍❤️‍💋‍🧑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍💋‍🧑🏿"
+          }
+        },
+        {
+          "label": "🧑‍❤‍💋‍🧑🏿",
+          "alternates": [
+            "🧑🏻‍❤‍💋‍🧑🏿",
+            "🧑🏼‍❤‍💋‍🧑🏿",
+            "🧑🏽‍❤‍💋‍🧑🏿",
+            "🧑🏾‍❤‍💋‍🧑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍💋‍🧑🏿"
+          }
+        },
+        {
+          "label": "🧑🏼‍❤️‍💋‍🧑",
+          "alternates": [
+            "🧑🏼‍❤️‍💋‍🧑🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏼‍❤️‍💋‍🧑"
+          }
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "keys": [
+        {
+          "label": "🧑🏼‍❤‍💋‍🧑",
+          "alternates": [
+            "🧑🏼‍❤‍💋‍🧑🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏼‍❤‍💋‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏽‍❤️‍💋‍🧑",
+          "alternates": [
+            "🧑🏽‍❤️‍💋‍🧑🏻",
+            "🧑🏽‍❤️‍💋‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏽‍❤️‍💋‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏽‍❤‍💋‍🧑",
+          "alternates": [
+            "🧑🏽‍❤‍💋‍🧑🏻",
+            "🧑🏽‍❤‍💋‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏽‍❤‍💋‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏾‍❤️‍💋‍🧑",
+          "alternates": [
+            "🧑🏾‍❤️‍💋‍🧑🏻",
+            "🧑🏾‍❤️‍💋‍🧑🏼",
+            "🧑🏾‍❤️‍💋‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏾‍❤️‍💋‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏾‍❤‍💋‍🧑",
+          "alternates": [
+            "🧑🏾‍❤‍💋‍🧑🏻",
+            "🧑🏾‍❤‍💋‍🧑🏼",
+            "🧑🏾‍❤‍💋‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏾‍❤‍💋‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏿‍❤️‍💋‍🧑",
+          "alternates": [
+            "🧑🏿‍❤️‍💋‍🧑🏻",
+            "🧑🏿‍❤️‍💋‍🧑🏼",
+            "🧑🏿‍❤️‍💋‍🧑🏽",
+            "🧑🏿‍❤️‍💋‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏿‍❤️‍💋‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏿‍❤‍💋‍🧑",
+          "alternates": [
+            "🧑🏿‍❤‍💋‍🧑🏻",
+            "🧑🏿‍❤‍💋‍🧑🏼",
+            "🧑🏿‍❤‍💋‍🧑🏽",
+            "🧑🏿‍❤‍💋‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏿‍❤‍💋‍🧑"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👨",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👨🏻",
+            "👩🏼‍❤️‍💋‍👨🏼",
+            "👩🏽‍❤️‍💋‍👨🏽",
+            "👩🏾‍❤️‍💋‍👨🏾",
+            "👩🏿‍❤️‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👨"
+          }
+        }
+      ]
+    },
+    {
+      "id": 73,
+      "keys": [
+        {
+          "label": "👩‍❤‍💋‍👨",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👨🏻",
+            "👩🏼‍❤‍💋‍👨🏼",
+            "👩🏽‍❤‍💋‍👨🏽",
+            "👩🏾‍❤‍💋‍👨🏾",
+            "👩🏿‍❤‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👨🏼",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👨🏼"
+          }
+        },
+        {
+          "label": "👩‍❤‍💋‍👨🏼",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👨🏼"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👨🏽",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👨🏽",
+            "👩🏼‍❤️‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👨🏽"
+          }
+        },
+        {
+          "label": "👩‍❤‍💋‍👨🏽",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👨🏽",
+            "👩🏼‍❤‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👨🏽"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👨🏾",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👨🏾",
+            "👩🏼‍❤️‍💋‍👨🏾",
+            "👩🏽‍❤️‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👨🏾"
+          }
+        },
+        {
+          "label": "👩‍❤‍💋‍👨🏾",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👨🏾",
+            "👩🏼‍❤‍💋‍👨🏾",
+            "👩🏽‍❤‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👨🏾"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👨🏿",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👨🏿",
+            "👩🏼‍❤️‍💋‍👨🏿",
+            "👩🏽‍❤️‍💋‍👨🏿",
+            "👩🏾‍❤️‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👨🏿"
+          }
+        }
+      ]
+    },
+    {
+      "id": 74,
+      "keys": [
+        {
+          "label": "👩‍❤‍💋‍👨🏿",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👨🏿",
+            "👩🏼‍❤‍💋‍👨🏿",
+            "👩🏽‍❤‍💋‍👨🏿",
+            "👩🏾‍❤‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👨🏿"
+          }
+        },
+        {
+          "label": "👩🏼‍❤️‍💋‍👨",
+          "alternates": [
+            "👩🏼‍❤️‍💋‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤️‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩🏼‍❤‍💋‍👨",
+          "alternates": [
+            "👩🏼‍❤‍💋‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩🏽‍❤️‍💋‍👨",
+          "alternates": [
+            "👩🏽‍❤️‍💋‍👨🏻",
+            "👩🏽‍❤️‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤️‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩🏽‍❤‍💋‍👨",
+          "alternates": [
+            "👩🏽‍❤‍💋‍👨🏻",
+            "👩🏽‍❤‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩🏾‍❤️‍💋‍👨",
+          "alternates": [
+            "👩🏾‍❤️‍💋‍👨🏻",
+            "👩🏾‍❤️‍💋‍👨🏼",
+            "👩🏾‍❤️‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤️‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩🏾‍❤‍💋‍👨",
+          "alternates": [
+            "👩🏾‍❤‍💋‍👨🏻",
+            "👩🏾‍❤‍💋‍👨🏼",
+            "👩🏾‍❤‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩🏿‍❤️‍💋‍👨",
+          "alternates": [
+            "👩🏿‍❤️‍💋‍👨🏻",
+            "👩🏿‍❤️‍💋‍👨🏼",
+            "👩🏿‍❤️‍💋‍👨🏽",
+            "👩🏿‍❤️‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤️‍💋‍👨"
+          }
+        }
+      ]
+    },
+    {
+      "id": 75,
+      "keys": [
+        {
+          "label": "👩🏿‍❤‍💋‍👨",
+          "alternates": [
+            "👩🏿‍❤‍💋‍👨🏻",
+            "👩🏿‍❤‍💋‍👨🏼",
+            "👩🏿‍❤‍💋‍👨🏽",
+            "👩🏿‍❤‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨‍❤️‍💋‍👨",
+          "alternates": [
+            "👨🏻‍❤️‍💋‍👨🏻",
+            "👨🏼‍❤️‍💋‍👨🏼",
+            "👨🏽‍❤️‍💋‍👨🏽",
+            "👨🏾‍❤️‍💋‍👨🏾",
+            "👨🏿‍❤️‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨‍❤‍💋‍👨",
+          "alternates": [
+            "👨🏻‍❤‍💋‍👨🏻",
+            "👨🏼‍❤‍💋‍👨🏼",
+            "👨🏽‍❤‍💋‍👨🏽",
+            "👨🏾‍❤‍💋‍👨🏾",
+            "👨🏿‍❤‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨‍❤️‍💋‍👨🏼",
+          "alternates": [
+            "👨🏻‍❤️‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍💋‍👨🏼"
+          }
+        },
+        {
+          "label": "👨‍❤‍💋‍👨🏼",
+          "alternates": [
+            "👨🏻‍❤‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍💋‍👨🏼"
+          }
+        },
+        {
+          "label": "👨‍❤️‍💋‍👨🏽",
+          "alternates": [
+            "👨🏻‍❤️‍💋‍👨🏽",
+            "👨🏼‍❤️‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍💋‍👨🏽"
+          }
+        },
+        {
+          "label": "👨‍❤‍💋‍👨🏽",
+          "alternates": [
+            "👨🏻‍❤‍💋‍👨🏽",
+            "👨🏼‍❤‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍💋‍👨🏽"
+          }
+        },
+        {
+          "label": "👨‍❤️‍💋‍👨🏾",
+          "alternates": [
+            "👨🏻‍❤️‍💋‍👨🏾",
+            "👨🏼‍❤️‍💋‍👨🏾",
+            "👨🏽‍❤️‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍💋‍👨🏾"
+          }
+        }
+      ]
+    },
+    {
+      "id": 76,
+      "keys": [
+        {
+          "label": "👨‍❤‍💋‍👨🏾",
+          "alternates": [
+            "👨🏻‍❤‍💋‍👨🏾",
+            "👨🏼‍❤‍💋‍👨🏾",
+            "👨🏽‍❤‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍💋‍👨🏾"
+          }
+        },
+        {
+          "label": "👨‍❤️‍💋‍👨🏿",
+          "alternates": [
+            "👨🏻‍❤️‍💋‍👨🏿",
+            "👨🏼‍❤️‍💋‍👨🏿",
+            "👨🏽‍❤️‍💋‍👨🏿",
+            "👨🏾‍❤️‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍💋‍👨🏿"
+          }
+        },
+        {
+          "label": "👨‍❤‍💋‍👨🏿",
+          "alternates": [
+            "👨🏻‍❤‍💋‍👨🏿",
+            "👨🏼‍❤‍💋‍👨🏿",
+            "👨🏽‍❤‍💋‍👨🏿",
+            "👨🏾‍❤‍💋‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍💋‍👨🏿"
+          }
+        },
+        {
+          "label": "👨🏼‍❤️‍💋‍👨",
+          "alternates": [
+            "👨🏼‍❤️‍💋‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏼‍❤️‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨🏼‍❤‍💋‍👨",
+          "alternates": [
+            "👨🏼‍❤‍💋‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏼‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨🏽‍❤️‍💋‍👨",
+          "alternates": [
+            "👨🏽‍❤️‍💋‍👨🏻",
+            "👨🏽‍❤️‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏽‍❤️‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨🏽‍❤‍💋‍👨",
+          "alternates": [
+            "👨🏽‍❤‍💋‍👨🏻",
+            "👨🏽‍❤‍💋‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏽‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨🏾‍❤️‍💋‍👨",
+          "alternates": [
+            "👨🏾‍❤️‍💋‍👨🏻",
+            "👨🏾‍❤️‍💋‍👨🏼",
+            "👨🏾‍❤️‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏾‍❤️‍💋‍👨"
+          }
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "keys": [
+        {
+          "label": "👨🏾‍❤‍💋‍👨",
+          "alternates": [
+            "👨🏾‍❤‍💋‍👨🏻",
+            "👨🏾‍❤‍💋‍👨🏼",
+            "👨🏾‍❤‍💋‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏾‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨🏿‍❤️‍💋‍👨",
+          "alternates": [
+            "👨🏿‍❤️‍💋‍👨🏻",
+            "👨🏿‍❤️‍💋‍👨🏼",
+            "👨🏿‍❤️‍💋‍👨🏽",
+            "👨🏿‍❤️‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏿‍❤️‍💋‍👨"
+          }
+        },
+        {
+          "label": "👨🏿‍❤‍💋‍👨",
+          "alternates": [
+            "👨🏿‍❤‍💋‍👨🏻",
+            "👨🏿‍❤‍💋‍👨🏼",
+            "👨🏿‍❤‍💋‍👨🏽",
+            "👨🏿‍❤‍💋‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏿‍❤‍💋‍👨"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👩",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👩🏻",
+            "👩🏼‍❤️‍💋‍👩🏼",
+            "👩🏽‍❤️‍💋‍👩🏽",
+            "👩🏾‍❤️‍💋‍👩🏾",
+            "👩🏿‍❤️‍💋‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩‍❤‍💋‍👩",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👩🏻",
+            "👩🏼‍❤‍💋‍👩🏼",
+            "👩🏽‍❤‍💋‍👩🏽",
+            "👩🏾‍❤‍💋‍👩🏾",
+            "👩🏿‍❤‍💋‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👩🏼",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👩🏼"
+          }
+        },
+        {
+          "label": "👩‍❤‍💋‍👩🏼",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👩🏼"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👩🏽",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👩🏽",
+            "👩🏼‍❤️‍💋‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👩🏽"
+          }
+        }
+      ]
+    },
+    {
+      "id": 78,
+      "keys": [
+        {
+          "label": "👩‍❤‍💋‍👩🏽",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👩🏽",
+            "👩🏼‍❤‍💋‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👩🏽"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👩🏾",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👩🏾",
+            "👩🏼‍❤️‍💋‍👩🏾",
+            "👩🏽‍❤️‍💋‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👩🏾"
+          }
+        },
+        {
+          "label": "👩‍❤‍💋‍👩🏾",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👩🏾",
+            "👩🏼‍❤‍💋‍👩🏾",
+            "👩🏽‍❤‍💋‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👩🏾"
+          }
+        },
+        {
+          "label": "👩‍❤️‍💋‍👩🏿",
+          "alternates": [
+            "👩🏻‍❤️‍💋‍👩🏿",
+            "👩🏼‍❤️‍💋‍👩🏿",
+            "👩🏽‍❤️‍💋‍👩🏿",
+            "👩🏾‍❤️‍💋‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍💋‍👩🏿"
+          }
+        },
+        {
+          "label": "👩‍❤‍💋‍👩🏿",
+          "alternates": [
+            "👩🏻‍❤‍💋‍👩🏿",
+            "👩🏼‍❤‍💋‍👩🏿",
+            "👩🏽‍❤‍💋‍👩🏿",
+            "👩🏾‍❤‍💋‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍💋‍👩🏿"
+          }
+        },
+        {
+          "label": "👩🏼‍❤️‍💋‍👩",
+          "alternates": [
+            "👩🏼‍❤️‍💋‍👩🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤️‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩🏼‍❤‍💋‍👩",
+          "alternates": [
+            "👩🏼‍❤‍💋‍👩🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩🏽‍❤️‍💋‍👩",
+          "alternates": [
+            "👩🏽‍❤️‍💋‍👩🏻",
+            "👩🏽‍❤️‍💋‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤️‍💋‍👩"
+          }
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "keys": [
+        {
+          "label": "👩🏽‍❤‍💋‍👩",
+          "alternates": [
+            "👩🏽‍❤‍💋‍👩🏻",
+            "👩🏽‍❤‍💋‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩🏾‍❤️‍💋‍👩",
+          "alternates": [
+            "👩🏾‍❤️‍💋‍👩🏻",
+            "👩🏾‍❤️‍💋‍👩🏼",
+            "👩🏾‍❤️‍💋‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤️‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩🏾‍❤‍💋‍👩",
+          "alternates": [
+            "👩🏾‍❤‍💋‍👩🏻",
+            "👩🏾‍❤‍💋‍👩🏼",
+            "👩🏾‍❤‍💋‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩🏿‍❤️‍💋‍👩",
+          "alternates": [
+            "👩🏿‍❤️‍💋‍👩🏻",
+            "👩🏿‍❤️‍💋‍👩🏼",
+            "👩🏿‍❤️‍💋‍👩🏽",
+            "👩🏿‍❤️‍💋‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤️‍💋‍👩"
+          }
+        },
+        {
+          "label": "👩🏿‍❤‍💋‍👩",
+          "alternates": [
+            "👩🏿‍❤‍💋‍👩🏻",
+            "👩🏿‍❤‍💋‍👩🏼",
+            "👩🏿‍❤‍💋‍👩🏽",
+            "👩🏿‍❤‍💋‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤‍💋‍👩"
+          }
+        },
+        {
+          "label": "💑",
+          "alternates": [
+            "💑🏻",
+            "💑🏼",
+            "💑🏽",
+            "💑🏾",
+            "💑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "💑"
+          }
+        },
+        {
+          "label": "🧑‍❤️‍🧑🏼",
+          "alternates": [
+            "🧑🏻‍❤️‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍🧑🏼"
+          }
+        },
+        {
+          "label": "🧑‍❤‍🧑🏼",
+          "alternates": [
+            "🧑🏻‍❤‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍🧑🏼"
+          }
+        }
+      ]
+    },
+    {
+      "id": 80,
+      "keys": [
+        {
+          "label": "🧑‍❤️‍🧑🏽",
+          "alternates": [
+            "🧑🏻‍❤️‍🧑🏽",
+            "🧑🏼‍❤️‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍🧑🏽"
+          }
+        },
+        {
+          "label": "🧑‍❤‍🧑🏽",
+          "alternates": [
+            "🧑🏻‍❤‍🧑🏽",
+            "🧑🏼‍❤‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍🧑🏽"
+          }
+        },
+        {
+          "label": "🧑‍❤️‍🧑🏾",
+          "alternates": [
+            "🧑🏻‍❤️‍🧑🏾",
+            "🧑🏼‍❤️‍🧑🏾",
+            "🧑🏽‍❤️‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍🧑🏾"
+          }
+        },
+        {
+          "label": "🧑‍❤‍🧑🏾",
+          "alternates": [
+            "🧑🏻‍❤‍🧑🏾",
+            "🧑🏼‍❤‍🧑🏾",
+            "🧑🏽‍❤‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍🧑🏾"
+          }
+        },
+        {
+          "label": "🧑‍❤️‍🧑🏿",
+          "alternates": [
+            "🧑🏻‍❤️‍🧑🏿",
+            "🧑🏼‍❤️‍🧑🏿",
+            "🧑🏽‍❤️‍🧑🏿",
+            "🧑🏾‍❤️‍🧑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤️‍🧑🏿"
+          }
+        },
+        {
+          "label": "🧑‍❤‍🧑🏿",
+          "alternates": [
+            "🧑🏻‍❤‍🧑🏿",
+            "🧑🏼‍❤‍🧑🏿",
+            "🧑🏽‍❤‍🧑🏿",
+            "🧑🏾‍❤‍🧑🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑‍❤‍🧑🏿"
+          }
+        },
+        {
+          "label": "🧑🏼‍❤️‍🧑",
+          "alternates": [
+            "🧑🏼‍❤️‍🧑🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏼‍❤️‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏼‍❤‍🧑",
+          "alternates": [
+            "🧑🏼‍❤‍🧑🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏼‍❤‍🧑"
+          }
+        }
+      ]
+    },
+    {
+      "id": 81,
+      "keys": [
+        {
+          "label": "🧑🏽‍❤️‍🧑",
+          "alternates": [
+            "🧑🏽‍❤️‍🧑🏻",
+            "🧑🏽‍❤️‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏽‍❤️‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏽‍❤‍🧑",
+          "alternates": [
+            "🧑🏽‍❤‍🧑🏻",
+            "🧑🏽‍❤‍🧑🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏽‍❤‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏾‍❤️‍🧑",
+          "alternates": [
+            "🧑🏾‍❤️‍🧑🏻",
+            "🧑🏾‍❤️‍🧑🏼",
+            "🧑🏾‍❤️‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏾‍❤️‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏾‍❤‍🧑",
+          "alternates": [
+            "🧑🏾‍❤‍🧑🏻",
+            "🧑🏾‍❤‍🧑🏼",
+            "🧑🏾‍❤‍🧑🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏾‍❤‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏿‍❤️‍🧑",
+          "alternates": [
+            "🧑🏿‍❤️‍🧑🏻",
+            "🧑🏿‍❤️‍🧑🏼",
+            "🧑🏿‍❤️‍🧑🏽",
+            "🧑🏿‍❤️‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏿‍❤️‍🧑"
+          }
+        },
+        {
+          "label": "🧑🏿‍❤‍🧑",
+          "alternates": [
+            "🧑🏿‍❤‍🧑🏻",
+            "🧑🏿‍❤‍🧑🏼",
+            "🧑🏿‍❤‍🧑🏽",
+            "🧑🏿‍❤‍🧑🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "🧑🏿‍❤‍🧑"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👨",
+          "alternates": [
+            "👩🏻‍❤️‍👨🏻",
+            "👩🏼‍❤️‍👨🏼",
+            "👩🏽‍❤️‍👨🏽",
+            "👩🏾‍❤️‍👨🏾",
+            "👩🏿‍❤️‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👩‍❤‍👨",
+          "alternates": [
+            "👩🏻‍❤‍👨🏻",
+            "👩🏼‍❤‍👨🏼",
+            "👩🏽‍❤‍👨🏽",
+            "👩🏾‍❤‍👨🏾",
+            "👩🏿‍❤‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👨"
+          }
+        }
+      ]
+    },
+    {
+      "id": 82,
+      "keys": [
+        {
+          "label": "👩‍❤️‍👨🏼",
+          "alternates": [
+            "👩🏻‍❤️‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👨🏼"
+          }
+        },
+        {
+          "label": "👩‍❤‍👨🏼",
+          "alternates": [
+            "👩🏻‍❤‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👨🏼"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👨🏽",
+          "alternates": [
+            "👩🏻‍❤️‍👨🏽",
+            "👩🏼‍❤️‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👨🏽"
+          }
+        },
+        {
+          "label": "👩‍❤‍👨🏽",
+          "alternates": [
+            "👩🏻‍❤‍👨🏽",
+            "👩🏼‍❤‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👨🏽"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👨🏾",
+          "alternates": [
+            "👩🏻‍❤️‍👨🏾",
+            "👩🏼‍❤️‍👨🏾",
+            "👩🏽‍❤️‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👨🏾"
+          }
+        },
+        {
+          "label": "👩‍❤‍👨🏾",
+          "alternates": [
+            "👩🏻‍❤‍👨🏾",
+            "👩🏼‍❤‍👨🏾",
+            "👩🏽‍❤‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👨🏾"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👨🏿",
+          "alternates": [
+            "👩🏻‍❤️‍👨🏿",
+            "👩🏼‍❤️‍👨🏿",
+            "👩🏽‍❤️‍👨🏿",
+            "👩🏾‍❤️‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👨🏿"
+          }
+        },
+        {
+          "label": "👩‍❤‍👨🏿",
+          "alternates": [
+            "👩🏻‍❤‍👨🏿",
+            "👩🏼‍❤‍👨🏿",
+            "👩🏽‍❤‍👨🏿",
+            "👩🏾‍❤‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👨🏿"
+          }
+        }
+      ]
+    },
+    {
+      "id": 83,
+      "keys": [
+        {
+          "label": "👩🏼‍❤️‍👨",
+          "alternates": [
+            "👩🏼‍❤️‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👩🏼‍❤‍👨",
+          "alternates": [
+            "👩🏼‍❤‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤‍👨"
+          }
+        },
+        {
+          "label": "👩🏽‍❤️‍👨",
+          "alternates": [
+            "👩🏽‍❤️‍👨🏻",
+            "👩🏽‍❤️‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👩🏽‍❤‍👨",
+          "alternates": [
+            "👩🏽‍❤‍👨🏻",
+            "👩🏽‍❤‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤‍👨"
+          }
+        },
+        {
+          "label": "👩🏾‍❤️‍👨",
+          "alternates": [
+            "👩🏾‍❤️‍👨🏻",
+            "👩🏾‍❤️‍👨🏼",
+            "👩🏾‍❤️‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👩🏾‍❤‍👨",
+          "alternates": [
+            "👩🏾‍❤‍👨🏻",
+            "👩🏾‍❤‍👨🏼",
+            "👩🏾‍❤‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤‍👨"
+          }
+        },
+        {
+          "label": "👩🏿‍❤️‍👨",
+          "alternates": [
+            "👩🏿‍❤️‍👨🏻",
+            "👩🏿‍❤️‍👨🏼",
+            "👩🏿‍❤️‍👨🏽",
+            "👩🏿‍❤️‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👩🏿‍❤‍👨",
+          "alternates": [
+            "👩🏿‍❤‍👨🏻",
+            "👩🏿‍❤‍👨🏼",
+            "👩🏿‍❤‍👨🏽",
+            "👩🏿‍❤‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤‍👨"
+          }
+        }
+      ]
+    },
+    {
+      "id": 84,
+      "keys": [
+        {
+          "label": "👨‍❤️‍👨",
+          "alternates": [
+            "👨🏻‍❤️‍👨🏻",
+            "👨🏼‍❤️‍👨🏼",
+            "👨🏽‍❤️‍👨🏽",
+            "👨🏾‍❤️‍👨🏾",
+            "👨🏿‍❤️‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👨‍❤‍👨",
+          "alternates": [
+            "👨🏻‍❤‍👨🏻",
+            "👨🏼‍❤‍👨🏼",
+            "👨🏽‍❤‍👨🏽",
+            "👨🏾‍❤‍👨🏾",
+            "👨🏿‍❤‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍👨"
+          }
+        },
+        {
+          "label": "👨‍❤️‍👨🏼",
+          "alternates": [
+            "👨🏻‍❤️‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍👨🏼"
+          }
+        },
+        {
+          "label": "👨‍❤‍👨🏼",
+          "alternates": [
+            "👨🏻‍❤‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍👨🏼"
+          }
+        },
+        {
+          "label": "👨‍❤️‍👨🏽",
+          "alternates": [
+            "👨🏻‍❤️‍👨🏽",
+            "👨🏼‍❤️‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍👨🏽"
+          }
+        },
+        {
+          "label": "👨‍❤‍👨🏽",
+          "alternates": [
+            "👨🏻‍❤‍👨🏽",
+            "👨🏼‍❤‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍👨🏽"
+          }
+        },
+        {
+          "label": "👨‍❤️‍👨🏾",
+          "alternates": [
+            "👨🏻‍❤️‍👨🏾",
+            "👨🏼‍❤️‍👨🏾",
+            "👨🏽‍❤️‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍👨🏾"
+          }
+        },
+        {
+          "label": "👨‍❤‍👨🏾",
+          "alternates": [
+            "👨🏻‍❤‍👨🏾",
+            "👨🏼‍❤‍👨🏾",
+            "👨🏽‍❤‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍👨🏾"
+          }
+        }
+      ]
+    },
+    {
+      "id": 85,
+      "keys": [
+        {
+          "label": "👨‍❤️‍👨🏿",
+          "alternates": [
+            "👨🏻‍❤️‍👨🏿",
+            "👨🏼‍❤️‍👨🏿",
+            "👨🏽‍❤️‍👨🏿",
+            "👨🏾‍❤️‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤️‍👨🏿"
+          }
+        },
+        {
+          "label": "👨‍❤‍👨🏿",
+          "alternates": [
+            "👨🏻‍❤‍👨🏿",
+            "👨🏼‍❤‍👨🏿",
+            "👨🏽‍❤‍👨🏿",
+            "👨🏾‍❤‍👨🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨‍❤‍👨🏿"
+          }
+        },
+        {
+          "label": "👨🏼‍❤️‍👨",
+          "alternates": [
+            "👨🏼‍❤️‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏼‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👨🏼‍❤‍👨",
+          "alternates": [
+            "👨🏼‍❤‍👨🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏼‍❤‍👨"
+          }
+        },
+        {
+          "label": "👨🏽‍❤️‍👨",
+          "alternates": [
+            "👨🏽‍❤️‍👨🏻",
+            "👨🏽‍❤️‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏽‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👨🏽‍❤‍👨",
+          "alternates": [
+            "👨🏽‍❤‍👨🏻",
+            "👨🏽‍❤‍👨🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏽‍❤‍👨"
+          }
+        },
+        {
+          "label": "👨🏾‍❤️‍👨",
+          "alternates": [
+            "👨🏾‍❤️‍👨🏻",
+            "👨🏾‍❤️‍👨🏼",
+            "👨🏾‍❤️‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏾‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👨🏾‍❤‍👨",
+          "alternates": [
+            "👨🏾‍❤‍👨🏻",
+            "👨🏾‍❤‍👨🏼",
+            "👨🏾‍❤‍👨🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏾‍❤‍👨"
+          }
+        }
+      ]
+    },
+    {
+      "id": 86,
+      "keys": [
+        {
+          "label": "👨🏿‍❤️‍👨",
+          "alternates": [
+            "👨🏿‍❤️‍👨🏻",
+            "👨🏿‍❤️‍👨🏼",
+            "👨🏿‍❤️‍👨🏽",
+            "👨🏿‍❤️‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏿‍❤️‍👨"
+          }
+        },
+        {
+          "label": "👨🏿‍❤‍👨",
+          "alternates": [
+            "👨🏿‍❤‍👨🏻",
+            "👨🏿‍❤‍👨🏼",
+            "👨🏿‍❤‍👨🏽",
+            "👨🏿‍❤‍👨🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👨🏿‍❤‍👨"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👩",
+          "alternates": [
+            "👩🏻‍❤️‍👩🏻",
+            "👩🏼‍❤️‍👩🏼",
+            "👩🏽‍❤️‍👩🏽",
+            "👩🏾‍❤️‍👩🏾",
+            "👩🏿‍❤️‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👩"
+          }
+        },
+        {
+          "label": "👩‍❤‍👩",
+          "alternates": [
+            "👩🏻‍❤‍👩🏻",
+            "👩🏼‍❤‍👩🏼",
+            "👩🏽‍❤‍👩🏽",
+            "👩🏾‍❤‍👩🏾",
+            "👩🏿‍❤‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👩"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👩🏼",
+          "alternates": [
+            "👩🏻‍❤️‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👩🏼"
+          }
+        },
+        {
+          "label": "👩‍❤‍👩🏼",
+          "alternates": [
+            "👩🏻‍❤‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👩🏼"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👩🏽",
+          "alternates": [
+            "👩🏻‍❤️‍👩🏽",
+            "👩🏼‍❤️‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👩🏽"
+          }
+        },
+        {
+          "label": "👩‍❤‍👩🏽",
+          "alternates": [
+            "👩🏻‍❤‍👩🏽",
+            "👩🏼‍❤‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👩🏽"
+          }
+        }
+      ]
+    },
+    {
+      "id": 87,
+      "keys": [
+        {
+          "label": "👩‍❤️‍👩🏾",
+          "alternates": [
+            "👩🏻‍❤️‍👩🏾",
+            "👩🏼‍❤️‍👩🏾",
+            "👩🏽‍❤️‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👩🏾"
+          }
+        },
+        {
+          "label": "👩‍❤‍👩🏾",
+          "alternates": [
+            "👩🏻‍❤‍👩🏾",
+            "👩🏼‍❤‍👩🏾",
+            "👩🏽‍❤‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👩🏾"
+          }
+        },
+        {
+          "label": "👩‍❤️‍👩🏿",
+          "alternates": [
+            "👩🏻‍❤️‍👩🏿",
+            "👩🏼‍❤️‍👩🏿",
+            "👩🏽‍❤️‍👩🏿",
+            "👩🏾‍❤️‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤️‍👩🏿"
+          }
+        },
+        {
+          "label": "👩‍❤‍👩🏿",
+          "alternates": [
+            "👩🏻‍❤‍👩🏿",
+            "👩🏼‍❤‍👩🏿",
+            "👩🏽‍❤‍👩🏿",
+            "👩🏾‍❤‍👩🏿"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩‍❤‍👩🏿"
+          }
+        },
+        {
+          "label": "👩🏼‍❤️‍👩",
+          "alternates": [
+            "👩🏼‍❤️‍👩🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤️‍👩"
+          }
+        },
+        {
+          "label": "👩🏼‍❤‍👩",
+          "alternates": [
+            "👩🏼‍❤‍👩🏻"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏼‍❤‍👩"
+          }
+        },
+        {
+          "label": "👩🏽‍❤️‍👩",
+          "alternates": [
+            "👩🏽‍❤️‍👩🏻",
+            "👩🏽‍❤️‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤️‍👩"
+          }
+        },
+        {
+          "label": "👩🏽‍❤‍👩",
+          "alternates": [
+            "👩🏽‍❤‍👩🏻",
+            "👩🏽‍❤‍👩🏼"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏽‍❤‍👩"
+          }
+        }
+      ]
+    },
+    {
+      "id": 88,
+      "keys": [
+        {
+          "label": "👩🏾‍❤️‍👩",
+          "alternates": [
+            "👩🏾‍❤️‍👩🏻",
+            "👩🏾‍❤️‍👩🏼",
+            "👩🏾‍❤️‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤️‍👩"
+          }
+        },
+        {
+          "label": "👩🏾‍❤‍👩",
+          "alternates": [
+            "👩🏾‍❤‍👩🏻",
+            "👩🏾‍❤‍👩🏼",
+            "👩🏾‍❤‍👩🏽"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏾‍❤‍👩"
+          }
+        },
+        {
+          "label": "👩🏿‍❤️‍👩",
+          "alternates": [
+            "👩🏿‍❤️‍👩🏻",
+            "👩🏿‍❤️‍👩🏼",
+            "👩🏿‍❤️‍👩🏽",
+            "👩🏿‍❤️‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤️‍👩"
+          }
+        },
+        {
+          "label": "👩🏿‍❤‍👩",
+          "alternates": [
+            "👩🏿‍❤‍👩🏻",
+            "👩🏿‍❤‍👩🏼",
+            "👩🏿‍❤‍👩🏽",
+            "👩🏿‍❤‍👩🏾"
+          ],
+          "style": "alphaKey",
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": "👩🏿‍❤‍👩"
+          }
+        },
+        "👨‍👩‍👦",
+        "👨‍👩‍👧",
+        "👨‍👩‍👧‍👦",
+        "👨‍👩‍👦‍👦"
+      ]
+    },
+    {
+      "id": 89,
+      "keys": [
+        "👨‍👩‍👧‍👧",
+        "👨‍👨‍👦",
+        "👨‍👨‍👧",
+        "👨‍👨‍👧‍👦",
+        "👨‍👨‍👦‍👦",
+        "👨‍👨‍👧‍👧",
+        "👩‍👩‍👦",
+        "👩‍👩‍👧"
+      ]
+    },
+    {
+      "id": 90,
+      "keys": [
+        "👩‍👩‍👧‍👦",
+        "👩‍👩‍👦‍👦",
+        "👩‍👩‍👧‍👧",
+        "👨‍👦",
+        "👨‍👦‍👦",
+        "👨‍👧",
+        "👨‍👧‍👦",
+        "👨‍👧‍👧"
+      ]
+    },
+    {
+      "id": 91,
+      "keys": [
+        "👩‍👦",
+        "👩‍👦‍👦",
+        "👩‍👧",
+        "👩‍👧‍👦",
+        "👩‍👧‍👧",
+        "🗣️",
+        "🗣",
+        "👤"
+      ]
+    },
+    {
+      "id": 92,
+      "keys": [
+        "👥",
+        "🫂",
+        "👪",
+        "🧑‍🧑‍🧒",
+        "🧑‍🧑‍🧒‍🧒",
+        "🧑‍🧒",
+        "🧑‍🧒‍🧒",
+        "👣"
+      ]
+    },
+    {
+      "id": 93,
+      "keys": [
+        "🫆"
+      ]
+    },
+    {
+      "id": 94,
+      "keys": [
+        {
+          "label": "⌨ ABC",
+          "style": "modifierKey",
+          "weight": 1.5,
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "[last]"
+          }
+        },
+        {
+          "label": "␣",
+          "style": "alphaKey",
+          "flexible": true,
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": " "
+          }
+        },
+        {
+          "label": "⌫",
+          "style": "actionKey",
+          "weight": 1.5,
+          "onPress": {
+            "type": "SEND_CODE",
+            "code": 67
+          },
+          "onLongPress": {
+            "type": "AUTO_REPEAT",
+            "code": 67,
+            "intervalMs": 50
+          }
+        }
+      ]
+    }
+  ]
+}

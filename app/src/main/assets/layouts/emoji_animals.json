@@ -1,0 +1,423 @@
+{
+  "id": "emoji_animals",
+  "name": "Emoji - Animals & Nature",
+  "version": "1.0",
+  "author": "Dynamic Emoji Generator",
+  "description": "Generated from amio/emoji.json for category Animals & Nature.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30,
+    "showKeyPreview": false,
+    "scrollDirection": "VERTICAL",
+    "maxVisibleRows": 4
+  },
+  "styles": {
+    "alphaKey": {
+      "cornerRadius": 8,
+      "fontSize": 26,
+      "showPreview": false
+    },
+    "functionKey": {
+      "cornerRadius": 8,
+      "fontSize": 22,
+      "showPreview": false
+    },
+    "modifierKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    },
+    "actionKey": {
+      "cornerRadius": 8,
+      "showPreview": false
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "keys": [
+        {
+          "label": "🕒",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_recents"
+          }
+        },
+        {
+          "label": "😀",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji"
+          }
+        },
+        {
+          "label": "👋",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_body"
+          }
+        },
+        {
+          "label": "🐶",
+          "style": "actionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_animals"
+          }
+        },
+        {
+          "label": "🍕",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_food"
+          }
+        },
+        {
+          "label": "⚽",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_sports"
+          }
+        },
+        {
+          "label": "🚀",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_travel"
+          }
+        },
+        {
+          "label": "💡",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_objects"
+          }
+        },
+        {
+          "label": "🚩",
+          "style": "functionKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_symbols"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "keys": [
+        "🐵",
+        "🐒",
+        "🦍",
+        "🦧",
+        "🐶",
+        "🐕",
+        "🦮",
+        "🐕‍🦺"
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
+        "🐩",
+        "🐺",
+        "🦊",
+        "🦝",
+        "🐱",
+        "🐈",
+        "🐈‍⬛",
+        "🦁"
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
+        "🐯",
+        "🐅",
+        "🐆",
+        "🐴",
+        "🫎",
+        "🫏",
+        "🐎",
+        "🦄"
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
+        "🦓",
+        "🦌",
+        "🦬",
+        "🐮",
+        "🐂",
+        "🐃",
+        "🐄",
+        "🐷"
+      ]
+    },
+    {
+      "id": 6,
+      "keys": [
+        "🐖",
+        "🐗",
+        "🐽",
+        "🐏",
+        "🐑",
+        "🐐",
+        "🐪",
+        "🐫"
+      ]
+    },
+    {
+      "id": 7,
+      "keys": [
+        "🦙",
+        "🦒",
+        "🐘",
+        "🦣",
+        "🦏",
+        "🦛",
+        "🐭",
+        "🐁"
+      ]
+    },
+    {
+      "id": 8,
+      "keys": [
+        "🐀",
+        "🐹",
+        "🐰",
+        "🐇",
+        "🐿️",
+        "🐿",
+        "🦫",
+        "🦔"
+      ]
+    },
+    {
+      "id": 9,
+      "keys": [
+        "🦇",
+        "🐻",
+        "🐻‍❄️",
+        "🐻‍❄",
+        "🐨",
+        "🐼",
+        "🦥",
+        "🦦"
+      ]
+    },
+    {
+      "id": 10,
+      "keys": [
+        "🦨",
+        "🦘",
+        "🦡",
+        "🐾",
+        "🦃",
+        "🐔",
+        "🐓",
+        "🐣"
+      ]
+    },
+    {
+      "id": 11,
+      "keys": [
+        "🐤",
+        "🐥",
+        "🐦",
+        "🐧",
+        "🕊️",
+        "🕊",
+        "🦅",
+        "🦆"
+      ]
+    },
+    {
+      "id": 12,
+      "keys": [
+        "🦢",
+        "🦉",
+        "🦤",
+        "🪶",
+        "🦩",
+        "🦚",
+        "🦜",
+        "🪽"
+      ]
+    },
+    {
+      "id": 13,
+      "keys": [
+        "🐦‍⬛",
+        "🪿",
+        "🐦‍🔥",
+        "🐸",
+        "🐊",
+        "🐢",
+        "🦎",
+        "🐍"
+      ]
+    },
+    {
+      "id": 14,
+      "keys": [
+        "🐲",
+        "🐉",
+        "🦕",
+        "🦖",
+        "🐳",
+        "🐋",
+        "🐬",
+        "🦭"
+      ]
+    },
+    {
+      "id": 15,
+      "keys": [
+        "🐟",
+        "🐠",
+        "🐡",
+        "🦈",
+        "🐙",
+        "🐚",
+        "🪸",
+        "🪼"
+      ]
+    },
+    {
+      "id": 16,
+      "keys": [
+        "🦀",
+        "🦞",
+        "🦐",
+        "🦑",
+        "🦪",
+        "🐌",
+        "🦋",
+        "🐛"
+      ]
+    },
+    {
+      "id": 17,
+      "keys": [
+        "🐜",
+        "🐝",
+        "🪲",
+        "🐞",
+        "🦗",
+        "🪳",
+        "🕷️",
+        "🕷"
+      ]
+    },
+    {
+      "id": 18,
+      "keys": [
+        "🕸️",
+        "🕸",
+        "🦂",
+        "🦟",
+        "🪰",
+        "🪱",
+        "🦠",
+        "💐"
+      ]
+    },
+    {
+      "id": 19,
+      "keys": [
+        "🌸",
+        "💮",
+        "🪷",
+        "🏵️",
+        "🏵",
+        "🌹",
+        "🥀",
+        "🌺"
+      ]
+    },
+    {
+      "id": 20,
+      "keys": [
+        "🌻",
+        "🌼",
+        "🌷",
+        "🪻",
+        "🌱",
+        "🪴",
+        "🌲",
+        "🌳"
+      ]
+    },
+    {
+      "id": 21,
+      "keys": [
+        "🌴",
+        "🌵",
+        "🌾",
+        "🌿",
+        "☘️",
+        "☘",
+        "🍀",
+        "🍁"
+      ]
+    },
+    {
+      "id": 22,
+      "keys": [
+        "🍂",
+        "🍃",
+        "🪹",
+        "🪺",
+        "🍄",
+        "🪾"
+      ]
+    },
+    {
+      "id": 23,
+      "keys": [
+        {
+          "label": "⌨ ABC",
+          "style": "modifierKey",
+          "weight": 1.5,
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "[last]"
+          }
+        },
+        {
+          "label": "␣",
+          "style": "alphaKey",
+          "flexible": true,
+          "onPress": {
+            "type": "SEND_TEXT",
+            "text": " "
+          }
+        },
+        {
+          "label": "⌫",
+          "style": "actionKey",
+          "weight": 1.5,
+          "onPress": {
+            "type": "SEND_CODE",
+            "code": 67
+          },
+          "onLongPress": {
+            "type": "AUTO_REPEAT",
+            "code": 67,
+            "intervalMs": 50
+          }
+        }
+      ]
+    }
+  ]
+}
