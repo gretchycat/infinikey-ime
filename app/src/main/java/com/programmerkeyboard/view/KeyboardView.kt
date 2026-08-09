@@ -320,6 +320,13 @@ class KeyboardView @JvmOverloads constructor(
         if (layoutDefinition?.id == "phone") return@Runnable
         pressedKeyBounds?.let { bounds ->
             val key = bounds.key
+            val isEmojiLayout = layoutDefinition?.id?.startsWith("emoji") == true
+            if (isEmojiLayout && (key.onLongPressAction is KeyAction.None || key.onLongPressAction == null)) {
+                isLongPressTriggered = true
+                performKeypressHapticFeedback()
+                showZoomPreview(key.primaryLabel, bounds.rect)
+                return@Runnable
+            }
             if (key.onLongPressAction is KeyAction.None) {
                 return@Runnable
             }
@@ -1632,14 +1639,22 @@ class KeyboardView @JvmOverloads constructor(
                 } else {
                     actionToExecute.options
                 }
-                keyPopupOverlay = KeyPopupOverlay(context) { selectedIndex, selectedLabel ->
+                keyPopupOverlay = KeyPopupOverlay(context, { selectedIndex, selectedLabel ->
                     val actionToRun = if (selectedIndex in actionToExecute.actions.indices && actionToExecute.actions[selectedIndex] !is KeyAction.SendText) {
                         actionToExecute.actions[selectedIndex]
                     } else {
                         resolveActionFromLabel(selectedLabel)
                     }
                     executeAction(actionToRun, sourceKey)
-                }.also {
+                }, { hoveredIndex, hoveredLabel ->
+                    val isEmojiLayout = layoutDefinition?.id?.startsWith("emoji") == true
+                    if (isEmojiLayout) {
+                        val itemRect = keyPopupOverlay?.getItemRect(hoveredIndex)
+                        if (itemRect != null) {
+                            showZoomPreview(hoveredLabel, itemRect)
+                        }
+                    }
+                }).also {
                     it.show(this, rect, optionsToDisplay)
                 }
             }
@@ -1770,6 +1785,14 @@ class KeyboardView @JvmOverloads constructor(
             key.primaryLabel
         }
         keyPreviewOverlay?.show(this, rect, label)
+    }
+
+    private fun showZoomPreview(text: String, rect: RectF) {
+        if (layoutDefinition?.metadata?.showKeyPreview == false) return
+        if (keyPreviewOverlay == null) {
+            keyPreviewOverlay = KeyPreviewOverlay(context)
+        }
+        keyPreviewOverlay?.show(this, rect, text, isLarge = true)
     }
 
     private fun dismissKeyPreview() {

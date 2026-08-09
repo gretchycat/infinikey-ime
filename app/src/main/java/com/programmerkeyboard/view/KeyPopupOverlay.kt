@@ -18,12 +18,29 @@ import android.widget.PopupWindow
  */
 class KeyPopupOverlay(
     private val context: Context,
-    private val onItemSelected: (Int, String) -> Unit
+    private val onItemSelected: (Int, String) -> Unit,
+    private val onHoverChanged: ((Int, String) -> Unit)? = null
 ) {
     private var popupWindow: PopupWindow? = null
     private var popupView: PopupContentView? = null
     private var popupX = 0f
     private var popupY = 0f
+
+    fun getItemRect(index: Int): RectF? {
+        val view = popupView ?: return null
+        val density = context.resources.displayMetrics.density
+        val padding = 6f * density
+        val availableWidth = view.width.toFloat() - (padding * 2f)
+        if (availableWidth <= 0f || index !in view.options.indices) return null
+        
+        val itemWidth = availableWidth / view.options.size
+        val left = popupX + padding + (index * itemWidth)
+        val right = left + itemWidth
+        val top = popupY + padding
+        val bottom = popupY + view.height.toFloat() - padding
+        
+        return RectF(left, top, right, bottom)
+    }
 
     fun show(anchorView: View, anchorRect: RectF, options: List<String>) {
         dismiss()
@@ -49,7 +66,7 @@ class KeyPopupOverlay(
         popupX = idealPopupX.coerceIn(10f, maxOf(10f, screenWidth - popupWidth - 10f))
         popupY = anchorRect.top - popupHeight - (10f * density)
 
-        popupView = PopupContentView(context, options, fontSize, onItemSelected, onDismissRequest = { dismiss() }).apply {
+        popupView = PopupContentView(context, options, fontSize, onItemSelected, onDismissRequest = { dismiss() }, onHoverChanged = onHoverChanged).apply {
             layoutParams = ViewGroup.MarginLayoutParams(
                 popupWidth,
                 popupHeight
@@ -105,7 +122,8 @@ class KeyPopupOverlay(
         private val options: List<String>,
         private val fontSize: Float,
         private val onItemSelected: (Int, String) -> Unit,
-        private val onDismissRequest: () -> Unit
+        private val onDismissRequest: () -> Unit,
+        private val onHoverChanged: ((Int, String) -> Unit)? = null
     ) : View(context) {
 
         private val containerBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -347,6 +365,7 @@ class KeyPopupOverlay(
                         if (tappedIdx != selectedIndex) {
                             selectedIndex = tappedIdx
                             invalidate()
+                            onHoverChanged?.invoke(selectedIndex, options[selectedIndex])
                         }
                     }
                     MotionEvent.ACTION_UP -> {
@@ -371,6 +390,7 @@ class KeyPopupOverlay(
                 initialTouchX = localX
                 selectedIndex = 0
                 invalidate()
+                onHoverChanged?.invoke(selectedIndex, options[selectedIndex])
                 return
             }
 
@@ -398,6 +418,7 @@ class KeyPopupOverlay(
             if (newIndex != selectedIndex) {
                 selectedIndex = newIndex
                 invalidate()
+                onHoverChanged?.invoke(selectedIndex, options[selectedIndex])
             }
         }
 

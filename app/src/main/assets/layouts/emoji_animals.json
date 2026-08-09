@@ -19,17 +19,27 @@
       "fontSize": 26,
       "showPreview": false
     },
-    "functionKey": {
-      "cornerRadius": 8,
-      "fontSize": 22,
-      "showPreview": false
-    },
     "modifierKey": {
       "cornerRadius": 8,
       "showPreview": false
     },
     "actionKey": {
       "cornerRadius": 8,
+      "showPreview": false
+    },
+    "categoryKey": {
+      "bgColor": "#00000000",
+      "fgColor": "#94A3B8",
+      "pressedBgColor": "#1E293B",
+      "cornerRadius": 8,
+      "fontSize": 22,
+      "showPreview": false
+    },
+    "activeCategoryKey": {
+      "bgColor": "#1E293B",
+      "fgColor": "#38BDF8",
+      "cornerRadius": 8,
+      "fontSize": 24,
       "showPreview": false
     }
   },
@@ -39,7 +49,7 @@
       "keys": [
         {
           "label": "🕒",
-          "style": "functionKey",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_recents"
@@ -47,7 +57,7 @@
         },
         {
           "label": "😀",
-          "style": "functionKey",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji"
@@ -55,7 +65,7 @@
         },
         {
           "label": "👋",
-          "style": "functionKey",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_body"
@@ -63,7 +73,7 @@
         },
         {
           "label": "🐶",
-          "style": "actionKey",
+          "style": "activeCategoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_animals"
@@ -71,7 +81,7 @@
         },
         {
           "label": "🍕",
-          "style": "functionKey",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_food"
@@ -79,7 +89,7 @@
         },
         {
           "label": "⚽",
-          "style": "functionKey",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_sports"
@@ -87,7 +97,7 @@
         },
         {
           "label": "🚀",
-          "style": "functionKey",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_travel"
@@ -95,18 +105,26 @@
         },
         {
           "label": "💡",
-          "style": "functionKey",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_objects"
           }
         },
         {
-          "label": "🚩",
-          "style": "functionKey",
+          "label": "🔣",
+          "style": "categoryKey",
           "onPress": {
             "type": "SWITCH_LAYOUT",
             "target": "emoji_symbols"
+          }
+        },
+        {
+          "label": "🏁",
+          "style": "categoryKey",
+          "onPress": {
+            "type": "SWITCH_LAYOUT",
+            "target": "emoji_flags"
           }
         }
       ]

@@ -19,7 +19,7 @@ class KeyPreviewOverlay(private val context: Context) {
     private var popupWindow: PopupWindow? = null
     private var popupView: PreviewContentView? = null
 
-    fun show(anchorView: View, anchorRect: RectF, text: String) {
+    fun show(anchorView: View, anchorRect: RectF, text: String, isLarge: Boolean = false) {
         dismiss()
         if (text.isEmpty()) return
 
@@ -27,15 +27,15 @@ class KeyPreviewOverlay(private val context: Context) {
         val keyHeight = anchorRect.height()
         val keyWidth = anchorRect.width()
 
-        val widthPx = maxOf(keyWidth * 1.1f, 48f * density).toInt()
-        val heightPx = (keyHeight * 1.25f).toInt()
-        val fontSize = keyHeight * 0.50f
+        val widthPx = if (isLarge) (keyHeight * 1.8f).toInt() else maxOf(keyWidth * 1.1f, 48f * density).toInt()
+        val heightPx = if (isLarge) (keyHeight * 1.8f).toInt() else (keyHeight * 1.25f).toInt()
+        val fontSize = if (isLarge) keyHeight * 0.90f else keyHeight * 0.50f
         val screenWidth = anchorView.width.toFloat()
 
         val popupX = (anchorRect.centerX() - widthPx / 2f).coerceIn(4f, maxOf(4f, screenWidth - widthPx - 4f))
-        val popupY = anchorRect.top - heightPx - (4f * density)
+        val popupY = anchorRect.top - heightPx - (if (isLarge) 16f * density else 4f * density)
 
-        popupView = PreviewContentView(context, text, fontSize).apply {
+        popupView = PreviewContentView(context, text, fontSize, isLarge).apply {
             layoutParams = ViewGroup.MarginLayoutParams(widthPx, heightPx)
         }
 
@@ -59,7 +59,8 @@ class KeyPreviewOverlay(private val context: Context) {
     private class PreviewContentView(
         context: Context,
         private val text: String,
-        fontSize: Float
+        fontSize: Float,
+        private val isLarge: Boolean = false
     ) : View(context) {
 
         private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -83,8 +84,9 @@ class KeyPreviewOverlay(private val context: Context) {
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
             val rect = RectF(2f, 2f, width.toFloat() - 2f, height.toFloat() - 2f)
-            canvas.drawRoundRect(rect, 14f, 14f, bgPaint)
-            canvas.drawRoundRect(rect, 14f, 14f, borderPaint)
+            val radius = if (isLarge) width.toFloat() / 2f else 14f
+            canvas.drawRoundRect(rect, radius, radius, bgPaint)
+            canvas.drawRoundRect(rect, radius, radius, borderPaint)
 
             val fontMetrics = textPaint.fontMetrics
             val baseline = rect.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2
