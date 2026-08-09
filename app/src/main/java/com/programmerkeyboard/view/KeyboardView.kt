@@ -196,6 +196,7 @@ class KeyboardView @JvmOverloads constructor(
     private var isLongPressTriggered = false
     private var keyPopupOverlay: KeyPopupOverlay? = null
     private var keyPreviewOverlay: KeyPreviewOverlay? = null
+    private var activeZoomedText: String? = null
     private var joystickPopupWidget: JoystickPopupWidget? = null
     private var emojiPickerOverlay: EmojiPickerOverlay? = null
     private var voiceInputOverlay: VoiceInputOverlay? = null
@@ -1793,11 +1794,13 @@ class KeyboardView @JvmOverloads constructor(
             keyPreviewOverlay = KeyPreviewOverlay(context)
         }
         keyPreviewOverlay?.show(this, rect, text, isLarge = true)
+        activeZoomedText = text
     }
 
     private fun dismissKeyPreview() {
         keyPreviewOverlay?.dismiss()
         keyPreviewOverlay = null
+        activeZoomedText = null
     }
 
     private fun performKeypressHapticFeedback() {
@@ -2283,6 +2286,8 @@ class KeyboardView @JvmOverloads constructor(
                     invalidate()
                     return true
                 }
+                
+                val zoomedText = activeZoomedText
                 dismissKeyPreview()
                 handler.removeCallbacks(longPressRunnable)
                 stopAutoRepeat()
@@ -2307,6 +2312,8 @@ class KeyboardView @JvmOverloads constructor(
                         }
                         executeAction(key.onPressAction, key)
                     }
+                } else if (zoomedText != null) {
+                    executeAction(KeyAction.SendText(zoomedText), pressedKeyBounds?.key)
                 }
 
                 pressedKeyBounds = null
