@@ -799,7 +799,7 @@ object LayoutParser {
         val catRowKeys = mutableListOf<KeyDefinition>()
         catRowKeys.add(KeyDefinition(
             primaryLabel = "🕒",
-            styleName = "actionKey",
+            styleName = "activeCategoryKey",
             onPressAction = KeyAction.SwitchLayout("emoji_recents")
         ))
         
@@ -811,13 +811,14 @@ object LayoutParser {
             Pair("⚽", "emoji_sports"),
             Pair("🚀", "emoji_travel"),
             Pair("💡", "emoji_objects"),
-            Pair("🚩", "emoji_symbols")
+            Pair("🔣", "emoji_symbols"),
+            Pair("🏁", "emoji_flags")
         )
         
         categories.forEach { pair ->
             catRowKeys.add(KeyDefinition(
                 primaryLabel = pair.first,
-                styleName = "functionKey",
+                styleName = "categoryKey",
                 onPressAction = KeyAction.SwitchLayout(pair.second)
             ))
         }

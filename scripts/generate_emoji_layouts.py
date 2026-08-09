@@ -43,8 +43,13 @@ CATEGORY_MAPPING = {
     },
     "Symbols": {
         "id": "emoji_symbols",
-        "name": "Emoji - Symbols & Flags",
-        "icon": "🚩"
+        "name": "Emoji - Symbols",
+        "icon": "🔣"
+    },
+    "Flags": {
+        "id": "emoji_flags",
+        "name": "Emoji - Flags",
+        "icon": "🏁"
     }
 }
 
@@ -93,10 +98,6 @@ def main():
             if category_name.startswith(key):
                 matched_cat = key
                 break
-        
-        # Also group "Flags" under "Symbols"
-        if not matched_cat and category_name.startswith("Flags"):
-            matched_cat = "Symbols"
 
         if matched_cat:
             char = item.get("char")
@@ -137,14 +138,14 @@ def main():
         cat_keys = []
         cat_keys.append({
             "label": "🕒",
-            "style": "actionKey" if layout_id == "emoji_recents" else "functionKey",
+            "style": "activeCategoryKey" if layout_id == "emoji_recents" else "categoryKey",
             "onPress": { "type": "SWITCH_LAYOUT", "target": "emoji_recents" }
         })
         for other_cat_name, other_cat_info in CATEGORY_MAPPING.items():
             is_active = (other_cat_info["id"] == layout_id)
             cat_keys.append({
                 "label": other_cat_info["icon"],
-                "style": "actionKey" if is_active else "functionKey",
+                "style": "activeCategoryKey" if is_active else "categoryKey",
                 "onPress": { "type": "SWITCH_LAYOUT", "target": other_cat_info["id"] }
             })
         rows.append({
@@ -194,17 +195,27 @@ def main():
                     "fontSize": 26,
                     "showPreview": False
                 },
-                "functionKey": {
-                    "cornerRadius": 8,
-                    "fontSize": 22,
-                    "showPreview": False
-                },
                 "modifierKey": {
                     "cornerRadius": 8,
                     "showPreview": False
                 },
                 "actionKey": {
                     "cornerRadius": 8,
+                    "showPreview": False
+                },
+                "categoryKey": {
+                    "bgColor": "#00000000",
+                    "fgColor": "#94A3B8",
+                    "pressedBgColor": "#1E293B",
+                    "cornerRadius": 8,
+                    "fontSize": 22,
+                    "showPreview": False
+                },
+                "activeCategoryKey": {
+                    "bgColor": "#1E293B",
+                    "fgColor": "#38BDF8",
+                    "cornerRadius": 8,
+                    "fontSize": 24,
                     "showPreview": False
                 }
             },
