@@ -176,8 +176,8 @@ def main():
         })
         row_id_counter += 1
 
-        # 2. Scrollable Middle Rows of Emojis (chunked into 8 keys per row)
-        chunk_size = 8
+        # 2. Scrollable Middle Rows of Emojis (chunked into same number of columns as categories)
+        chunk_size = len(cat_keys)
         for i in range(0, len(layout_keys), chunk_size):
             chunk = layout_keys[i:i + chunk_size]
             rows.append({
@@ -207,38 +207,33 @@ def main():
                 "verticalSpacing": 4,
                 "defaultScreenMode": "FULL_WIDTH_DOCKED",
                 "defaultHeightPercentage": 30,
-                "showKeyPreview": False,
+                "showKeyPreview": True,
                 "scrollDirection": "VERTICAL",
                 "maxVisibleRows": 4
             },
             "styles": {
                 "alphaKey": {
                     "cornerRadius": 8,
-                    "fontSize": 26,
-                    "showPreview": False
+                    "fontSize": 26
                 },
                 "modifierKey": {
-                    "cornerRadius": 8,
-                    "showPreview": False
+                    "cornerRadius": 8
                 },
                 "actionKey": {
-                    "cornerRadius": 8,
-                    "showPreview": False
+                    "cornerRadius": 8
                 },
                 "categoryKey": {
                     "bgColor": "#00000000",
                     "fgColor": "#94A3B8",
                     "pressedBgColor": "#1E293B",
                     "cornerRadius": 8,
-                    "fontSize": 22,
-                    "showPreview": False
+                    "fontSize": 22
                 },
                 "activeCategoryKey": {
                     "bgColor": "#1E293B",
                     "fgColor": "#38BDF8",
                     "cornerRadius": 8,
-                    "fontSize": 24,
-                    "showPreview": False
+                    "fontSize": 24
                 }
             },
             "rows": rows

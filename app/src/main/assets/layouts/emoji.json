@@ -9,38 +9,33 @@
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
-    "showKeyPreview": false,
+    "showKeyPreview": true,
     "scrollDirection": "VERTICAL",
     "maxVisibleRows": 4
   },
   "styles": {
     "alphaKey": {
       "cornerRadius": 8,
-      "fontSize": 26,
-      "showPreview": false
+      "fontSize": 26
     },
     "modifierKey": {
-      "cornerRadius": 8,
-      "showPreview": false
+      "cornerRadius": 8
     },
     "actionKey": {
-      "cornerRadius": 8,
-      "showPreview": false
+      "cornerRadius": 8
     },
     "categoryKey": {
       "bgColor": "#00000000",
       "fgColor": "#94A3B8",
       "pressedBgColor": "#1E293B",
       "cornerRadius": 8,
-      "fontSize": 22,
-      "showPreview": false
+      "fontSize": 22
     },
     "activeCategoryKey": {
       "bgColor": "#1E293B",
       "fgColor": "#38BDF8",
       "cornerRadius": 8,
-      "fontSize": 24,
-      "showPreview": false
+      "fontSize": 24
     }
   },
   "rows": [
@@ -219,12 +214,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "keys": [
+        },
         {
           "label": "🙂",
           "style": "alphaKey",
@@ -246,7 +236,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
         {
           "label": "🫠",
           "style": "alphaKey",
@@ -312,12 +307,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "keys": [
+        },
         {
           "label": "🤩",
           "style": "alphaKey",
@@ -361,7 +351,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
         {
           "label": "😚",
           "style": "alphaKey",
@@ -405,12 +400,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "keys": [
+        },
         {
           "label": "😛",
           "style": "alphaKey",
@@ -476,7 +466,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
         {
           "label": "🤭",
           "style": "alphaKey",
@@ -498,12 +493,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "keys": [
+        },
         {
           "label": "🫣",
           "style": "alphaKey",
@@ -595,7 +585,7 @@
       ]
     },
     {
-      "id": 7,
+      "id": 6,
       "keys": [
         {
           "label": "😶",
@@ -684,12 +674,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "keys": [
+        },
         {
           "label": "🤥",
           "style": "alphaKey",
@@ -711,7 +696,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "keys": [
         {
           "label": "🙂‍↔️",
           "style": "alphaKey",
@@ -777,12 +767,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "keys": [
+        },
         {
           "label": "😴",
           "style": "alphaKey",
@@ -826,7 +811,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "keys": [
         {
           "label": "🤕",
           "style": "alphaKey",
@@ -870,12 +860,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "keys": [
+        },
         {
           "label": "🥵",
           "style": "alphaKey",
@@ -941,7 +926,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "keys": [
         {
           "label": "🤠",
           "style": "alphaKey",
@@ -963,12 +953,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 11,
-      "keys": [
+        },
         {
           "label": "🥸",
           "style": "alphaKey",
@@ -1060,7 +1045,7 @@
       ]
     },
     {
-      "id": 12,
+      "id": 10,
       "keys": [
         {
           "label": "☹️",
@@ -1149,12 +1134,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "keys": [
+        },
         {
           "label": "😧",
           "style": "alphaKey",
@@ -1176,7 +1156,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "keys": [
         {
           "label": "😰",
           "style": "alphaKey",
@@ -1242,12 +1227,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "keys": [
+        },
         {
           "label": "😣",
           "style": "alphaKey",
@@ -1291,7 +1271,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "keys": [
         {
           "label": "😫",
           "style": "alphaKey",
@@ -1335,12 +1320,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 15,
-      "keys": [
+        },
         {
           "label": "😠",
           "style": "alphaKey",
@@ -1406,7 +1386,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "keys": [
         {
           "label": "💩",
           "style": "alphaKey",
@@ -1428,12 +1413,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 16,
-      "keys": [
+        },
         {
           "label": "👹",
           "style": "alphaKey",
@@ -1525,7 +1505,7 @@
       ]
     },
     {
-      "id": 17,
+      "id": 14,
       "keys": [
         {
           "label": "😹",
@@ -1614,12 +1594,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 18,
-      "keys": [
+        },
         {
           "label": "🙉",
           "style": "alphaKey",
@@ -1641,7 +1616,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "keys": [
         {
           "label": "💌",
           "style": "alphaKey",
@@ -1707,12 +1687,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 19,
-      "keys": [
+        },
         {
           "label": "💞",
           "style": "alphaKey",
@@ -1756,7 +1731,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "keys": [
         {
           "label": "💔",
           "style": "alphaKey",
@@ -1800,12 +1780,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 20,
-      "keys": [
+        },
         {
           "label": "🩷",
           "style": "alphaKey",
@@ -1871,7 +1846,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "keys": [
         {
           "label": "💜",
           "style": "alphaKey",
@@ -1893,12 +1873,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 21,
-      "keys": [
+        },
         {
           "label": "🖤",
           "style": "alphaKey",
@@ -1990,7 +1965,7 @@
       ]
     },
     {
-      "id": 22,
+      "id": 18,
       "keys": [
         {
           "label": "💦",
@@ -2079,12 +2054,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 23,
-      "keys": [
+        },
         {
           "label": "💤",
           "style": "alphaKey",
@@ -2099,7 +2069,7 @@
       ]
     },
     {
-      "id": 24,
+      "id": 19,
       "keys": [
         {
           "label": "⌨ ABC",

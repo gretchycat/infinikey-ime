@@ -9,38 +9,33 @@
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
-    "showKeyPreview": false,
+    "showKeyPreview": true,
     "scrollDirection": "VERTICAL",
     "maxVisibleRows": 4
   },
   "styles": {
     "alphaKey": {
       "cornerRadius": 8,
-      "fontSize": 26,
-      "showPreview": false
+      "fontSize": 26
     },
     "modifierKey": {
-      "cornerRadius": 8,
-      "showPreview": false
+      "cornerRadius": 8
     },
     "actionKey": {
-      "cornerRadius": 8,
-      "showPreview": false
+      "cornerRadius": 8
     },
     "categoryKey": {
       "bgColor": "#00000000",
       "fgColor": "#94A3B8",
       "pressedBgColor": "#1E293B",
       "cornerRadius": 8,
-      "fontSize": 22,
-      "showPreview": false
+      "fontSize": 22
     },
     "activeCategoryKey": {
       "bgColor": "#1E293B",
       "fgColor": "#38BDF8",
       "cornerRadius": 8,
-      "fontSize": 24,
-      "showPreview": false
+      "fontSize": 24
     }
   },
   "rows": [
@@ -317,12 +312,7 @@
               "🫲🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "keys": [
+        },
         {
           "label": "🫳",
           "alternates": [
@@ -372,7 +362,12 @@
               "🫴🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
         {
           "label": "🫷",
           "alternates": [
@@ -508,12 +503,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "keys": [
+        },
         {
           "label": "✌",
           "alternates": [
@@ -613,7 +603,12 @@
               "🤟🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
         {
           "label": "🤘",
           "alternates": [
@@ -713,12 +708,7 @@
               "👉🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "keys": [
+        },
         {
           "label": "👆",
           "alternates": [
@@ -854,7 +844,12 @@
               "🫵🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
         {
           "label": "👍",
           "alternates": [
@@ -904,12 +899,7 @@
               "👎🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "keys": [
+        },
         {
           "label": "✊",
           "alternates": [
@@ -1113,7 +1103,7 @@
       ]
     },
     {
-      "id": 7,
+      "id": 6,
       "keys": [
         {
           "label": "🤲",
@@ -1280,12 +1270,7 @@
               "🫱🏽‍🫲🏼"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "keys": [
+        },
         {
           "label": "🫱🏾‍🫲",
           "alternates": [
@@ -1329,7 +1314,12 @@
               "🫱🏿‍🫲🏾"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "keys": [
         {
           "label": "🙏",
           "alternates": [
@@ -1465,12 +1455,7 @@
               "💪🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "keys": [
+        },
         {
           "label": "🦾",
           "style": "alphaKey",
@@ -1542,7 +1527,12 @@
               "🦶🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "keys": [
         {
           "label": "👂",
           "alternates": [
@@ -1628,12 +1618,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "keys": [
+        },
         {
           "label": "🫀",
           "style": "alphaKey",
@@ -1699,7 +1684,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "keys": [
         {
           "label": "👅",
           "style": "alphaKey",
@@ -1721,12 +1711,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 11,
-      "keys": [
+        },
         {
           "label": "🫦",
           "style": "alphaKey",
@@ -1916,7 +1901,7 @@
       ]
     },
     {
-      "id": 12,
+      "id": 10,
       "keys": [
         {
           "label": "🧔",
@@ -2109,12 +2094,7 @@
               "👨🏿‍🦳"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "keys": [
+        },
         {
           "label": "👨‍🦲",
           "alternates": [
@@ -2164,7 +2144,12 @@
               "👩🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "keys": [
         {
           "label": "👩‍🦰",
           "alternates": [
@@ -2314,12 +2299,7 @@
               "🧑🏿‍🦳"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "keys": [
+        },
         {
           "label": "👩‍🦲",
           "alternates": [
@@ -2415,7 +2395,12 @@
               "👱🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "keys": [
         {
           "label": "👱‍♂️",
           "style": "alphaKey",
@@ -2511,12 +2496,7 @@
               "👴🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 15,
-      "keys": [
+        },
         {
           "label": "👵",
           "alternates": [
@@ -2658,7 +2638,12 @@
               "🙍🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "keys": [
         {
           "label": "🙎",
           "alternates": [
@@ -2694,12 +2679,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 16,
-      "keys": [
+        },
         {
           "label": "🙎‍♂",
           "alternates": [
@@ -2901,7 +2881,7 @@
       ]
     },
     {
-      "id": 17,
+      "id": 14,
       "keys": [
         {
           "label": "🙆",
@@ -3090,12 +3070,7 @@
               "💁🏿‍♂"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 18,
-      "keys": [
+        },
         {
           "label": "💁‍♀️",
           "style": "alphaKey",
@@ -3141,7 +3116,12 @@
               "💁🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "keys": [
         {
           "label": "🙋",
           "alternates": [
@@ -3283,12 +3263,7 @@
               "🧏🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 19,
-      "keys": [
+        },
         {
           "label": "🧏‍♂️",
           "style": "alphaKey",
@@ -3380,7 +3355,12 @@
               "🧏🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "keys": [
         {
           "label": "🙇",
           "alternates": [
@@ -3462,12 +3442,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 20,
-      "keys": [
+        },
         {
           "label": "🙇‍♀",
           "alternates": [
@@ -3619,7 +3594,12 @@
               "🤦🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "keys": [
         {
           "label": "🤷",
           "alternates": [
@@ -3655,12 +3635,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 21,
-      "keys": [
+        },
         {
           "label": "🤷‍♂",
           "alternates": [
@@ -3848,7 +3823,7 @@
       ]
     },
     {
-      "id": 22,
+      "id": 18,
       "keys": [
         {
           "label": "👩‍⚕",
@@ -4045,12 +4020,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 23,
-      "keys": [
+        },
         {
           "label": "🧑‍⚖",
           "alternates": [
@@ -4096,7 +4066,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "keys": [
         {
           "label": "👨‍⚖",
           "alternates": [
@@ -4252,12 +4227,7 @@
               "👩🏿‍🌾"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 24,
-      "keys": [
+        },
         {
           "label": "🧑‍🍳",
           "alternates": [
@@ -4357,7 +4327,12 @@
               "🧑🏿‍🔧"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "keys": [
         {
           "label": "👨‍🔧",
           "alternates": [
@@ -4457,12 +4432,7 @@
               "👨🏿‍🏭"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 25,
-      "keys": [
+        },
         {
           "label": "👩‍🏭",
           "alternates": [
@@ -4612,7 +4582,12 @@
               "👨🏿‍🔬"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "keys": [
         {
           "label": "👩‍🔬",
           "alternates": [
@@ -4662,12 +4637,7 @@
               "🧑🏿‍💻"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 26,
-      "keys": [
+        },
         {
           "label": "👨‍💻",
           "alternates": [
@@ -4871,7 +4841,7 @@
       ]
     },
     {
-      "id": 27,
+      "id": 22,
       "keys": [
         {
           "label": "🧑‍✈️",
@@ -5060,12 +5030,7 @@
               "👨🏿‍🚀"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 28,
-      "keys": [
+        },
         {
           "label": "👩‍🚀",
           "alternates": [
@@ -5115,7 +5080,12 @@
               "🧑🏿‍🚒"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "keys": [
         {
           "label": "👨‍🚒",
           "alternates": [
@@ -5247,12 +5217,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 29,
-      "keys": [
+        },
         {
           "label": "👮‍♀",
           "alternates": [
@@ -5334,7 +5299,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "keys": [
         {
           "label": "🕵‍♂",
           "alternates": [
@@ -5440,12 +5410,7 @@
               "💂🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 30,
-      "keys": [
+        },
         {
           "label": "💂‍♂️",
           "style": "alphaKey",
@@ -5587,7 +5552,12 @@
               "👷🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "keys": [
         {
           "label": "👷‍♂️",
           "style": "alphaKey",
@@ -5633,12 +5603,7 @@
               "👷🏿‍♂"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 31,
-      "keys": [
+        },
         {
           "label": "👷‍♀️",
           "style": "alphaKey",
@@ -5834,7 +5799,7 @@
       ]
     },
     {
-      "id": 32,
+      "id": 26,
       "keys": [
         {
           "label": "👳‍♀️",
@@ -6013,12 +5978,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 33,
-      "keys": [
+        },
         {
           "label": "🤵‍♀",
           "alternates": [
@@ -6078,7 +6038,12 @@
               "👰🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "keys": [
         {
           "label": "👰‍♂️",
           "style": "alphaKey",
@@ -6220,12 +6185,7 @@
               "🫃🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 34,
-      "keys": [
+        },
         {
           "label": "🫄",
           "alternates": [
@@ -6325,7 +6285,12 @@
               "👨🏿‍🍼"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "keys": [
         {
           "label": "🧑‍🍼",
           "alternates": [
@@ -6425,12 +6390,7 @@
               "🤶🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 35,
-      "keys": [
+        },
         {
           "label": "🧑‍🎄",
           "alternates": [
@@ -6572,7 +6532,12 @@
               "🦸🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "keys": [
         {
           "label": "🦹",
           "alternates": [
@@ -6608,12 +6573,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 36,
-      "keys": [
+        },
         {
           "label": "🦹‍♂",
           "alternates": [
@@ -6815,7 +6775,7 @@
       ]
     },
     {
-      "id": 37,
+      "id": 30,
       "keys": [
         {
           "label": "🧚",
@@ -7004,12 +6964,7 @@
               "🧛🏿‍♂"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 38,
-      "keys": [
+        },
         {
           "label": "🧛‍♀️",
           "style": "alphaKey",
@@ -7055,7 +7010,12 @@
               "🧛🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "keys": [
         {
           "label": "🧜",
           "alternates": [
@@ -7197,12 +7157,7 @@
               "🧝🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 39,
-      "keys": [
+        },
         {
           "label": "🧝‍♂️",
           "style": "alphaKey",
@@ -7294,7 +7249,12 @@
               "🧝🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "keys": [
         {
           "label": "🧞",
           "style": "alphaKey",
@@ -7338,12 +7298,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 40,
-      "keys": [
+        },
         {
           "label": "🧟‍♂️",
           "style": "alphaKey",
@@ -7447,7 +7402,12 @@
               "💆🏿‍♂"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "keys": [
         {
           "label": "💆‍♀️",
           "style": "alphaKey",
@@ -7493,12 +7453,7 @@
               "💆🏿‍♀"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 41,
-      "keys": [
+        },
         {
           "label": "💇",
           "alternates": [
@@ -7690,7 +7645,7 @@
       ]
     },
     {
-      "id": 42,
+      "id": 34,
       "keys": [
         {
           "label": "🚶‍♀️",
@@ -7875,12 +7830,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 43,
-      "keys": [
+        },
         {
           "label": "🚶‍♂️‍➡",
           "alternates": [
@@ -7950,7 +7900,12 @@
               "🚶🏿‍♂‍➡"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "keys": [
         {
           "label": "🧍",
           "alternates": [
@@ -8092,12 +8047,7 @@
               "🧎🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 44,
-      "keys": [
+        },
         {
           "label": "🧎‍♂️",
           "style": "alphaKey",
@@ -8189,7 +8139,12 @@
               "🧎🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "keys": [
         {
           "label": "🧎‍➡️",
           "style": "alphaKey",
@@ -8281,12 +8236,7 @@
               "🧎🏿‍♀️‍➡"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 45,
-      "keys": [
+        },
         {
           "label": "🧎‍♀‍➡",
           "alternates": [
@@ -8438,7 +8388,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "keys": [
         {
           "label": "🧑‍🦯‍➡",
           "alternates": [
@@ -8498,12 +8453,7 @@
               "👨🏿‍🦯"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 46,
-      "keys": [
+        },
         {
           "label": "👨‍🦯‍➡️",
           "style": "alphaKey",
@@ -8695,7 +8645,7 @@
       ]
     },
     {
-      "id": 47,
+      "id": 38,
       "keys": [
         {
           "label": "👨‍🦼",
@@ -8874,12 +8824,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 48,
-      "keys": [
+        },
         {
           "label": "🧑‍🦽‍➡",
           "alternates": [
@@ -8939,7 +8884,12 @@
               "👨🏿‍🦽"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "keys": [
         {
           "label": "👨‍🦽‍➡️",
           "style": "alphaKey",
@@ -9081,12 +9031,7 @@
               "🏃🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 49,
-      "keys": [
+        },
         {
           "label": "🏃‍♂️",
           "style": "alphaKey",
@@ -9178,7 +9123,12 @@
               "🏃🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "keys": [
         {
           "label": "🏃‍➡️",
           "style": "alphaKey",
@@ -9270,12 +9220,7 @@
               "🏃🏿‍♀️‍➡"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 50,
-      "keys": [
+        },
         {
           "label": "🏃‍♀‍➡",
           "alternates": [
@@ -9441,7 +9386,12 @@
               "🕺🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "keys": [
         {
           "label": "🕴️",
           "style": "alphaKey",
@@ -9477,12 +9427,7 @@
               "🕴🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 51,
-      "keys": [
+        },
         {
           "label": "👯",
           "style": "alphaKey",
@@ -9636,7 +9581,7 @@
       ]
     },
     {
-      "id": 52,
+      "id": 42,
       "keys": [
         {
           "label": "🧗",
@@ -9801,12 +9746,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 53,
-      "keys": [
+        },
         {
           "label": "🏂",
           "alternates": [
@@ -9842,7 +9782,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "keys": [
         {
           "label": "🏌",
           "alternates": [
@@ -9984,12 +9929,7 @@
               "🏄🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 54,
-      "keys": [
+        },
         {
           "label": "🏄‍♂️",
           "style": "alphaKey",
@@ -10081,7 +10021,12 @@
               "🏄🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "keys": [
         {
           "label": "🚣",
           "alternates": [
@@ -10163,12 +10108,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 55,
-      "keys": [
+        },
         {
           "label": "🚣‍♀",
           "alternates": [
@@ -10320,7 +10260,12 @@
               "🏊🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "keys": [
         {
           "label": "⛹️",
           "style": "alphaKey",
@@ -10356,12 +10301,7 @@
               "⛹🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 56,
-      "keys": [
+        },
         {
           "label": "⛹️‍♂️",
           "style": "alphaKey",
@@ -10539,7 +10479,7 @@
       ]
     },
     {
-      "id": 57,
+      "id": 46,
       "keys": [
         {
           "label": "🏋️‍♀️",
@@ -10728,12 +10668,7 @@
               "🚵🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 58,
-      "keys": [
+        },
         {
           "label": "🚵‍♂️",
           "style": "alphaKey",
@@ -10779,7 +10714,12 @@
               "🚵🏿‍♂"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "keys": [
         {
           "label": "🚵‍♀️",
           "style": "alphaKey",
@@ -10907,12 +10847,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 59,
-      "keys": [
+        },
         {
           "label": "🤸‍♀",
           "alternates": [
@@ -10980,7 +10915,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "keys": [
         {
           "label": "🤽",
           "alternates": [
@@ -11062,12 +11002,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 60,
-      "keys": [
+        },
         {
           "label": "🤽‍♀",
           "alternates": [
@@ -11219,7 +11154,12 @@
               "🤾🏿‍♀"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "keys": [
         {
           "label": "🤹",
           "alternates": [
@@ -11255,12 +11195,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 61,
-      "keys": [
+        },
         {
           "label": "🤹‍♂",
           "alternates": [
@@ -11462,7 +11397,7 @@
       ]
     },
     {
-      "id": 62,
+      "id": 50,
       "keys": [
         {
           "label": "🛀",
@@ -11635,12 +11570,7 @@
               "🧑🏼‍🤝‍🧑🏻"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 63,
-      "keys": [
+        },
         {
           "label": "🧑🏽‍🤝‍🧑",
           "alternates": [
@@ -11680,7 +11610,12 @@
               "🧑🏾‍🤝‍🧑🏽"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "keys": [
         {
           "label": "🧑🏿‍🤝‍🧑",
           "alternates": [
@@ -11808,12 +11743,7 @@
               "👩🏾‍🤝‍👩🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 64,
-      "keys": [
+        },
         {
           "label": "👩🏼‍🤝‍👩",
           "alternates": [
@@ -11893,7 +11823,12 @@
               "👩🏿‍🤝‍👩🏾"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "keys": [
         {
           "label": "👫",
           "alternates": [
@@ -11975,12 +11910,7 @@
               "👩🏽‍🤝‍👨🏾"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 65,
-      "keys": [
+        },
         {
           "label": "👩‍🤝‍👨🏿",
           "alternates": [
@@ -12108,7 +12038,12 @@
               "👬🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "keys": [
         {
           "label": "👨‍🤝‍👨🏼",
           "alternates": [
@@ -12144,12 +12079,7 @@
               "👨🏼‍🤝‍👨🏽"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 66,
-      "keys": [
+        },
         {
           "label": "👨‍🤝‍👨🏾",
           "alternates": [
@@ -12319,7 +12249,7 @@
       ]
     },
     {
-      "id": 67,
+      "id": 54,
       "keys": [
         {
           "label": "🧑‍❤‍💋‍🧑🏼",
@@ -12480,12 +12410,7 @@
               "🧑🏼‍❤️‍💋‍🧑🏻"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 68,
-      "keys": [
+        },
         {
           "label": "🧑🏼‍❤‍💋‍🧑",
           "alternates": [
@@ -12521,7 +12446,12 @@
               "🧑🏽‍❤️‍💋‍🧑🏼"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "keys": [
         {
           "label": "🧑🏽‍❤‍💋‍🧑",
           "alternates": [
@@ -12653,12 +12583,7 @@
               "👩🏿‍❤️‍💋‍👨🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 69,
-      "keys": [
+        },
         {
           "label": "👩‍❤‍💋‍👨",
           "alternates": [
@@ -12736,7 +12661,12 @@
               "👩🏼‍❤️‍💋‍👨🏽"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "keys": [
         {
           "label": "👩‍❤‍💋‍👨🏽",
           "alternates": [
@@ -12820,12 +12750,7 @@
               "👩🏾‍❤️‍💋‍👨🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 70,
-      "keys": [
+        },
         {
           "label": "👩‍❤‍💋‍👨🏿",
           "alternates": [
@@ -12941,7 +12866,12 @@
               "👩🏾‍❤️‍💋‍👨🏽"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "keys": [
         {
           "label": "👩🏾‍❤‍💋‍👨",
           "alternates": [
@@ -12985,12 +12915,7 @@
               "👩🏿‍❤️‍💋‍👨🏾"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 71,
-      "keys": [
+        },
         {
           "label": "👩🏿‍❤‍💋‍👨",
           "alternates": [
@@ -13160,7 +13085,7 @@
       ]
     },
     {
-      "id": 72,
+      "id": 58,
       "keys": [
         {
           "label": "👨‍❤‍💋‍👨🏾",
@@ -13321,12 +13246,7 @@
               "👨🏾‍❤️‍💋‍👨🏽"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 73,
-      "keys": [
+        },
         {
           "label": "👨🏾‍❤‍💋‍👨",
           "alternates": [
@@ -13370,7 +13290,12 @@
               "👨🏿‍❤️‍💋‍👨🏾"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "keys": [
         {
           "label": "👨🏿‍❤‍💋‍👨",
           "alternates": [
@@ -13496,12 +13421,7 @@
               "👩🏼‍❤️‍💋‍👩🏽"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 74,
-      "keys": [
+        },
         {
           "label": "👩‍❤‍💋‍👩🏽",
           "alternates": [
@@ -13585,7 +13505,12 @@
               "👩🏾‍❤️‍💋‍👩🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "keys": [
         {
           "label": "👩‍❤‍💋‍👩🏿",
           "alternates": [
@@ -13661,12 +13586,7 @@
               "👩🏽‍❤️‍💋‍👩🏼"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 75,
-      "keys": [
+        },
         {
           "label": "👩🏽‍❤‍💋‍👩",
           "alternates": [
@@ -13798,7 +13718,12 @@
               "💑🏿"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "keys": [
         {
           "label": "🧑‍❤️‍🧑🏼",
           "alternates": [
@@ -13832,12 +13757,7 @@
               "🧑🏻‍❤‍🧑🏼"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 76,
-      "keys": [
+        },
         {
           "label": "🧑‍❤️‍🧑🏽",
           "alternates": [
@@ -14001,7 +13921,7 @@
       ]
     },
     {
-      "id": 77,
+      "id": 62,
       "keys": [
         {
           "label": "🧑🏽‍❤️‍🧑",
@@ -14178,12 +14098,7 @@
               "👩🏿‍❤‍👨🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 78,
-      "keys": [
+        },
         {
           "label": "👩‍❤️‍👨🏼",
           "alternates": [
@@ -14217,7 +14132,12 @@
               "👩🏻‍❤‍👨🏼"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "keys": [
         {
           "label": "👩‍❤️‍👨🏽",
           "alternates": [
@@ -14343,12 +14263,7 @@
               "👩🏾‍❤‍👨🏿"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 79,
-      "keys": [
+        },
         {
           "label": "👩🏼‍❤️‍👨",
           "alternates": [
@@ -14420,7 +14335,12 @@
               "👩🏽‍❤‍👨🏼"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "keys": [
         {
           "label": "👩🏾‍❤️‍👨",
           "alternates": [
@@ -14508,12 +14428,7 @@
               "👩🏿‍❤‍👨🏾"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 80,
-      "keys": [
+        },
         {
           "label": "👨‍❤️‍👨",
           "alternates": [
@@ -14635,7 +14550,12 @@
               "👨🏼‍❤‍👨🏽"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "keys": [
         {
           "label": "👨‍❤️‍👨🏾",
           "alternates": [
@@ -14677,12 +14597,7 @@
               "👨🏽‍❤‍👨🏾"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 81,
-      "keys": [
+        },
         {
           "label": "👨‍❤️‍👨🏿",
           "alternates": [
@@ -14846,7 +14761,7 @@
       ]
     },
     {
-      "id": 82,
+      "id": 66,
       "keys": [
         {
           "label": "👨🏿‍❤️‍👨",
@@ -15015,12 +14930,7 @@
               "👩🏼‍❤‍👩🏽"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 83,
-      "keys": [
+        },
         {
           "label": "👩‍❤️‍👩🏾",
           "alternates": [
@@ -15062,7 +14972,12 @@
               "👩🏽‍❤‍👩🏾"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "keys": [
         {
           "label": "👩‍❤️‍👩🏿",
           "alternates": [
@@ -15180,12 +15095,7 @@
               "👩🏽‍❤‍👩🏼"
             ]
           }
-        }
-      ]
-    },
-    {
-      "id": 84,
-      "keys": [
+        },
         {
           "label": "👩🏾‍❤️‍👩",
           "alternates": [
@@ -15273,7 +15183,12 @@
               "👩🏿‍❤‍👩🏾"
             ]
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "keys": [
         {
           "label": "👨‍👩‍👦",
           "style": "alphaKey",
@@ -15317,12 +15232,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 85,
-      "keys": [
+        },
         {
           "label": "👨‍👩‍👧‍👧",
           "style": "alphaKey",
@@ -15388,7 +15298,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "keys": [
         {
           "label": "👩‍👩‍👦",
           "style": "alphaKey",
@@ -15410,12 +15325,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 86,
-      "keys": [
+        },
         {
           "label": "👩‍👩‍👧‍👦",
           "style": "alphaKey",
@@ -15507,7 +15417,7 @@
       ]
     },
     {
-      "id": 87,
+      "id": 70,
       "keys": [
         {
           "label": "👩‍👦",
@@ -15596,12 +15506,7 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        }
-      ]
-    },
-    {
-      "id": 88,
-      "keys": [
+        },
         {
           "label": "🫂",
           "style": "alphaKey",
@@ -15623,7 +15528,12 @@
           "onLongPress": {
             "type": "SHOW_ZOOM_PREVIEW"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "keys": [
         {
           "label": "🧑‍🧑‍🧒",
           "style": "alphaKey",
@@ -15693,7 +15603,7 @@
       ]
     },
     {
-      "id": 89,
+      "id": 72,
       "keys": [
         {
           "label": "⌨ ABC",

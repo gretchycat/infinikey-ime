@@ -825,7 +825,7 @@ object LayoutParser {
         }
         rowsList.add(KeyRow(id = rowIdCounter++, keys = catRowKeys))
 
-        recentList.chunked(8).forEach { chunk ->
+        recentList.chunked(10).forEach { chunk ->
             val keysList = chunk.map { emoji ->
                 KeyDefinition(
                     primaryLabel = emoji,

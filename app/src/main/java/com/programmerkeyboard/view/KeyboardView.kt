@@ -659,7 +659,18 @@ class KeyboardView @JvmOverloads constructor(
 
                     // Render Left Cluster Keys
                     var currentX = hSpacingPx + leftRowOffsetPx
-                    val currentY = vSpacingPx + rowIndex * (rowHeight + vSpacingPx)
+                    val currentY = if (isVerticalScroll) {
+                        if (rowIndex < fixedTopRowsCount) {
+                            vSpacingPx
+                        } else if (rowIndex < fixedTopRowsCount + scrollingRowsCount) {
+                            val scrollRowIdx = rowIndex - fixedTopRowsCount
+                            vSpacingPx + (rowHeight + vSpacingPx) + (scrollRowIdx * (rowHeight + vSpacingPx)) - scrollOffsetY
+                        } else {
+                            h - rowHeight - vSpacingPx
+                        }
+                    } else {
+                        vSpacingPx + rowIndex * (rowHeight + vSpacingPx)
+                    }
 
                     leftKeys.forEach { key ->
                         val keyOffsetPx = when (val off = key.startOffset) {
@@ -677,8 +688,9 @@ class KeyboardView @JvmOverloads constructor(
                             is DimensionValue.Ratio -> (globalLeftBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
                             is DimensionValue.Absolute -> key.widthWeight.value * density
                         }
+                        val isFixed = isVerticalScroll && (rowIndex == 0 || rowIndex == currentRows.lastIndex)
                         val rect = RectF(currentX, currentY, currentX + keyWidth, currentY + rowHeight)
-                        keyBoundsList.add(KeyBounds(key, rect))
+                        keyBoundsList.add(KeyBounds(key, rect, rowIndex, isFixed))
                         currentX += keyWidth + hSpacingPx
                     }
 
@@ -718,8 +730,9 @@ class KeyboardView @JvmOverloads constructor(
                             is DimensionValue.Ratio -> (globalRightBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
                             is DimensionValue.Absolute -> key.widthWeight.value * density
                         }
+                        val isFixed = isVerticalScroll && (rowIndex == 0 || rowIndex == currentRows.lastIndex)
                         val rect = RectF(currentX, currentY, currentX + keyWidth, currentY + rowHeight)
-                        keyBoundsList.add(KeyBounds(key, rect))
+                        keyBoundsList.add(KeyBounds(key, rect, rowIndex, isFixed))
                         currentX += keyWidth + hSpacingPx
                     }
                 }
@@ -1933,12 +1946,14 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun findHitKeyBounds(x: Float, y: Float): KeyBounds? {
+        val density = context.resources.displayMetrics.density
+        val expansion = 6f * density
+
         val isVerticalScroll = layoutDefinition?.metadata?.scrollDirection.equals("VERTICAL", ignoreCase = true)
         if (isVerticalScroll) {
             val fixedHit = keyBoundsList.firstOrNull { it.isFixedRow && !it.key.isSpacer && it.rect.contains(x, y) }
             if (fixedHit != null) return fixedHit
 
-            val density = context.resources.displayMetrics.density
             val h = height.toFloat()
             val vSpacingPx = resolveDimension(layoutDefinition?.metadata?.verticalSpacing, h, density, 4f)
             val maxVisRows = layoutDefinition?.metadata?.maxVisibleRows ?: 4
@@ -1950,11 +1965,49 @@ class KeyboardView @JvmOverloads constructor(
             val bottomNavTop = h - rowHeight - (vSpacingPx * 1.5f)
 
             if (y >= topBarBottom && y <= bottomNavTop) {
-                return keyBoundsList.firstOrNull { !it.isFixedRow && !it.key.isSpacer && it.rect.contains(x, y) }
+                val scrollHit = keyBoundsList.firstOrNull { !it.isFixedRow && !it.key.isSpacer && it.rect.contains(x, y) }
+                if (scrollHit != null) return scrollHit
+
+                return keyBoundsList
+                    .filter { !it.isFixedRow && !it.key.isSpacer }
+                    .filter {
+                        val expanded = RectF(it.rect).apply { inset(-expansion, -expansion) }
+                        expanded.contains(x, y)
+                    }
+                    .minByOrNull {
+                        val dx = x - it.rect.centerX()
+                        val dy = y - it.rect.centerY()
+                        dx * dx + dy * dy
+                    }
             }
-            return null
+
+            return keyBoundsList
+                .filter { it.isFixedRow && !it.key.isSpacer }
+                .filter {
+                    val expanded = RectF(it.rect).apply { inset(-expansion, -expansion) }
+                    expanded.contains(x, y)
+                }
+                .minByOrNull {
+                    val dx = x - it.rect.centerX()
+                    val dy = y - it.rect.centerY()
+                    dx * dx + dy * dy
+                }
         }
-        return keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(x, y) }
+
+        val directHit = keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(x, y) }
+        if (directHit != null) return directHit
+
+        return keyBoundsList
+            .filter { !it.key.isSpacer }
+            .filter {
+                val expanded = RectF(it.rect).apply { inset(-expansion, -expansion) }
+                expanded.contains(x, y)
+            }
+            .minByOrNull {
+                val dx = x - it.rect.centerX()
+                val dy = y - it.rect.centerY()
+                dx * dx + dy * dy
+            }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

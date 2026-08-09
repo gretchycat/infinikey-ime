@@ -27,9 +27,9 @@ class KeyPreviewOverlay(private val context: Context) {
         val keyHeight = anchorRect.height()
         val keyWidth = anchorRect.width()
 
-        val widthPx = if (isLarge) (keyHeight * 1.8f).toInt() else maxOf(keyWidth * 1.1f, 48f * density).toInt()
-        val heightPx = if (isLarge) (keyHeight * 1.8f).toInt() else (keyHeight * 1.25f).toInt()
-        val fontSize = if (isLarge) keyHeight * 0.90f else keyHeight * 0.50f
+        val widthPx = if (isLarge) (keyHeight * 2.8f).toInt() else maxOf(keyWidth * 1.1f, 48f * density).toInt()
+        val heightPx = if (isLarge) (keyHeight * 2.8f).toInt() else (keyHeight * 1.25f).toInt()
+        val fontSize = if (isLarge) keyHeight * 1.40f else keyHeight * 0.50f
         val screenWidth = anchorView.width.toFloat()
 
         val popupX = (anchorRect.centerX() - widthPx / 2f).coerceIn(4f, maxOf(4f, screenWidth - widthPx - 4f))
