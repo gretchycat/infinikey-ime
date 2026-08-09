@@ -830,7 +830,8 @@ object LayoutParser {
                     primaryLabel = emoji,
                     styleName = "alphaKey",
                     fontSize = DimensionValue.Absolute(26),
-                    onPressAction = KeyAction.SendText(emoji)
+                    onPressAction = KeyAction.SendText(emoji),
+                    onLongPressAction = KeyAction.ShowZoomPreview()
                 )
             }.toMutableList()
             rowsList.add(KeyRow(id = rowIdCounter++, keys = keysList))

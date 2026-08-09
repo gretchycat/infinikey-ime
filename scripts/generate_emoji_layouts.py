@@ -91,6 +91,8 @@ def main():
 
     # Group emojis by category (map to dict: base -> list of variants)
     grouped_emojis = {cat: {} for cat in CATEGORY_MAPPING.keys()}
+    seen_emojis = set()
+
     for item in emoji_list:
         category_name = item.get("category", "")
         matched_cat = None
@@ -103,6 +105,13 @@ def main():
             char = item.get("char")
             if char:
                 base, variant = get_base_and_modifier(char)
+                # Deduplicate base emojis globally (handles playing cards, symbols variations)
+                if base in seen_emojis and not variant:
+                    continue
+                
+                if base not in seen_emojis:
+                    seen_emojis.add(base)
+
                 if base not in grouped_emojis[matched_cat]:
                     grouped_emojis[matched_cat][base] = []
                 if variant and variant not in grouped_emojis[matched_cat][base]:
@@ -122,14 +131,25 @@ def main():
                     "label": base,
                     "alternates": variants,
                     "style": "alphaKey",
-                    "onPress": { "type": "SEND_TEXT", "text": base }
+                    "onPress": { "type": "SEND_TEXT", "text": base },
+                    "onLongPress": { "type": "SHOW_POPUP", "options": variants }
                 })
             else:
-                layout_keys.append(base)
+                layout_keys.append({
+                    "label": base,
+                    "style": "alphaKey",
+                    "onPress": { "type": "SEND_TEXT", "text": base },
+                    "onLongPress": { "type": "SHOW_ZOOM_PREVIEW" }
+                })
 
         if not layout_keys:
             # Fallback values in case of empty fetch
-            layout_keys = [cat_info["icon"]] * 24
+            layout_keys = [{
+                "label": cat_info["icon"],
+                "style": "alphaKey",
+                "onPress": { "type": "SEND_TEXT", "text": cat_info["icon"] },
+                "onLongPress": { "type": "SHOW_ZOOM_PREVIEW" }
+            }] * 24
 
         rows = []
         row_id_counter = 1
