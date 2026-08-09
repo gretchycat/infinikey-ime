@@ -60,6 +60,42 @@ Infinikey IME is a high-performance, layout-driven, customizable Android Input M
 ### 5. `InteractiveLayoutEditorView` & `SettingsActivity` (`com.programmerkeyboard.settings`)
 * **Role**: WYSIWYG layout editor and configuration manager.
 * **Responsibilities**:
-  - Provides a 6-tab configuration UI (Geometry, Behavior, Haptics, Audio, Themes, Layout Editor).
-  - Displays App Version (`v0.0.2`) and Build Number in Tab 1 (Geometry).
-  - Real-time drag-and-drop key reordering and undo/redo history stack (`ArrayDeque<LayoutDefinition>`).
+    - Provides a 6-tab configuration UI (Geometry, Behavior, Haptics, Audio, Themes, Layout Editor).
+    - Displays App Version (`v0.1.0`) and Build Number in Tab 1 (Geometry).
+    - Real-time drag-and-drop key reordering and undo/redo history stack (`ArrayDeque<LayoutDefinition>`).
+
+---
+
+## Emoji Layout Generation Pipeline
+
+To ensure a comprehensive and modern emoji selection without bloating the code or restricting emoji ranges, Infinikey IME utilizes an automated, layout-driven generation pipeline during compilation.
+
+```
++---------------------------------------+
+|  amio/emoji.json (GitHub Database)    |
++-------------------+-------------------+
+                    | (urllib fetch)
+                    v
++-------------------+-------------------+
+|     generate_emoji_layouts.py         |
+| (Groups by category, merges Flags,    |
+|  consolidates skin tones to alternates|
++-------------------+-------------------+
+                    | (JSON generation)
+                    v
++-------------------+-------------------+
+|  app/src/main/assets/layouts/emoji*   |
++---------------------------------------+
+```
+
+### 1. Build-Time Generator (`generate_emoji_layouts.py`)
+Registered as a Gradle pre-build task (`generateEmojiLayouts`), this script handles layout creation:
+* **Online Fetch**: Downloads the official Unicode emoji dataset from `amio/emoji.json`.
+* **Offline Resilience**: If the internet connection is unavailable, it gracefully checks for existing local layout files to prevent compilation failures.
+* **Skin Tone Consolidation**: Detects Fitzpatrick scale modifiers (`0x1F3FB`–`0x1F3FF`) and groups variants under their base emoji. Variants are defined in the key's `"alternates"` array, displaying on long-press.
+* **Layout Generation**: Splits emojis by categories (mapping `Flags` to `Symbols`), chunks them into rows of 8, and writes separate asset layouts (`emoji.json`, `emoji_body.json`, etc.) with category headers andABC footers.
+
+### 2. Runtime Recents Tracker (`emoji_recents`)
+* Whenever an emoji is selected, [`ProgrammerInputMethodService`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/app/src/main/java/com/programmerkeyboard/ProgrammerInputMethodService.kt) logs it to the user's `SharedPreferences` history (capped at 24).
+* Tapping the main emoji key `😀` targets the dynamic `"emoji_recents"` layout. [`LayoutParser`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/app/src/main/java/com/programmerkeyboard/engine/LayoutParser.kt) generates the keyboard on the fly from the history list, displaying your most frequently used emojis.
+* Long-pressing `😀` bypasses recents and opens the main complete Smileys layout directly.
