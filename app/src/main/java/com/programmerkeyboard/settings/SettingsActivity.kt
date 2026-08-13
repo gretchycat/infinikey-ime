@@ -1342,38 +1342,66 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val spEditorLayoutSelector = findViewById<Spinner>(R.id.spEditorLayoutSelector)
-        val layoutOptions = listOf(
-            "⌨️ Main / Terminal Layout (main.json)",
-            "📱 Mobile Layout (mobile.json)",
-            "🔢 Mobile Numbers (mobile_number.json)",
-            "🔣 Mobile Symbols (mobile_symbol.json)",
-            "⚡ Function / Fn Layer (function.json)",
-            "✏️ Custom Active Layout"
+        
+        val assetLayoutFiles = try {
+            assets.list("layouts")?.filter { it.endsWith(".json") }?.sorted() ?: emptyList()
+        } catch (_: Exception) {
+            listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "emoji.json")
+        }
+
+        data class LayoutSelectorEntry(
+            val displayName: String,
+            val targetId: String,
+            val assetFileName: String?
         )
-        val layoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, layoutOptions)
+
+        fun getDisplayNameForAsset(fileName: String): String {
+            return when (fileName) {
+                "main.json" -> "⌨️ Main / Terminal Layout (main.json)"
+                "mobile.json" -> "📱 Mobile Layout (mobile.json)"
+                "mobile_number.json" -> "🔢 Mobile Numbers (mobile_number.json)"
+                "mobile_symbol.json" -> "🔣 Mobile Symbols (mobile_symbol.json)"
+                "function.json" -> "⚡ Function / Fn Layer (function.json)"
+                "phone.json" -> "📞 Phone Dialpad (phone.json)"
+                "emoji.json" -> "😃 Emojis (emoji.json)"
+                "emoji_animals.json" -> "🐾 Emoji Animals (emoji_animals.json)"
+                "emoji_body.json" -> "🙋 Emoji Body & People (emoji_body.json)"
+                "emoji_flags.json" -> "🚩 Emoji Flags (emoji_flags.json)"
+                "emoji_food.json" -> "🍔 Emoji Food (emoji_food.json)"
+                "emoji_objects.json" -> "💡 Emoji Objects (emoji_objects.json)"
+                "emoji_sports.json" -> "⚽ Emoji Sports (emoji_sports.json)"
+                "emoji_symbols.json" -> "🔣 Emoji Symbols (emoji_symbols.json)"
+                "emoji_travel.json" -> "✈️ Emoji Travel (emoji_travel.json)"
+                else -> "📄 ${fileName.removeSuffix(".json").replace('_', ' ').capitalize()} ($fileName)"
+            }
+        }
+
+        val layoutEntries = mutableListOf<LayoutSelectorEntry>()
+        for (file in assetLayoutFiles) {
+            val targetId = file.removeSuffix(".json")
+            layoutEntries.add(LayoutSelectorEntry(getDisplayNameForAsset(file), targetId, file))
+        }
+
+        val hasCustomActive = !prefs.getString("pref_custom_layout_json", null).isNullOrEmpty()
+        if (hasCustomActive) {
+            layoutEntries.add(LayoutSelectorEntry("✏️ Custom Active Layout", "custom", null))
+        }
+
+        val layoutOptionsTitles = layoutEntries.map { it.displayName }
+        val layoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, layoutOptionsTitles)
         spEditorLayoutSelector.adapter = layoutAdapter
 
         val activeTarget = prefs.getString("pref_keyboard_layout_target", "main")
-        val initialPosition = when (activeTarget) {
-            "main" -> 0
-            "mobile" -> 1
-            "mobile_number" -> 2
-            "mobile_symbol" -> 3
-            "function" -> 4
-            else -> 0
-        }
+        var initialPosition = layoutEntries.indexOfFirst { it.targetId == activeTarget }
+        if (initialPosition < 0) initialPosition = 0
         spEditorLayoutSelector.setSelection(initialPosition)
 
         spEditorLayoutSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val (targetId, targetFile) = when (position) {
-                    0 -> Pair("main", "main.json")
-                    1 -> Pair("mobile", "mobile.json")
-                    2 -> Pair("mobile_number", "mobile_number.json")
-                    3 -> Pair("mobile_symbol", "mobile_symbol.json")
-                    4 -> Pair("function", "function.json")
-                    else -> Pair("custom", null)
-                }
+                if (position !in layoutEntries.indices) return
+                val entry = layoutEntries[position]
+                val targetId = entry.targetId
+                val targetFile = entry.assetFileName
 
                 if (targetId != "custom") {
                     prefs.edit().putString("pref_keyboard_layout_target", targetId).apply()
@@ -1388,9 +1416,9 @@ class SettingsActivity : AppCompatActivity() {
 
                 val rawLayout = if (!customJson.isNullOrEmpty()) {
                     try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJson) }
-                    catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "main.json") }
+                    catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "${targetId}.json") }
                 } else {
-                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "main.json")
+                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "${targetId}.json")
                 }
                 editingLayout = com.programmerkeyboard.engine.LayoutParser.applyThemeOverrides(this@SettingsActivity, rawLayout)
 
@@ -1660,15 +1688,22 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         btnResetLayout.setOnClickListener {
+            val activeTarget = prefs.getString("pref_keyboard_layout_target", "main") ?: "main"
+            val targetFile = if (activeTarget.endsWith(".json")) activeTarget else "${activeTarget}.json"
             AlertDialog.Builder(this)
                 .setTitle("Reset Keyboard Layout")
-                .setMessage("Reset to default factory Programmer keyboard layout?")
+                .setMessage("Reset layout '$activeTarget' to static factory default?")
                 .setPositiveButton("Reset Layout") { _, _ ->
                     pushUndoState()
-                    prefs.edit().remove("pref_custom_layout_json").apply()
-                    editingLayout = com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
+                    prefs.edit()
+                        .remove("pref_custom_layout_json_$activeTarget")
+                        .apply()
+                    if (activeTarget == "main") {
+                        prefs.edit().remove("pref_custom_layout_json").apply()
+                    }
+                    editingLayout = com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
                     editorKeyboardView.setLayout(editingLayout!!)
-                    Toast.makeText(this, "Layout reset to default!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Layout '$activeTarget' reset to static default!", Toast.LENGTH_SHORT).show()
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
