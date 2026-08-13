@@ -23,8 +23,8 @@ android {
         applicationId = "com.programmerkeyboard"
         minSdk = 24
         targetSdk = 34
-        versionCode = gitBuildNumber
-        versionName = fullVersionName
+        versionCode = maxOf(gitBuildNumber, 100)
+        versionName = "$baseVersionName-b${maxOf(gitBuildNumber, 100)}"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,6 +35,8 @@ android {
             storePassword = "programmer123"
             keyAlias = "programmer_keyboard"
             keyPassword = "programmer123"
+            enableV1Signing = true
+            enableV2Signing = true
         }
     }
 
