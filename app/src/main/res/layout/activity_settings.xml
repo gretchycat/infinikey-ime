@@ -143,6 +143,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
+                <!-- Layout Selector Card (Outside and above main editor box) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -151,36 +152,32 @@
                     android:padding="16dp"
                     android:layout_marginBottom="16dp">
 
-                    <!-- Layout Selector Dropdown -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="12dp">
+                        android:text="Select Layout to Edit:"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Select Layout to Edit:"
-                            android:textColor="@color/key_text_primary"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="6dp" />
-
-                        <Spinner
-                            android:id="@+id/spEditorLayoutSelector"
-                            android:layout_width="match_parent"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_spinner_card"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp" />
-                    </LinearLayout>
-
-                    <View
+                    <Spinner
+                        android:id="@+id/spEditorLayoutSelector"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/settings_divider"
-                        android:layout_marginBottom="12dp" />
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp" />
+                </LinearLayout>
+
+                <!-- WYSIWYG Canvas Box -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
 
                     <!-- Control Bar with Undo, Redo, Save -->
                     <LinearLayout
