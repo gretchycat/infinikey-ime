@@ -2262,7 +2262,36 @@ class SettingsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        var dialog: AlertDialog? = null
+        fun probeAndScrollToWidget(targetView: android.view.View) {
+            val scrollView = view as? android.widget.ScrollView ?: return
+            scrollView.postDelayed({
+                val rect = android.graphics.Rect()
+                targetView.getDrawingRect(rect)
+                scrollView.offsetDescendantRectToMyCoords(targetView, rect)
+                scrollView.smoothScrollTo(0, maxOf(0, rect.top - 40))
+            }, 100)
+        }
+
+        val allEditTexts = listOf(etPrimary, etSecondary, etTopLeft, etTopRight, etWeight, etActionParam, etLongPressParam, etSwipeUpParam, etSwipeDownParam)
+        allEditTexts.forEach { et ->
+            et.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    probeAndScrollToWidget(v)
+                }
+            }
+        }
+
+        val allSpinners = listOf(spIcon, spCategory, spActionType, spActionParamSelect, spLongPressType, spLongPressParamSelect, spSwipeUpType, spSwipeUpParamSelect, spSwipeDownType, spSwipeDownParamSelect)
+        allSpinners.forEach { sp ->
+            sp.setOnTouchListener { v, event ->
+                if (event.action == android.view.MotionEvent.ACTION_UP) {
+                    probeAndScrollToWidget(v)
+                }
+                false
+            }
+        }
+
+        var dialogRef: AlertDialog? = null
 
         btnDelete.setOnClickListener {
             pushUndoState()
@@ -2277,10 +2306,10 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             }
-            dialog?.dismiss()
+            dialogRef?.dismiss()
         }
 
-        dialog = AlertDialog.Builder(this)
+        val createdDialog = AlertDialog.Builder(this)
             .setView(view)
             .setPositiveButton("Save Key Properties") { _, _ ->
                 pushUndoState()
@@ -2322,7 +2351,29 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .create()
+
+        dialogRef = createdDialog
+
+        createdDialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        createdDialog.window?.decorView?.viewTreeObserver?.addOnGlobalLayoutListener {
+            val r = android.graphics.Rect()
+            createdDialog.window?.decorView?.getWindowVisibleDisplayFrame(r)
+            val screenHeight = createdDialog.window?.decorView?.rootView?.height ?: 0
+            val keypadHeight = screenHeight - r.bottom
+            if (keypadHeight > screenHeight * 0.15) {
+                val availableHeight = r.height() - 40
+                if (availableHeight in 200..screenHeight) {
+                    createdDialog.window?.setLayout(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        availableHeight
+                    )
+                }
+            }
+        }
+
+        createdDialog.show()
     }
 
     private fun showRowEditorDialog(initialRowIdx: Int = 0, pushUndoState: () -> Unit, onUpdate: (LayoutDefinition) -> Unit) {
