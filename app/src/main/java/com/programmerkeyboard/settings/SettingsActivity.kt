@@ -1321,6 +1321,35 @@ class SettingsActivity : AppCompatActivity() {
                 .show()
         }
 
+        fun getUserLayoutsDir(): java.io.File {
+            val dir = java.io.File(getExternalFilesDir(null), "layouts")
+            if (!dir.exists()) dir.mkdirs()
+            return dir
+        }
+
+        fun syncDefaultLayoutsToFolder() {
+            val dir = getUserLayoutsDir()
+            com.programmerkeyboard.util.IconRenderer.getUserIconsDir(this)
+            val assetFiles = try {
+                assets.list("layouts")?.filter { it.endsWith(".json") } ?: emptyList()
+            } catch (_: Exception) {
+                listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "emoji.json")
+            }
+
+            for (file in assetFiles) {
+                val targetFile = java.io.File(dir, file)
+                if (!targetFile.exists()) {
+                    try {
+                        assets.open("layouts/$file").use { input ->
+                            targetFile.outputStream().use { output -> input.copyTo(output) }
+                        }
+                    } catch (_: Exception) {}
+                }
+            }
+        }
+
+        syncDefaultLayoutsToFolder()
+
         // --- WYSIWYG LAYOUT EDITOR SETUP ---
         val editorKeyboardView = findViewById<com.programmerkeyboard.view.KeyboardView>(R.id.editorKeyboardView)
         editorKeyboardView.isEditorPreviewMode = true
@@ -1412,27 +1441,30 @@ class SettingsActivity : AppCompatActivity() {
 
         fun loadLayoutEntries(): MutableList<LayoutSelectorEntry> {
             val entries = mutableListOf<LayoutSelectorEntry>()
+            val layoutsDir = getUserLayoutsDir()
             for (file in assetLayoutFiles) {
                 val targetId = file.removeSuffix(".json")
-                val customJson = prefs.getString("pref_custom_layout_json_$targetId", null)
+                val customFile = java.io.File(layoutsDir, file)
+                val customJsonPref = prefs.getString("pref_custom_layout_json_$targetId", null)
                     ?: if (targetId == "main") prefs.getString("pref_custom_layout_json", null) else null
-                val isEdited = !customJson.isNullOrEmpty()
+
+                val defaultAssetJson = try { assets.open("layouts/$file").bufferedReader().use { it.readText() }.trim() } catch (_: Exception) { "" }
+                val currentFileJson = if (customFile.exists()) customFile.readText().trim() else ""
+                val isEdited = !customJsonPref.isNullOrEmpty() || (currentFileJson.isNotEmpty() && currentFileJson != defaultAssetJson)
+
                 val loaded = try {
-                    if (isEdited) com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJson!!)
-                    else com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                    if (currentFileJson.isNotEmpty()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(currentFileJson)
+                    } else if (!customJsonPref.isNullOrEmpty()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJsonPref)
+                    } else {
+                        com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                    }
                 } catch (_: Exception) {
                     com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
                 val baseName = getDisplayNameForAsset(file)
                 entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited))
-            }
-
-            val customJsonOnly = prefs.getString("pref_custom_layout_json", null)
-            if (!customJsonOnly.isNullOrEmpty() && entries.none { it.targetId == "custom" }) {
-                val loadedCustom = try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJsonOnly) } catch (_: Exception) { null }
-                if (loadedCustom != null) {
-                    entries.add(LayoutSelectorEntry("✏️ Custom Active Layout", "custom", null, loadedCustom.version, true))
-                }
             }
             return entries
         }
@@ -1466,17 +1498,23 @@ class SettingsActivity : AppCompatActivity() {
                     prefs.edit().putString("pref_keyboard_layout_target", targetId).apply()
                 }
 
-                val customJson = if (targetId != "custom") {
+                val customFile = java.io.File(getUserLayoutsDir(), targetFile ?: "${targetId}.json")
+                val customJsonPref = if (targetId != "custom") {
                     prefs.getString("pref_custom_layout_json_$targetId", null)
                         ?: if (targetId == "main") prefs.getString("pref_custom_layout_json", null) else null
                 } else {
                     prefs.getString("pref_custom_layout_json", null)
                 }
 
-                val rawLayout = if (!customJson.isNullOrEmpty()) {
-                    try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJson) }
-                    catch (_: Exception) { com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "${targetId}.json") }
-                } else {
+                val rawLayout = try {
+                    if (customFile.exists()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customFile.readText())
+                    } else if (!customJsonPref.isNullOrEmpty()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJsonPref)
+                    } else {
+                        com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "${targetId}.json")
+                    }
+                } catch (_: Exception) {
                     com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "${targetId}.json")
                 }
                 editingLayout = com.programmerkeyboard.engine.LayoutParser.applyThemeOverrides(this@SettingsActivity, rawLayout)
@@ -1572,6 +1610,10 @@ class SettingsActivity : AppCompatActivity() {
                 try {
                     val jsonStr = serializeLayoutToJson(layout)
                     val targetId = layout.id
+                    val dir = getUserLayoutsDir()
+                    val targetFile = java.io.File(dir, "${targetId}.json")
+                    targetFile.writeText(jsonStr)
+
                     prefs.edit()
                         .putString("pref_custom_layout_json_$targetId", jsonStr)
                         .putString("pref_custom_layout_json", jsonStr)
@@ -1588,7 +1630,7 @@ class SettingsActivity : AppCompatActivity() {
                         spEditorLayoutSelector.setSelection(pos)
                         updateResetButtonState(layoutEntries[pos])
                     }
-                    Toast.makeText(this, "Layout configuration for '${layout.name}' saved & set active!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Layout configuration for '${layout.name}' saved to ${targetFile.name} & active!", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(this, "Failed to save layout: ${e.message}", Toast.LENGTH_LONG).show()
@@ -1618,25 +1660,6 @@ class SettingsActivity : AppCompatActivity() {
             })
         }
 
-        // Layout Import/Export/Reset Suite
-        importLayoutLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let { fileUri ->
-                try {
-                    val jsonStr = contentResolver.openInputStream(fileUri)?.bufferedReader()?.use { it.readText() }
-                    if (!jsonStr.isNullOrEmpty()) {
-                        val parsed = com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(jsonStr)
-                        pushUndoState()
-                        editingLayout = parsed
-                        editorKeyboardView.setLayout(editingLayout!!)
-                        val pretty = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(parsed)
-                        prefs.edit().putString("pref_custom_layout_json", pretty).apply()
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Failed to parse layout file: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-
         browseKeyImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
                 val savedPath = com.programmerkeyboard.util.IconRenderer.saveUserIcon(this, it)
@@ -1644,130 +1667,37 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        fun getExportedLayoutFileName(): String {
-            val layoutId = editingLayout?.id?.lowercase()?.replace("[^a-z0-9_]+".toRegex(), "_")?.trim('_') ?: "main"
-            return "infinikey_${layoutId}_layout.json"
-        }
+        val btnLaunchFilesApp = findViewById<Button>(R.id.btnLaunchFilesApp)
+        btnLaunchFilesApp.setOnClickListener {
+            syncDefaultLayoutsToFolder()
+            val dir = getUserLayoutsDir()
+            val activeId = editingLayout?.id ?: "main"
+            val targetFile = java.io.File(dir, "${activeId}.json").let {
+                if (it.exists()) it else java.io.File(dir, "main.json")
+            }
 
-        exportLayoutLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri: Uri? ->
-            uri?.let { fileUri ->
+            try {
+                val fileUri = androidx.core.content.FileProvider.getUriForFile(
+                    this,
+                    "${packageName}.fileprovider",
+                    targetFile
+                )
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(fileUri, "application/json")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                startActivity(intent)
+            } catch (_: Exception) {
                 try {
-                    val layout = editingLayout ?: com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
-                    val prettyJson = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(layout)
-                    contentResolver.openOutputStream(fileUri)?.use { out ->
-                        out.write(prettyJson.toByteArray(Charsets.UTF_8))
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(Uri.parse("content://com.android.externalstorage.documents/root/primary"), "vnd.android.document/directory")
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-                    Toast.makeText(this, "Layout configuration exported to file!", Toast.LENGTH_SHORT).show()
+                    startActivity(intent)
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Failed to export layout file: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Layouts stored at: ${dir.absolutePath}", Toast.LENGTH_LONG).show()
                 }
             }
-        }
-
-        val btnExportLayout = findViewById<Button>(R.id.btnExportLayout)
-        val btnImportLayout = findViewById<Button>(R.id.btnImportLayout)
-
-        btnExportLayout.setOnClickListener {
-            exportLayoutLauncher.launch(getExportedLayoutFileName())
-        }
-
-        btnExportLayout.setOnLongClickListener {
-            val layout = editingLayout ?: com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
-            val prettyJson = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(layout)
-            val exportOptions = arrayOf("💾 Save Layout File (Downloads)", "📋 Copy Layout JSON to Clipboard", "📤 Share via App")
-            AlertDialog.Builder(this)
-                .setTitle("Export Layout Options")
-                .setItems(exportOptions) { _, which ->
-                    when (which) {
-                        0 -> exportLayoutLauncher.launch(getExportedLayoutFileName())
-                        1 -> {
-                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            val clip = android.content.ClipData.newPlainText("Layout JSON", prettyJson)
-                            clipboard.setPrimaryClip(clip)
-                            Toast.makeText(this, "Layout JSON copied to clipboard!", Toast.LENGTH_SHORT).show()
-                        }
-                        2 -> {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT, "Programmer Keyboard Layout Configuration")
-                                putExtra(Intent.EXTRA_TEXT, prettyJson)
-                            }
-                            startActivity(Intent.createChooser(shareIntent, "Share Layout Configuration"))
-                        }
-                    }
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-            true
-        }
-
-        btnImportLayout.setOnClickListener {
-            importLayoutLauncher.launch("*/*")
-        }
-
-        btnImportLayout.setOnLongClickListener {
-            val importOptions = arrayOf("📂 Choose .json File from Storage", "📋 Paste Layout JSON from Clipboard", "✏️ Edit Layout JSON Text")
-            AlertDialog.Builder(this)
-                .setTitle("Import Layout Options")
-                .setItems(importOptions) { _, which ->
-                    when (which) {
-                        0 -> importLayoutLauncher.launch("*/*")
-                        1 -> {
-                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            val clipText = clipboard.primaryClip?.getItemAt(0)?.text?.toString()?.trim()
-                            if (!clipText.isNullOrEmpty()) {
-                                try {
-                                    val parsed = com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(clipText)
-                                    pushUndoState()
-                                    editingLayout = parsed
-                                    editorKeyboardView.setLayout(editingLayout!!)
-                                    val pretty = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(parsed)
-                                    prefs.edit().putString("pref_custom_layout_json", pretty).apply()
-                                    Toast.makeText(this, "Layout JSON pasted & applied!", Toast.LENGTH_SHORT).show()
-                                } catch (e: Exception) {
-                                    Toast.makeText(this, "Clipboard contents are not valid layout JSON!", Toast.LENGTH_LONG).show()
-                                }
-                            } else {
-                                Toast.makeText(this, "Clipboard is empty!", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        2 -> {
-                            val layout = editingLayout ?: com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, "main.json")
-                            val prettyJson = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(layout)
-                            val inputEditText = EditText(this).apply {
-                                hint = "Paste Layout JSON here..."
-                                setHintTextColor(android.graphics.Color.parseColor("#64748B"))
-                                setPadding(32, 32, 32, 32)
-                                textSize = 13f
-                                setText(prettyJson)
-                            }
-                            AlertDialog.Builder(this)
-                                .setTitle("Edit Layout JSON")
-                                .setView(inputEditText)
-                                .setPositiveButton("Apply") { _, _ ->
-                                    val text = inputEditText.text.toString().trim()
-                                    if (text.isNotEmpty()) {
-                                        try {
-                                            val parsed = com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(text)
-                                            pushUndoState()
-                                            editingLayout = parsed
-                                            editorKeyboardView.setLayout(editingLayout!!)
-                                            val pretty = com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(parsed)
-                                            prefs.edit().putString("pref_custom_layout_json", pretty).apply()
-                                            Toast.makeText(this, "Layout JSON updated & applied!", Toast.LENGTH_SHORT).show()
-                                        } catch (e: Exception) {
-                                            Toast.makeText(this, "Invalid Layout JSON format!", Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-                                }
-                                .setNegativeButton("Cancel", null)
-                                .show()
-                        }
-                    }
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-            true
         }
 
         btnResetLayout.setOnClickListener {
@@ -1784,9 +1714,15 @@ class SettingsActivity : AppCompatActivity() {
                     prefs.edit()
                         .remove("pref_custom_layout_json_$activeTarget")
                         .apply()
-                    if (activeTarget == "main") {
-                        prefs.edit().remove("pref_custom_layout_json").apply()
-                    }
+                    // Reset external layout file to default asset
+                    try {
+                        val dir = getUserLayoutsDir()
+                        val customFile = java.io.File(dir, targetFile)
+                        assets.open("layouts/$targetFile").use { input ->
+                            customFile.outputStream().use { output -> input.copyTo(output) }
+                        }
+                    } catch (_: Exception) {}
+
                     editingLayout = com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
                     editorKeyboardView.setLayout(editingLayout!!)
                     val pos = spEditorLayoutSelector.selectedItemPosition

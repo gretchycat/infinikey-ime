@@ -40,7 +40,7 @@
         { "label": "8", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "8" } },
         { "label": "9", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "9" } },
         { "label": "/", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "/" } },
-        { "label": "Home", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 122 } },
+        { "label": "Home", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 122 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 122, "intervalMs": 50 } },
         { "label": "⌫", "style": "actionKey", "weight": 2.0, "onPress": { "type": "SEND_CODE", "code": 67 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 } }
       ]
     },
@@ -57,9 +57,9 @@
         { "label": "5", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "5" } },
         { "label": "6", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "6" } },
         { "label": "*", "style": "numberKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "*" } },
-        { "label": "End", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 123 } },
+        { "label": "End", "style": "navigationKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 123 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 123, "intervalMs": 50 } },
         { "label": "Ins", "style": "editingKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 124 } },
-        { "label": "Del", "style": "editingKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 112 } }
+        { "label": "Del", "style": "editingKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 112 }, "onLongPress": { "type": "AUTO_REPEAT", "code": 112, "intervalMs": 50 } }
       ]
     },
     {

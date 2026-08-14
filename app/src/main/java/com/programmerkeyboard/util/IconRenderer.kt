@@ -75,11 +75,22 @@ class IconSpinnerAdapter(
 object IconRenderer {
 
     fun getUserIconsDir(context: Context): java.io.File {
-        val dir = java.io.File(context.filesDir, "icons")
-        if (!dir.exists()) {
-            dir.mkdirs()
+        val layoutsDir = java.io.File(context.getExternalFilesDir(null), "layouts")
+        val iconsDir = java.io.File(layoutsDir, "icons")
+        if (!iconsDir.exists()) {
+            iconsDir.mkdirs()
         }
-        return dir
+        // Migrate internal files/icons if any exist
+        val legacyInternalDir = java.io.File(context.filesDir, "icons")
+        if (legacyInternalDir.exists() && legacyInternalDir.isDirectory) {
+            legacyInternalDir.listFiles()?.forEach { file ->
+                val destFile = java.io.File(iconsDir, file.name)
+                if (!destFile.exists()) {
+                    try { file.copyTo(destFile) } catch (_: Exception) {}
+                }
+            }
+        }
+        return iconsDir
     }
 
     fun saveUserIcon(context: Context, sourceUri: Uri): String? {
@@ -119,7 +130,7 @@ object IconRenderer {
         if (iconName.isNullOrEmpty()) return null
 
         val resolvedPath = if (iconName.startsWith("icons/")) {
-            java.io.File(context.filesDir, iconName).absolutePath
+            java.io.File(getUserIconsDir(context), iconName.removePrefix("icons/")).absolutePath
         } else {
             iconName
         }

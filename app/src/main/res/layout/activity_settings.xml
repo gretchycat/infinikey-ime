@@ -340,7 +340,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Card 2: Layout Import & Export Suite -->
+                <!-- Card 2: Layout Files Storage & SAF Suite -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -365,7 +365,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="Layout Import &amp; Export Suite"
+                            android:text="Layout Files &amp; SAF Storage"
                             android:textColor="@color/settings_text_header"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -374,41 +374,21 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Export layout JSON configurations, or import custom user layouts from storage or clipboard."
+                        android:text="Layout JSON files are stored directly in Infinikey IME's external storage folder (Android/data/com.programmerkeyboard/files/layouts).\n\nNote: You can edit these layout files live using any SAF (Storage Access Framework) enabled editor, or access and manage them directly using the system Files application."
                         android:textColor="@color/settings_text_sub"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Side-by-Side Import/Export Buttons -->
-                    <LinearLayout
+                    <!-- Launcher Button for Files Application -->
+                    <Button
+                        android:id="@+id/btnLaunchFilesApp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/btnExportLayout"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="#1E3A5F"
-                            android:text="📤 Export Layout"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:layout_marginEnd="6dp" />
-
-                        <Button
-                            android:id="@+id/btnImportLayout"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="#0F766E"
-                            android:text="📥 Import Layout"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:layout_marginStart="6dp" />
-                    </LinearLayout>
+                        android:layout_height="48dp"
+                        android:backgroundTint="#0F766E"
+                        android:text="📁 Open Layouts Directory in Files App"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 

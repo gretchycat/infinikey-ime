@@ -35,10 +35,17 @@ object LayoutParser {
         if (cleanName.startsWith("emoji_auto") || cleanName.equals("emoji_picker", ignoreCase = true)) {
             return loadLayoutFromAsset(context, "emoji_recents.json", previousLayoutId)
         }
+        val cleanFileName = if (fileName.startsWith("layouts/")) fileName.removePrefix("layouts/") else fileName
+        val targetJsonName = if (cleanFileName.endsWith(".json")) cleanFileName else "$cleanFileName.json"
+        val externalLayoutFile = java.io.File(java.io.File(context.getExternalFilesDir(null), "layouts"), targetJsonName)
+
         val layout = try {
-            val assetPath = if (fileName.startsWith("layouts/")) fileName else "layouts/$fileName"
-            val jsonString = context.assets.open(assetPath)
-                .bufferedReader().use { it.readText() }
+            val jsonString = if (externalLayoutFile.exists()) {
+                externalLayoutFile.readText()
+            } else {
+                val assetPath = "layouts/$targetJsonName"
+                context.assets.open(assetPath).bufferedReader().use { it.readText() }
+            }
             val parsed = parseJsonLayoutDescriptor(jsonString)
             applyThemeOverrides(context, parsed)
         } catch (e: Exception) {
