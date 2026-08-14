@@ -1653,11 +1653,41 @@ class SettingsActivity : AppCompatActivity() {
             editingLayout?.let { editorKeyboardView.setLayout(it) }
         }
 
-        editorKeyboardView.onKeyTapForEditingListener = { rIdx, kIdx, key ->
-            showKeyEditorDialog(rIdx, kIdx, key, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
+        val btnEditSpacing = findViewById<Button>(R.id.btnEditSpacing)
+        btnEditSpacing.setOnClickListener {
+            showSpacingEditorDialog(pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
                 editingLayout = updatedLayout
+                hasUnsavedChanges = true
+                updateUndoRedoButtons()
                 editorKeyboardView.setLayout(updatedLayout)
             })
+        }
+
+        editorKeyboardView.onSpacingTapForEditingListener = {
+            showSpacingEditorDialog(pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
+                editingLayout = updatedLayout
+                hasUnsavedChanges = true
+                updateUndoRedoButtons()
+                editorKeyboardView.setLayout(updatedLayout)
+            })
+        }
+
+        editorKeyboardView.onKeyTapForEditingListener = { rIdx, kIdx, key ->
+            if (key.isSpacer) {
+                showPhantomSpacerEditorDialog(rIdx, kIdx, key, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
+                    editingLayout = updatedLayout
+                    hasUnsavedChanges = true
+                    updateUndoRedoButtons()
+                    editorKeyboardView.setLayout(updatedLayout)
+                })
+            } else {
+                showKeyEditorDialog(rIdx, kIdx, key, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
+                    editingLayout = updatedLayout
+                    hasUnsavedChanges = true
+                    updateUndoRedoButtons()
+                    editorKeyboardView.setLayout(updatedLayout)
+                })
+            }
         }
 
         browseKeyImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -1671,32 +1701,55 @@ class SettingsActivity : AppCompatActivity() {
         btnLaunchFilesApp.setOnClickListener {
             syncDefaultLayoutsToFolder()
             val dir = getUserLayoutsDir()
-            val activeId = editingLayout?.id ?: "main"
-            val targetFile = java.io.File(dir, "${activeId}.json").let {
-                if (it.exists()) it else java.io.File(dir, "main.json")
-            }
 
+            var launched = false
+
+            // 1. Try launching directly into Android/data/com.programmerkeyboard/files/layouts folder using SAF Document URI
             try {
-                val fileUri = androidx.core.content.FileProvider.getUriForFile(
-                    this,
-                    "${packageName}.fileprovider",
-                    targetFile
+                val layoutsFolderUri = android.provider.DocumentsContract.buildDocumentUri(
+                    "com.android.externalstorage.documents",
+                    "primary:Android/data/${packageName}/files/layouts"
                 )
                 val intent = Intent(Intent.ACTION_VIEW).apply {
-                    setDataAndType(fileUri, "application/json")
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    setDataAndType(layoutsFolderUri, "vnd.android.document/directory")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 startActivity(intent)
-            } catch (_: Exception) {
+                launched = true
+            } catch (_: Exception) {}
+
+            if (!launched) {
+                // 2. Try launching into Android/data/com.programmerkeyboard/files
                 try {
+                    val appFilesUri = android.provider.DocumentsContract.buildDocumentUri(
+                        "com.android.externalstorage.documents",
+                        "primary:Android/data/${packageName}/files"
+                    )
                     val intent = Intent(Intent.ACTION_VIEW).apply {
-                        setDataAndType(Uri.parse("content://com.android.externalstorage.documents/root/primary"), "vnd.android.document/directory")
+                        setDataAndType(appFilesUri, "vnd.android.document/directory")
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
                     startActivity(intent)
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Layouts stored at: ${dir.absolutePath}", Toast.LENGTH_LONG).show()
-                }
+                    launched = true
+                } catch (_: Exception) {}
+            }
+
+            if (!launched) {
+                // 3. Fallback: Launch default system Files app package
+                try {
+                    val pm = packageManager
+                    val filesIntent = pm.getLaunchIntentForPackage("com.google.android.documentsui")
+                        ?: pm.getLaunchIntentForPackage("com.android.documentsui")
+                    if (filesIntent != null) {
+                        filesIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(filesIntent)
+                        launched = true
+                    }
+                } catch (_: Exception) {}
+            }
+
+            if (!launched) {
+                Toast.makeText(this, "Layouts stored at: ${dir.absolutePath}", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -1830,6 +1883,7 @@ class SettingsActivity : AppCompatActivity() {
         val spSwipeDownParamSelect = view.findViewById<Spinner>(R.id.spEditKeySwipeDownParamSelect)
 
         val btnDelete = view.findViewById<Button>(R.id.btnDeleteKey)
+        val cbIsSpacer = view.findViewById<CheckBox>(R.id.cbEditKeyIsSpacer)
 
         etPrimary.setText(key.primaryLabel)
         etSecondary.setText(key.secondaryLabel ?: "")
@@ -1838,6 +1892,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val currentWeight = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
         etWeight.setText("$currentWeight")
+        cbIsSpacer.isChecked = key.isSpacer
 
         val availableStyles = mutableListOf("alphaKey", "numberKey", "modifierKey", "functionKey", "actionKey", "navigationKey", "editingKey")
         editingLayout?.styles?.keys?.forEach { s ->
@@ -2256,6 +2311,7 @@ class SettingsActivity : AppCompatActivity() {
                 val newCat = availableStyles[spCategory.selectedItemPosition.coerceIn(0, availableStyles.size - 1)]
                 val newWeightVal = etWeight.text.toString().toFloatOrNull() ?: 1.0f
                 val newIconName = currentIconName?.ifEmpty { null }
+                val newIsSpacer = cbIsSpacer.isChecked
 
                 val newOnPress = parseKeyActionFromInputs(spActionType.selectedItemPosition, etActionParam.text.toString(), newPrimary)
                 val newLongPress = parseKeyActionFromInputs(spLongPressType.selectedItemPosition, etLongPressParam.text.toString(), "")
@@ -2274,6 +2330,7 @@ class SettingsActivity : AppCompatActivity() {
                                 topRightLabel = newTopRight,
                                 styleName = newCat,
                                 widthWeight = DimensionValue.Ratio(newWeightVal),
+                                isSpacer = newIsSpacer,
                                 iconName = newIconName,
                                 onPressAction = newOnPress,
                                 onLongPressAction = newLongPress,
@@ -2320,6 +2377,7 @@ class SettingsActivity : AppCompatActivity() {
         val etSplitIndex = view.findViewById<EditText>(R.id.etEditRowSplitIndex)
         val cbSplitKey = view.findViewById<CheckBox>(R.id.cbEditRowSplitKey)
         val btnAddKeyToRow = view.findViewById<Button>(R.id.btnAddKeyToRow)
+        val btnAddSpacerToRow = view.findViewById<Button>(R.id.btnAddSpacerToRow)
         val btnDeleteRow = view.findViewById<Button>(R.id.btnDeleteRow)
 
         val rowOptions = layout.rows.mapIndexed { idx, row ->
@@ -2372,6 +2430,26 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        btnAddSpacerToRow.setOnClickListener {
+            val selectedIdx = spRowSelect.selectedItemPosition
+            if (selectedIdx in layout.rows.indices) {
+                pushUndoState()
+                val newRows = layout.rows.toMutableList()
+                val targetRow = newRows[selectedIdx]
+                val updatedKeys = targetRow.keys.toMutableList()
+                updatedKeys.add(
+                    KeyDefinition(
+                        primaryLabel = "",
+                        isSpacer = true,
+                        widthWeight = DimensionValue.Ratio(0.5f)
+                    )
+                )
+                newRows[selectedIdx] = targetRow.copy(keys = updatedKeys)
+                onUpdate(layout.copy(rows = newRows))
+                dialogRef?.dismiss()
+            }
+        }
+
         btnDeleteRow.setOnClickListener {
             val selectedIdx = spRowSelect.selectedItemPosition
             if (selectedIdx in layout.rows.indices && layout.rows.size > 1) {
@@ -2408,7 +2486,167 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .create()
+
+        dialogRef?.show()
+    }
+
+    private fun showPhantomSpacerEditorDialog(
+        rowIdx: Int,
+        keyIdx: Int,
+        key: KeyDefinition,
+        pushUndoState: () -> Unit,
+        onUpdate: (LayoutDefinition) -> Unit
+    ) {
+        val view = layoutInflater.inflate(R.layout.dialog_edit_phantom_spacer, null)
+        val etWidth = view.findViewById<EditText>(R.id.etPhantomWidthWeight)
+        val btnConvert = view.findViewById<Button>(R.id.btnConvertToRegularKey)
+        val btnDelete = view.findViewById<Button>(R.id.btnDeletePhantomSpacer)
+
+        val currentWeight = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 0.5f
+        etWidth.setText("$currentWeight")
+
+        var dialogRef: AlertDialog? = null
+
+        btnConvert.setOnClickListener {
+            pushUndoState()
+            editingLayout?.let { layout ->
+                if (rowIdx in layout.rows.indices) {
+                    val newRows = layout.rows.toMutableList()
+                    val targetKeys = newRows[rowIdx].keys.toMutableList()
+                    if (keyIdx in targetKeys.indices) {
+                        targetKeys[keyIdx] = targetKeys[keyIdx].copy(
+                            primaryLabel = "Key",
+                            isSpacer = false,
+                            styleName = "alphaKey",
+                            onPressAction = KeyAction.SendText("Key")
+                        )
+                        newRows[rowIdx] = newRows[rowIdx].copy(keys = targetKeys)
+                        onUpdate(layout.copy(rows = newRows))
+                    }
+                }
+            }
+            dialogRef?.dismiss()
+        }
+
+        btnDelete.setOnClickListener {
+            pushUndoState()
+            editingLayout?.let { layout ->
+                if (rowIdx in layout.rows.indices) {
+                    val newRows = layout.rows.toMutableList()
+                    val targetKeys = newRows[rowIdx].keys.toMutableList()
+                    if (keyIdx in targetKeys.indices) {
+                        targetKeys.removeAt(keyIdx)
+                        newRows[rowIdx] = newRows[rowIdx].copy(keys = targetKeys)
+                        onUpdate(layout.copy(rows = newRows))
+                    }
+                }
+            }
+            dialogRef?.dismiss()
+        }
+
+        val createdDialog = AlertDialog.Builder(this)
+            .setView(view)
+            .setPositiveButton("Save Width") { _, _ ->
+                pushUndoState()
+                val newWeight = etWidth.text.toString().toFloatOrNull() ?: currentWeight
+                editingLayout?.let { layout ->
+                    if (rowIdx in layout.rows.indices) {
+                        val newRows = layout.rows.toMutableList()
+                        val targetKeys = newRows[rowIdx].keys.toMutableList()
+                        if (keyIdx in targetKeys.indices) {
+                            targetKeys[keyIdx] = targetKeys[keyIdx].copy(
+                                widthWeight = DimensionValue.Ratio(newWeight)
+                            )
+                            newRows[rowIdx] = newRows[rowIdx].copy(keys = targetKeys)
+                            onUpdate(layout.copy(rows = newRows))
+                        }
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialogRef = createdDialog
+        createdDialog.show()
+    }
+
+    private fun showSpacingEditorDialog(pushUndoState: () -> Unit, onUpdate: (LayoutDefinition) -> Unit) {
+        val layout = editingLayout ?: return
+        val view = layoutInflater.inflate(R.layout.dialog_edit_spacing, null)
+
+        val sbH = view.findViewById<SeekBar>(R.id.sbEditHorizontalSpacing)
+        val etH = view.findViewById<EditText>(R.id.etEditHorizontalSpacing)
+        val sbV = view.findViewById<SeekBar>(R.id.sbEditVerticalSpacing)
+        val etV = view.findViewById<EditText>(R.id.etEditVerticalSpacing)
+        val sbHeight = view.findViewById<SeekBar>(R.id.sbEditHeightPercentage)
+        val etHeight = view.findViewById<EditText>(R.id.etEditHeightPercentage)
+
+        val currentH = when (val h = layout.metadata.horizontalSpacing) {
+            is DimensionValue.Absolute -> h.value
+            is DimensionValue.Ratio -> h.value.toInt()
+            else -> 4
+        }
+        val currentV = when (val v = layout.metadata.verticalSpacing) {
+            is DimensionValue.Absolute -> v.value
+            is DimensionValue.Ratio -> v.value.toInt()
+            else -> 4
+        }
+        val currentHeight = layout.metadata.defaultHeightPercentage ?: 30
+
+        sbH.progress = currentH.coerceIn(0, 24)
+        etH.setText("$currentH")
+
+        sbV.progress = currentV.coerceIn(0, 24)
+        etV.setText("$currentV")
+
+        sbHeight.progress = (currentHeight - 15).coerceIn(0, 35)
+        etHeight.setText("$currentHeight")
+
+        sbH.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) etH.setText("$progress")
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        sbV.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) etV.setText("$progress")
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        sbHeight.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) etHeight.setText("${progress + 15}")
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        val createdDialog = AlertDialog.Builder(this)
+            .setView(view)
+            .setPositiveButton("Apply Spacing Changes") { _, _ ->
+                pushUndoState()
+                val newH = etH.text.toString().toIntOrNull() ?: currentH
+                val newV = etV.text.toString().toIntOrNull() ?: currentV
+                val newHeight = etHeight.text.toString().toIntOrNull() ?: currentHeight
+
+                val updatedMetadata = layout.metadata.copy(
+                    horizontalSpacing = DimensionValue.Absolute(newH),
+                    verticalSpacing = DimensionValue.Absolute(newV),
+                    defaultHeightPercentage = newHeight
+                )
+                onUpdate(layout.copy(metadata = updatedMetadata))
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        createdDialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        createdDialog.show()
     }
 
     private fun formatPrettyJson(jsonStr: String): String {

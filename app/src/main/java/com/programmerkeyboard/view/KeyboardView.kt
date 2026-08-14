@@ -870,7 +870,19 @@ class KeyboardView @JvmOverloads constructor(
 
         keyBoundsList.forEach { keyBounds ->
             val key = keyBounds.key
-            if (key.isSpacer) return@forEach
+            if (key.isSpacer) {
+                if (isEditorPreviewMode) {
+                    val rect = keyBounds.rect
+                    val dashPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        style = Paint.Style.STROKE
+                        color = android.graphics.Color.parseColor("#334155")
+                        pathEffect = android.graphics.DashPathEffect(floatArrayOf(6f, 6f), 0f)
+                        strokeWidth = 2f
+                    }
+                    canvas.drawRoundRect(rect, 8f, 8f, dashPaint)
+                }
+                return@forEach
+            }
             val rect = keyBounds.rect
 
             val isMiddleScrollableKey = isVerticalScroll && !keyBounds.isFixedRow
@@ -1568,6 +1580,7 @@ class KeyboardView @JvmOverloads constructor(
 
     var isEditorPreviewMode: Boolean = false
     var onKeyTapForEditingListener: ((rowIdx: Int, keyIdx: Int, key: KeyDefinition) -> Unit)? = null
+    var onSpacingTapForEditingListener: (() -> Unit)? = null
 
     private fun executeAction(action: KeyAction, sourceKey: KeyDefinition? = null) {
         if (isEditorPreviewMode) {
@@ -1967,11 +1980,11 @@ class KeyboardView @JvmOverloads constructor(
                 }
         }
 
-        val directHit = keyBoundsList.firstOrNull { !it.key.isSpacer && it.rect.contains(x, y) }
+        val directHit = keyBoundsList.firstOrNull { (isEditorPreviewMode || !it.key.isSpacer) && it.rect.contains(x, y) }
         if (directHit != null) return directHit
 
         return keyBoundsList
-            .filter { !it.key.isSpacer }
+            .filter { isEditorPreviewMode || !it.key.isSpacer }
             .filter {
                 val expanded = RectF(it.rect).apply { inset(-expansion, -expansion) }
                 expanded.contains(x, y)
@@ -2331,6 +2344,16 @@ class KeyboardView @JvmOverloads constructor(
                         isLongPressTriggered = false
                         return true
                     }
+                    val releasedBounds = findHitKeyBounds(event.x, event.y) ?: pressedKeyBounds
+                    if (releasedBounds != null) {
+                        executeAction(releasedBounds.key.onPressAction, releasedBounds.key)
+                    } else {
+                        onSpacingTapForEditingListener?.invoke()
+                    }
+                    pressedKeyBounds = null
+                    isLongPressTriggered = false
+                    invalidate()
+                    return true
                 }
 
                 val releasedBounds = findHitKeyBounds(event.x, event.y) ?: pressedKeyBounds

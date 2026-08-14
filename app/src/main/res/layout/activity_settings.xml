@@ -251,7 +251,7 @@
                         android:layout_height="250dp"
                         android:background="#0F172A" />
 
-                    <!-- Row Control Action Bar -->
+                    <!-- Row & Spacing Control Action Bar -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -263,20 +263,32 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:text="⚙️ Row Settings"
-                            android:textSize="12sp"
+                            android:text="⚙️ Rows"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             android:backgroundTint="#0F766E"
                             android:textColor="#FFFFFF"
-                            android:layout_marginEnd="6dp" />
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btnEditSpacing"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="📏 Spacing"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:backgroundTint="#1E3A5F"
+                            android:textColor="#38BDF8"
+                            android:layout_marginEnd="4dp" />
 
                         <Button
                             android:id="@+id/btnAddRowEditor"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:text="➕ Add New Key Row"
-                            android:textSize="12sp"
+                            android:text="➕ Add Row"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             android:backgroundTint="#1E3A5F"
                             android:textColor="#38BDF8" />

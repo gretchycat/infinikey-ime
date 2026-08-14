@@ -165,6 +165,15 @@
             android:paddingEnd="12dp"
             android:textColor="@color/settings_text_header"
             android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
+        <CheckBox
+            android:id="@+id/cbEditKeyIsSpacer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Blank Spacer Gap (Invisible in keyboard)"
+            android:textColor="#38BDF8"
+            android:textSize="13sp"
             android:layout_marginBottom="16dp" />
 
         <!-- Divider -->
