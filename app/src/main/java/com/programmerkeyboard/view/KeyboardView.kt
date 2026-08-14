@@ -561,104 +561,20 @@ class KeyboardView @JvmOverloads constructor(
                 }
             }
             com.programmerkeyboard.model.FormFactorMode.SPLIT -> {
-                val dims = computeSplitClusterDimensions(activeWidth, w)
+                val maxRatioWeight = currentRows.maxOfOrNull { row ->
+                    row.keys.sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }
+                }?.toFloat() ?: 10.0f
 
-                val maxLeftRatioWeight = currentRows.maxOfOrNull { row ->
-                    val splitIdx = row.splitIndex ?: row.keys.indexOfFirst { it.isSplitKey }.takeIf { it >= 0 } ?: ((row.keys.size + 1) / 2)
-                    val isSplitKey = row.splitKey || (splitIdx in row.keys.indices && row.keys[splitIdx].isSplitKey)
-                    if (isSplitKey && splitIdx in row.keys.indices) {
-                        val targetKey = row.keys[splitIdx]
-                        val leftW = (targetKey.splitLeftWeight as? DimensionValue.Ratio)?.value?.toDouble()
-                            ?: ((targetKey.widthWeight as? DimensionValue.Ratio)?.value?.toDouble()?.div(2.0))
-                            ?: 1.0
-                        row.keys.take(splitIdx).sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 } + leftW
-                    } else {
-                        row.keys.take(splitIdx).sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }
-                    }
-                }?.toFloat() ?: 6.0f
-
-                val maxRightRatioWeight = currentRows.maxOfOrNull { row ->
-                    val splitIdx = row.splitIndex ?: row.keys.indexOfFirst { it.isSplitKey }.takeIf { it >= 0 } ?: ((row.keys.size + 1) / 2)
-                    val isSplitKey = row.splitKey || (splitIdx in row.keys.indices && row.keys[splitIdx].isSplitKey)
-                    if (isSplitKey && splitIdx in row.keys.indices) {
-                        val targetKey = row.keys[splitIdx]
-                        val totalW = (targetKey.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 2.0
-                        val leftW = (targetKey.splitLeftWeight as? DimensionValue.Ratio)?.value?.toDouble()
-                            ?: (totalW / 2.0)
-                        val rightW = (targetKey.splitRightWeight as? DimensionValue.Ratio)?.value?.toDouble()
-                            ?: maxOf(0.1, totalW - leftW)
-                        row.keys.drop(splitIdx + 1).sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 } + rightW
-                    } else {
-                        row.keys.drop(splitIdx).sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }
-                    }
-                }?.toFloat() ?: 6.0f
+                val editorGearWidth = if (isEditorPreviewMode) 40f * density else 0f
+                val totalAvailableWidth = (targetWidth - editorGearWidth - (hSpacingPx * (maxRatioWeight + 1)))
+                val globalBaseUnit = if (maxRatioWeight > 0) maxOf(0f, totalAvailableWidth / maxRatioWeight) else 0f
 
                 currentRows.forEachIndexed { rowIndex, row ->
-                    val splitIdx = row.splitIndex ?: row.keys.indexOfFirst { it.isSplitKey }.takeIf { it >= 0 } ?: ((row.keys.size + 1) / 2)
-                    val isSplitKey = row.splitKey || (splitIdx in row.keys.indices && row.keys[splitIdx].isSplitKey)
+                    val totalRatioWeight = row.keys.sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }.toFloat()
+                    val deficitWeight = maxOf(0f, maxRatioWeight - totalRatioWeight)
+                    val flexCount = row.keys.count { it.isFlexible }
+                    val flexBonus = if (flexCount > 0 && deficitWeight > 0f) (deficitWeight / flexCount) else 0f
 
-                    val leftKeys: List<KeyDefinition>
-                    val rightKeys: List<KeyDefinition>
-
-                    if (isSplitKey && splitIdx in row.keys.indices) {
-                        val targetKey = row.keys[splitIdx]
-                        val leftWeight = targetKey.splitLeftWeight ?: when (val weight = targetKey.widthWeight) {
-                            is DimensionValue.Ratio -> DimensionValue.Ratio(weight.value / 2f)
-                            is DimensionValue.Absolute -> DimensionValue.Absolute(weight.value / 2)
-                        }
-                        val rightWeight = targetKey.splitRightWeight ?: when (val weight = targetKey.widthWeight) {
-                            is DimensionValue.Ratio -> {
-                                val lw = (leftWeight as? DimensionValue.Ratio)?.value ?: (weight.value / 2f)
-                                DimensionValue.Ratio(maxOf(0.1f, weight.value - lw))
-                            }
-                            is DimensionValue.Absolute -> {
-                                val lw = (leftWeight as? DimensionValue.Absolute)?.value ?: (weight.value / 2)
-                                DimensionValue.Absolute(maxOf(1, weight.value - lw))
-                            }
-                        }
-                        val leftHalf = targetKey.copy(widthWeight = leftWeight)
-                        val rightHalf = targetKey.copy(widthWeight = rightWeight)
-
-                        leftKeys = row.keys.take(splitIdx) + leftHalf
-                        rightKeys = listOf(rightHalf) + row.keys.drop(splitIdx + 1)
-                    } else {
-                        leftKeys = row.keys.take(splitIdx)
-                        rightKeys = row.keys.drop(splitIdx)
-                    }
-
-                    val leftRatioWeight = leftKeys.sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }.toFloat()
-                    val leftDeficit = maxOf(0f, maxLeftRatioWeight - leftRatioWeight)
-                    val leftFlexCount = leftKeys.count { it.isFlexible }
-                    val leftFlexBonus = if (leftFlexCount > 0 && leftDeficit > 0f) (leftDeficit / leftFlexCount) else 0f
-
-                    val rightRatioWeight = rightKeys.sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }.toFloat()
-                    val rightDeficit = maxOf(0f, maxRightRatioWeight - rightRatioWeight)
-                    val rightFlexCount = rightKeys.count { it.isFlexible }
-                    val rightFlexBonus = if (rightFlexCount > 0 && rightDeficit > 0f) (rightDeficit / rightFlexCount) else 0f
-
-                    val leftClusterWidth = row.splitRatio?.let { (activeWidth * it).coerceIn(activeWidth * 0.2f, activeWidth * 0.8f) } ?: dims.leftClusterWidth
-                    val rightClusterWidth = activeWidth - leftClusterWidth
-
-                    val leftAvailable = (leftClusterWidth - (hSpacingPx * (maxLeftRatioWeight + 1)))
-                    val globalLeftBaseUnit = if (maxLeftRatioWeight > 0) maxOf(0f, leftAvailable / maxLeftRatioWeight) else 0f
-
-                    val rightAvailable = (rightClusterWidth - (hSpacingPx * (maxRightRatioWeight + 1)))
-                    val globalRightBaseUnit = if (maxRightRatioWeight > 0) maxOf(0f, rightAvailable / maxRightRatioWeight) else 0f
-
-                    // Offsets for Left and Right Clusters
-                    val leftRowOffsetPx = when (val off = row.leftOffset) {
-                        is DimensionValue.Ratio -> leftClusterWidth * off.value
-                        is DimensionValue.Absolute -> off.value * density
-                        else -> 0f
-                    }
-                    val rightRowOffsetPx = when (val off = row.rightOffset) {
-                        is DimensionValue.Ratio -> rightClusterWidth * off.value
-                        is DimensionValue.Absolute -> off.value * density
-                        else -> 0f
-                    }
-
-                    // Render Left Cluster Keys
-                    var currentX = hSpacingPx + leftRowOffsetPx
                     val currentY = if (isVerticalScroll) {
                         if (rowIndex < fixedTopRowsCount) {
                             vSpacingPx
@@ -672,68 +588,104 @@ class KeyboardView @JvmOverloads constructor(
                         vSpacingPx + rowIndex * (rowHeight + vSpacingPx)
                     }
 
-                    leftKeys.forEach { key ->
-                        val keyOffsetPx = when (val off = key.startOffset) {
-                            is DimensionValue.Ratio -> leftClusterWidth * off.value
-                            is DimensionValue.Absolute -> off.value * density
-                            else -> 0f
-                        }
-                        currentX += keyOffsetPx
+                    val splitIdx = row.splitIndex ?: row.keys.indexOfFirst { it.isSplitKey }.takeIf { it >= 0 } ?: ((row.keys.size + 1) / 2)
+                    val isSplitKey = row.splitKey || (splitIdx in row.keys.indices && row.keys[splitIdx].isSplitKey)
 
+                    fun getKeyWidth(key: KeyDefinition): Float {
                         val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
-                        val rawWeight = baseW + (if (key.isFlexible) leftFlexBonus else 0f)
+                        val rawWeight = baseW + (if (key.isFlexible) flexBonus else 0f)
                         val effectiveWeight = key.maxWeight?.let { rawWeight.coerceAtMost(it) } ?: rawWeight
-
-                        val keyWidth = when (key.widthWeight) {
-                            is DimensionValue.Ratio -> (globalLeftBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
+                        return when (key.widthWeight) {
+                            is DimensionValue.Ratio -> (globalBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
                             is DimensionValue.Absolute -> key.widthWeight.value * density
                         }
-                        val isFixed = isVerticalScroll && (rowIndex == 0 || rowIndex == currentRows.lastIndex)
-                        val rect = RectF(currentX, currentY, currentX + keyWidth, currentY + rowHeight)
-                        keyBoundsList.add(KeyBounds(key, rect, rowIndex, isFixed))
-                        currentX += keyWidth + hSpacingPx
                     }
 
-                    // Render Right Cluster Keys (Right-Justified against right cluster edge)
-                    val totalRightKeysWidth = rightKeys.sumOf { key ->
-                        val keyOffsetPx = when (val off = key.startOffset) {
-                            is DimensionValue.Ratio -> rightClusterWidth * off.value
-                            is DimensionValue.Absolute -> off.value * density
-                            else -> 0f
+                    val leftKeys = mutableListOf<KeyDefinition>()
+                    val rightKeys = mutableListOf<KeyDefinition>()
+
+                    row.keys.forEachIndexed { keyIdx, key ->
+                        if (isSplitKey && keyIdx == splitIdx) {
+                            val fullW = getKeyWidth(key)
+                            val leftRatio = (key.splitLeftWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 0.5
+                            val rightRatio = (key.splitRightWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 0.5
+                            val totalRatio = maxOf(0.01, leftRatio + rightRatio)
+                            val leftFraction = (leftRatio / totalRatio).toFloat()
+
+                            val leftPx = maxOf(1f, fullW * leftFraction)
+                            val rightPx = maxOf(1f, fullW * (1f - leftFraction))
+
+                            val leftHalfKey = key.copy(widthWeight = DimensionValue.Absolute((leftPx / density).toInt()))
+                            val rightHalfKey = key.copy(widthWeight = DimensionValue.Absolute((rightPx / density).toInt()))
+
+                            leftKeys.add(leftHalfKey)
+                            rightKeys.add(rightHalfKey)
+                        } else if (keyIdx < splitIdx) {
+                            leftKeys.add(key)
+                        } else {
+                            rightKeys.add(key)
                         }
-                        val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
-                        val rawWeight = baseW + (if (key.isFlexible) rightFlexBonus else 0f)
-                        val effectiveWeight = key.maxWeight?.let { rawWeight.coerceAtMost(it) } ?: rawWeight
+                    }
 
-                        val kw = when (key.widthWeight) {
-                            is DimensionValue.Ratio -> (globalRightBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
-                            is DimensionValue.Absolute -> key.widthWeight.value * density
-                        }
-                        (keyOffsetPx + kw).toDouble()
-                    }.toFloat() + (hSpacingPx * maxOf(0, rightKeys.size - 1))
+                    val leftRowOffsetPx = when (val off = row.leftOffset) {
+                        is DimensionValue.Ratio -> targetWidth * off.value
+                        is DimensionValue.Absolute -> off.value * density
+                        else -> 0f
+                    }
+                    val rightRowOffsetPx = when (val off = row.rightOffset) {
+                        is DimensionValue.Ratio -> targetWidth * off.value
+                        is DimensionValue.Absolute -> off.value * density
+                        else -> 0f
+                    }
 
-                    currentX = w - hSpacingPx - rightRowOffsetPx - totalRightKeysWidth
+                    val isFixed = isVerticalScroll && (rowIndex == 0 || rowIndex == currentRows.lastIndex)
 
-                    rightKeys.forEach { key ->
+                    // Render Left Cluster (Left-Justified starting at left edge of screen)
+                    var currentX = hSpacingPx + leftRowOffsetPx
+                    if (isEditorPreviewMode) {
+                        val gearW = 38f * density
+                        val gearRect = RectF(hSpacingPx, currentY, hSpacingPx + gearW, currentY + rowHeight)
+                        rowGearBoundsList.add(RowGearBounds(rowIndex, row, gearRect))
+                        currentX += gearW + hSpacingPx
+                    }
+
+                    leftKeys.forEach { key ->
                         val keyOffsetPx = when (val off = key.startOffset) {
-                            is DimensionValue.Ratio -> rightClusterWidth * off.value
+                            is DimensionValue.Ratio -> targetWidth * off.value
                             is DimensionValue.Absolute -> off.value * density
                             else -> 0f
                         }
                         currentX += keyOffsetPx
 
-                        val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
-                        val rawWeight = baseW + (if (key.isFlexible) rightFlexBonus else 0f)
-                        val effectiveWeight = key.maxWeight?.let { rawWeight.coerceAtMost(it) } ?: rawWeight
-
-                        val keyWidth = when (key.widthWeight) {
-                            is DimensionValue.Ratio -> (globalRightBaseUnit * effectiveWeight) + ((effectiveWeight - 1.0f) * hSpacingPx)
-                            is DimensionValue.Absolute -> key.widthWeight.value * density
-                        }
-                        val isFixed = isVerticalScroll && (rowIndex == 0 || rowIndex == currentRows.lastIndex)
-                        val rect = RectF(currentX, currentY, currentX + keyWidth, currentY + rowHeight)
+                        val kw = getKeyWidth(key)
+                        val rect = RectF(currentX, currentY, currentX + kw, currentY + rowHeight)
                         keyBoundsList.add(KeyBounds(key, rect, rowIndex, isFixed))
-                        currentX += keyWidth + hSpacingPx
+                        currentX += kw + hSpacingPx
+                    }
+
+                    // Render Right Cluster (Right-Justified to Right Screen Edge)
+                    val totalRightWidth = rightKeys.sumOf { key ->
+                        val keyOffsetPx = when (val off = key.startOffset) {
+                            is DimensionValue.Ratio -> targetWidth * off.value
+                            is DimensionValue.Absolute -> off.value * density
+                            else -> 0f
+                        }
+                        (keyOffsetPx + getKeyWidth(key)).toDouble()
+                    }.toFloat() + (hSpacingPx * maxOf(0, rightKeys.size - 1))
+
+                    currentX = w - hSpacingPx - rightRowOffsetPx - totalRightWidth
+                    rightKeys.forEach { key ->
+                        val keyOffsetPx = when (val off = key.startOffset) {
+                            is DimensionValue.Ratio -> targetWidth * off.value
+                            is DimensionValue.Absolute -> off.value * density
+                            else -> 0f
+                        }
+                        currentX += keyOffsetPx
+
+                        val kw = getKeyWidth(key)
+                        val rect = RectF(currentX, currentY, currentX + kw, currentY + rowHeight)
+                        keyBoundsList.add(KeyBounds(key, rect, rowIndex, isFixed))
+                        currentX += kw + hSpacingPx
                     }
                 }
             }
