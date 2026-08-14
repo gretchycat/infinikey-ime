@@ -668,19 +668,26 @@ class ProgrammerInputMethodService : InputMethodService() {
                 imm?.showInputMethodPicker()
             }
             is KeyAction.LaunchApp -> {
-                val pkg = action.packageName
-                if (pkg.isNotEmpty()) {
+                val target = action.packageName.trim()
+                if (target.isNotEmpty()) {
                     try {
-                        val intent = packageManager.getLaunchIntentForPackage(pkg)
+                        val intent = if (target.startsWith("intent:") || target.startsWith("http://") || target.startsWith("https://")) {
+                            Intent.parseUri(target, Intent.URI_INTENT_SCHEME).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                        } else {
+                            packageManager.getLaunchIntentForPackage(target)?.apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                        }
                         if (intent != null) {
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)
                         } else {
-                            android.widget.Toast.makeText(this, "App '$pkg' is not installed", android.widget.Toast.LENGTH_SHORT).show()
+                            android.widget.Toast.makeText(this, "App / Target '$target' is not available", android.widget.Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        android.widget.Toast.makeText(this, "Could not launch '$pkg': ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                        android.widget.Toast.makeText(this, "Could not launch '$target': ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                     }
                 }
             }

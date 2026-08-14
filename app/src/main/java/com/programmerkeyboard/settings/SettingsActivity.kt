@@ -2018,137 +2018,7 @@ class SettingsActivity : AppCompatActivity() {
             else -> KeyAction.SendText(if (paramStr.isNotEmpty()) paramStr else defaultText)
         }
     }
-    private data class InstalledAppInfo(
-        val label: String,
-        val packageName: String,
-        val icon: android.graphics.drawable.Drawable?
-    )
 
-    private fun getInstalledLaunchableApps(): List<InstalledAppInfo> {
-        val pm = packageManager
-        val appMap = mutableMapOf<String, InstalledAppInfo>()
-
-        val mainIntent = Intent(Intent.ACTION_MAIN, null).apply {
-            addCategory(Intent.CATEGORY_LAUNCHER)
-        }
-        val launcherInfos = try {
-            pm.queryIntentActivities(mainIntent, 0)
-        } catch (_: Exception) { emptyList() }
-
-        for (info in launcherInfos) {
-            val label = info.loadLabel(pm).toString()
-            val pkg = info.activityInfo.packageName
-            val icon = try { info.loadIcon(pm) } catch (_: Exception) { null }
-            appMap[pkg] = InstalledAppInfo(label, pkg, icon)
-        }
-
-        val installedApps = try {
-            pm.getInstalledApplications(android.content.pm.PackageManager.GET_META_DATA)
-        } catch (_: Exception) { emptyList() }
-
-        for (app in installedApps) {
-            val pkg = app.packageName
-            if (!appMap.containsKey(pkg)) {
-                val launchIntent = try { pm.getLaunchIntentForPackage(pkg) } catch (_: Exception) { null }
-                if (launchIntent != null) {
-                    val label = try { app.loadLabel(pm).toString() } catch (_: Exception) { pkg }
-                    val icon = try { app.loadIcon(pm) } catch (_: Exception) { null }
-                    appMap[pkg] = InstalledAppInfo(label, pkg, icon)
-                }
-            }
-        }
-
-        return appMap.values.sortedBy { it.label.lowercase() }
-    }
-
-    private fun showAppPickerDialog(onSelected: (packageName: String, label: String) -> Unit) {
-        val allApps = getInstalledLaunchableApps()
-        var filteredApps = allApps.toList()
-
-        val searchInput = EditText(this).apply {
-            hint = "🔍 Search installed apps..."
-            setSingleLine()
-            setBackgroundColor(android.graphics.Color.parseColor("#1E293B"))
-            setTextColor(android.graphics.Color.WHITE)
-            setHintTextColor(android.graphics.Color.parseColor("#94A3B8"))
-            val p = (12 * resources.displayMetrics.density).toInt()
-            setPadding(p, p, p, p)
-        }
-
-        val listView = android.widget.ListView(this).apply {
-            divider = android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#334155"))
-            dividerHeight = 1
-        }
-
-        val container = android.widget.LinearLayout(this).apply {
-            orientation = android.widget.LinearLayout.VERTICAL
-            val p = (16 * resources.displayMetrics.density).toInt()
-            setPadding(p, p, p, p)
-            val searchParams = android.widget.LinearLayout.LayoutParams(
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                bottomMargin = (8 * resources.displayMetrics.density).toInt()
-            }
-            addView(searchInput, searchParams)
-            val listParams = android.widget.LinearLayout.LayoutParams(
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                (350 * resources.displayMetrics.density).toInt()
-            )
-            addView(listView, listParams)
-        }
-
-        lateinit var dialog: AlertDialog
-
-        fun createAdapter(items: List<InstalledAppInfo>): ArrayAdapter<InstalledAppInfo> {
-            return object : ArrayAdapter<InstalledAppInfo>(this@SettingsActivity, 0, items) {
-                override fun getView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
-                    val view = convertView ?: layoutInflater.inflate(android.R.layout.activity_list_item, parent, false)
-                    val item = getItem(position) ?: return view
-                    val iconView = view.findViewById<android.widget.ImageView>(android.R.id.icon)
-                    val textView = view.findViewById<TextView>(android.R.id.text1)
-
-                    iconView?.setImageDrawable(item.icon)
-                    textView?.text = "${item.label}\n${item.packageName}"
-                    textView?.setTextColor(android.graphics.Color.WHITE)
-                    textView?.textSize = 14f
-                    return view
-                }
-            }
-        }
-
-        listView.adapter = createAdapter(filteredApps)
-
-        searchInput.addTextChangedListener(object : android.text.TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s?.toString()?.lowercase()?.trim() ?: ""
-                filteredApps = if (query.isEmpty()) {
-                    allApps
-                } else {
-                    allApps.filter { it.label.lowercase().contains(query) || it.packageName.lowercase().contains(query) }
-                }
-                listView.adapter = createAdapter(filteredApps)
-            }
-            override fun afterTextChanged(s: android.text.Editable?) {}
-        })
-
-        listView.setOnItemClickListener { _, _, position, _ ->
-            if (position in filteredApps.indices) {
-                val selected = filteredApps[position]
-                onSelected(selected.packageName, selected.label)
-                dialog.dismiss()
-            }
-        }
-
-        dialog = AlertDialog.Builder(this)
-            .setTitle("Select App to Launch")
-            .setView(container)
-            .setNegativeButton("Cancel", null)
-            .create()
-
-        dialog.show()
-    }
 
     private fun showKeyEditorDialog(
         rowIdx: Int,
@@ -2313,13 +2183,13 @@ class SettingsActivity : AppCompatActivity() {
                 Pair("Select All Text", "SELECT_ALL")
             )
 
-            val launchableApps = try {
-                getInstalledLaunchableApps().map { Pair(it.label, it.packageName) }
-            } catch (_: Exception) { emptyList() }
-
-            val launchAppOptions = launchableApps.map { Pair("🚀 Launch ${it.first} (${it.second})", it.second) } + listOf(
-                Pair("🔍 Search All Installed Apps...", "search_apps"),
-                Pair("Custom Package Name...", "custom")
+            val launchAppOptions = listOf(
+                Pair("Termux (com.termux)", "com.termux"),
+                Pair("Chrome (com.android.chrome)", "com.android.chrome"),
+                Pair("Settings (com.android.settings)", "com.android.settings"),
+                Pair("YouTube (com.google.android.youtube)", "com.google.android.youtube"),
+                Pair("VLC (org.videolan.vlc)", "org.videolan.vlc"),
+                Pair("Custom Package Name / Intent URI...", "custom")
             )
 
             fun updateParamUi(typePosition: Int, paramVal: String) {
@@ -2412,14 +2282,14 @@ class SettingsActivity : AppCompatActivity() {
                         val options = launchAppOptions.map { it.first }
                         spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
                         val matchIdx = launchAppOptions.indexOfFirst { it.second.equals(paramVal, ignoreCase = true) }
-                        if (matchIdx >= 0 && launchAppOptions[matchIdx].second != "search_apps") {
+                        if (matchIdx >= 0 && launchAppOptions[matchIdx].second != "custom") {
                             spParamSelect.setSelection(matchIdx)
                             etParam.visibility = View.GONE
                         } else {
-                            val searchIdx = launchAppOptions.indexOfFirst { it.second == "search_apps" }.coerceAtLeast(0)
-                            spParamSelect.setSelection(searchIdx)
+                            val customIdx = launchAppOptions.indexOfFirst { it.second == "custom" }.coerceAtLeast(0)
+                            spParamSelect.setSelection(customIdx)
                             etParam.visibility = View.VISIBLE
-                            etParam.hint = "Package Name (e.g. com.termux)"
+                            etParam.hint = "Package name or Intent URI (e.g. com.termux)"
                         }
                     }
                 }
@@ -2489,23 +2359,16 @@ class SettingsActivity : AppCompatActivity() {
                         9 -> {
                             val selected = launchAppOptions.getOrNull(position)
                             if (selected != null) {
-                                if (selected.second == "search_apps") {
-                                    showAppPickerDialog { pkg, label ->
-                                        etParam.setText(pkg)
-                                        if (etPrimary.text.isNullOrEmpty()) {
-                                            etPrimary.setText(label)
-                                        }
-                                        updateParamUi(9, pkg)
-                                    }
-                                } else if (selected.second != "custom") {
+                                if (selected.second != "custom") {
                                     etParam.setText(selected.second)
                                     etParam.visibility = View.GONE
                                     if (etPrimary.text.isNullOrEmpty()) {
-                                        val appLabel = selected.first.removePrefix("🚀 Launch ").substringBefore(" (")
+                                        val appLabel = selected.first.substringBefore(" (")
                                         etPrimary.setText(appLabel)
                                     }
                                 } else {
                                     etParam.visibility = View.VISIBLE
+                                    etParam.hint = "Package name or Intent URI (e.g. com.termux)"
                                 }
                             }
                         }
