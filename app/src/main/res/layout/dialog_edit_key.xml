@@ -40,6 +40,24 @@
             android:textSize="14sp"
             android:layout_marginBottom="12dp" />
 
+        <!-- Key Graphic Icon (SVG / User Image) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Key Graphic Icon"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeyIcon"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="12dp" />
+
         <!-- Secondary Label (Top Right) -->
         <TextView
             android:layout_width="wrap_content"
@@ -123,54 +141,6 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:layout_marginBottom="12dp" />
-
-        <!-- Key Graphic / Icon (SVG or User Image) -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Key Graphic Icon (SVG / User Image)"
-            android:textColor="@color/settings_text_sub"
-            android:textSize="13sp"
-            android:layout_marginBottom="4dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
-
-            <Spinner
-                android:id="@+id/spEditKeyIcon"
-                android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_spinner_card"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
-
-            <ImageView
-                android:id="@+id/ivEditKeyIconPreview"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:background="#1E293B"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
-                android:visibility="visible" />
-
-            <Button
-                android:id="@+id/btnBrowseKeyImage"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:text="📁 Browse"
-                android:textSize="11sp"
-                android:backgroundTint="#1E3A5F"
-                android:textColor="#FFFFFF"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp" />
-        </LinearLayout>
 
         <!-- Width Weight (Default 1.0) -->
         <TextView

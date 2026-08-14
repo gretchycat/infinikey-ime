@@ -1564,7 +1564,10 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         browseKeyImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let { onKeyIconPickedListener?.invoke(it.toString()) }
+            uri?.let {
+                val savedPath = com.programmerkeyboard.util.IconRenderer.saveUserIcon(this, it)
+                onKeyIconPickedListener?.invoke(savedPath ?: it.toString())
+            }
         }
 
         fun getExportedLayoutFileName(): String {
@@ -2093,107 +2096,84 @@ class SettingsActivity : AppCompatActivity() {
         setupActionParamSelector(spSwipeDownType, spSwipeDownParamSelect, etSwipeDownParam, key.onSwipeDownAction)
 
         val spIcon = view.findViewById<Spinner>(R.id.spEditKeyIcon)
-        val ivIconPreview = view.findViewById<ImageView>(R.id.ivEditKeyIconPreview)
-        val btnBrowseImage = view.findViewById<Button>(R.id.btnBrowseKeyImage)
-
-        val iconOptions = listOf(
-            Pair("None (Text Label Only)", ""),
-            Pair("🎤 Microphone (mic.svg)", "mic.svg"),
-            Pair("🗣️ Speech TTS (tts.svg)", "tts.svg"),
-            Pair("📎 Paperclip (paperclip.svg)", "paperclip.svg"),
-            Pair("📋 Clipboard (clipboard.svg)", "clipboard.svg"),
-            Pair("📄 Copy (copy.svg)", "copy.svg"),
-            Pair("✂️ Cut (cut.svg)", "cut.svg"),
-            Pair("📥 Paste (paste.svg)", "paste.svg"),
-            Pair("☑️ Select All (select_all.svg)", "select_all.svg"),
-            Pair("⌨️ Keyboard (keyboard)", "keyboard"),
-            Pair("🖼️ Custom User Image...", "custom")
-        )
-
-        val iconAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, iconOptions.map { it.first })
-        spIcon.adapter = iconAdapter
 
         var currentIconName: String? = key.iconName
+        var currentIconOptions = listOf<Pair<String, String>>()
+        var isInitializingSpinner = true
 
-        fun updateIconPreview(iconStr: String?) {
-            if (iconStr.isNullOrEmpty()) {
-                ivIconPreview.setImageDrawable(null)
-                return
-            }
-            if (iconStr.startsWith("content://") || iconStr.startsWith("file://") || iconStr.startsWith("/")) {
-                try {
-                    val uri = android.net.Uri.parse(iconStr)
-                    val bitmap = if (iconStr.startsWith("content://")) {
-                        contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it) }
-                    } else {
-                        android.graphics.BitmapFactory.decodeFile(iconStr)
+        fun populateIconSpinner(selectedPath: String?) {
+            isInitializingSpinner = true
+            val options = mutableListOf<Pair<String, String>>()
+
+            // 1. Static Predefined Vector SVG Icons (Only .svg assets)
+            options.add(Pair("None (Text Label Only)", ""))
+            options.add(Pair("Microphone (mic.svg)", "mic.svg"))
+            options.add(Pair("Speech TTS (tts.svg)", "tts.svg"))
+            options.add(Pair("Paperclip (paperclip.svg)", "paperclip.svg"))
+            options.add(Pair("Clipboard (clipboard.svg)", "clipboard.svg"))
+            options.add(Pair("Copy (copy.svg)", "copy.svg"))
+            options.add(Pair("Cut (cut.svg)", "cut.svg"))
+            options.add(Pair("Paste (paste.svg)", "paste.svg"))
+            options.add(Pair("Select All (select_all.svg)", "select_all.svg"))
+            options.add(Pair("Keyboard (keyboard)", "keyboard"))
+
+            try {
+                val imageAssetFiles = assets.list("images") ?: emptyArray()
+                val knownNames = options.map { it.second.lowercase() }
+                for (file in imageAssetFiles) {
+                    if (file.endsWith(".svg")) {
+                        if (!knownNames.contains(file.lowercase())) {
+                            val nameWithoutExt = file.substringBeforeLast('.').replace('_', ' ')
+                            options.add(Pair("$nameWithoutExt ($file)", file))
+                        }
                     }
-                    if (bitmap != null) {
-                        ivIconPreview.setImageBitmap(bitmap)
-                    } else {
-                        ivIconPreview.setImageDrawable(null)
-                    }
-                } catch (_: Exception) {
-                    ivIconPreview.setImageDrawable(null)
                 }
-            } else {
-                val previewEmoji = when (iconStr.lowercase()) {
-                    "mic", "microphone", "voice", "mic.svg", "assets/images/mic.svg" -> "🎤"
-                    "tts", "read_text", "speech", "tts.svg", "assets/images/tts.svg" -> "🗣️"
-                    "paperclip", "clip", "paperclip.svg", "assets/images/paperclip.svg" -> "📎"
-                    "clipboard", "clipboard_history", "clipboard.svg", "assets/images/clipboard.svg" -> "📋"
-                    "copy", "copy.svg", "assets/images/copy.svg" -> "📄"
-                    "cut", "cut.svg", "assets/images/cut.svg" -> "✂️"
-                    "paste", "paste.svg", "assets/images/paste.svg" -> "📥"
-                    "select_all", "select_all.svg", "assets/images/select_all.svg" -> "☑️"
-                    "keyboard" -> "⌨️"
-                    else -> "🖼️"
-                }
-                val bitmap = android.graphics.Bitmap.createBitmap(64, 64, android.graphics.Bitmap.Config.ARGB_8888)
-                val canvas = android.graphics.Canvas(bitmap)
-                val paint = android.graphics.Paint().apply {
-                    textSize = 40f
-                    textAlign = android.graphics.Paint.Align.CENTER
-                }
-                val fm = paint.fontMetrics
-                val baseline = 32f - (fm.ascent + fm.descent) / 2
-                canvas.drawText(previewEmoji, 32f, baseline, paint)
-                ivIconPreview.setImageBitmap(bitmap)
+            } catch (_: Exception) {}
+
+            // 2. User Icons Directory (files/icons/)
+            val userIcons = com.programmerkeyboard.util.IconRenderer.getUserCustomIcons(this)
+            options.addAll(userIcons)
+
+            // 3. Action Option to Import
+            options.add(Pair("Import New User Icon...", "custom"))
+
+            currentIconOptions = options.toList()
+            val customIdx = currentIconOptions.lastIndex
+
+            val iconAdapter = com.programmerkeyboard.util.IconSpinnerAdapter(this, currentIconOptions)
+            spIcon.adapter = iconAdapter
+
+            val selectIdx = if (selectedPath.isNullOrEmpty()) 0
+            else {
+                val idx = currentIconOptions.indexOfFirst { it.second.equals(selectedPath, ignoreCase = true) }
+                if (idx >= 0) idx else customIdx
             }
+            spIcon.setSelection(selectIdx)
         }
 
-        val initialIconIdx = if (key.iconName.isNullOrEmpty()) 0
-        else {
-            val idx = iconOptions.indexOfFirst { it.second.equals(key.iconName, ignoreCase = true) }
-            if (idx >= 0) idx else 10
-        }
-        spIcon.setSelection(initialIconIdx)
-        updateIconPreview(currentIconName)
+        populateIconSpinner(currentIconName)
 
-        onKeyIconPickedListener = { uriStr ->
-            currentIconName = uriStr
-            spIcon.setSelection(10)
-            updateIconPreview(currentIconName)
+        onKeyIconPickedListener = { savedPath ->
+            currentIconName = savedPath
+            populateIconSpinner(currentIconName)
         }
 
         spIcon.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position == 10) {
-                    if (currentIconName.isNullOrEmpty() || (!currentIconName!!.startsWith("content://") && !currentIconName!!.startsWith("file://") && !currentIconName!!.startsWith("/"))) {
+                if (isInitializingSpinner) {
+                    isInitializingSpinner = false
+                    return
+                }
+                if (position in currentIconOptions.indices) {
+                    val sel = currentIconOptions[position]
+                    if (sel.second == "custom") {
                         browseKeyImageLauncher.launch("image/*")
                     } else {
-                        updateIconPreview(currentIconName)
+                        currentIconName = sel.second
                     }
-                } else {
-                    currentIconName = iconOptions[position].second
-                    updateIconPreview(currentIconName)
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-        btnBrowseImage.setOnClickListener {
-            browseKeyImageLauncher.launch("image/*")
         }
 
         var dialog: AlertDialog? = null

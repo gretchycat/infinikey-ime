@@ -1527,76 +1527,28 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun drawKeyIconOrLabel(canvas: Canvas, key: KeyDefinition, displayLabel: String, rect: RectF, paint: Paint) {
-        val iconType = key.iconName?.lowercase()
+        val iconType = key.iconName
+        if (!iconType.isNullOrEmpty()) {
+            val isVector = com.programmerkeyboard.util.IconRenderer.drawVectorIcon(canvas, iconType, rect, paint)
+            if (isVector) return
 
-        if (iconType != null) {
-            val centerX = rect.centerX()
-            val centerY = rect.centerY()
-            val iconSize = minOf(rect.width(), rect.height()) * 0.42f
-
-            when (iconType) {
-                "mic", "microphone", "voice", "mic.svg", "assets/images/mic.svg" -> {
-                    drawSvgMicIcon(canvas, rect, paint)
-                    return
-                }
-                "tts", "read_text", "speech", "tts.svg", "assets/images/tts.svg" -> {
-                    drawSvgTtsIcon(canvas, rect, paint)
-                    return
-                }
-                "paperclip", "clip", "paperclip.svg", "assets/images/paperclip.svg" -> {
-                    drawSvgPaperclipIcon(canvas, rect, paint)
-                    return
-                }
-                "clipboard", "clipboard_history", "clipboard.svg", "assets/images/clipboard.svg" -> {
-                    drawSvgClipboardIcon(canvas, rect, paint)
-                    return
-                }
-                "copy", "copy.svg", "assets/images/copy.svg" -> {
-                    drawSvgCopyIcon(canvas, rect, paint)
-                    return
-                }
-                "cut", "cut.svg", "assets/images/cut.svg" -> {
-                    drawSvgCutIcon(canvas, rect, paint)
-                    return
-                }
-                "paste", "paste.svg", "assets/images/paste.svg" -> {
-                    drawSvgPasteIcon(canvas, rect, paint)
-                    return
-                }
-                "select_all", "select_all.svg", "assets/images/select_all.svg" -> {
-                    drawSvgSelectAllIcon(canvas, rect, paint)
-                    return
-                }
-                "keyboard" -> {
-                    val p = Paint(paint).apply {
-                        textSize = iconSize * 1.3f
-                        textAlign = Paint.Align.CENTER
+            if (iconType.startsWith("content://") || iconType.startsWith("file://") || iconType.startsWith("/")) {
+                try {
+                    val uri = android.net.Uri.parse(iconType)
+                    val bitmap = if (iconType.startsWith("content://")) {
+                        context.contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it) }
+                    } else {
+                        android.graphics.BitmapFactory.decodeFile(iconType)
                     }
-                    val fm = p.fontMetrics
-                    val bl = centerY - (fm.ascent + fm.descent) / 2
-                    canvas.drawText("⌨", centerX, bl, p)
-                    return
-                }
-                else -> {
-                    val rawIcon = key.iconName ?: ""
-                    if (rawIcon.startsWith("content://") || rawIcon.startsWith("file://") || rawIcon.startsWith("/")) {
-                        try {
-                            val uri = android.net.Uri.parse(rawIcon)
-                            val bitmap = if (rawIcon.startsWith("content://")) {
-                                context.contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it) }
-                            } else {
-                                android.graphics.BitmapFactory.decodeFile(rawIcon)
-                            }
-                            if (bitmap != null) {
-                                val half = iconSize * 0.8f
-                                val dstRect = RectF(centerX - half, centerY - half, centerX + half, centerY + half)
-                                canvas.drawBitmap(bitmap, null, dstRect, paint)
-                                return
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                    if (bitmap != null) {
+                        val iconSize = minOf(rect.width(), rect.height()) * 0.42f
+                        val half = iconSize * 0.8f
+                        val dstRect = RectF(rect.centerX() - half, rect.centerY() - half, rect.centerX() + half, rect.centerY() + half)
+                        canvas.drawBitmap(bitmap, null, dstRect, paint)
+                        return
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
