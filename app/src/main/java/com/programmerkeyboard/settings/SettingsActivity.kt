@@ -1754,24 +1754,27 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun parseKeyActionFromInputs(typeIdx: Int, paramStr: String, defaultText: String): KeyAction {
-        val param = paramStr.trim()
+        val trimmed = paramStr.trim()
         return when (typeIdx) {
             0 -> KeyAction.None
-            1 -> KeyAction.SendText(param.ifEmpty { defaultText })
-            2 -> KeyAction.SendCode(param.toIntOrNull() ?: 66)
-            3 -> KeyAction.AutoRepeat(param.toIntOrNull() ?: 67)
-            4 -> KeyAction.ToggleModifier(param.uppercase().ifEmpty { "SHIFT" })
-            5 -> KeyAction.SwitchLayout(param.ifEmpty { "main" })
-            6 -> KeyAction.ShowWidget(param.ifEmpty { "VOICE_INPUT" })
-            7 -> KeyAction.SetScreenMode(param.uppercase().ifEmpty { "SPLIT" })
-            8 -> when (param.uppercase()) {
+            1 -> {
+                val text = if (paramStr.isNotEmpty()) paramStr else defaultText
+                KeyAction.SendText(text)
+            }
+            2 -> KeyAction.SendCode(trimmed.toIntOrNull() ?: 66)
+            3 -> KeyAction.AutoRepeat(trimmed.toIntOrNull() ?: 67)
+            4 -> KeyAction.ToggleModifier(trimmed.uppercase().ifEmpty { "SHIFT" })
+            5 -> KeyAction.SwitchLayout(trimmed.ifEmpty { "main" })
+            6 -> KeyAction.ShowWidget(trimmed.ifEmpty { "VOICE_INPUT" })
+            7 -> KeyAction.SetScreenMode(trimmed.uppercase().ifEmpty { "SPLIT" })
+            8 -> when (trimmed.uppercase()) {
                 "COPY" -> KeyAction.Copy
                 "CUT" -> KeyAction.Cut
                 "PASTE" -> KeyAction.Paste
                 "PASTE_ECHO", "ECHO_CLIPBOARD" -> KeyAction.PasteEcho
                 else -> KeyAction.SelectAll
             }
-            else -> KeyAction.SendText(defaultText)
+            else -> KeyAction.SendText(if (paramStr.isNotEmpty()) paramStr else defaultText)
         }
     }
 
