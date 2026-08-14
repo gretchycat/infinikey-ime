@@ -155,18 +155,23 @@ Actions are strongly-typed JSON objects with a `type` field:
 
 | Action `type` | Parameters | Description |
 | :--- | :--- | :--- |
-| `"SEND_TEXT"` | `"text"` (`string`) | Sends raw text to the input connection. |
-| `"SEND_CODE"` | `"code"` (`int`) | Sends Android `KeyEvent` keycode. |
-| `"SWITCH_LAYOUT"` | `"target"` (`string`) | Swaps active layout file to target layout ID (e.g., `"function"`). |
-| `"SET_SCREEN_MODE"` | `"mode"` (`string`) | Geometry Action: Changes layout docking mode (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"DOCK_LEFT"`, `"DOCK_RIGHT"`, `"FLOAT"`). |
-| `"ADJUST_HEIGHT"` | `"delta"` (`int`) \| `"percentage"` (`int`) | Geometry Action: Dynamically increases/decreases keyboard display height percentage. |
-| `"SHOW_POPUP"` | `"options"` (`array<string>`) | Displays character selection popup menu. |
-| `"SHOW_WIDGET"` | `"widget"` (`string`) | Displays sub-widget overlay (`"JOYSTICK"`, `"SETTINGS"`, `"EMOJI_PICKER"`, `"VOICE_INPUT"`). |
-| `"AUTO_REPEAT"` | `"code"` (`int`), `"intervalMs"` (`int`) | Auto-repeats keycode action continuously while held. |
-| `"TOGGLE_ROW"` | `"rowId"` (`int` \| `string`) | Toggles visibility state of row(s). |
-| `"TOGGLE_MODIFIER"` | `"modifier"` (`string`) | Toggles modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`). |
-| `"PASTE"` | None | Performs context menu paste action. |
-| `"PASTE_ECHO"` | None | Reads primary clip from ClipboardManager and commits text directly to the input connection. |
+| `"SEND_TEXT"` | `"text"` (`string`) | Sends raw string macro or single character to the input connection. |
+| `"SEND_CODE"` | `"code"` (`int`) | Sends Android `KeyEvent` keycode (e.g. `67` for Backspace, `66` for Enter). |
+| `"SWITCH_LAYOUT"` | `"target"` (`string`) | Swaps active layout file to target layout ID (e.g. `"function"`, `"mobile"`, `"main"`). |
+| `"SET_SCREEN_MODE"` | `"mode"` (`string`) | Geometry Action: Changes layout docking mode (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`). |
+| `"ADJUST_HEIGHT"` | `"delta"` (`int`) \| `"percentage"` (`int`) | Geometry Action: Dynamically increases/decreases keyboard display height percentage (15% to 60%). |
+| `"SHOW_POPUP"` | `"options"` (`array<string>`) | Displays 3D tactile character/action popup selection menu. |
+| `"SHOW_WIDGET"` | `"widget"` (`string`) | Displays sub-widget overlay (`"JOYSTICK"`, `"EMOJI_PICKER"`, `"CLIPBOARD_HISTORY"`, `"VOICE_INPUT"`). |
+| `"AUTO_REPEAT"` | `"code"` (`int`), `"intervalMs"` (`int`) | Auto-repeats keycode action continuously while key is held. |
+| `"TOGGLE_ROW"` | `"rowId"` (`int` \| `string`) | Toggles visibility state of row(s) dynamically (or `"all_hidden"` for layer toggle). |
+| `"TOGGLE_MODIFIER"` | `"modifier"` (`string`) | Toggles modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`, `"META"`). |
+| `"SELECT_ALL"` | None | Selects all text in target input control (`performContextMenuAction` with key fallback). |
+| `"COPY"` | None | Copies current selection to system clipboard. |
+| `"CUT"` | None | Cuts current selection to system clipboard. |
+| `"PASTE"` | None | Directly reads primary clip from ClipboardManager and commits text to input connection. |
+| `"PASTE_ECHO"` | None | Echo-pastes primary clip to text input or raw terminal stream. |
+| `"SWITCH_IME"` | None | Opens Android system Input Method picker dialog. |
+| `"LAUNCH_APP"` | `"packageName"` (`string`) | Launches specified application package directly from keyboard key tap. |
 | `"NONE"` | None | No operation. |
 
 ---
