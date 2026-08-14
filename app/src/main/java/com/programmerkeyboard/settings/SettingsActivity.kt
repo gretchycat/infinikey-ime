@@ -1799,6 +1799,11 @@ class SettingsActivity : AppCompatActivity() {
         val spSwipeDownType = view.findViewById<Spinner>(R.id.spEditKeySwipeDownType)
         val etSwipeDownParam = view.findViewById<EditText>(R.id.etEditKeySwipeDownParam)
 
+        val spActionParamSelect = view.findViewById<Spinner>(R.id.spEditKeyActionParamSelect)
+        val spLongPressParamSelect = view.findViewById<Spinner>(R.id.spEditKeyLongPressParamSelect)
+        val spSwipeUpParamSelect = view.findViewById<Spinner>(R.id.spEditKeySwipeUpParamSelect)
+        val spSwipeDownParamSelect = view.findViewById<Spinner>(R.id.spEditKeySwipeDownParamSelect)
+
         val btnDelete = view.findViewById<Button>(R.id.btnDeleteKey)
 
         etPrimary.setText(key.primaryLabel)
@@ -1848,6 +1853,244 @@ class SettingsActivity : AppCompatActivity() {
 
         spSwipeDownType.setSelection(getActionTypeIndex(key.onSwipeDownAction))
         etSwipeDownParam.setText(getActionParamString(key.onSwipeDownAction))
+
+        fun setupActionParamSelector(
+            spType: Spinner,
+            spParamSelect: Spinner,
+            etParam: EditText,
+            initialAction: KeyAction
+        ) {
+            val keycodeOptions = listOf(
+                Pair("Enter (66)", "66"),
+                Pair("Delete / Backspace (67)", "67"),
+                Pair("Space (62)", "62"),
+                Pair("Tab (61)", "61"),
+                Pair("Escape (111)", "111"),
+                Pair("Arrow Left (21)", "21"),
+                Pair("Arrow Right (22)", "22"),
+                Pair("Arrow Up (19)", "19"),
+                Pair("Arrow Down (20)", "20"),
+                Pair("Home (122)", "122"),
+                Pair("End (123)", "123"),
+                Pair("Page Up (92)", "92"),
+                Pair("Page Down (93)", "93"),
+                Pair("F1 (131)", "131"),
+                Pair("F2 (132)", "132"),
+                Pair("F3 (133)", "133"),
+                Pair("F4 (134)", "134"),
+                Pair("F5 (135)", "135"),
+                Pair("F6 (136)", "136"),
+                Pair("F7 (137)", "137"),
+                Pair("F8 (138)", "138"),
+                Pair("F9 (139)", "139"),
+                Pair("F10 (140)", "140"),
+                Pair("F11 (141)", "141"),
+                Pair("F12 (142)", "142"),
+                Pair("Custom Keycode...", "custom")
+            )
+
+            val modifierOptions = listOf(
+                Pair("Shift Modifier", "SHIFT"),
+                Pair("Control (Ctrl) Modifier", "CTRL"),
+                Pair("Alt Modifier", "ALT"),
+                Pair("Meta / Super / Windows Modifier", "META"),
+                Pair("Fn (Function) Layer Modifier", "FN"),
+                Pair("Sym (Symbols) Layer Modifier", "SYM"),
+                Pair("Caps Lock Toggle", "CAPS_LOCK"),
+                Pair("Num Lock Toggle", "NUM_LOCK"),
+                Pair("Custom Modifier...", "custom")
+            )
+
+            val layoutTargets = try {
+                assets.list("layouts")?.filter { it.endsWith(".json") }?.map { it.removeSuffix(".json") } ?: listOf("main", "mobile", "mobile_number", "mobile_symbol", "function", "phone", "emoji")
+            } catch (_: Exception) {
+                listOf("main", "mobile", "mobile_number", "mobile_symbol", "function", "phone", "emoji")
+            }
+            val layoutOptions = layoutTargets.map { Pair("Layout Target: $it", it) } + Pair("Custom Layout Target...", "custom")
+
+            val widgetOptions = listOf(
+                Pair("Voice Input (Continuous)", "VOICE_INPUT"),
+                Pair("Joystick Navigation", "JOYSTICK"),
+                Pair("Clipboard History Overlay", "CLIPBOARD_OVERLAY"),
+                Pair("Emoji Picker Overlay", "EMOJI_PICKER"),
+                Pair("Key Preview Overlay", "KEY_PREVIEW"),
+                Pair("Custom Widget...", "custom")
+            )
+
+            val screenModeOptions = listOf(
+                Pair("Full Width Docked", "FULL_WIDTH_DOCKED"),
+                Pair("Left Docked", "LEFT_DOCKED"),
+                Pair("Right Docked", "RIGHT_DOCKED"),
+                Pair("Split Screen Keyboard", "SPLIT")
+            )
+
+            val clipboardOptions = listOf(
+                Pair("Copy to Clipboard", "COPY"),
+                Pair("Cut Selected Text", "CUT"),
+                Pair("Paste from Clipboard", "PASTE"),
+                Pair("Paste Echo", "PASTE_ECHO"),
+                Pair("Select All Text", "SELECT_ALL")
+            )
+
+            fun updateParamUi(typePosition: Int, paramVal: String) {
+                when (typePosition) {
+                    0 -> {
+                        spParamSelect.visibility = View.GONE
+                        etParam.visibility = View.GONE
+                    }
+                    1 -> {
+                        spParamSelect.visibility = View.GONE
+                        etParam.visibility = View.VISIBLE
+                        etParam.hint = "Text output (e.g. A, hello, space)"
+                    }
+                    2, 3 -> {
+                        spParamSelect.visibility = View.VISIBLE
+                        val options = keycodeOptions.map { it.first }
+                        spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
+                        val matchIdx = keycodeOptions.indexOfFirst { it.second == paramVal }
+                        if (matchIdx >= 0) {
+                            spParamSelect.setSelection(matchIdx)
+                            etParam.visibility = View.GONE
+                        } else {
+                            spParamSelect.setSelection(keycodeOptions.lastIndex)
+                            etParam.visibility = View.VISIBLE
+                            etParam.hint = "Numeric Keycode (e.g. 66)"
+                        }
+                    }
+                    4 -> {
+                        spParamSelect.visibility = View.VISIBLE
+                        val options = modifierOptions.map { it.first }
+                        spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
+                        val matchIdx = modifierOptions.indexOfFirst { it.second.equals(paramVal, ignoreCase = true) }
+                        if (matchIdx >= 0) {
+                            spParamSelect.setSelection(matchIdx)
+                            etParam.visibility = View.GONE
+                        } else {
+                            spParamSelect.setSelection(modifierOptions.lastIndex)
+                            etParam.visibility = View.VISIBLE
+                            etParam.hint = "Modifier Name (e.g. SHIFT, CTRL)"
+                        }
+                    }
+                    5 -> {
+                        spParamSelect.visibility = View.VISIBLE
+                        val options = layoutOptions.map { it.first }
+                        spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
+                        val matchIdx = layoutOptions.indexOfFirst { it.second.equals(paramVal, ignoreCase = true) }
+                        if (matchIdx >= 0) {
+                            spParamSelect.setSelection(matchIdx)
+                            etParam.visibility = View.GONE
+                        } else {
+                            spParamSelect.setSelection(layoutOptions.lastIndex)
+                            etParam.visibility = View.VISIBLE
+                            etParam.hint = "Layout Target (e.g. main, mobile)"
+                        }
+                    }
+                    6 -> {
+                        spParamSelect.visibility = View.VISIBLE
+                        val options = widgetOptions.map { it.first }
+                        spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
+                        val matchIdx = widgetOptions.indexOfFirst { it.second.equals(paramVal, ignoreCase = true) }
+                        if (matchIdx >= 0) {
+                            spParamSelect.setSelection(matchIdx)
+                            etParam.visibility = View.GONE
+                        } else {
+                            spParamSelect.setSelection(widgetOptions.lastIndex)
+                            etParam.visibility = View.VISIBLE
+                            etParam.hint = "Widget Name"
+                        }
+                    }
+                    7 -> {
+                        spParamSelect.visibility = View.VISIBLE
+                        val options = screenModeOptions.map { it.first }
+                        spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
+                        val matchIdx = screenModeOptions.indexOfFirst { it.second.equals(paramVal, ignoreCase = true) }.coerceAtLeast(0)
+                        spParamSelect.setSelection(matchIdx)
+                        etParam.visibility = View.GONE
+                        etParam.setText(screenModeOptions[matchIdx].second)
+                    }
+                    8 -> {
+                        spParamSelect.visibility = View.VISIBLE
+                        val options = clipboardOptions.map { it.first }
+                        spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
+                        val matchIdx = clipboardOptions.indexOfFirst { it.second.equals(paramVal, ignoreCase = true) }.coerceAtLeast(0)
+                        spParamSelect.setSelection(matchIdx)
+                        etParam.visibility = View.GONE
+                        etParam.setText(clipboardOptions[matchIdx].second)
+                    }
+                }
+            }
+
+            val currentParamStr = getActionParamString(initialAction)
+            updateParamUi(spType.selectedItemPosition, currentParamStr)
+
+            spType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    updateParamUi(position, etParam.text.toString())
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            spParamSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    when (spType.selectedItemPosition) {
+                        2, 3 -> {
+                            val selected = keycodeOptions.getOrNull(position)
+                            if (selected != null && selected.second != "custom") {
+                                etParam.setText(selected.second)
+                                etParam.visibility = View.GONE
+                            } else {
+                                etParam.visibility = View.VISIBLE
+                            }
+                        }
+                        4 -> {
+                            val selected = modifierOptions.getOrNull(position)
+                            if (selected != null && selected.second != "custom") {
+                                etParam.setText(selected.second)
+                                etParam.visibility = View.GONE
+                            } else {
+                                etParam.visibility = View.VISIBLE
+                            }
+                        }
+                        5 -> {
+                            val selected = layoutOptions.getOrNull(position)
+                            if (selected != null && selected.second != "custom") {
+                                etParam.setText(selected.second)
+                                etParam.visibility = View.GONE
+                            } else {
+                                etParam.visibility = View.VISIBLE
+                            }
+                        }
+                        6 -> {
+                            val selected = widgetOptions.getOrNull(position)
+                            if (selected != null && selected.second != "custom") {
+                                etParam.setText(selected.second)
+                                etParam.visibility = View.GONE
+                            } else {
+                                etParam.visibility = View.VISIBLE
+                            }
+                        }
+                        7 -> {
+                            val selected = screenModeOptions.getOrNull(position)
+                            if (selected != null) {
+                                etParam.setText(selected.second)
+                            }
+                        }
+                        8 -> {
+                            val selected = clipboardOptions.getOrNull(position)
+                            if (selected != null) {
+                                etParam.setText(selected.second)
+                            }
+                        }
+                    }
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+        }
+
+        setupActionParamSelector(spActionType, spActionParamSelect, etActionParam, key.onPressAction)
+        setupActionParamSelector(spLongPressType, spLongPressParamSelect, etLongPressParam, key.onLongPressAction)
+        setupActionParamSelector(spSwipeUpType, spSwipeUpParamSelect, etSwipeUpParam, key.onSwipeUpAction)
+        setupActionParamSelector(spSwipeDownType, spSwipeDownParamSelect, etSwipeDownParam, key.onSwipeDownAction)
 
         val spIcon = view.findViewById<Spinner>(R.id.spEditKeyIcon)
         val ivIconPreview = view.findViewById<ImageView>(R.id.ivEditKeyIconPreview)

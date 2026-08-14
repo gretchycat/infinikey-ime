@@ -230,6 +230,16 @@
             android:paddingEnd="12dp"
             android:layout_marginBottom="4dp" />
 
+        <Spinner
+            android:id="@+id/spEditKeyActionParamSelect"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:visibility="gone"
+            android:layout_marginBottom="4dp" />
+
         <EditText
             android:id="@+id/etEditKeyActionParam"
             android:layout_width="match_parent"
@@ -260,6 +270,16 @@
             android:background="@drawable/bg_spinner_card"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeyLongPressParamSelect"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:visibility="gone"
             android:layout_marginBottom="4dp" />
 
         <EditText
@@ -294,6 +314,16 @@
             android:paddingEnd="12dp"
             android:layout_marginBottom="4dp" />
 
+        <Spinner
+            android:id="@+id/spEditKeySwipeUpParamSelect"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:visibility="gone"
+            android:layout_marginBottom="4dp" />
+
         <EditText
             android:id="@+id/etEditKeySwipeUpParam"
             android:layout_width="match_parent"
@@ -324,6 +354,16 @@
             android:background="@drawable/bg_spinner_card"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spEditKeySwipeDownParamSelect"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:visibility="gone"
             android:layout_marginBottom="4dp" />
 
         <EditText
