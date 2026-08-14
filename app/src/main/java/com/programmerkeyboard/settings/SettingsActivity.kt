@@ -59,11 +59,9 @@ class SettingsActivity : AppCompatActivity() {
         val panelAudio = findViewById<View>(R.id.panelAudio)
         val panelThemes = findViewById<View>(R.id.panelThemes)
 
-        val cardThemeImportExport = findViewById<View>(R.id.cardThemeImportExport)
         val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
         if (!com.programmerkeyboard.BuildConfig.DEBUG) {
-            cardThemeImportExport?.visibility = View.GONE
             btnGrantOverlayPermission?.visibility = View.GONE
             if (tabLayout.tabCount > 5) {
                 tabLayout.removeTabAt(5)
@@ -748,8 +746,7 @@ class SettingsActivity : AppCompatActivity() {
         val btnPickCatFgColor = findViewById<android.widget.Button>(R.id.btnPickCatFgColor)
         val btnPickCatPressedBgColor = findViewById<android.widget.Button>(R.id.btnPickCatPressedBgColor)
 
-        val btnExportTheme = findViewById<android.widget.Button>(R.id.btnExportTheme)
-        val btnImportTheme = findViewById<android.widget.Button>(R.id.btnImportTheme)
+        val btnLaunchThemesFolder = findViewById<android.widget.Button>(R.id.btnLaunchThemesFolder)
 
         fun updateButtonTint(button: android.widget.Button, hexStr: String) {
             try {
@@ -1202,104 +1199,46 @@ class SettingsActivity : AppCompatActivity() {
             return themePresetFileNames[idx]
         }
 
-        btnExportTheme.setOnClickListener {
-            exportFileLauncher.launch(getExportedThemeFileName())
+        fun getUserThemesDir(): java.io.File {
+            val dir = java.io.File(getExternalFilesDir(null), "themes")
+            if (!dir.exists()) dir.mkdirs()
+            return dir
         }
 
-        btnExportTheme.setOnLongClickListener {
-            val exportOptions = arrayOf("💾 Save Theme File (Downloads)", "📋 Copy JSON to Clipboard", "📤 Share via App")
-            AlertDialog.Builder(this)
-                .setTitle("Export Theme Options")
-                .setItems(exportOptions) { _, which ->
-                    val currentJson = prefs.getString("pref_custom_theme_json", null) ?: getDefaultThemeJson()
-                    val prettyJson = formatPrettyJson(currentJson)
-                    when (which) {
-                        0 -> exportFileLauncher.launch(getExportedThemeFileName())
-                        1 -> {
-                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            val clip = android.content.ClipData.newPlainText("Theme JSON", prettyJson)
-                            clipboard.setPrimaryClip(clip)
-                            Toast.makeText(this, "Theme JSON copied to clipboard!", Toast.LENGTH_SHORT).show()
-                        }
-                        2 -> {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT, "Programmer Keyboard Theme Configuration (${getExportedThemeFileName()})")
-                                putExtra(Intent.EXTRA_TEXT, prettyJson)
-                            }
-                            startActivity(Intent.createChooser(shareIntent, "Share Theme Configuration"))
-                        }
-                    }
+        btnLaunchThemesFolder.setOnClickListener {
+            val dir = getUserThemesDir()
+            var launched = false
+            try {
+                val folderUri = android.provider.DocumentsContract.buildDocumentUri(
+                    "com.android.externalstorage.documents",
+                    "primary:Android/data/${packageName}/files/themes"
+                )
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(folderUri, "vnd.android.document/directory")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                .setNegativeButton("Cancel", null)
-                .show()
-            true
-        }
+                startActivity(intent)
+                launched = true
+            } catch (_: Exception) {}
 
-        btnImportTheme.setOnClickListener {
-            importFileLauncher.launch("*/*")
-        }
-
-        btnImportTheme.setOnLongClickListener {
-            val importOptions = arrayOf("📂 Choose .json File from Storage", "📋 Paste JSON from Clipboard", "✏️ Edit JSON Text")
-            AlertDialog.Builder(this)
-                .setTitle("Import Options")
-                .setItems(importOptions) { _, which ->
-                    when (which) {
-                        0 -> importFileLauncher.launch("*/*")
-                        1 -> {
-                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                            val clipText = clipboard.primaryClip?.getItemAt(0)?.text?.toString()?.trim()
-                            if (!clipText.isNullOrEmpty()) {
-                                try {
-                                    com.google.gson.JsonParser.parseString(clipText)
-                                    prefs.edit().putString("pref_custom_theme_json", clipText).putInt("pref_theme_preset_idx", 7).apply()
-                                    spThemePreset.setSelection(7)
-                                    val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 4)]
-                                    loadCategoryStyleValues(catName)
-                                    Toast.makeText(this, "Theme JSON pasted & applied!", Toast.LENGTH_SHORT).show()
-                                } catch (e: Exception) {
-                                    Toast.makeText(this, "Clipboard contents are not valid JSON!", Toast.LENGTH_LONG).show()
-                                }
-                            } else {
-                                Toast.makeText(this, "Clipboard is empty!", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        2 -> {
-                            val inputEditText = EditText(this).apply {
-                                hint = "Paste Theme JSON here..."
-                                setHintTextColor(android.graphics.Color.parseColor("#64748B"))
-                                setPadding(32, 32, 32, 32)
-                                textSize = 13f
-                                val currentJson = prefs.getString("pref_custom_theme_json", null) ?: getDefaultThemeJson()
-                                setText(formatPrettyJson(currentJson))
-                            }
-                            AlertDialog.Builder(this)
-                                .setTitle("Edit Theme JSON")
-                                .setView(inputEditText)
-                                .setPositiveButton("Apply") { _, _ ->
-                                    val text = inputEditText.text.toString().trim()
-                                    if (text.isNotEmpty()) {
-                                        try {
-                                            com.google.gson.JsonParser.parseString(text)
-                                            prefs.edit().putString("pref_custom_theme_json", text).putInt("pref_theme_preset_idx", 7).apply()
-                                            spThemePreset.setSelection(7)
-                                            val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
-                                            loadCategoryStyleValues(catName)
-                                            Toast.makeText(this, "Theme JSON updated & applied!", Toast.LENGTH_SHORT).show()
-                                        } catch (e: Exception) {
-                                            Toast.makeText(this, "Invalid JSON format!", Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-                                }
-                                .setNegativeButton("Cancel", null)
-                                .show()
-                        }
+            if (!launched) {
+                try {
+                    val appFilesUri = android.provider.DocumentsContract.buildDocumentUri(
+                        "com.android.externalstorage.documents",
+                        "primary:Android/data/${packageName}/files"
+                    )
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(appFilesUri, "vnd.android.document/directory")
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-            true
+                    startActivity(intent)
+                    launched = true
+                } catch (_: Exception) {}
+            }
+
+            if (!launched) {
+                Toast.makeText(this, "Themes stored at: ${dir.absolutePath}", Toast.LENGTH_LONG).show()
+            }
         }
 
         val btnResetTheme = findViewById<android.widget.Button>(R.id.btnResetTheme)

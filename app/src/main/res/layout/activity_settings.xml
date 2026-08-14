@@ -1537,7 +1537,7 @@
             </LinearLayout>
 
 
-            <!-- TAB 5: THEMES, COLORS & IMPORT/EXPORT -->
+            <!-- TAB 5: THEMES, COLORS & STORAGE -->
             <LinearLayout
                 android:id="@+id/panelThemes"
                 android:layout_width="match_parent"
@@ -1545,7 +1545,34 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <!-- Card 1: Theme Profiles & Global Background Colors -->
+                <!-- Theme Selector Card (Outside and above main theme editor box) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Theme Profile to Edit:"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <Spinner
+                        android:id="@+id/spThemePreset"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp" />
+                </LinearLayout>
+
+                <!-- Card 1: Live Color Customization Box -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1571,36 +1598,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="Theme Profiles &amp; Global Colors"
+                            android:text="Theme Live Color Customizer"
                             android:textColor="@color/settings_text_header"
                             android:textSize="15sp"
                             android:textStyle="bold" />
                     </LinearLayout>
-
-                    <!-- Theme Preset Dropdown -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/setting_theme_preset_title"
-                        android:textColor="@color/key_text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <Spinner
-                        android:id="@+id/spThemePreset"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_spinner_card"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:layout_marginBottom="16dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/settings_divider"
-                        android:layout_marginBottom="16dp" />
 
                     <!-- Background Color Hex -->
                     <LinearLayout
@@ -1608,7 +1610,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="12dp">
 
                         <TextView
                             android:layout_width="0dp"
@@ -1641,40 +1643,12 @@
                             android:text="🎨"
                             android:textSize="14sp" />
                     </LinearLayout>
-                </LinearLayout>
 
-
-                <!-- Card 2: Visual Style Editor Per Key Category -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_settings_card"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="16dp">
-
-                    <!-- Section Header -->
-                    <LinearLayout
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="14dp">
-
-                        <View
-                            android:layout_width="4dp"
-                            android:layout_height="18dp"
-                            android:background="@drawable/bg_vertical_rule" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Key Category Style Editor"
-                            android:textColor="@color/settings_text_header"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                        android:layout_height="1dp"
+                        android:background="@color/settings_divider"
+                        android:layout_marginBottom="16dp" />
 
                     <!-- Key Category Selector Dropdown -->
                     <TextView
@@ -1693,12 +1667,6 @@
                         android:background="@drawable/bg_spinner_card"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
-                        android:layout_marginBottom="16dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/settings_divider"
                         android:layout_marginBottom="16dp" />
 
                     <!-- Category Background Hex -->
@@ -1786,7 +1754,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
 
                         <TextView
                             android:layout_width="0dp"
@@ -1819,12 +1788,22 @@
                             android:text="🎨"
                             android:textSize="14sp" />
                     </LinearLayout>
+
+                    <!-- Reset to Default Theme Palette Button -->
+                    <Button
+                        android:id="@+id/btnResetTheme"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="12dp"
+                        android:backgroundTint="#7F1D1D"
+                        android:text="🔄 Reset to Default Theme Palette"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
-
-                <!-- Card 3: Import & Export Suite -->
+                <!-- Card 2: Theme Files Storage & Directory Access -->
                 <LinearLayout
-                    android:id="@+id/cardThemeImportExport"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_settings_card"
@@ -1832,13 +1811,12 @@
                     android:padding="16dp"
                     android:layout_marginBottom="16dp">
 
-                    <!-- Section Header -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="14dp">
 
                         <View
                             android:layout_width="4dp"
@@ -1849,7 +1827,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="Theme Import &amp; Export Suite"
+                            android:text="Theme Files &amp; App Storage"
                             android:textColor="@color/settings_text_header"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -1858,49 +1836,18 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Save your theme profile as JSON files to storage, share configs, or import custom layouts from clipboard."
-                        android:textColor="#94A3B8"
+                        android:text="Theme JSON files are stored directly in Infinikey IME's external storage folder (Android/data/com.programmerkeyboard/files/themes).\n\nYou can access, back up, or modify theme JSON files directly using the system Files application."
+                        android:textColor="@color/settings_text_sub"
                         android:textSize="12sp"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Side-by-Side Import/Export Buttons -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/btnExportTheme"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="#1E3A5F"
-                            android:text="📤 Export Theme"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:layout_marginEnd="6dp" />
-
-                        <Button
-                            android:id="@+id/btnImportTheme"
-                            android:layout_width="0dp"
-                            android:layout_height="48dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="#0F766E"
-                            android:text="📥 Import Theme"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:layout_marginStart="6dp" />
-                    </LinearLayout>
-
+                    <!-- Launcher Button for Themes Directory in Files Application -->
                     <Button
-                        android:id="@+id/btnResetTheme"
+                        android:id="@+id/btnLaunchThemesFolder"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:layout_marginTop="10dp"
-                        android:backgroundTint="#7F1D1D"
-                        android:text="🔄 Reset to Default Theme Palette"
+                        android:backgroundTint="#0F766E"
+                        android:text="📁 Open Themes Directory in Files App"
                         android:textColor="#FFFFFF"
                         android:textSize="13sp"
                         android:textStyle="bold" />
