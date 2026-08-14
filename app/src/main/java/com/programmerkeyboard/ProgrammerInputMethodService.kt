@@ -618,8 +618,26 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
             }
             is KeyAction.Paste -> {
-                if (!inputConnection.performContextMenuAction(android.R.id.paste)) {
-                    sendShortcutKey(inputConnection, KeyEvent.KEYCODE_V)
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                var textToCommit: String? = null
+
+                if (clipboard != null && clipboard.hasPrimaryClip()) {
+                    val clipData = clipboard.primaryClip
+                    if (clipData != null && clipData.itemCount > 0) {
+                        val item = clipData.getItemAt(0)
+                        textToCommit = item.text?.toString() ?: item.coerceToText(this)?.toString()
+                    }
+                }
+
+                if (!textToCommit.isNullOrEmpty()) {
+                    inputConnection.commitText(textToCommit, 1)
+                } else {
+                    if (!inputConnection.performContextMenuAction(android.R.id.paste)) {
+                        sendShortcutKey(inputConnection, KeyEvent.KEYCODE_V)
+                    }
+                }
+                if (keyboardState.consumeOneShotModifiers()) {
+                    keyboardView.invalidate()
                 }
             }
             is KeyAction.PasteEcho -> {

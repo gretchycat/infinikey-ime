@@ -1599,22 +1599,32 @@ class KeyboardView @JvmOverloads constructor(
                 } else {
                     actionToExecute.options
                 }
-                keyPopupOverlay = KeyPopupOverlay(context, { selectedIndex, selectedLabel ->
-                    val actionToRun = if (selectedIndex in actionToExecute.actions.indices && actionToExecute.actions[selectedIndex] !is KeyAction.SendText) {
-                        actionToExecute.actions[selectedIndex]
-                    } else {
-                        resolveActionFromLabel(selectedLabel)
-                    }
-                    executeAction(actionToRun, sourceKey)
-                }, { hoveredIndex, hoveredLabel ->
-                    val isEmoji = isEmojiKey(sourceKey ?: pressedKeyBounds?.key ?: return@KeyPopupOverlay)
-                    if (isEmoji) {
-                        val itemRect = keyPopupOverlay?.getItemRect(hoveredIndex)
-                        if (itemRect != null) {
-                            showZoomPreview(hoveredLabel, itemRect)
+                keyPopupOverlay = KeyPopupOverlay(
+                    context = context,
+                    onItemSelected = { selectedIndex, selectedLabel ->
+                        val actionToRun = if (selectedIndex in actionToExecute.actions.indices && actionToExecute.actions[selectedIndex] !is KeyAction.SendText) {
+                            actionToExecute.actions[selectedIndex]
+                        } else {
+                            resolveActionFromLabel(selectedLabel)
                         }
+                        executeAction(actionToRun, sourceKey)
+                    },
+                    onHoverChanged = { hoveredIndex, hoveredLabel ->
+                        val isEmoji = isEmojiKey(sourceKey ?: pressedKeyBounds?.key ?: return@KeyPopupOverlay)
+                        if (isEmoji) {
+                            val itemRect = keyPopupOverlay?.getItemRect(hoveredIndex)
+                            if (itemRect != null) {
+                                showZoomPreview(hoveredLabel, itemRect)
+                            }
+                        }
+                    },
+                    onDismissListener = {
+                        keyPopupOverlay = null
+                        pressedKeyBounds = null
+                        dismissKeyPreview()
+                        invalidate()
                     }
-                }).also {
+                ).also {
                     it.show(this, rect, optionsToDisplay)
                 }
             }
@@ -2038,14 +2048,19 @@ class KeyboardView @JvmOverloads constructor(
         }
 
         if (keyPopupOverlay != null) {
-            keyPopupOverlay?.handleTouchEvent(event)
-            if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+            if (keyPopupOverlay?.isShowing() == false) {
                 keyPopupOverlay = null
-                pressedKeyBounds = null
-                dismissKeyPreview()
-                invalidate()
+            } else {
+                keyPopupOverlay?.handleTouchEvent(event)
+                if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+                    keyPopupOverlay?.dismiss()
+                    keyPopupOverlay = null
+                    pressedKeyBounds = null
+                    dismissKeyPreview()
+                    invalidate()
+                }
+                return true
             }
-            return true
         }
 
         when (event.action) {

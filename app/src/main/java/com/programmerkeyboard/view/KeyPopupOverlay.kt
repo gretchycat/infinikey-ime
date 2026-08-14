@@ -19,12 +19,15 @@ import android.widget.PopupWindow
 class KeyPopupOverlay(
     private val context: Context,
     private val onItemSelected: (Int, String) -> Unit,
-    private val onHoverChanged: ((Int, String) -> Unit)? = null
+    private val onHoverChanged: ((Int, String) -> Unit)? = null,
+    var onDismissListener: (() -> Unit)? = null
 ) {
     private var popupWindow: PopupWindow? = null
     private var popupView: PopupContentView? = null
     private var popupX = 0f
     private var popupY = 0f
+
+    fun isShowing(): Boolean = popupWindow?.isShowing == true
 
     fun getItemRect(index: Int): RectF? {
         val view = popupView ?: return null
@@ -77,6 +80,9 @@ class KeyPopupOverlay(
             isClippingEnabled = false
             isTouchable = true
             isOutsideTouchable = true
+            setOnDismissListener {
+                onDismissListener?.invoke()
+            }
             showAtLocation(
                 anchorView,
                 Gravity.NO_GRAVITY,
@@ -98,9 +104,11 @@ class KeyPopupOverlay(
     }
 
     fun dismiss() {
-        popupWindow?.dismiss()
+        val pw = popupWindow
         popupWindow = null
         popupView = null
+        pw?.dismiss()
+        onDismissListener?.invoke()
     }
 
     companion object {

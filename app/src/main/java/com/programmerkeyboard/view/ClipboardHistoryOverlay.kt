@@ -22,9 +22,12 @@ class ClipboardHistoryOverlay(
     private val historyItems: MutableList<String>,
     private val onItemPicked: (String) -> Unit,
     private val onDeleteItem: (Int, String) -> Unit,
-    private val onClearHistory: () -> Unit
+    private val onClearHistory: () -> Unit,
+    var onDismissListener: (() -> Unit)? = null
 ) {
     private var popupWindow: PopupWindow? = null
+
+    fun isShowing(): Boolean = popupWindow?.isShowing == true
 
     fun show(anchorView: View) {
         dismiss()
@@ -196,12 +199,19 @@ class ClipboardHistoryOverlay(
 
         popupWindow = PopupWindow(rootLayout, width, height, true).apply {
             isClippingEnabled = true
+            isTouchable = true
+            isOutsideTouchable = true
+            setOnDismissListener {
+                onDismissListener?.invoke()
+            }
             showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y)
         }
     }
 
     fun dismiss() {
-        popupWindow?.dismiss()
+        val pw = popupWindow
         popupWindow = null
+        pw?.dismiss()
+        onDismissListener?.invoke()
     }
 }
