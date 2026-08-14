@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
@@ -41,6 +42,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var exportFileLauncher: ActivityResultLauncher<String>
     private lateinit var importLayoutLauncher: ActivityResultLauncher<String>
     private lateinit var exportLayoutLauncher: ActivityResultLauncher<String>
+    private lateinit var browseKeyImageLauncher: ActivityResultLauncher<String>
+    private var onKeyIconPickedListener: ((String) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1560,6 +1563,10 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        browseKeyImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { onKeyIconPickedListener?.invoke(it.toString()) }
+        }
+
         fun getExportedLayoutFileName(): String {
             val layoutId = editingLayout?.id?.lowercase()?.replace("[^a-z0-9_]+".toRegex(), "_")?.trim('_') ?: "main"
             return "infinikey_${layoutId}_layout.json"
@@ -1842,6 +1849,110 @@ class SettingsActivity : AppCompatActivity() {
         spSwipeDownType.setSelection(getActionTypeIndex(key.onSwipeDownAction))
         etSwipeDownParam.setText(getActionParamString(key.onSwipeDownAction))
 
+        val spIcon = view.findViewById<Spinner>(R.id.spEditKeyIcon)
+        val ivIconPreview = view.findViewById<ImageView>(R.id.ivEditKeyIconPreview)
+        val btnBrowseImage = view.findViewById<Button>(R.id.btnBrowseKeyImage)
+
+        val iconOptions = listOf(
+            Pair("None (Text Label Only)", ""),
+            Pair("🎤 Microphone (mic.svg)", "mic.svg"),
+            Pair("🗣️ Speech TTS (tts.svg)", "tts.svg"),
+            Pair("📎 Paperclip (paperclip.svg)", "paperclip.svg"),
+            Pair("📋 Clipboard (clipboard.svg)", "clipboard.svg"),
+            Pair("📄 Copy (copy.svg)", "copy.svg"),
+            Pair("✂️ Cut (cut.svg)", "cut.svg"),
+            Pair("📥 Paste (paste.svg)", "paste.svg"),
+            Pair("☑️ Select All (select_all.svg)", "select_all.svg"),
+            Pair("⌨️ Keyboard (keyboard)", "keyboard"),
+            Pair("🖼️ Custom User Image...", "custom")
+        )
+
+        val iconAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, iconOptions.map { it.first })
+        spIcon.adapter = iconAdapter
+
+        var currentIconName: String? = key.iconName
+
+        fun updateIconPreview(iconStr: String?) {
+            if (iconStr.isNullOrEmpty()) {
+                ivIconPreview.setImageDrawable(null)
+                return
+            }
+            if (iconStr.startsWith("content://") || iconStr.startsWith("file://") || iconStr.startsWith("/")) {
+                try {
+                    val uri = android.net.Uri.parse(iconStr)
+                    val bitmap = if (iconStr.startsWith("content://")) {
+                        contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it) }
+                    } else {
+                        android.graphics.BitmapFactory.decodeFile(iconStr)
+                    }
+                    if (bitmap != null) {
+                        ivIconPreview.setImageBitmap(bitmap)
+                    } else {
+                        ivIconPreview.setImageDrawable(null)
+                    }
+                } catch (_: Exception) {
+                    ivIconPreview.setImageDrawable(null)
+                }
+            } else {
+                val previewEmoji = when (iconStr.lowercase()) {
+                    "mic", "microphone", "voice", "mic.svg", "assets/images/mic.svg" -> "🎤"
+                    "tts", "read_text", "speech", "tts.svg", "assets/images/tts.svg" -> "🗣️"
+                    "paperclip", "clip", "paperclip.svg", "assets/images/paperclip.svg" -> "📎"
+                    "clipboard", "clipboard_history", "clipboard.svg", "assets/images/clipboard.svg" -> "📋"
+                    "copy", "copy.svg", "assets/images/copy.svg" -> "📄"
+                    "cut", "cut.svg", "assets/images/cut.svg" -> "✂️"
+                    "paste", "paste.svg", "assets/images/paste.svg" -> "📥"
+                    "select_all", "select_all.svg", "assets/images/select_all.svg" -> "☑️"
+                    "keyboard" -> "⌨️"
+                    else -> "🖼️"
+                }
+                val bitmap = android.graphics.Bitmap.createBitmap(64, 64, android.graphics.Bitmap.Config.ARGB_8888)
+                val canvas = android.graphics.Canvas(bitmap)
+                val paint = android.graphics.Paint().apply {
+                    textSize = 40f
+                    textAlign = android.graphics.Paint.Align.CENTER
+                }
+                val fm = paint.fontMetrics
+                val baseline = 32f - (fm.ascent + fm.descent) / 2
+                canvas.drawText(previewEmoji, 32f, baseline, paint)
+                ivIconPreview.setImageBitmap(bitmap)
+            }
+        }
+
+        val initialIconIdx = if (key.iconName.isNullOrEmpty()) 0
+        else {
+            val idx = iconOptions.indexOfFirst { it.second.equals(key.iconName, ignoreCase = true) }
+            if (idx >= 0) idx else 10
+        }
+        spIcon.setSelection(initialIconIdx)
+        updateIconPreview(currentIconName)
+
+        onKeyIconPickedListener = { uriStr ->
+            currentIconName = uriStr
+            spIcon.setSelection(10)
+            updateIconPreview(currentIconName)
+        }
+
+        spIcon.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (position == 10) {
+                    if (currentIconName.isNullOrEmpty() || (!currentIconName!!.startsWith("content://") && !currentIconName!!.startsWith("file://") && !currentIconName!!.startsWith("/"))) {
+                        browseKeyImageLauncher.launch("image/*")
+                    } else {
+                        updateIconPreview(currentIconName)
+                    }
+                } else {
+                    currentIconName = iconOptions[position].second
+                    updateIconPreview(currentIconName)
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        btnBrowseImage.setOnClickListener {
+            browseKeyImageLauncher.launch("image/*")
+        }
+
         var dialog: AlertDialog? = null
 
         btnDelete.setOnClickListener {
@@ -1870,6 +1981,7 @@ class SettingsActivity : AppCompatActivity() {
                 val newTopRight = etTopRight.text.toString().ifEmpty { null }
                 val newCat = availableStyles[spCategory.selectedItemPosition.coerceIn(0, availableStyles.size - 1)]
                 val newWeightVal = etWeight.text.toString().toFloatOrNull() ?: 1.0f
+                val newIconName = currentIconName?.ifEmpty { null }
 
                 val newOnPress = parseKeyActionFromInputs(spActionType.selectedItemPosition, etActionParam.text.toString(), newPrimary)
                 val newLongPress = parseKeyActionFromInputs(spLongPressType.selectedItemPosition, etLongPressParam.text.toString(), "")
@@ -1888,6 +2000,7 @@ class SettingsActivity : AppCompatActivity() {
                                 topRightLabel = newTopRight,
                                 styleName = newCat,
                                 widthWeight = DimensionValue.Ratio(newWeightVal),
+                                iconName = newIconName,
                                 onPressAction = newOnPress,
                                 onLongPressAction = newLongPress,
                                 onSwipeUpAction = newSwipeUp,

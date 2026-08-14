@@ -1577,6 +1577,27 @@ class KeyboardView @JvmOverloads constructor(
                     canvas.drawText("⌨", centerX, bl, p)
                     return
                 }
+                else -> {
+                    val rawIcon = key.iconName ?: ""
+                    if (rawIcon.startsWith("content://") || rawIcon.startsWith("file://") || rawIcon.startsWith("/")) {
+                        try {
+                            val uri = android.net.Uri.parse(rawIcon)
+                            val bitmap = if (rawIcon.startsWith("content://")) {
+                                context.contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it) }
+                            } else {
+                                android.graphics.BitmapFactory.decodeFile(rawIcon)
+                            }
+                            if (bitmap != null) {
+                                val half = iconSize * 0.8f
+                                val dstRect = RectF(centerX - half, centerY - half, centerX + half, centerY + half)
+                                canvas.drawBitmap(bitmap, null, dstRect, paint)
+                                return
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
             }
         }
 
