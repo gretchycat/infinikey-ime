@@ -1267,24 +1267,8 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         fun syncDefaultLayoutsToFolder() {
-            val dir = getUserLayoutsDir()
             com.programmerkeyboard.util.IconRenderer.getUserIconsDir(this)
-            val assetFiles = try {
-                assets.list("layouts")?.filter { it.endsWith(".json") } ?: emptyList()
-            } catch (_: Exception) {
-                listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "emoji.json")
-            }
-
-            for (file in assetFiles) {
-                val targetFile = java.io.File(dir, file)
-                if (!targetFile.exists()) {
-                    try {
-                        assets.open("layouts/$file").use { input ->
-                            targetFile.outputStream().use { output -> input.copyTo(output) }
-                        }
-                    } catch (_: Exception) {}
-                }
-            }
+            com.programmerkeyboard.engine.LayoutParser.syncAndUpgradeDefaultLayouts(this)
         }
 
         syncDefaultLayoutsToFolder()
@@ -1329,22 +1313,28 @@ class SettingsActivity : AppCompatActivity() {
 
         val spEditorLayoutSelector = findViewById<Spinner>(R.id.spEditorLayoutSelector)
         
-        val assetLayoutFiles = try {
-            assets.list("layouts")?.filter { it.endsWith(".json") }?.sorted() ?: emptyList()
-        } catch (_: Exception) {
-            listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "emoji.json")
-        }
+        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json")
+        val generatedAssetFiles = listOf("emoji.json", "emoji_animals.json", "emoji_body.json", "emoji_flags.json", "emoji_food.json", "emoji_objects.json", "emoji_sports.json", "emoji_symbols.json", "emoji_travel.json")
 
         data class LayoutSelectorEntry(
             val baseDisplayName: String,
             val targetId: String,
             val assetFileName: String?,
             var version: String = "1.0",
-            var isEdited: Boolean = false
+            var isEdited: Boolean = false,
+            val categoryType: Int = 1,
+            val isActionItem: Boolean = false
         ) {
             fun getFullFormattedTitle(): String {
+                if (isActionItem) return baseDisplayName
+                val categoryIcon = when (categoryType) {
+                    1 -> "⭐ "
+                    2 -> "👤 "
+                    3 -> "⚡ "
+                    else -> ""
+                }
                 val statusTag = if (isEdited) "[Edited]" else "[Default]"
-                return "$baseDisplayName (v$version) $statusTag"
+                return "$categoryIcon$baseDisplayName (v$version) $statusTag"
             }
         }
 
@@ -1372,16 +1362,29 @@ class SettingsActivity : AppCompatActivity() {
         val btnResetLayout = findViewById<Button>(R.id.btnResetLayout)
 
         fun updateResetButtonState(entry: LayoutSelectorEntry?) {
-            val canReset = entry?.isEdited == true
-            btnResetLayout.isEnabled = canReset
-            btnResetLayout.alpha = if (canReset) 1.0f else 0.4f
-            btnResetLayout.text = if (canReset) "🔄 Reset to Default Layout" else "🔄 Default Layout Active"
+            val isUserCreated = entry?.categoryType == 2
+            if (isUserCreated) {
+                btnResetLayout.isEnabled = true
+                btnResetLayout.alpha = 1.0f
+                btnResetLayout.text = "🗑️ Delete Custom Layout"
+                btnResetLayout.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#991B1B"))
+                btnResetLayout.setTextColor(android.graphics.Color.parseColor("#FFFFFF"))
+            } else {
+                btnResetLayout.isEnabled = true
+                btnResetLayout.alpha = 1.0f
+                btnResetLayout.text = "🔄 Reset to Default Layout"
+                btnResetLayout.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1E293B"))
+                btnResetLayout.setTextColor(android.graphics.Color.parseColor("#94A3B8"))
+            }
         }
 
         fun loadLayoutEntries(): MutableList<LayoutSelectorEntry> {
+            com.programmerkeyboard.engine.LayoutParser.syncAndUpgradeDefaultLayouts(this@SettingsActivity)
             val entries = mutableListOf<LayoutSelectorEntry>()
             val layoutsDir = getUserLayoutsDir()
-            for (file in assetLayoutFiles) {
+
+            // 1. Default Layouts
+            for (file in defaultAssetFiles) {
                 val targetId = file.removeSuffix(".json")
                 val customFile = java.io.File(layoutsDir, file)
                 val customJsonPref = prefs.getString("pref_custom_layout_json_$targetId", null)
@@ -1389,7 +1392,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 val defaultAssetJson = try { assets.open("layouts/$file").bufferedReader().use { it.readText() }.trim() } catch (_: Exception) { "" }
                 val currentFileJson = if (customFile.exists()) customFile.readText().trim() else ""
-                val isEdited = !customJsonPref.isNullOrEmpty() || (currentFileJson.isNotEmpty() && currentFileJson != defaultAssetJson)
+                val isEdited = prefs.getBoolean("pref_layout_is_edited_$targetId", false) || (!customJsonPref.isNullOrEmpty() && currentFileJson != defaultAssetJson)
 
                 val loaded = try {
                     if (currentFileJson.isNotEmpty()) {
@@ -1403,8 +1406,65 @@ class SettingsActivity : AppCompatActivity() {
                     com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
                 val baseName = getDisplayNameForAsset(file)
-                entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited))
+                entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited, categoryType = 1))
             }
+
+            // 2. User-Created / Custom Layouts
+            val userFiles = try {
+                layoutsDir.listFiles { _, name ->
+                    name.endsWith(".json") && name !in defaultAssetFiles && name !in generatedAssetFiles
+                }?.sortedBy { it.name } ?: emptyList<java.io.File>()
+            } catch (_: Exception) { emptyList<java.io.File>() }
+
+            for (userFile in userFiles) {
+                val file = userFile.name
+                val targetId = file.removeSuffix(".json")
+                val customJsonPref = prefs.getString("pref_custom_layout_json_$targetId", null)
+                val currentFileJson = try { userFile.readText().trim() } catch (_: Exception) { "" }
+                val isEdited = prefs.getBoolean("pref_layout_is_edited_$targetId", true)
+
+                val loaded = try {
+                    if (currentFileJson.isNotEmpty()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(currentFileJson)
+                    } else if (!customJsonPref.isNullOrEmpty()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJsonPref)
+                    } else {
+                        com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                    }
+                } catch (_: Exception) {
+                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                }
+                val baseName = if (loaded.name.isNotEmpty()) loaded.name else file.removeSuffix(".json").replace('_', ' ')
+                entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited = isEdited, categoryType = 2))
+            }
+
+            // 3. Generated Layouts
+            for (file in generatedAssetFiles) {
+                val targetId = file.removeSuffix(".json")
+                val customFile = java.io.File(layoutsDir, file)
+                val customJsonPref = prefs.getString("pref_custom_layout_json_$targetId", null)
+                val defaultAssetJson = try { assets.open("layouts/$file").bufferedReader().use { it.readText() }.trim() } catch (_: Exception) { "" }
+                val currentFileJson = if (customFile.exists()) customFile.readText().trim() else ""
+                val isEdited = prefs.getBoolean("pref_layout_is_edited_$targetId", false) || (!customJsonPref.isNullOrEmpty() && currentFileJson != defaultAssetJson)
+
+                val loaded = try {
+                    if (currentFileJson.isNotEmpty()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(currentFileJson)
+                    } else if (!customJsonPref.isNullOrEmpty()) {
+                        com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJsonPref)
+                    } else {
+                        com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                    }
+                } catch (_: Exception) {
+                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                }
+                val baseName = getDisplayNameForAsset(file)
+                entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited, categoryType = 3))
+            }
+
+            // 4. Create New Empty Layout Option
+            entries.add(LayoutSelectorEntry("➕ Create New Empty Layout...", "create_new_action", null, categoryType = 4, isActionItem = true))
+
             return entries
         }
 
@@ -1414,6 +1474,123 @@ class SettingsActivity : AppCompatActivity() {
             val titles = layoutEntries.map { it.getFullFormattedTitle() }
             val layoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, titles)
             spEditorLayoutSelector.adapter = layoutAdapter
+        }
+
+        fun showCreateEmptyLayoutDialog() {
+            val input = EditText(this).apply {
+                hint = "Layout Name (e.g. Custom Coding Keyboard)"
+                setSingleLine()
+            }
+            val container = android.widget.FrameLayout(this).apply {
+                val p = (16 * resources.displayMetrics.density).toInt()
+                setPadding(p, p / 2, p, p / 2)
+                addView(input)
+            }
+
+            AlertDialog.Builder(this)
+                .setTitle("Create New Custom Layout")
+                .setMessage("Enter a name for your new custom keyboard layout:")
+                .setView(container)
+                .setPositiveButton("Create") { _, _ ->
+                    val layoutName = input.text.toString().trim().ifEmpty { "Custom Layout" }
+                    val rawSlug = layoutName.lowercase().replace(Regex("[^a-z0-9_]"), "_").trim('_')
+                    val baseTargetId = if (rawSlug.isEmpty()) "custom_layout" else rawSlug
+
+                    var targetId = baseTargetId
+                    var targetFile = java.io.File(getUserLayoutsDir(), "${targetId}.json")
+                    var count = 2
+                    while (targetFile.exists()) {
+                        targetId = "${baseTargetId}_$count"
+                        targetFile = java.io.File(getUserLayoutsDir(), "${targetId}.json")
+                        count++
+                    }
+
+                    val newLayout = com.programmerkeyboard.model.LayoutDefinition(
+                        id = targetId,
+                        name = layoutName,
+                        version = "0.1.28",
+                        author = "User Custom",
+                        description = "Custom layout created by user.",
+                        metadata = com.programmerkeyboard.model.LayoutMetadata(
+                            horizontalSpacing = com.programmerkeyboard.model.DimensionValue.Absolute(4),
+                            verticalSpacing = com.programmerkeyboard.model.DimensionValue.Absolute(4),
+                            defaultScreenMode = "FULL_WIDTH_DOCKED",
+                            defaultHeightPercentage = 30,
+                            showKeyPreview = true
+                        ),
+                        rows = listOf(
+                            com.programmerkeyboard.model.KeyRow(
+                                id = 1,
+                                keys = listOf(
+                                    com.programmerkeyboard.model.KeyDefinition(
+                                        primaryLabel = "Key 1",
+                                        widthWeight = com.programmerkeyboard.model.DimensionValue.Ratio(1.0f),
+                                        styleName = "alphaKey",
+                                        onPressAction = com.programmerkeyboard.model.KeyAction.SendText("Key 1")
+                                    )
+                                )
+                            ),
+                            com.programmerkeyboard.model.KeyRow(
+                                id = 2,
+                                keys = listOf(
+                                    com.programmerkeyboard.model.KeyDefinition(
+                                        primaryLabel = "⌨ Main",
+                                        widthWeight = com.programmerkeyboard.model.DimensionValue.Ratio(1.5f),
+                                        styleName = "modifierKey",
+                                        onPressAction = com.programmerkeyboard.model.KeyAction.SwitchLayout("main")
+                                    ),
+                                    com.programmerkeyboard.model.KeyDefinition(
+                                        primaryLabel = "␣",
+                                        widthWeight = com.programmerkeyboard.model.DimensionValue.Ratio(3.0f),
+                                        styleName = "alphaKey",
+                                        onPressAction = com.programmerkeyboard.model.KeyAction.SendText(" ")
+                                    ),
+                                    com.programmerkeyboard.model.KeyDefinition(
+                                        primaryLabel = "⌫",
+                                        widthWeight = com.programmerkeyboard.model.DimensionValue.Ratio(1.5f),
+                                        styleName = "actionKey",
+                                        onPressAction = com.programmerkeyboard.model.KeyAction.SendCode(android.view.KeyEvent.KEYCODE_DEL)
+                                    )
+                                )
+                            )
+                        )
+                    )
+
+                    try {
+                        val jsonStr = serializeLayoutToJson(newLayout)
+                        targetFile.writeText(jsonStr)
+
+                        prefs.edit()
+                            .putString("pref_custom_layout_json_$targetId", jsonStr)
+                            .putBoolean("pref_layout_is_edited_$targetId", true)
+                            .putString("pref_keyboard_layout_target", targetId)
+                            .apply()
+
+                        val newEntries = loadLayoutEntries()
+                        layoutEntries.clear()
+                        layoutEntries.addAll(newEntries)
+                        updateLayoutSpinner()
+
+                        val newPos = layoutEntries.indexOfFirst { it.targetId == targetId }
+                        if (newPos >= 0) {
+                            spEditorLayoutSelector.setSelection(newPos)
+                        }
+
+                        editingLayout = newLayout
+                        editorKeyboardView.setLayout(newLayout)
+                        undoStack.clear()
+                        redoStack.clear()
+                        hasUnsavedChanges = true
+                        updateUndoRedoButtons()
+
+                        Toast.makeText(this, "Created new custom layout '$layoutName'!", Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(this, "Failed to create layout: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
 
         updateLayoutSpinner()
@@ -1426,10 +1603,18 @@ class SettingsActivity : AppCompatActivity() {
             updateResetButtonState(layoutEntries[initialPosition])
         }
 
+        var lastSelectedPos = initialPosition
         spEditorLayoutSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position !in layoutEntries.indices) return
                 val entry = layoutEntries[position]
+                if (entry.isActionItem) {
+                    spEditorLayoutSelector.setSelection(lastSelectedPos)
+                    showCreateEmptyLayoutDialog()
+                    return
+                }
+                lastSelectedPos = position
+                com.programmerkeyboard.engine.LayoutParser.syncAndUpgradeDefaultLayouts(this@SettingsActivity)
                 val targetId = entry.targetId
                 val targetFile = entry.assetFileName
 
@@ -1553,11 +1738,16 @@ class SettingsActivity : AppCompatActivity() {
                     val targetFile = java.io.File(dir, "${targetId}.json")
                     targetFile.writeText(jsonStr)
 
-                    prefs.edit()
+                    val editor = prefs.edit()
                         .putString("pref_custom_layout_json_$targetId", jsonStr)
-                        .putString("pref_custom_layout_json", jsonStr)
                         .putString("pref_keyboard_layout_target", targetId)
-                        .apply()
+                        .putBoolean("pref_layout_is_edited_$targetId", true)
+                    if (targetId == "main") {
+                        editor.putString("pref_custom_layout_json", jsonStr)
+                    } else {
+                        editor.remove("pref_custom_layout_json")
+                    }
+                    editor.apply()
                     hasUnsavedChanges = false
                     undoStack.clear()
                     redoStack.clear()
@@ -1693,41 +1883,79 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         btnResetLayout.setOnClickListener {
-            val activeTarget = prefs.getString("pref_keyboard_layout_target", "main") ?: "main"
-            val targetFile = if (activeTarget.endsWith(".json")) activeTarget else "${activeTarget}.json"
-            AlertDialog.Builder(this)
-                .setTitle("Reset Keyboard Layout")
-                .setMessage("Reset layout '$activeTarget' to static factory default?")
-                .setPositiveButton("Reset Layout") { _, _ ->
-                    undoStack.clear()
-                    redoStack.clear()
-                    hasUnsavedChanges = false
-                    updateUndoRedoButtons()
-                    prefs.edit()
-                        .remove("pref_custom_layout_json_$activeTarget")
-                        .apply()
-                    // Reset external layout file to default asset
-                    try {
-                        val dir = getUserLayoutsDir()
-                        val customFile = java.io.File(dir, targetFile)
-                        assets.open("layouts/$targetFile").use { input ->
-                            customFile.outputStream().use { output -> input.copyTo(output) }
-                        }
-                    } catch (_: Exception) {}
+            val pos = spEditorLayoutSelector.selectedItemPosition
+            if (pos !in layoutEntries.indices) return@setOnClickListener
+            val currentEntry = layoutEntries[pos]
 
-                    editingLayout = com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
-                    editorKeyboardView.setLayout(editingLayout!!)
-                    val pos = spEditorLayoutSelector.selectedItemPosition
-                    if (pos in layoutEntries.indices) {
-                        layoutEntries[pos].isEdited = false
-                        updateLayoutSpinner()
-                        spEditorLayoutSelector.setSelection(pos)
-                        updateResetButtonState(layoutEntries[pos])
+            if (currentEntry.categoryType == 2) {
+                val targetId = currentEntry.targetId
+                val layoutName = currentEntry.baseDisplayName
+                AlertDialog.Builder(this)
+                    .setTitle("Delete Custom Layout")
+                    .setMessage("Are you sure you want to delete custom layout '$layoutName'? This action cannot be undone.")
+                    .setPositiveButton("Delete Layout") { _, _ ->
+                        try {
+                            val targetFile = java.io.File(getUserLayoutsDir(), currentEntry.assetFileName ?: "${targetId}.json")
+                            if (targetFile.exists()) targetFile.delete()
+
+                            prefs.edit()
+                                .remove("pref_custom_layout_json_$targetId")
+                                .remove("pref_layout_is_edited_$targetId")
+                                .putString("pref_keyboard_layout_target", "main")
+                                .apply()
+
+                            val newEntries = loadLayoutEntries()
+                            layoutEntries.clear()
+                            layoutEntries.addAll(newEntries)
+                            updateLayoutSpinner()
+
+                            val mainPos = layoutEntries.indexOfFirst { it.targetId == "main" }.coerceAtLeast(0)
+                            spEditorLayoutSelector.setSelection(mainPos)
+
+                            Toast.makeText(this, "Custom layout '$layoutName' deleted!", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Toast.makeText(this, "Failed to delete layout: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
                     }
-                    Toast.makeText(this, "Layout '$activeTarget' reset to factory default!", Toast.LENGTH_SHORT).show()
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            } else {
+                val activeTarget = currentEntry.targetId
+                val targetFile = currentEntry.assetFileName ?: "${activeTarget}.json"
+                AlertDialog.Builder(this)
+                    .setTitle("Reset Keyboard Layout")
+                    .setMessage("Reset layout '$activeTarget' to static factory default?")
+                    .setPositiveButton("Reset Layout") { _, _ ->
+                        pushUndoState()
+                        prefs.edit()
+                            .remove("pref_custom_layout_json_$activeTarget")
+                            .putBoolean("pref_layout_is_edited_$activeTarget", false)
+                            .apply()
+                        try {
+                            val dir = getUserLayoutsDir()
+                            val customFile = java.io.File(dir, targetFile)
+                            assets.open("layouts/$targetFile").use { input ->
+                                customFile.outputStream().use { output -> input.copyTo(output) }
+                            }
+                        } catch (_: Exception) {}
+
+                        editingLayout = com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
+                        editorKeyboardView.setLayout(editingLayout!!)
+                        hasUnsavedChanges = true
+                        updateUndoRedoButtons()
+                        val newPos = spEditorLayoutSelector.selectedItemPosition
+                        if (newPos in layoutEntries.indices) {
+                            layoutEntries[newPos].isEdited = false
+                            updateLayoutSpinner()
+                            spEditorLayoutSelector.setSelection(newPos)
+                            updateResetButtonState(layoutEntries[newPos])
+                        }
+                        Toast.makeText(this, "Layout '$activeTarget' reset to factory default!", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
         }
     }
 
@@ -1742,6 +1970,7 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.ShowWidget -> 6
             is KeyAction.SetScreenMode -> 7
             is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.PasteEcho, is KeyAction.SelectAll -> 8
+            is KeyAction.LaunchApp -> 9
             else -> 0
         }
     }
@@ -1760,6 +1989,7 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.Paste -> "PASTE"
             is KeyAction.PasteEcho -> "PASTE_ECHO"
             is KeyAction.SelectAll -> "SELECT_ALL"
+            is KeyAction.LaunchApp -> action.packageName
             else -> ""
         }
     }
@@ -1785,8 +2015,140 @@ class SettingsActivity : AppCompatActivity() {
                 "PASTE_ECHO", "ECHO_CLIPBOARD" -> KeyAction.PasteEcho
                 else -> KeyAction.SelectAll
             }
+            9 -> KeyAction.LaunchApp(trimmed)
             else -> KeyAction.SendText(if (paramStr.isNotEmpty()) paramStr else defaultText)
         }
+    }
+    private data class InstalledAppInfo(
+        val label: String,
+        val packageName: String,
+        val icon: android.graphics.drawable.Drawable?
+    )
+
+    private fun getInstalledLaunchableApps(): List<InstalledAppInfo> {
+        val pm = packageManager
+        val appMap = mutableMapOf<String, InstalledAppInfo>()
+
+        val mainIntent = Intent(Intent.ACTION_MAIN, null).apply {
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+        val launcherInfos = try {
+            pm.queryIntentActivities(mainIntent, 0)
+        } catch (_: Exception) { emptyList() }
+
+        for (info in launcherInfos) {
+            val label = info.loadLabel(pm).toString()
+            val pkg = info.activityInfo.packageName
+            val icon = try { info.loadIcon(pm) } catch (_: Exception) { null }
+            appMap[pkg] = InstalledAppInfo(label, pkg, icon)
+        }
+
+        val installedApps = try {
+            pm.getInstalledApplications(android.content.pm.PackageManager.GET_META_DATA)
+        } catch (_: Exception) { emptyList() }
+
+        for (app in installedApps) {
+            val pkg = app.packageName
+            if (!appMap.containsKey(pkg)) {
+                val launchIntent = try { pm.getLaunchIntentForPackage(pkg) } catch (_: Exception) { null }
+                if (launchIntent != null) {
+                    val label = try { app.loadLabel(pm).toString() } catch (_: Exception) { pkg }
+                    val icon = try { app.loadIcon(pm) } catch (_: Exception) { null }
+                    appMap[pkg] = InstalledAppInfo(label, pkg, icon)
+                }
+            }
+        }
+
+        return appMap.values.sortedBy { it.label.lowercase() }
+    }
+
+    private fun showAppPickerDialog(onSelected: (packageName: String, label: String) -> Unit) {
+        val allApps = getInstalledLaunchableApps()
+        var filteredApps = allApps.toList()
+
+        val searchInput = EditText(this).apply {
+            hint = "🔍 Search installed apps..."
+            setSingleLine()
+            setBackgroundColor(android.graphics.Color.parseColor("#1E293B"))
+            setTextColor(android.graphics.Color.WHITE)
+            setHintTextColor(android.graphics.Color.parseColor("#94A3B8"))
+            val p = (12 * resources.displayMetrics.density).toInt()
+            setPadding(p, p, p, p)
+        }
+
+        val listView = android.widget.ListView(this).apply {
+            divider = android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor("#334155"))
+            dividerHeight = 1
+        }
+
+        val container = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            val p = (16 * resources.displayMetrics.density).toInt()
+            setPadding(p, p, p, p)
+            val searchParams = android.widget.LinearLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                bottomMargin = (8 * resources.displayMetrics.density).toInt()
+            }
+            addView(searchInput, searchParams)
+            val listParams = android.widget.LinearLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                (350 * resources.displayMetrics.density).toInt()
+            )
+            addView(listView, listParams)
+        }
+
+        lateinit var dialog: AlertDialog
+
+        fun createAdapter(items: List<InstalledAppInfo>): ArrayAdapter<InstalledAppInfo> {
+            return object : ArrayAdapter<InstalledAppInfo>(this@SettingsActivity, 0, items) {
+                override fun getView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
+                    val view = convertView ?: layoutInflater.inflate(android.R.layout.activity_list_item, parent, false)
+                    val item = getItem(position) ?: return view
+                    val iconView = view.findViewById<android.widget.ImageView>(android.R.id.icon)
+                    val textView = view.findViewById<TextView>(android.R.id.text1)
+
+                    iconView?.setImageDrawable(item.icon)
+                    textView?.text = "${item.label}\n${item.packageName}"
+                    textView?.setTextColor(android.graphics.Color.WHITE)
+                    textView?.textSize = 14f
+                    return view
+                }
+            }
+        }
+
+        listView.adapter = createAdapter(filteredApps)
+
+        searchInput.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString()?.lowercase()?.trim() ?: ""
+                filteredApps = if (query.isEmpty()) {
+                    allApps
+                } else {
+                    allApps.filter { it.label.lowercase().contains(query) || it.packageName.lowercase().contains(query) }
+                }
+                listView.adapter = createAdapter(filteredApps)
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
+        listView.setOnItemClickListener { _, _, position, _ ->
+            if (position in filteredApps.indices) {
+                val selected = filteredApps[position]
+                onSelected(selected.packageName, selected.label)
+                dialog.dismiss()
+            }
+        }
+
+        dialog = AlertDialog.Builder(this)
+            .setTitle("Select App to Launch")
+            .setView(container)
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
     }
 
     private fun showKeyEditorDialog(
@@ -1853,7 +2215,8 @@ class SettingsActivity : AppCompatActivity() {
             "Switch Layout",
             "Show Widget",
             "Set Screen Mode",
-            "Clipboard (COPY/CUT/PASTE/SELECT_ALL)"
+            "Clipboard (COPY/CUT/PASTE/SELECT_ALL)",
+            "Launch App"
         )
         val actionAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, actionTypes)
         spActionType.adapter = actionAdapter
@@ -1951,6 +2314,15 @@ class SettingsActivity : AppCompatActivity() {
                 Pair("Select All Text", "SELECT_ALL")
             )
 
+            val launchableApps = try {
+                getInstalledLaunchableApps().map { Pair(it.label, it.packageName) }
+            } catch (_: Exception) { emptyList() }
+
+            val launchAppOptions = launchableApps.map { Pair("🚀 Launch ${it.first} (${it.second})", it.second) } + listOf(
+                Pair("🔍 Search All Installed Apps...", "search_apps"),
+                Pair("Custom Package Name...", "custom")
+            )
+
             fun updateParamUi(typePosition: Int, paramVal: String) {
                 when (typePosition) {
                     0 -> {
@@ -2036,6 +2408,21 @@ class SettingsActivity : AppCompatActivity() {
                         etParam.visibility = View.GONE
                         etParam.setText(clipboardOptions[matchIdx].second)
                     }
+                    9 -> {
+                        spParamSelect.visibility = View.VISIBLE
+                        val options = launchAppOptions.map { it.first }
+                        spParamSelect.adapter = ArrayAdapter<String>(this@SettingsActivity, android.R.layout.simple_spinner_dropdown_item, options)
+                        val matchIdx = launchAppOptions.indexOfFirst { it.second.equals(paramVal, ignoreCase = true) }
+                        if (matchIdx >= 0 && launchAppOptions[matchIdx].second != "search_apps") {
+                            spParamSelect.setSelection(matchIdx)
+                            etParam.visibility = View.GONE
+                        } else {
+                            val searchIdx = launchAppOptions.indexOfFirst { it.second == "search_apps" }.coerceAtLeast(0)
+                            spParamSelect.setSelection(searchIdx)
+                            etParam.visibility = View.VISIBLE
+                            etParam.hint = "Package Name (e.g. com.termux)"
+                        }
+                    }
                 }
             }
 
@@ -2100,6 +2487,29 @@ class SettingsActivity : AppCompatActivity() {
                                 etParam.setText(selected.second)
                             }
                         }
+                        9 -> {
+                            val selected = launchAppOptions.getOrNull(position)
+                            if (selected != null) {
+                                if (selected.second == "search_apps") {
+                                    showAppPickerDialog { pkg, label ->
+                                        etParam.setText(pkg)
+                                        if (etPrimary.text.isNullOrEmpty()) {
+                                            etPrimary.setText(label)
+                                        }
+                                        updateParamUi(9, pkg)
+                                    }
+                                } else if (selected.second != "custom") {
+                                    etParam.setText(selected.second)
+                                    etParam.visibility = View.GONE
+                                    if (etPrimary.text.isNullOrEmpty()) {
+                                        val appLabel = selected.first.removePrefix("🚀 Launch ").substringBefore(" (")
+                                        etPrimary.setText(appLabel)
+                                    }
+                                } else {
+                                    etParam.visibility = View.VISIBLE
+                                }
+                            }
+                        }
                     }
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -2161,8 +2571,19 @@ class SettingsActivity : AppCompatActivity() {
 
             val selectIdx = if (selectedPath.isNullOrEmpty()) 0
             else {
-                val idx = currentIconOptions.indexOfFirst { it.second.equals(selectedPath, ignoreCase = true) }
-                if (idx >= 0) idx else customIdx
+                val cleanSelected = selectedPath.trim().lowercase()
+                val noExtSelected = cleanSelected.substringBeforeLast('.')
+                val idx = currentIconOptions.indexOfFirst { option ->
+                    val optPath = option.second.lowercase()
+                    val optNoExt = optPath.substringBeforeLast('.')
+                    optPath == cleanSelected ||
+                    optNoExt == cleanSelected ||
+                    optPath == noExtSelected ||
+                    optNoExt == noExtSelected ||
+                    (cleanSelected.isNotEmpty() && optPath.endsWith("/$cleanSelected")) ||
+                    (optPath.isNotEmpty() && cleanSelected.endsWith("/$optPath"))
+                }
+                if (idx >= 0) idx else 0
             }
             spIcon.setSelection(selectIdx)
         }
@@ -2656,6 +3077,10 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.PasteEcho -> obj.addProperty("type", "PASTE_ECHO")
             is KeyAction.SelectAll -> obj.addProperty("type", "SELECT_ALL")
             is KeyAction.SwitchIme -> obj.addProperty("type", "SWITCH_IME")
+            is KeyAction.LaunchApp -> {
+                obj.addProperty("type", "LAUNCH_APP")
+                obj.addProperty("packageName", action.packageName)
+            }
             is KeyAction.ToggleRow -> {
                 obj.addProperty("type", "TOGGLE_ROW")
                 obj.addProperty("rowId", action.rowId.toString())
@@ -2678,6 +3103,8 @@ class SettingsActivity : AppCompatActivity() {
         key.topLeftLabel?.let { obj.addProperty("topLeftLabel", it) }
         key.topRightLabel?.let { obj.addProperty("topRightLabel", it) }
         key.styleName?.let { obj.addProperty("style", it) }
+        key.iconName?.let { obj.addProperty("icon", it) }
+        key.backgroundImage?.let { obj.addProperty("backgroundImage", it) }
         
         when (val w = key.widthWeight) {
             is DimensionValue.Ratio -> obj.addProperty("weight", w.value)

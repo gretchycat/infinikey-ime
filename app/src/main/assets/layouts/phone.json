@@ -1,7 +1,7 @@
 {
   "id": "phone",
   "name": "Phone Dialer Layout",
-  "version": "1.0",
+  "version": "1.1",
   "author": "Gretchen Maculo",
   "description": "Traditional 3x4 phone dialpad for telephone and PIN input.",
   "metadata": {
@@ -10,7 +10,7 @@
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 32,
     "showKeyPreview": false,
-    "allowSplit": false,
+    "allowSplit": true,
     "maxFontSize": 18
   },
   "theme": {},
@@ -32,6 +32,7 @@
   "rows": [
     {
       "id": 1,
+      "splitIndex": 5,
       "keys": [
         { "label": "", "spacer": true, "weight": 0.5 },
         { "label": "1", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "1" } },
@@ -42,6 +43,7 @@
     },
     {
       "id": 2,
+      "splitIndex": 5,
       "keys": [
         { "label": "", "spacer": true, "weight": 0.5 },
         { "label": "4", "topRightLabel": "GHI", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "4" } },
@@ -52,6 +54,7 @@
     },
     {
       "id": 3,
+      "splitIndex": 5,
       "keys": [
         { "label": "", "spacer": true, "weight": 0.5 },
         { "label": "7", "topRightLabel": "PQRS", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "7" } },
@@ -62,6 +65,7 @@
     },
     {
       "id": 4,
+      "splitIndex": 5,
       "keys": [
         { "label": "", "spacer": true, "weight": 0.5 },
         { "label": "*", "style": "dialKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "*" } },
@@ -72,6 +76,7 @@
     },
     {
       "id": 5,
+      "splitIndex": 5,
       "keys": [
         { "label": "⌨", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
         { "label": "+", "style": "actionKey", "weight": 1.0, "onPress": { "type": "SEND_TEXT", "text": "+" } },

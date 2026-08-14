@@ -211,6 +211,7 @@ class ProgrammerInputMethodService : InputMethodService() {
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         prefs.registerOnSharedPreferenceChangeListener(prefChangeListener)
         initClipboardHistoryListener()
+        LayoutParser.syncAndUpgradeDefaultLayouts(this)
     }
 
     override fun onCreateInputView(): View {
@@ -647,6 +648,23 @@ class ProgrammerInputMethodService : InputMethodService() {
             is KeyAction.SwitchIme -> {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
                 imm?.showInputMethodPicker()
+            }
+            is KeyAction.LaunchApp -> {
+                val pkg = action.packageName
+                if (pkg.isNotEmpty()) {
+                    try {
+                        val intent = packageManager.getLaunchIntentForPackage(pkg)
+                        if (intent != null) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        } else {
+                            android.widget.Toast.makeText(this, "App '$pkg' is not installed", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        android.widget.Toast.makeText(this, "Could not launch '$pkg': ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             is KeyAction.ShowWidget -> {
                 when (action.widget) {

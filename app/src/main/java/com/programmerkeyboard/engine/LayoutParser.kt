@@ -24,6 +24,85 @@ object LayoutParser {
 
     private val gson = Gson()
 
+    fun getLayoutVersionFromJson(jsonStr: String): String {
+        return try {
+            val root = com.google.gson.JsonParser.parseString(jsonStr).asJsonObject
+            root.get("version")?.asString ?: "1.0"
+        } catch (_: Exception) {
+            "1.0"
+        }
+    }
+
+    private fun isVersionNewerOrDifferent(vAsset: String, vFile: String, assetJson: String, fileJson: String): Boolean {
+        if (assetJson == fileJson) return false
+        val partsAsset = vAsset.split(".").mapNotNull { it.toIntOrNull() }
+        val partsFile = vFile.split(".").mapNotNull { it.toIntOrNull() }
+        val maxLen = maxOf(partsAsset.size, partsFile.size)
+        for (i in 0 until maxLen) {
+            val a = partsAsset.getOrElse(i) { 0 }
+            val f = partsFile.getOrElse(i) { 0 }
+            if (a > f) return true
+            if (a < f) return false
+        }
+        return assetJson != fileJson
+    }
+
+    fun syncAndUpgradeDefaultLayouts(context: Context) {
+        try {
+            val dir = java.io.File(context.getExternalFilesDir(null), "layouts")
+            if (!dir.exists()) dir.mkdirs()
+
+            val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+
+            // Cleanup legacy pref_custom_layout_json if it was assigned to a non-main layout
+            val legacyJson = prefs.getString("pref_custom_layout_json", null)
+            if (!legacyJson.isNullOrEmpty()) {
+                try {
+                    val parsed = com.google.gson.JsonParser.parseString(legacyJson).asJsonObject
+                    val parsedId = parsed.get("id")?.asString
+                    if (parsedId != null && parsedId != "main") {
+                        prefs.edit().remove("pref_custom_layout_json").apply()
+                    }
+                } catch (_: Exception) {}
+            }
+
+            val assetFiles = try {
+                context.assets.list("layouts")?.filter { it.endsWith(".json") } ?: emptyList()
+            } catch (_: Exception) {
+                listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "emoji.json")
+            }
+
+            for (file in assetFiles) {
+                val targetId = file.removeSuffix(".json")
+                val isEdited = prefs.getBoolean("pref_layout_is_edited_$targetId", false)
+                val customPref = prefs.getString("pref_custom_layout_json_$targetId", null)
+                    ?: if (targetId == "main") prefs.getString("pref_custom_layout_json", null) else null
+
+                val targetFile = java.io.File(dir, file)
+                val assetJson = try {
+                    context.assets.open("layouts/$file").bufferedReader().use { it.readText() }.trim()
+                } catch (_: Exception) { "" }
+
+                if (assetJson.isEmpty()) continue
+
+                // If user has never custom edited this layout, automatically sync/upgrade to the latest asset version!
+                if (!isEdited && customPref == null) {
+                    val fileJson = if (targetFile.exists()) targetFile.readText().trim() else ""
+
+                    if (!targetFile.exists() || fileJson != assetJson) {
+                        try {
+                            targetFile.writeText(assetJson)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     fun loadLayoutFromAsset(context: Context, fileName: String = "main.json", previousLayoutId: String = "main"): LayoutDefinition {
         val cleanName = fileName.removePrefix("layouts/").removeSuffix(".json")
         if (cleanName.equals("meta", ignoreCase = true)) {
@@ -212,6 +291,21 @@ object LayoutParser {
             }
         }
 
+        val layoutsDir = java.io.File(context.getExternalFilesDir(null), "layouts")
+        val userFiles = try {
+            layoutsDir.listFiles { _, name -> name.endsWith(".json") } ?: emptyArray()
+        } catch (_: Exception) { emptyArray() }
+
+        for (uFile in userFiles) {
+            val id = uFile.name.removeSuffix(".json")
+            if (!layoutMap.containsKey(id)) {
+                try {
+                    val parsed = parseJsonLayoutDescriptor(uFile.readText())
+                    layoutMap[id] = parsed
+                } catch (_: Exception) {}
+            }
+        }
+
         val prevLayoutDef = layoutMap[previousLayoutId]
         val previousDisplayName = prevLayoutDef?.name?.takeIf { it.isNotBlank() }
             ?: when (previousLayoutId) {
@@ -244,15 +338,41 @@ object LayoutParser {
             )
         )
 
-        val layoutItems = layoutMap.map { (id, def) ->
+        val defaultIds = listOf("main", "mobile", "mobile_number", "mobile_symbol", "function", "phone")
+        val generatedIds = listOf("emoji", "emoji_animals", "emoji_body", "emoji_flags", "emoji_food", "emoji_objects", "emoji_sports", "emoji_symbols", "emoji_travel")
+
+        val sortedKeys = mutableListOf<String>()
+        // 1. Defaults
+        for (id in defaultIds) {
+            if (layoutMap.containsKey(id)) sortedKeys.add(id)
+        }
+        // 2. User-Created
+        val userCreatedKeys = layoutMap.keys.filter { it !in defaultIds && it !in generatedIds }.sorted()
+        sortedKeys.addAll(userCreatedKeys)
+        // 3. Generated
+        for (id in generatedIds) {
+            if (layoutMap.containsKey(id)) sortedKeys.add(id)
+        }
+
+        val layoutItems = sortedKeys.mapNotNull { id ->
+            val def = layoutMap[id] ?: return@mapNotNull null
             val icon = when (id) {
                 "main" -> "⌨ "
                 "mobile" -> "📱 "
-                "function" -> "⚡ "
                 "mobile_number" -> "🔢 "
                 "mobile_symbol" -> "🔣 "
+                "function" -> "⚡ "
                 "phone" -> "📞 "
-                else -> "📄 "
+                "emoji" -> "😃 "
+                "emoji_animals" -> "🐾 "
+                "emoji_body" -> "🙋 "
+                "emoji_flags" -> "🚩 "
+                "emoji_food" -> "🍔 "
+                "emoji_objects" -> "💡 "
+                "emoji_sports" -> "⚽ "
+                "emoji_symbols" -> "🔣 "
+                "emoji_travel" -> "✈️ "
+                else -> "👤 "
             }
             val labelName = def.name.takeIf { it.isNotBlank() } ?: id.replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
             Pair(id, "$icon$labelName")
@@ -645,6 +765,7 @@ object LayoutParser {
             "PASTE" -> KeyAction.Paste
             "PASTE_ECHO", "ECHO_CLIPBOARD", "PASTE_TEXT" -> KeyAction.PasteEcho
             "SWITCH_IME" -> KeyAction.SwitchIme
+            "LAUNCH_APP", "LAUNCH" -> KeyAction.LaunchApp(obj.get("packageName")?.asString ?: obj.get("package")?.asString ?: obj.get("target")?.asString ?: "")
             else -> KeyAction.None
         }
     }

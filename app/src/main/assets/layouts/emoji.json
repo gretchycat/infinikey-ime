@@ -1,7 +1,7 @@
 {
   "id": "emoji",
   "name": "Emoji - Smileys",
-  "version": "1.0",
+  "version": "0.1.29",
   "author": "Dynamic Emoji Generator",
   "description": "Generated from amio/emoji.json for category Smileys & Emotion.",
   "metadata": {

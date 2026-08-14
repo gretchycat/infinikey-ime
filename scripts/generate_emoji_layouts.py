@@ -1,9 +1,25 @@
 #!/usr/bin/env python3
 import json
 import os
+import sys
+import re
 import urllib.request
 
 EMOJI_DATA_URL = "https://raw.githubusercontent.com/amio/emoji.json/master/emoji.json"
+
+def get_app_version():
+    for i, arg in enumerate(sys.argv):
+        if arg in ("--version", "-v") and i + 1 < len(sys.argv):
+            return sys.argv[i + 1]
+    if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
+        return sys.argv[1]
+    gradle_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "build.gradle.kts")
+    if os.path.exists(gradle_path):
+        with open(gradle_path, "r", encoding="utf-8") as f:
+            match = re.search(r'val\s+baseVersionName\s*=\s*"([^"]+)"', f.read())
+            if match:
+                return match.group(1)
+    return "0.1.28"
 
 CATEGORY_MAPPING = {
     "Smileys & Emotion": {
@@ -71,6 +87,7 @@ def get_base_and_modifier(emoji_char):
     return base, emoji_char
 
 def main():
+    app_version = get_app_version()
     output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "src", "main", "assets", "layouts")
     os.makedirs(output_dir, exist_ok=True)
 
@@ -199,7 +216,7 @@ def main():
         layout_definition = {
             "id": layout_id,
             "name": cat_info["name"],
-            "version": "1.0",
+            "version": app_version,
             "author": "Dynamic Emoji Generator",
             "description": f"Generated from amio/emoji.json for category {cat_name}.",
             "metadata": {

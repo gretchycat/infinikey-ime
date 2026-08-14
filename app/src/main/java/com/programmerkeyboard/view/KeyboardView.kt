@@ -39,6 +39,9 @@ class KeyboardView @JvmOverloads constructor(
     private var totalScrollContentHeight = 0f
     private var isTouchInScrollableRegion = false
     private var velocityTracker: android.view.VelocityTracker? = null
+    private var editorDownX = 0f
+    private var editorDownY = 0f
+    private var isEditorDragging = false
 
     private val inertialScrollRunnable = object : Runnable {
         var velocityY = 0f
@@ -1689,7 +1692,7 @@ class KeyboardView @JvmOverloads constructor(
             is KeyAction.ToggleModifier -> {
                 onKeyActionListener?.invoke(actionToExecute)
             }
-            is KeyAction.SelectAll, is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.PasteEcho, is KeyAction.SwitchIme -> {
+            is KeyAction.SelectAll, is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.PasteEcho, is KeyAction.SwitchIme, is KeyAction.LaunchApp -> {
                 onKeyActionListener?.invoke(actionToExecute)
             }
             is KeyAction.None -> {}
@@ -2094,6 +2097,9 @@ class KeyboardView @JvmOverloads constructor(
                 }
 
                 if (isEditorPreviewMode) {
+                    editorDownX = event.rawX
+                    editorDownY = event.rawY
+                    isEditorDragging = false
                     val hitGear = rowGearBoundsList.firstOrNull { it.rect.contains(event.x, event.y) }
                     if (hitGear != null) {
                         performKeypressHapticFeedback()
@@ -2143,6 +2149,22 @@ class KeyboardView @JvmOverloads constructor(
                     invalidate()
                     onFloatingBoundsChangedListener?.invoke()
                     return true
+                }
+
+                if (isEditorPreviewMode) {
+                    val dx = event.rawX - editorDownX
+                    val dy = event.rawY - editorDownY
+                    val touchSlop = android.view.ViewConfiguration.get(context).scaledTouchSlop
+                    if (!isEditorDragging && (dx * dx + dy * dy > touchSlop * touchSlop)) {
+                        isEditorDragging = true
+                        pressedKeyBounds = null
+                        dismissKeyPreview()
+                        handler.removeCallbacks(longPressRunnable)
+                        invalidate()
+                    }
+                    if (isEditorDragging) {
+                        return false
+                    }
                 }
 
                 if (isLongPressTriggered) {
@@ -2250,7 +2272,22 @@ class KeyboardView @JvmOverloads constructor(
                 }
                 return true
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_CANCEL -> {
+                velocityTracker?.recycle()
+                velocityTracker = null
+                pressedKeyBounds = null
+                isLongPressTriggered = false
+                isEditorDragging = false
+                isSpacebarTrackpad = false
+                isDraggingFloatingWindow = false
+                isScrollDragging = false
+                dismissKeyPreview()
+                handler.removeCallbacks(longPressRunnable)
+                stopAutoRepeat()
+                invalidate()
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
                 velocityTracker?.addMovement(event)
                 velocityTracker?.computeCurrentVelocity(1000)
                 val initialVelocityY = velocityTracker?.yVelocity ?: 0f
@@ -2293,21 +2330,29 @@ class KeyboardView @JvmOverloads constructor(
                 stopAutoRepeat()
 
                 if (isEditorPreviewMode) {
+                    val wasDragging = isEditorDragging
+                    isEditorDragging = false
+                    pressedKeyBounds = null
+                    isLongPressTriggered = false
+                    dismissKeyPreview()
+
+                    if (wasDragging) {
+                        invalidate()
+                        return true
+                    }
+
                     val hitGear = rowGearBoundsList.firstOrNull { it.rect.contains(event.x, event.y) }
                     if (hitGear != null) {
                         onRowTapForEditingListener?.invoke(hitGear.rowIdx, hitGear.row)
-                        pressedKeyBounds = null
-                        isLongPressTriggered = false
+                        invalidate()
                         return true
                     }
-                    val releasedBounds = findHitKeyBounds(event.x, event.y) ?: pressedKeyBounds
+                    val releasedBounds = findHitKeyBounds(event.x, event.y)
                     if (releasedBounds != null) {
                         executeAction(releasedBounds.key.onPressAction, releasedBounds.key)
                     } else {
                         onSpacingTapForEditingListener?.invoke()
                     }
-                    pressedKeyBounds = null
-                    isLongPressTriggered = false
                     invalidate()
                     return true
                 }

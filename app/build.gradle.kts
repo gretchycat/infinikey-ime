@@ -12,7 +12,7 @@ val gitBuildNumber: Int = try {
     1
 }
 
-val baseVersionName = "0.1.28"
+val baseVersionName = "0.1.29"
 val fullVersionName = "$baseVersionName-b$gitBuildNumber"
 
 android {
@@ -82,7 +82,7 @@ dependencies {
 
 tasks.register<Exec>("generateEmojiLayouts") {
     workingDir = project.rootDir
-    commandLine = listOf("python3", "scripts/generate_emoji_layouts.py")
+    commandLine = listOf("python3", "scripts/generate_emoji_layouts.py", "--version", baseVersionName)
 }
 
 tasks.named("preBuild") {
