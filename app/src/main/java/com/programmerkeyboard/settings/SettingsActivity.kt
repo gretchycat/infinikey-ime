@@ -1336,12 +1336,27 @@ class SettingsActivity : AppCompatActivity() {
 
         val undoStack = java.util.ArrayDeque<LayoutDefinition>()
         val redoStack = java.util.ArrayDeque<LayoutDefinition>()
+        var hasUnsavedChanges = false
+
+        fun updateSaveButtonState() {
+            val isDirty = undoStack.isNotEmpty() || hasUnsavedChanges
+            if (isDirty) {
+                btnEditorSave.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#F59E0B"))
+                btnEditorSave.setTextColor(android.graphics.Color.parseColor("#000000"))
+                btnEditorSave.text = "💾 Save"
+            } else {
+                btnEditorSave.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1E293B"))
+                btnEditorSave.setTextColor(android.graphics.Color.parseColor("#94A3B8"))
+                btnEditorSave.text = "💾 Save"
+            }
+        }
 
         fun updateUndoRedoButtons() {
             btnEditorUndo.isEnabled = undoStack.isNotEmpty()
             btnEditorUndo.alpha = if (undoStack.isNotEmpty()) 1.0f else 0.4f
             btnEditorRedo.isEnabled = redoStack.isNotEmpty()
             btnEditorRedo.alpha = if (redoStack.isNotEmpty()) 1.0f else 0.4f
+            updateSaveButtonState()
         }
 
         val spEditorLayoutSelector = findViewById<Spinner>(R.id.spEditorLayoutSelector)
@@ -1353,51 +1368,92 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         data class LayoutSelectorEntry(
-            val displayName: String,
+            val baseDisplayName: String,
             val targetId: String,
-            val assetFileName: String?
-        )
-
-        fun getDisplayNameForAsset(fileName: String): String {
-            return when (fileName) {
-                "main.json" -> "⌨️ Main / Terminal Layout (main.json)"
-                "mobile.json" -> "📱 Mobile Layout (mobile.json)"
-                "mobile_number.json" -> "🔢 Mobile Numbers (mobile_number.json)"
-                "mobile_symbol.json" -> "🔣 Mobile Symbols (mobile_symbol.json)"
-                "function.json" -> "⚡ Function / Fn Layer (function.json)"
-                "phone.json" -> "📞 Phone Dialpad (phone.json)"
-                "emoji.json" -> "😃 Emojis (emoji.json)"
-                "emoji_animals.json" -> "🐾 Emoji Animals (emoji_animals.json)"
-                "emoji_body.json" -> "🙋 Emoji Body & People (emoji_body.json)"
-                "emoji_flags.json" -> "🚩 Emoji Flags (emoji_flags.json)"
-                "emoji_food.json" -> "🍔 Emoji Food (emoji_food.json)"
-                "emoji_objects.json" -> "💡 Emoji Objects (emoji_objects.json)"
-                "emoji_sports.json" -> "⚽ Emoji Sports (emoji_sports.json)"
-                "emoji_symbols.json" -> "🔣 Emoji Symbols (emoji_symbols.json)"
-                "emoji_travel.json" -> "✈️ Emoji Travel (emoji_travel.json)"
-                else -> "📄 ${fileName.removeSuffix(".json").replace('_', ' ').capitalize()} ($fileName)"
+            val assetFileName: String?,
+            var version: String = "1.0",
+            var isEdited: Boolean = false
+        ) {
+            fun getFullFormattedTitle(): String {
+                val statusTag = if (isEdited) "[Edited]" else "[Default]"
+                return "$baseDisplayName (v$version) $statusTag"
             }
         }
 
-        val layoutEntries = mutableListOf<LayoutSelectorEntry>()
-        for (file in assetLayoutFiles) {
-            val targetId = file.removeSuffix(".json")
-            layoutEntries.add(LayoutSelectorEntry(getDisplayNameForAsset(file), targetId, file))
+        fun getDisplayNameForAsset(fileName: String): String {
+            return when (fileName) {
+                "main.json" -> "⌨️ Main / Terminal Layout"
+                "mobile.json" -> "📱 Mobile Layout"
+                "mobile_number.json" -> "🔢 Mobile Numbers"
+                "mobile_symbol.json" -> "🔣 Mobile Symbols"
+                "function.json" -> "⚡ Function / Fn Layer"
+                "phone.json" -> "📞 Phone Dialpad"
+                "emoji.json" -> "😃 Emojis"
+                "emoji_animals.json" -> "🐾 Emoji Animals"
+                "emoji_body.json" -> "🙋 Emoji Body & People"
+                "emoji_flags.json" -> "🚩 Emoji Flags"
+                "emoji_food.json" -> "🍔 Emoji Food"
+                "emoji_objects.json" -> "💡 Emoji Objects"
+                "emoji_sports.json" -> "⚽ Emoji Sports"
+                "emoji_symbols.json" -> "🔣 Emoji Symbols"
+                "emoji_travel.json" -> "✈️ Emoji Travel"
+                else -> "📄 ${fileName.removeSuffix(".json").replace('_', ' ').capitalize()}"
+            }
         }
 
-        val hasCustomActive = !prefs.getString("pref_custom_layout_json", null).isNullOrEmpty()
-        if (hasCustomActive) {
-            layoutEntries.add(LayoutSelectorEntry("✏️ Custom Active Layout", "custom", null))
+        val btnResetLayout = findViewById<Button>(R.id.btnResetLayout)
+
+        fun updateResetButtonState(entry: LayoutSelectorEntry?) {
+            val canReset = entry?.isEdited == true
+            btnResetLayout.isEnabled = canReset
+            btnResetLayout.alpha = if (canReset) 1.0f else 0.4f
+            btnResetLayout.text = if (canReset) "🔄 Reset to Default Layout" else "🔄 Default Layout Active"
         }
 
-        val layoutOptionsTitles = layoutEntries.map { it.displayName }
-        val layoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, layoutOptionsTitles)
-        spEditorLayoutSelector.adapter = layoutAdapter
+        fun loadLayoutEntries(): MutableList<LayoutSelectorEntry> {
+            val entries = mutableListOf<LayoutSelectorEntry>()
+            for (file in assetLayoutFiles) {
+                val targetId = file.removeSuffix(".json")
+                val customJson = prefs.getString("pref_custom_layout_json_$targetId", null)
+                    ?: if (targetId == "main") prefs.getString("pref_custom_layout_json", null) else null
+                val isEdited = !customJson.isNullOrEmpty()
+                val loaded = try {
+                    if (isEdited) com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJson!!)
+                    else com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                } catch (_: Exception) {
+                    com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
+                }
+                val baseName = getDisplayNameForAsset(file)
+                entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited))
+            }
+
+            val customJsonOnly = prefs.getString("pref_custom_layout_json", null)
+            if (!customJsonOnly.isNullOrEmpty() && entries.none { it.targetId == "custom" }) {
+                val loadedCustom = try { com.programmerkeyboard.engine.LayoutParser.parseJsonLayoutDescriptor(customJsonOnly) } catch (_: Exception) { null }
+                if (loadedCustom != null) {
+                    entries.add(LayoutSelectorEntry("✏️ Custom Active Layout", "custom", null, loadedCustom.version, true))
+                }
+            }
+            return entries
+        }
+
+        val layoutEntries = loadLayoutEntries()
+
+        fun updateLayoutSpinner() {
+            val titles = layoutEntries.map { it.getFullFormattedTitle() }
+            val layoutAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, titles)
+            spEditorLayoutSelector.adapter = layoutAdapter
+        }
+
+        updateLayoutSpinner()
 
         val activeTarget = prefs.getString("pref_keyboard_layout_target", "main")
         var initialPosition = layoutEntries.indexOfFirst { it.targetId == activeTarget }
         if (initialPosition < 0) initialPosition = 0
         spEditorLayoutSelector.setSelection(initialPosition)
+        if (initialPosition in layoutEntries.indices) {
+            updateResetButtonState(layoutEntries[initialPosition])
+        }
 
         spEditorLayoutSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -1427,7 +1483,9 @@ class SettingsActivity : AppCompatActivity() {
 
                 undoStack.clear()
                 redoStack.clear()
+                hasUnsavedChanges = false
                 updateUndoRedoButtons()
+                updateResetButtonState(entry)
                 editingLayout?.let { editorKeyboardView.setLayout(it) }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -1460,6 +1518,7 @@ class SettingsActivity : AppCompatActivity() {
             editingLayout?.let { curr ->
                 undoStack.push(curr)
                 redoStack.clear()
+                hasUnsavedChanges = true
                 updateUndoRedoButtons()
             }
         }
@@ -1469,6 +1528,8 @@ class SettingsActivity : AppCompatActivity() {
             showRowEditorDialog(initialRowIdx = 0, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
                 editingLayout = updatedLayout
                 editorKeyboardView.setLayout(updatedLayout)
+                hasUnsavedChanges = true
+                updateSaveButtonState()
             })
         }
 
@@ -1476,6 +1537,8 @@ class SettingsActivity : AppCompatActivity() {
             showRowEditorDialog(initialRowIdx = rowIdx, pushUndoState = { pushUndoState() }, onUpdate = { updatedLayout ->
                 editingLayout = updatedLayout
                 editorKeyboardView.setLayout(updatedLayout)
+                hasUnsavedChanges = true
+                updateSaveButtonState()
             })
         }
 
@@ -1514,6 +1577,17 @@ class SettingsActivity : AppCompatActivity() {
                         .putString("pref_custom_layout_json", jsonStr)
                         .putString("pref_keyboard_layout_target", targetId)
                         .apply()
+                    hasUnsavedChanges = false
+                    undoStack.clear()
+                    redoStack.clear()
+                    updateUndoRedoButtons()
+                    val pos = spEditorLayoutSelector.selectedItemPosition
+                    if (pos in layoutEntries.indices) {
+                        layoutEntries[pos].isEdited = true
+                        updateLayoutSpinner()
+                        spEditorLayoutSelector.setSelection(pos)
+                        updateResetButtonState(layoutEntries[pos])
+                    }
                     Toast.makeText(this, "Layout configuration for '${layout.name}' saved & set active!", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -1592,7 +1666,6 @@ class SettingsActivity : AppCompatActivity() {
 
         val btnExportLayout = findViewById<Button>(R.id.btnExportLayout)
         val btnImportLayout = findViewById<Button>(R.id.btnImportLayout)
-        val btnResetLayout = findViewById<Button>(R.id.btnResetLayout)
 
         btnExportLayout.setOnClickListener {
             exportLayoutLauncher.launch(getExportedLayoutFileName())
@@ -1704,7 +1777,10 @@ class SettingsActivity : AppCompatActivity() {
                 .setTitle("Reset Keyboard Layout")
                 .setMessage("Reset layout '$activeTarget' to static factory default?")
                 .setPositiveButton("Reset Layout") { _, _ ->
-                    pushUndoState()
+                    undoStack.clear()
+                    redoStack.clear()
+                    hasUnsavedChanges = false
+                    updateUndoRedoButtons()
                     prefs.edit()
                         .remove("pref_custom_layout_json_$activeTarget")
                         .apply()
@@ -1713,7 +1789,14 @@ class SettingsActivity : AppCompatActivity() {
                     }
                     editingLayout = com.programmerkeyboard.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
                     editorKeyboardView.setLayout(editingLayout!!)
-                    Toast.makeText(this, "Layout '$activeTarget' reset to static default!", Toast.LENGTH_SHORT).show()
+                    val pos = spEditorLayoutSelector.selectedItemPosition
+                    if (pos in layoutEntries.indices) {
+                        layoutEntries[pos].isEdited = false
+                        updateLayoutSpinner()
+                        spEditorLayoutSelector.setSelection(pos)
+                        updateResetButtonState(layoutEntries[pos])
+                    }
+                    Toast.makeText(this, "Layout '$activeTarget' reset to factory default!", Toast.LENGTH_SHORT).show()
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
@@ -2492,6 +2575,7 @@ class SettingsActivity : AppCompatActivity() {
         val root = com.google.gson.JsonObject()
         root.addProperty("id", layout.id)
         root.addProperty("name", layout.name)
+        root.addProperty("version", layout.version)
 
         // Metadata
         val metaObj = com.google.gson.JsonObject()

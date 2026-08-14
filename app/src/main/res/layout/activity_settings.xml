@@ -179,55 +179,7 @@
                     android:padding="16dp"
                     android:layout_marginBottom="16dp">
 
-                    <!-- Control Bar with Undo, Redo, Save -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="WYSIWYG Layout Canvas"
-                            android:textColor="@color/settings_text_header"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:id="@+id/btnEditorUndo"
-                            android:layout_width="44dp"
-                            android:layout_height="38dp"
-                            android:backgroundTint="#1E3A5F"
-                            android:padding="0dp"
-                            android:text="↩️"
-                            android:textSize="16sp"
-                            android:layout_marginEnd="6dp" />
-
-                        <Button
-                            android:id="@+id/btnEditorRedo"
-                            android:layout_width="44dp"
-                            android:layout_height="38dp"
-                            android:backgroundTint="#1E3A5F"
-                            android:padding="0dp"
-                            android:text="↪️"
-                            android:textSize="16sp"
-                            android:layout_marginEnd="6dp" />
-
-                        <Button
-                            android:id="@+id/btnEditorSave"
-                            android:layout_width="wrap_content"
-                            android:layout_height="38dp"
-                            android:backgroundTint="#0F766E"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
-                            android:text="💾 Save"
-                            android:textColor="#FFFFFF"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
 
                     <!-- Form Factor Mode Selector Buttons -->
                     <LinearLayout
@@ -329,9 +281,66 @@
                             android:backgroundTint="#1E3A5F"
                             android:textColor="#38BDF8" />
                     </LinearLayout>
+
+                    <!-- Reset to Default Button (Right above save line) -->
+                    <Button
+                        android:id="@+id/btnResetLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="12dp"
+                        android:backgroundTint="#7F1D1D"
+                        android:text="🔄 Reset to Default Layout"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <!-- Bottom Editor Save Line (Undo/Redo on left, Save button on right) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnEditorUndo"
+                            android:layout_width="44dp"
+                            android:layout_height="38dp"
+                            android:backgroundTint="#1E3A5F"
+                            android:padding="0dp"
+                            android:text="↩️"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="6dp" />
+
+                        <Button
+                            android:id="@+id/btnEditorRedo"
+                            android:layout_width="44dp"
+                            android:layout_height="38dp"
+                            android:backgroundTint="#1E3A5F"
+                            android:padding="0dp"
+                            android:text="↪️"
+                            android:textSize="16sp" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <Button
+                            android:id="@+id/btnEditorSave"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:backgroundTint="#1E293B"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="💾 Save"
+                            android:textColor="#94A3B8"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!-- Card 2: Layout Import, Export & Reset Suite -->
+                <!-- Card 2: Layout Import & Export Suite -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -356,7 +365,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="Layout Import, Export &amp; Reset Suite"
+                            android:text="Layout Import &amp; Export Suite"
                             android:textColor="@color/settings_text_header"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -365,7 +374,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Save layout JSON configurations, import custom user layouts from storage or clipboard, or restore factory default layout."
+                        android:text="Export layout JSON configurations, or import custom user layouts from storage or clipboard."
                         android:textColor="@color/settings_text_sub"
                         android:textSize="13sp"
                         android:layout_marginBottom="16dp" />
@@ -400,17 +409,6 @@
                             android:textStyle="bold"
                             android:layout_marginStart="6dp" />
                     </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btnResetLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="10dp"
-                        android:backgroundTint="#7F1D1D"
-                        android:text="🔄 Reset to Default Layout"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
