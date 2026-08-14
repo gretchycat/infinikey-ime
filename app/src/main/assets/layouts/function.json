@@ -102,7 +102,7 @@
       "splitIndex": 5,
       "keys": [
         { "label": "⌨", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
-        { "label": "📋", "icon": "clipboard", "secondaryLabel": "Hist", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "CLIPBOARD_HISTORY" } },
+        { "label": "📋", "icon": "clipboard", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "CLIPBOARD_HISTORY" } },
         { "label": "🎙", "icon": "mic", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
         { "label": "Alt", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" } },
         { "label": "❖", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" } },

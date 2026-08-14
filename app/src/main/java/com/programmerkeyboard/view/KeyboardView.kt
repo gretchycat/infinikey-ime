@@ -2193,6 +2193,10 @@ class KeyboardView @JvmOverloads constructor(
                     return true
                 }
 
+                if (isLongPressTriggered) {
+                    return true
+                }
+
                 if (isTrackpadEligibleKey(pressedKeyBounds?.key)) {
                     val density = context.resources.displayMetrics.density
                     val threshold = 12f * density
