@@ -61,11 +61,10 @@ class SettingsActivity : AppCompatActivity() {
 
         val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
-        if (!com.programmerkeyboard.BuildConfig.DEBUG) {
+        if (!com.programmerkeyboard.util.OverlayPermissionUtil.hasOverlayPermission(this)) {
+            btnGrantOverlayPermission?.visibility = View.VISIBLE
+        } else {
             btnGrantOverlayPermission?.visibility = View.GONE
-            if (tabLayout.tabCount > 5) {
-                tabLayout.removeTabAt(5)
-            }
         }
 
         tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
