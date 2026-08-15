@@ -1660,15 +1660,29 @@ class KeyboardView @JvmOverloads constructor(
                     Pair(opt, act)
                 }
 
+                val officialShifted = getOfficialShiftedValue(sourceKey ?: pressedKeyBounds?.key)
+
                 val sortedPairs = if (pairedList.size > 1) {
-                    val firstPair = pairedList[0]
-                    val remainingPairs = pairedList.subList(1, pairedList.size)
-                    val sortedRemaining = remainingPairs.sortedByDescending { pair ->
-                        val opt = pair.first
-                        val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
-                        usageCounts[normOpt] ?: 0
+                    val shiftIdx = if (!officialShifted.isNullOrEmpty()) {
+                        pairedList.indexOfFirst { it.first.equals(officialShifted, ignoreCase = true) }
+                    } else -1
+
+                    if (shiftIdx >= 0) {
+                        val pinnedPair = pairedList[shiftIdx]
+                        val remainingPairs = pairedList.filterIndexed { idx, _ -> idx != shiftIdx }
+                        val sortedRemaining = remainingPairs.sortedByDescending { pair ->
+                            val opt = pair.first
+                            val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
+                            usageCounts[normOpt] ?: 0
+                        }
+                        listOf(pinnedPair) + sortedRemaining
+                    } else {
+                        pairedList.sortedByDescending { pair ->
+                            val opt = pair.first
+                            val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
+                            usageCounts[normOpt] ?: 0
+                        }
                     }
-                    listOf(firstPair) + sortedRemaining
                 } else {
                     pairedList
                 }
@@ -2654,6 +2668,48 @@ class KeyboardView @JvmOverloads constructor(
             }
             else -> false
         }
+    }
+
+    private fun getOfficialShiftedValue(key: KeyDefinition?): String? {
+        if (key == null) return null
+        val sec = key.secondaryLabel ?: key.topRightLabel
+        if (!sec.isNullOrEmpty()) {
+            return sec
+        }
+        if (key.onSwipeUpAction is KeyAction.SendText) {
+            val txt = (key.onSwipeUpAction as KeyAction.SendText).text
+            if (txt.isNotEmpty()) return txt
+        }
+        val label = key.primaryLabel
+        if (label.length == 1) {
+            val ch = label[0]
+            val shifted = when (ch) {
+                '1' -> "!"
+                '2' -> "@"
+                '3' -> "#"
+                '4' -> "$"
+                '5' -> "%"
+                '6' -> "^"
+                '7' -> "&"
+                '8' -> "*"
+                '9' -> "("
+                '0' -> ")"
+                '`' -> "~"
+                '-' -> "_"
+                '=' -> "+"
+                '[' -> "{"
+                ']' -> "}"
+                '\\' -> "|"
+                ';' -> ":"
+                '\'' -> "\""
+                ',' -> "<"
+                '.' -> ">"
+                '/' -> "?"
+                else -> null
+            }
+            if (shifted != null) return shifted
+        }
+        return null
     }
 
     private fun isTrackpadEligibleKey(key: KeyDefinition?): Boolean {
