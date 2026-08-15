@@ -993,8 +993,8 @@ class KeyboardView @JvmOverloads constructor(
             val upAction = key.onSwipeUpAction
             val isKeyPrimaryLetter = key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()
 
-            val pressPopup = pressAction as? KeyAction.ShowPopup
             val longPopup = lpAction as? KeyAction.ShowPopup
+            val pressPopup = pressAction as? KeyAction.ShowPopup
 
             val altList = if (key.alternates.isNotEmpty()) {
                 key.alternates
@@ -1002,14 +1002,11 @@ class KeyboardView @JvmOverloads constructor(
                 longPopup?.options ?: pressPopup?.options ?: emptyList()
             }
 
-            val hasIcon = !key.iconName.isNullOrEmpty()
-            val isActionSymbol = isActionLabel(key.primaryLabel) || key.primaryLabel in setOf("📋", "🎙", "⚙", "⌨", "🌐", "⌫", "↵", "✂️", "📄")
-            val hasActionPopup = (pressPopup != null && (pressPopup.actions.any { it !is KeyAction.SendText } || pressPopup.options.any { isActionLabel(it) })) ||
-                                 (longPopup != null && (longPopup.actions.any { it !is KeyAction.SendText } || longPopup.options.any { isActionLabel(it) }))
-            val hasActionAlternates = altList.isNotEmpty() && altList.any { isActionLabel(it) }
-            val isSetOfActions = hasIcon || isActionSymbol || hasActionPopup || hasActionAlternates
+            // Top-right secondary text is ONLY rendered if the long press (or popup) action is a text echo or key code output
+            val isEchoOrCodeAction = isTextOrCodeEchoAction(lpAction) || isTextOrCodeEchoAction(pressPopup) ||
+                (key.alternates.isNotEmpty() && key.alternates.all { isTextOrCodeEchoAction(resolveActionFromLabel(it)) })
 
-            val mostUsedAlt = if (altList.isNotEmpty() && !isSetOfActions) {
+            val mostUsedAlt = if (altList.isNotEmpty() && isEchoOrCodeAction) {
                 val currentLayoutId = layoutDefinition?.id ?: "main"
                 val usageCounts = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutId)
                 altList.maxByOrNull { usageCounts[if (it.length == 1 && it[0].isLetter()) it.lowercase() else it] ?: 0 } ?: altList.firstOrNull()
@@ -1019,13 +1016,12 @@ class KeyboardView @JvmOverloads constructor(
                 if (keyboardState.isShiftActive) mostUsedAlt.uppercase() else mostUsedAlt.lowercase()
             } else mostUsedAlt
 
-            val candidateSec = if (isSetOfActions) {
+            val candidateSec = if (!isEchoOrCodeAction && key.topRightLabel.isNullOrEmpty() && key.secondaryLabel.isNullOrEmpty()) {
                 null
             } else if (isKeyPrimaryLetter) {
                 formattedMostUsedAlt
             } else {
-                val secFromKey = if (isActionLabel(key.topRightLabel)) null else key.topRightLabel
-                    ?: if (isActionLabel(key.secondaryLabel)) null else key.secondaryLabel
+                val secFromKey = key.topRightLabel ?: key.secondaryLabel
                 secFromKey ?: formattedMostUsedAlt ?: when {
                     upAction is KeyAction.SendText -> upAction.text
                     lpAction is KeyAction.SendText -> lpAction.text
@@ -1033,7 +1029,9 @@ class KeyboardView @JvmOverloads constructor(
                 }
             }
 
-            val rawSecToDraw = if (candidateSec != null && (isActionLabel(candidateSec) || candidateSec.trim().contains(" ") || (candidateSec.length > 4 && candidateSec.any { it.isLetter() }))) null else candidateSec
+            val rawSecToDraw = if (!isEchoOrCodeAction && candidateSec != null && candidateSec != key.topRightLabel && candidateSec != key.secondaryLabel) {
+                null
+            } else candidateSec
 
             if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key)) {
                 val secPaint = Paint(secondaryTextPaint).apply {
@@ -2637,6 +2635,25 @@ class KeyboardView @JvmOverloads constructor(
         }
         val action = resolveActionFromLabel(label)
         return action !is KeyAction.SendText
+    }
+
+    private fun isTextOrCodeEchoAction(action: KeyAction?): Boolean {
+        if (action == null) return false
+        return when (action) {
+            is KeyAction.SendText -> true
+            is KeyAction.SendCode -> true
+            is KeyAction.ShowPopup -> {
+                if (action.actions.isNotEmpty()) {
+                    action.actions.all { it is KeyAction.SendText || it is KeyAction.SendCode }
+                } else if (action.options.isNotEmpty()) {
+                    action.options.all { opt ->
+                        val resolved = resolveActionFromLabel(opt)
+                        resolved is KeyAction.SendText || resolved is KeyAction.SendCode
+                    }
+                } else false
+            }
+            else -> false
+        }
     }
 
     private fun isTrackpadEligibleKey(key: KeyDefinition?): Boolean {
