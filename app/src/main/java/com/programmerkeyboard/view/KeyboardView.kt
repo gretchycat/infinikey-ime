@@ -27,6 +27,21 @@ class KeyboardView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private var soundPool: android.media.SoundPool? = null
+    private val soundMap = mutableMapOf<String, Int>()
+    private val soundMapDown = mutableMapOf<String, Int>()
+    private val soundMapUp = mutableMapOf<String, Int>()
+    private val loadedSoundIds = mutableSetOf<Int>()
+
+    init {
+        preloadAudio()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        preloadAudio()
+    }
+
     // Layout Scrolling State
     private var scrollOffsetY = 0f
     private var scrollOffsetX = 0f
@@ -1873,10 +1888,11 @@ class KeyboardView @JvmOverloads constructor(
         } catch (_: Exception) {}
     }
 
-    private var soundPool: android.media.SoundPool? = null
-    private val soundMap = mutableMapOf<String, Int>()
-    private val soundMapDown = mutableMapOf<String, Int>()
-    private val soundMapUp = mutableMapOf<String, Int>()
+    fun preloadAudio() {
+        try {
+            initSoundPool()
+        } catch (_: Exception) {}
+    }
 
     private fun loadAssetSound(assetPath: String): Int {
         return try {
@@ -1890,76 +1906,117 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun initSoundPool() {
-        if (soundPool == null) {
-            val audioAttrs = android.media.AudioAttributes.Builder()
-                .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-            soundPool = android.media.SoundPool.Builder()
-                .setMaxStreams(8)
-                .setAudioAttributes(audioAttrs)
-                .build()
+        if (soundPool != null) return
+        val audioAttrs = android.media.AudioAttributes.Builder()
+            .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+        val pool = android.media.SoundPool.Builder()
+            .setMaxStreams(16)
+            .setAudioAttributes(audioAttrs)
+            .build()
 
-            // Standard Mechvibes Recorded Switch Sound Packs
-            soundMap["REC_BLUE_PBT"] = loadAssetSound("audio/sound_cherry_blue_pbt.wav")
-            soundMap["REC_BLUE_ABS"] = loadAssetSound("audio/sound_cherry_blue_abs.wav")
-            soundMap["REC_BROWN_PBT"] = loadAssetSound("audio/sound_cherry_brown_pbt.wav")
-            soundMap["REC_BROWN_ABS"] = loadAssetSound("audio/sound_cherry_brown_abs.wav")
-            soundMap["REC_RED_PBT"] = loadAssetSound("audio/sound_cherry_red_pbt.wav")
-            soundMap["REC_RED_ABS"] = loadAssetSound("audio/sound_cherry_red_abs.wav")
-            soundMap["REC_BLACK_PBT"] = loadAssetSound("audio/sound_cherry_black_pbt.wav")
-            soundMap["REC_BLACK_ABS"] = loadAssetSound("audio/sound_cherry_black_abs.wav")
-            soundMap["REC_NK_CREAM"] = loadAssetSound("audio/sound_nk_cream.wav")
-            soundMap["REC_EG_OREO"] = loadAssetSound("audio/sound_eg_oreo.wav")
-            soundMap["REC_EG_PURPLE"] = loadAssetSound("audio/sound_eg_crystal_purple.wav")
-            soundMap["REC_TOPRE"] = loadAssetSound("audio/sound_topre_purple.wav")
+        pool.setOnLoadCompleteListener { _, sampleId, status ->
+            if (status == 0) {
+                synchronized(loadedSoundIds) {
+                    loadedSoundIds.add(sampleId)
+                }
+            }
+        }
+        soundPool = pool
 
-            // Synthesized / Generated Audio Sounds
-            soundMap["SYNTH_CLICKY"] = loadAssetSound("audio/switch_cherry_blue.wav")
-            soundMap["SYNTH_TACTILE"] = loadAssetSound("audio/switch_cherry_brown.wav")
-            soundMap["SYNTH_LINEAR"] = loadAssetSound("audio/switch_cherry_red.wav")
-            soundMap["SYNTH_THOCK"] = loadAssetSound("audio/switch_cherry_black.wav")
-            soundMap["SYNTH_SPRING"] = loadAssetSound("audio/switch_ibm_buckling.wav")
+        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val activeSwitchType = prefs.getString("pref_switch_type", "REC_EG_PURPLE") ?: "REC_EG_PURPLE"
 
-            // Split Key Down Sound Packs
-            soundMapDown["REC_BLUE_PBT"] = loadAssetSound("audio_split/sound_cherry_blue_pbt_down.wav")
-            soundMapDown["REC_BLUE_ABS"] = loadAssetSound("audio_split/sound_cherry_blue_abs_down.wav")
-            soundMapDown["REC_BROWN_PBT"] = loadAssetSound("audio_split/sound_cherry_brown_pbt_down.wav")
-            soundMapDown["REC_BROWN_ABS"] = loadAssetSound("audio_split/sound_cherry_brown_abs_down.wav")
-            soundMapDown["REC_RED_PBT"] = loadAssetSound("audio_split/sound_cherry_red_pbt_down.wav")
-            soundMapDown["REC_RED_ABS"] = loadAssetSound("audio_split/sound_cherry_red_abs_down.wav")
-            soundMapDown["REC_BLACK_PBT"] = loadAssetSound("audio_split/sound_cherry_black_pbt_down.wav")
-            soundMapDown["REC_BLACK_ABS"] = loadAssetSound("audio_split/sound_cherry_black_abs_down.wav")
-            soundMapDown["REC_NK_CREAM"] = loadAssetSound("audio_split/sound_nk_cream_down.wav")
-            soundMapDown["REC_EG_OREO"] = loadAssetSound("audio_split/sound_eg_oreo_down.wav")
-            soundMapDown["REC_EG_PURPLE"] = loadAssetSound("audio_split/sound_eg_crystal_purple_down.wav")
-            soundMapDown["REC_TOPRE"] = loadAssetSound("audio_split/sound_topre_purple_down.wav")
+        val standardSounds = listOf(
+            "REC_BLUE_PBT" to "audio/sound_cherry_blue_pbt.wav",
+            "REC_BLUE_ABS" to "audio/sound_cherry_blue_abs.wav",
+            "REC_BROWN_PBT" to "audio/sound_cherry_brown_pbt.wav",
+            "REC_BROWN_ABS" to "audio/sound_cherry_brown_abs.wav",
+            "REC_RED_PBT" to "audio/sound_cherry_red_pbt.wav",
+            "REC_RED_ABS" to "audio/sound_cherry_red_abs.wav",
+            "REC_BLACK_PBT" to "audio/sound_cherry_black_pbt.wav",
+            "REC_BLACK_ABS" to "audio/sound_cherry_black_abs.wav",
+            "REC_NK_CREAM" to "audio/sound_nk_cream.wav",
+            "REC_EG_OREO" to "audio/sound_eg_oreo.wav",
+            "REC_EG_PURPLE" to "audio/sound_eg_crystal_purple.wav",
+            "REC_TOPRE" to "audio/sound_topre_purple.wav",
+            "SYNTH_CLICKY" to "audio/switch_cherry_blue.wav",
+            "SYNTH_TACTILE" to "audio/switch_cherry_brown.wav",
+            "SYNTH_LINEAR" to "audio/switch_cherry_red.wav",
+            "SYNTH_THOCK" to "audio/switch_cherry_black.wav",
+            "SYNTH_SPRING" to "audio/switch_ibm_buckling.wav"
+        )
 
-            soundMapDown["SYNTH_CLICKY"] = loadAssetSound("audio_split/switch_cherry_blue_down.wav")
-            soundMapDown["SYNTH_TACTILE"] = loadAssetSound("audio_split/switch_cherry_brown_down.wav")
-            soundMapDown["SYNTH_LINEAR"] = loadAssetSound("audio_split/switch_cherry_red_down.wav")
-            soundMapDown["SYNTH_THOCK"] = loadAssetSound("audio_split/switch_cherry_black_down.wav")
-            soundMapDown["SYNTH_SPRING"] = loadAssetSound("audio_split/switch_ibm_buckling_down.wav")
+        val downSounds = listOf(
+            "REC_BLUE_PBT" to "audio_split/sound_cherry_blue_pbt_down.wav",
+            "REC_BLUE_ABS" to "audio_split/sound_cherry_blue_abs_down.wav",
+            "REC_BROWN_PBT" to "audio_split/sound_cherry_brown_pbt_down.wav",
+            "REC_BROWN_ABS" to "audio_split/sound_cherry_brown_abs_down.wav",
+            "REC_RED_PBT" to "audio_split/sound_cherry_red_pbt_down.wav",
+            "REC_RED_ABS" to "audio_split/sound_cherry_red_abs_down.wav",
+            "REC_BLACK_PBT" to "audio_split/sound_cherry_black_pbt_down.wav",
+            "REC_BLACK_ABS" to "audio_split/sound_cherry_black_abs_down.wav",
+            "REC_NK_CREAM" to "audio_split/sound_nk_cream_down.wav",
+            "REC_EG_OREO" to "audio_split/sound_eg_oreo_down.wav",
+            "REC_EG_PURPLE" to "audio_split/sound_eg_crystal_purple_down.wav",
+            "REC_TOPRE" to "audio_split/sound_topre_purple_down.wav",
+            "SYNTH_CLICKY" to "audio_split/switch_cherry_blue_down.wav",
+            "SYNTH_TACTILE" to "audio_split/switch_cherry_brown_down.wav",
+            "SYNTH_LINEAR" to "audio_split/switch_cherry_red_down.wav",
+            "SYNTH_THOCK" to "audio_split/switch_cherry_black_down.wav",
+            "SYNTH_SPRING" to "audio_split/switch_ibm_buckling_down.wav"
+        )
 
-            // Split Key Up Sound Packs
-            soundMapUp["REC_BLUE_PBT"] = loadAssetSound("audio_split/sound_cherry_blue_pbt_up.wav")
-            soundMapUp["REC_BLUE_ABS"] = loadAssetSound("audio_split/sound_cherry_blue_abs_up.wav")
-            soundMapUp["REC_BROWN_PBT"] = loadAssetSound("audio_split/sound_cherry_brown_pbt_up.wav")
-            soundMapUp["REC_BROWN_ABS"] = loadAssetSound("audio_split/sound_cherry_brown_abs_up.wav")
-            soundMapUp["REC_RED_PBT"] = loadAssetSound("audio_split/sound_cherry_red_pbt_up.wav")
-            soundMapUp["REC_RED_ABS"] = loadAssetSound("audio_split/sound_cherry_red_abs_up.wav")
-            soundMapUp["REC_BLACK_PBT"] = loadAssetSound("audio_split/sound_cherry_black_pbt_up.wav")
-            soundMapUp["REC_BLACK_ABS"] = loadAssetSound("audio_split/sound_cherry_black_abs_up.wav")
-            soundMapUp["REC_NK_CREAM"] = loadAssetSound("audio_split/sound_nk_cream_up.wav")
-            soundMapUp["REC_EG_OREO"] = loadAssetSound("audio_split/sound_eg_oreo_up.wav")
-            soundMapUp["REC_EG_PURPLE"] = loadAssetSound("audio_split/sound_eg_crystal_purple_up.wav")
-            soundMapUp["REC_TOPRE"] = loadAssetSound("audio_split/sound_topre_purple_up.wav")
+        val upSounds = listOf(
+            "REC_BLUE_PBT" to "audio_split/sound_cherry_blue_pbt_up.wav",
+            "REC_BLUE_ABS" to "audio_split/sound_cherry_blue_abs_up.wav",
+            "REC_BROWN_PBT" to "audio_split/sound_cherry_brown_pbt_up.wav",
+            "REC_BROWN_ABS" to "audio_split/sound_cherry_brown_abs_up.wav",
+            "REC_RED_PBT" to "audio_split/sound_cherry_red_pbt_up.wav",
+            "REC_RED_ABS" to "audio_split/sound_cherry_red_abs_up.wav",
+            "REC_BLACK_PBT" to "audio_split/sound_cherry_black_pbt_up.wav",
+            "REC_BLACK_ABS" to "audio_split/sound_cherry_black_abs_up.wav",
+            "REC_NK_CREAM" to "audio_split/sound_nk_cream_up.wav",
+            "REC_EG_OREO" to "audio_split/sound_eg_oreo_up.wav",
+            "REC_EG_PURPLE" to "audio_split/sound_eg_crystal_purple_up.wav",
+            "REC_TOPRE" to "audio_split/sound_topre_purple_up.wav",
+            "SYNTH_CLICKY" to "audio_split/switch_cherry_blue_up.wav",
+            "SYNTH_TACTILE" to "audio_split/switch_cherry_brown_up.wav",
+            "SYNTH_LINEAR" to "audio_split/switch_cherry_red_up.wav",
+            "SYNTH_THOCK" to "audio_split/switch_cherry_black_up.wav",
+            "SYNTH_SPRING" to "audio_split/switch_ibm_buckling_up.wav"
+        )
 
-            soundMapUp["SYNTH_CLICKY"] = loadAssetSound("audio_split/switch_cherry_blue_up.wav")
-            soundMapUp["SYNTH_TACTILE"] = loadAssetSound("audio_split/switch_cherry_brown_up.wav")
-            soundMapUp["SYNTH_LINEAR"] = loadAssetSound("audio_split/switch_cherry_red_up.wav")
-            soundMapUp["SYNTH_THOCK"] = loadAssetSound("audio_split/switch_cherry_black_up.wav")
-            soundMapUp["SYNTH_SPRING"] = loadAssetSound("audio_split/switch_ibm_buckling_up.wav")
+        // Load active switch sounds first so they are guaranteed loaded first in SoundPool queue
+        val activeStandard = standardSounds.find { it.first == activeSwitchType }
+        if (activeStandard != null) {
+            soundMap[activeStandard.first] = loadAssetSound(activeStandard.second)
+        }
+        val activeDown = downSounds.find { it.first == activeSwitchType }
+        if (activeDown != null) {
+            soundMapDown[activeDown.first] = loadAssetSound(activeDown.second)
+        }
+        val activeUp = upSounds.find { it.first == activeSwitchType }
+        if (activeUp != null) {
+            soundMapUp[activeUp.first] = loadAssetSound(activeUp.second)
+        }
+
+        // Load all remaining sound packs
+        standardSounds.forEach { (key, path) ->
+            if (!soundMap.containsKey(key)) {
+                soundMap[key] = loadAssetSound(path)
+            }
+        }
+        downSounds.forEach { (key, path) ->
+            if (!soundMapDown.containsKey(key)) {
+                soundMapDown[key] = loadAssetSound(path)
+            }
+        }
+        upSounds.forEach { (key, path) ->
+            if (!soundMapUp.containsKey(key)) {
+                soundMapUp[key] = loadAssetSound(path)
+            }
         }
     }
 

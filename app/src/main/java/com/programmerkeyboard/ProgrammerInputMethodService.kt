@@ -278,6 +278,7 @@ class ProgrammerInputMethodService : InputMethodService() {
                     requestApplyInsets()
                 }
             }
+            preloadAudio()
         }
 
         rootLayout.addView(keyboardView)
@@ -348,6 +349,9 @@ class ProgrammerInputMethodService : InputMethodService() {
             showWindow(true)
         } catch (_: Exception) {}
         currentEditorInfo = info
+        if (::keyboardView.isInitialized) {
+            keyboardView.preloadAudio()
+        }
 
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
