@@ -1002,10 +1002,12 @@ class KeyboardView @JvmOverloads constructor(
                 longPopup?.options ?: pressPopup?.options ?: emptyList()
             }
 
+            val hasIcon = !key.iconName.isNullOrEmpty()
+            val isActionSymbol = isActionLabel(key.primaryLabel) || key.primaryLabel in setOf("📋", "🎙", "⚙", "⌨", "🌐", "⌫", "↵", "✂️", "📄")
             val hasActionPopup = (pressPopup != null && (pressPopup.actions.any { it !is KeyAction.SendText } || pressPopup.options.any { isActionLabel(it) })) ||
                                  (longPopup != null && (longPopup.actions.any { it !is KeyAction.SendText } || longPopup.options.any { isActionLabel(it) }))
             val hasActionAlternates = altList.isNotEmpty() && altList.any { isActionLabel(it) }
-            val isSetOfActions = hasActionPopup || hasActionAlternates || isActionLabel(key.primaryLabel)
+            val isSetOfActions = hasIcon || isActionSymbol || hasActionPopup || hasActionAlternates
 
             val mostUsedAlt = if (altList.isNotEmpty() && !isSetOfActions) {
                 val currentLayoutId = layoutDefinition?.id ?: "main"
@@ -1031,7 +1033,7 @@ class KeyboardView @JvmOverloads constructor(
                 }
             }
 
-            val rawSecToDraw = if (isActionLabel(candidateSec)) null else candidateSec
+            val rawSecToDraw = if (candidateSec != null && (isActionLabel(candidateSec) || candidateSec.trim().contains(" ") || (candidateSec.length > 4 && candidateSec.any { it.isLetter() }))) null else candidateSec
 
             if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key)) {
                 val secPaint = Paint(secondaryTextPaint).apply {
@@ -2629,6 +2631,10 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun isActionLabel(label: String?): Boolean {
         if (label.isNullOrEmpty()) return false
+        val clean = label.replace("✨", "").replace("📄", "").replace("✂️", "").replace("📥", "").replace("📢", "").replace("⌨", "").trim().uppercase()
+        if (clean in setOf("ALL", "SELECT ALL", "SELECT_ALL", "全选", "COPY", "复制", "CUT", "剪切", "PASTE", "粘贴", "ECHO", "PASTE ECHO", "ECHO_CLIPBOARD", "PASTE_ECHO", "PASTE_TEXT", "📋", "📎", "IME", "SWITCH IME", "SWITCH_IME", "KEYBOARD", "SETTINGS", "VOICE", "MIC", "UNDO", "REDO")) {
+            return true
+        }
         val action = resolveActionFromLabel(label)
         return action !is KeyAction.SendText
     }
