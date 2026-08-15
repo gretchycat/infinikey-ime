@@ -1,7 +1,7 @@
 {
   "id": "emoji_flags",
   "name": "Emoji - Flags",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Dynamic Emoji Generator",
   "description": "Generated from amio/emoji.json for category Flags.",
