@@ -877,51 +877,31 @@ class ProgrammerInputMethodService : InputMethodService() {
     }
 
     private fun toggleContinuousVoiceRecognition() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
-        val token = window?.window?.attributes?.token
-
-        var launchedVoiceIme = false
-        if (imm != null && token != null) {
-            val enabledImes = imm.enabledInputMethodList
-            val googleVoiceIme = enabledImes.firstOrNull { imi ->
-                val id = imi.id.lowercase()
-                id.contains("googlequicksearchbox") || id.contains("voiceinputmethodservice") || id.contains("google.android.tts")
-            }
-            if (googleVoiceIme != null) {
-                try {
-                    imm.setInputMethod(token, googleVoiceIme.id)
-                    launchedVoiceIme = true
-                } catch (_: Exception) {}
-            }
+        val isCapsLockActive = keyboardState.shiftState == ModifierState.LOCKED || keyboardState.isShiftActive
+        VoiceInputActivity.onSpeechResultListener = { text ->
+            val formattedText = if (isCapsLockActive) text.uppercase() else text
+            currentInputConnection?.commitText(formattedText, 1)
         }
-
-        if (!launchedVoiceIme) {
-            val isCapsLockActive = keyboardState.shiftState == ModifierState.LOCKED || keyboardState.isShiftActive
-            VoiceInputActivity.onSpeechResultListener = { text ->
-                val formattedText = if (isCapsLockActive) text.uppercase() else text
-                currentInputConnection?.commitText(formattedText, 1)
-            }
-            VoiceInputContinuousActivity.onContinuousSpeechResultListener = { text ->
-                val formattedText = if (isCapsLockActive) text.uppercase() else text
-                currentInputConnection?.commitText(formattedText, 1)
-            }
-            val intent = Intent(this, VoiceInputContinuousActivity::class.java).apply {
+        VoiceInputContinuousActivity.onContinuousSpeechResultListener = { text ->
+            val formattedText = if (isCapsLockActive) text.uppercase() else text
+            currentInputConnection?.commitText(formattedText, 1)
+        }
+        val intent = Intent(this, VoiceInputContinuousActivity::class.java).apply {
+            putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        try {
+            startActivity(intent)
+        } catch (_: Exception) {
+            val fallbackIntent = Intent(this, VoiceInputActivity::class.java).apply {
+                putExtra("IS_CONTINUOUS", true)
                 putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             try {
-                startActivity(intent)
-            } catch (_: Exception) {
-                val fallbackIntent = Intent(this, VoiceInputActivity::class.java).apply {
-                    putExtra("IS_CONTINUOUS", true)
-                    putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                try {
-                    startActivity(fallbackIntent)
-                } catch (e: Exception) {
-                    android.widget.Toast.makeText(this, "Google Voice Typing or Speech Recognizer is required", android.widget.Toast.LENGTH_LONG).show()
-                }
+                startActivity(fallbackIntent)
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(this, "Google Voice Typing or Speech Recognizer is required", android.widget.Toast.LENGTH_LONG).show()
             }
         }
     }
