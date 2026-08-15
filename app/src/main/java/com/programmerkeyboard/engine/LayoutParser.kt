@@ -674,7 +674,8 @@ object LayoutParser {
                             val mergedList = mutableListOf<String>()
                             layoutPopupOptions.forEach { opt -> if (!mergedList.contains(opt)) mergedList.add(opt) }
                             parsedLongPress.options.forEach { opt -> if (!mergedList.contains(opt)) mergedList.add(opt) }
-                            if (mergedList.isNotEmpty()) KeyAction.ShowPopup(mergedList) else KeyAction.None
+                            val mergedActions = mergedList.map { resolveActionFromLabel(it) }
+                            if (mergedList.isNotEmpty()) KeyAction.ShowPopup(mergedList, mergedActions) else KeyAction.None
                         }
                         parsedLongPress != null -> parsedLongPress
                         layoutPopupOptions.isNotEmpty() -> KeyAction.ShowPopup(layoutPopupOptions)

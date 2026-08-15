@@ -989,19 +989,23 @@ class KeyboardView @JvmOverloads constructor(
 
             // Top-Right Corner Text Drawing (First Alternate Sorted by Usage Frequency)
             val lpAction = key.onLongPressAction
+            val pressAction = key.onPressAction
             val upAction = key.onSwipeUpAction
             val isKeyPrimaryLetter = key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()
+
+            val pressPopup = pressAction as? KeyAction.ShowPopup
+            val longPopup = lpAction as? KeyAction.ShowPopup
 
             val altList = if (key.alternates.isNotEmpty()) {
                 key.alternates
             } else {
-                (key.onLongPressAction as? KeyAction.ShowPopup)?.options ?: emptyList()
+                longPopup?.options ?: pressPopup?.options ?: emptyList()
             }
 
-            val showPopup = key.onLongPressAction as? KeyAction.ShowPopup
-            val hasActionPopup = showPopup != null && showPopup.actions.isNotEmpty() && showPopup.actions.any { it !is KeyAction.SendText }
+            val hasActionPopup = (pressPopup != null && (pressPopup.actions.any { it !is KeyAction.SendText } || pressPopup.options.any { isActionLabel(it) })) ||
+                                 (longPopup != null && (longPopup.actions.any { it !is KeyAction.SendText } || longPopup.options.any { isActionLabel(it) }))
             val hasActionAlternates = altList.isNotEmpty() && altList.any { isActionLabel(it) }
-            val isSetOfActions = hasActionPopup || hasActionAlternates
+            val isSetOfActions = hasActionPopup || hasActionAlternates || isActionLabel(key.primaryLabel)
 
             val mostUsedAlt = if (altList.isNotEmpty() && !isSetOfActions) {
                 val currentLayoutId = layoutDefinition?.id ?: "main"
@@ -1013,10 +1017,14 @@ class KeyboardView @JvmOverloads constructor(
                 if (keyboardState.isShiftActive) mostUsedAlt.uppercase() else mostUsedAlt.lowercase()
             } else mostUsedAlt
 
-            val candidateSec = if (isKeyPrimaryLetter) {
+            val candidateSec = if (isSetOfActions) {
+                null
+            } else if (isKeyPrimaryLetter) {
                 formattedMostUsedAlt
             } else {
-                key.topRightLabel ?: key.secondaryLabel ?: formattedMostUsedAlt ?: when {
+                val secFromKey = if (isActionLabel(key.topRightLabel)) null else key.topRightLabel
+                    ?: if (isActionLabel(key.secondaryLabel)) null else key.secondaryLabel
+                secFromKey ?: formattedMostUsedAlt ?: when {
                     upAction is KeyAction.SendText -> upAction.text
                     lpAction is KeyAction.SendText -> lpAction.text
                     else -> null
