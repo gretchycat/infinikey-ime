@@ -1658,13 +1658,18 @@ class KeyboardView @JvmOverloads constructor(
                     Pair(opt, act)
                 }
 
-                val officialShifted = getOfficialShiftedValue(sourceKey ?: pressedKeyBounds?.key)
+                val keyForPopup = sourceKey ?: pressedKeyBounds?.key
+                val secondaryFromKey = keyForPopup?.topRightLabel ?: keyForPopup?.secondaryLabel
+                val officialShifted = if (!secondaryFromKey.isNullOrEmpty()) secondaryFromKey else getOfficialShiftedValue(keyForPopup)
+                val formattedShifted = if (!officialShifted.isNullOrEmpty() && officialShifted.length == 1 && officialShifted[0].isLetter()) {
+                    if (keyboardState.isShiftActive) officialShifted.uppercase() else officialShifted.lowercase()
+                } else officialShifted
 
-                val sortedPairs = if (pairedList.size > 1) {
-                    val shiftIdx = if (!officialShifted.isNullOrEmpty()) {
-                        pairedList.indexOfFirst { it.first.equals(officialShifted, ignoreCase = true) }
-                    } else -1
+                val shiftIdx = if (!formattedShifted.isNullOrEmpty()) {
+                    pairedList.indexOfFirst { it.first.equals(formattedShifted, ignoreCase = true) }
+                } else -1
 
+                val sortedPairs = if (!formattedShifted.isNullOrEmpty()) {
                     if (shiftIdx >= 0) {
                         val pinnedPair = pairedList[shiftIdx]
                         val remainingPairs = pairedList.filterIndexed { idx, _ -> idx != shiftIdx }
@@ -1675,14 +1680,24 @@ class KeyboardView @JvmOverloads constructor(
                         }
                         listOf(pinnedPair) + sortedRemaining
                     } else {
+                        val pinnedPair = Pair(formattedShifted, resolveActionFromLabel(formattedShifted))
+                        val sortedRemaining = pairedList.sortedByDescending { pair ->
+                            val opt = pair.first
+                            val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
+                            usageCounts[normOpt] ?: 0
+                        }
+                        listOf(pinnedPair) + sortedRemaining
+                    }
+                } else {
+                    if (pairedList.size > 1) {
                         pairedList.sortedByDescending { pair ->
                             val opt = pair.first
                             val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
                             usageCounts[normOpt] ?: 0
                         }
+                    } else {
+                        pairedList
                     }
-                } else {
-                    pairedList
                 }
 
                 val optionsToDisplay = sortedPairs.map { it.first }
