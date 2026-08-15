@@ -1662,7 +1662,7 @@ class KeyboardView @JvmOverloads constructor(
                     Pair(opt, act)
                 }
 
-                // 1. Sort the entire pairedList by popularity first (from index 0 to end)
+                // 1. Sort the entire alternate keys list by popularity (from index 0 to end)
                 val sortedEntireList = if (pairedList.size > 1) {
                     pairedList.sortedByDescending { pair ->
                         val opt = pair.first
@@ -1680,19 +1680,10 @@ class KeyboardView @JvmOverloads constructor(
                     if (keyboardState.isShiftActive) secondaryFromKey.uppercase() else secondaryFromKey.lowercase()
                 } else secondaryFromKey
 
-                // 3. Prepend secondaryLabel if present, preserving the popularity-sorted order of all remaining items
+                // 3. Prepend secondaryLabel if present to the popularity-sorted alternates list
                 val sortedPairs = if (!formattedSecondary.isNullOrEmpty()) {
-                    val secIdx = sortedEntireList.indexOfFirst { it.first.equals(formattedSecondary, ignoreCase = true) }
-                    val pinnedPair = if (secIdx >= 0) {
-                        sortedEntireList[secIdx]
-                    } else {
-                        Pair(formattedSecondary, resolveActionFromLabel(formattedSecondary))
-                    }
-                    val remainingPairs = if (secIdx >= 0) {
-                        sortedEntireList.filterIndexed { idx, _ -> idx != secIdx }
-                    } else {
-                        sortedEntireList
-                    }
+                    val pinnedPair = Pair(formattedSecondary, resolveActionFromLabel(formattedSecondary))
+                    val remainingPairs = sortedEntireList.filter { !it.first.equals(formattedSecondary, ignoreCase = true) }
                     listOf(pinnedPair) + remainingPairs
                 } else {
                     sortedEntireList
