@@ -1,7 +1,7 @@
 {
   "id": "phone",
   "name": "Phone Dialer Layout",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional 3x4 phone dialpad for telephone and PIN input.",

@@ -1006,20 +1006,26 @@ class KeyboardView @JvmOverloads constructor(
             val isEchoOrCodeAction = isTextOrCodeEchoAction(lpAction) || isTextOrCodeEchoAction(pressPopup) ||
                 (key.alternates.isNotEmpty() && key.alternates.all { isTextOrCodeEchoAction(resolveActionFromLabel(it)) })
 
+            val currentLayoutIdForAlt = layoutDefinition?.id ?: "main"
+            val usageCountsForAlt = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutIdForAlt)
+
             val mostUsedAlt = if (altList.isNotEmpty() && isEchoOrCodeAction) {
-                val currentLayoutId = layoutDefinition?.id ?: "main"
-                val usageCounts = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutId)
-                altList.maxByOrNull { usageCounts[if (it.length == 1 && it[0].isLetter()) it.lowercase() else it] ?: 0 } ?: altList.firstOrNull()
+                altList.maxByOrNull { usageCountsForAlt[if (it.length == 1 && it[0].isLetter()) it.lowercase() else it] ?: 0 }
             } else null
+
+            val mostUsedCount = if (!mostUsedAlt.isNullOrEmpty()) {
+                val normKey = if (mostUsedAlt.length == 1 && mostUsedAlt[0].isLetter()) mostUsedAlt.lowercase() else mostUsedAlt
+                usageCountsForAlt[normKey] ?: 0
+            } else 0
 
             val formattedMostUsedAlt = if (!mostUsedAlt.isNullOrEmpty() && mostUsedAlt.length == 1 && mostUsedAlt[0].isLetter()) {
                 if (keyboardState.isShiftActive) mostUsedAlt.uppercase() else mostUsedAlt.lowercase()
             } else mostUsedAlt
 
-            val candidateSec = if (!isEchoOrCodeAction && key.topRightLabel.isNullOrEmpty() && key.secondaryLabel.isNullOrEmpty()) {
-                null
+            val secFromKey = key.topRightLabel ?: key.secondaryLabel
+            val candidateSec = if (mostUsedCount > 0 && !formattedMostUsedAlt.isNullOrEmpty()) {
+                formattedMostUsedAlt
             } else {
-                val secFromKey = key.topRightLabel ?: key.secondaryLabel
                 secFromKey ?: formattedMostUsedAlt ?: when {
                     upAction is KeyAction.SendText -> upAction.text
                     lpAction is KeyAction.SendText -> lpAction.text
@@ -1027,9 +1033,7 @@ class KeyboardView @JvmOverloads constructor(
                 }
             }
 
-            val rawSecToDraw = if (!isEchoOrCodeAction && candidateSec != null && candidateSec != key.topRightLabel && candidateSec != key.secondaryLabel) {
-                null
-            } else candidateSec
+            val rawSecToDraw = candidateSec
 
             if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key)) {
                 val secPaint = Paint(secondaryTextPaint).apply {
@@ -1658,45 +1662,40 @@ class KeyboardView @JvmOverloads constructor(
                     Pair(opt, act)
                 }
 
+                // 1. Sort the entire pairedList by popularity first (from index 0 to end)
+                val sortedEntireList = if (pairedList.size > 1) {
+                    pairedList.sortedByDescending { pair ->
+                        val opt = pair.first
+                        val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
+                        usageCounts[normOpt] ?: 0
+                    }
+                } else {
+                    pairedList
+                }
+
+                // 2. Extract and format secondaryLabel if set on key definition
                 val keyForPopup = sourceKey ?: pressedKeyBounds?.key
                 val secondaryFromKey = keyForPopup?.secondaryLabel ?: keyForPopup?.topRightLabel
                 val formattedSecondary = if (!secondaryFromKey.isNullOrEmpty() && secondaryFromKey.length == 1 && secondaryFromKey[0].isLetter()) {
                     if (keyboardState.isShiftActive) secondaryFromKey.uppercase() else secondaryFromKey.lowercase()
                 } else secondaryFromKey
 
-                val secIdx = if (!formattedSecondary.isNullOrEmpty()) {
-                    pairedList.indexOfFirst { it.first.equals(formattedSecondary, ignoreCase = true) }
-                } else -1
-
+                // 3. Prepend secondaryLabel if present, preserving the popularity-sorted order of all remaining items
                 val sortedPairs = if (!formattedSecondary.isNullOrEmpty()) {
-                    if (secIdx >= 0) {
-                        val pinnedPair = pairedList[secIdx]
-                        val remainingPairs = pairedList.filterIndexed { idx, _ -> idx != secIdx }
-                        val sortedRemaining = remainingPairs.sortedByDescending { pair ->
-                            val opt = pair.first
-                            val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
-                            usageCounts[normOpt] ?: 0
-                        }
-                        listOf(pinnedPair) + sortedRemaining
+                    val secIdx = sortedEntireList.indexOfFirst { it.first.equals(formattedSecondary, ignoreCase = true) }
+                    val pinnedPair = if (secIdx >= 0) {
+                        sortedEntireList[secIdx]
                     } else {
-                        val pinnedPair = Pair(formattedSecondary, resolveActionFromLabel(formattedSecondary))
-                        val sortedRemaining = pairedList.sortedByDescending { pair ->
-                            val opt = pair.first
-                            val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
-                            usageCounts[normOpt] ?: 0
-                        }
-                        listOf(pinnedPair) + sortedRemaining
+                        Pair(formattedSecondary, resolveActionFromLabel(formattedSecondary))
                     }
+                    val remainingPairs = if (secIdx >= 0) {
+                        sortedEntireList.filterIndexed { idx, _ -> idx != secIdx }
+                    } else {
+                        sortedEntireList
+                    }
+                    listOf(pinnedPair) + remainingPairs
                 } else {
-                    if (pairedList.size > 1) {
-                        pairedList.sortedByDescending { pair ->
-                            val opt = pair.first
-                            val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
-                            usageCounts[normOpt] ?: 0
-                        }
-                    } else {
-                        pairedList
-                    }
+                    sortedEntireList
                 }
 
                 val optionsToDisplay = sortedPairs.map { it.first }
