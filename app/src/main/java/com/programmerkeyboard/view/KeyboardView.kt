@@ -1023,14 +1023,10 @@ class KeyboardView @JvmOverloads constructor(
             } else mostUsedAlt
 
             val secFromKey = key.topRightLabel ?: key.secondaryLabel
-            val candidateSec = if (mostUsedCount > 0 && !formattedMostUsedAlt.isNullOrEmpty()) {
-                formattedMostUsedAlt
-            } else {
-                secFromKey ?: formattedMostUsedAlt ?: when {
-                    upAction is KeyAction.SendText -> upAction.text
-                    lpAction is KeyAction.SendText -> lpAction.text
-                    else -> null
-                }
+            val candidateSec = secFromKey ?: formattedMostUsedAlt ?: when {
+                upAction is KeyAction.SendText -> upAction.text
+                lpAction is KeyAction.SendText -> lpAction.text
+                else -> null
             }
 
             val rawSecToDraw = candidateSec
