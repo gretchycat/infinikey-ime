@@ -1468,7 +1468,21 @@
                         android:textStyle="bold"
                         android:buttonTint="@color/key_text_accent"
                         android:checked="true"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Split Key Click Audio CheckBox -->
+                    <CheckBox
+                        android:id="@+id/cbSplitKeyClickSound"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_split_key_click_sound"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:buttonTint="@color/key_text_accent"
+                        android:checked="true"
                         android:layout_marginBottom="16dp" />
+
 
                     <View
                         android:layout_width="match_parent"

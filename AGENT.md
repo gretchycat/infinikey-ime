@@ -27,9 +27,14 @@ remove the hist text from the clipboard button.
 ### split keyboard rendering
 when splitting the keyboard,make sure the keys are in the equivalent spot as if the keyboard was not split. as if you took a knife and to just cut along the defined line between keys.
 
+### key click audio splitting
+- Key press recordings are automatically analyzed and split between key down and key up transients by `scripts/split_key_clicks.py`.
+- The Gradle task `splitKeyClicks` runs as a `preBuild` dependency in `app/build.gradle.kts`, automatically detecting if split audio assets in `app/src/main/assets/audio_split` are missing or out of date.
+
 ## git
 after a successful build, run xdg-open on the debug APK file. 
 do a test build between every line item changed.
 between line items, get confirmation to move to the next item. 
 do not make changes to any other section of the code unless we have defined a reason.
 bump the bug fix version and commit that change for every successful completion of a task
+

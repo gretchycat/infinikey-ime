@@ -104,6 +104,7 @@ Infinikey IME includes dual trackpad cursor emulation modes:
 ### 5. Mechanical Switch Audio & Haptic Feedback
 
 - **Sound Engine**: Powered by `SoundPool` with 8 authentic recorded switch sound packs (Cherry MX Blue, Brown, Red, Black, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre, IBM Model M Buckling Spring) and synthesized switch audio.
+- **Build-Time Key Click Splitting Pipeline**: Automated Python pipeline (`scripts/split_key_clicks.py`) runs as part of the normal build process (`splitKeyClicks` Gradle task). It analyzes key press recordings, detects key-down (press) vs. key-up (release) transients using energy envelope and zero-crossing alignment, and outputs split sound sets to `app/src/main/assets/audio_split/`. Gradle automatically checks for missing or out-of-date split assets during `preBuild`.
 - **Haptic Engine**: Supports System Haptics (`HapticFeedbackConstants`) and Android `Vibrator` with custom vibration styles (`SHARP_CLICK`, `CRISP_TICK`, `HEAVY_CLICK`, `DOUBLE_CLICK`, `CUSTOM_PULSE`), duration, and amplitude controls.
 
 ---
@@ -112,6 +113,7 @@ Infinikey IME includes dual trackpad cursor emulation modes:
 
 - **Build-Time Generation**: Python pipeline (`generate_emoji_layouts.py`) fetches Unicode emoji datasets, groups skin tones under base emojis in `alternates` arrays, and generates category asset layouts.
 - **Runtime Recents Tracker**: Logs recently used emojis to `SharedPreferences` (up to 24) and dynamically generates the `"emoji_recents"` layout when tapping `😀`.
+
 
 ---
 

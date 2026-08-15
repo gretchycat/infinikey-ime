@@ -630,6 +630,14 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit().putBoolean("pref_key_click_sound_enabled", isChecked).apply()
         }
 
+        val cbSplitKeyClickSound = findViewById<android.widget.CheckBox>(R.id.cbSplitKeyClickSound)
+        val isSplitSoundEnabled = prefs.getBoolean("pref_split_key_click_sound_enabled", true)
+        cbSplitKeyClickSound.isChecked = isSplitSoundEnabled
+        cbSplitKeyClickSound.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("pref_split_key_click_sound_enabled", isChecked).apply()
+        }
+
+
         // 10. Mechanical Switch Type Spinner
         val spSwitchType = findViewById<Spinner>(R.id.spSwitchType)
         val switchTypeOptions = listOf(

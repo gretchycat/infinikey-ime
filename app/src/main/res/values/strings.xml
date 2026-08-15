@@ -46,6 +46,7 @@
     <string name="setting_vib_double_click">Double Click (Dual Pulse)</string>
     <string name="setting_vib_custom_pulse">Custom Timed Pulse (Use sliders below)</string>
     <string name="setting_key_click_sound">Mechanical key click sound (Audio switch feedback)</string>
+    <string name="setting_split_key_click_sound">Split key press &amp; release audio (Key Down / Key Up waveforms)</string>
     <string name="setting_key_click_volume_title">Mechanical Click Volume (%)</string>
     <string name="setting_switch_type_title">Mechanical Switch Type</string>
 

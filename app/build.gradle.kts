@@ -85,6 +85,17 @@ tasks.register<Exec>("generateEmojiLayouts") {
     commandLine = listOf("python3", "scripts/generate_emoji_layouts.py", "--version", baseVersionName)
 }
 
-tasks.named("preBuild") {
-    dependsOn("generateEmojiLayouts")
+tasks.register<Exec>("splitKeyClicks") {
+    workingDir = project.rootDir
+    inputs.dir(file("${project.rootDir}/app/src/main/assets/audio"))
+    inputs.file(file("${project.rootDir}/scripts/split_key_clicks.py"))
+    outputs.dir(file("${project.rootDir}/app/src/main/assets/audio_split"))
+    commandLine = listOf("python3", "scripts/split_key_clicks.py")
 }
+
+tasks.named("preBuild") {
+    dependsOn("generateEmojiLayouts", "splitKeyClicks")
+}
+
+
+

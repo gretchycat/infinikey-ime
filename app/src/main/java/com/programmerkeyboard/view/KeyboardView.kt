@@ -1662,6 +1662,7 @@ class KeyboardView @JvmOverloads constructor(
                             resolveActionFromLabel(selectedLabel)
                         }
                         executeAction(actionToRun, sourceKey)
+                        playKeyClickSound(isKeyDown = false)
                     },
                     onHoverChanged = { hoveredIndex, hoveredLabel ->
                         val isEmoji = isEmojiKey(sourceKey ?: pressedKeyBounds?.key ?: return@KeyPopupOverlay)
@@ -1874,6 +1875,8 @@ class KeyboardView @JvmOverloads constructor(
 
     private var soundPool: android.media.SoundPool? = null
     private val soundMap = mutableMapOf<String, Int>()
+    private val soundMapDown = mutableMapOf<String, Int>()
+    private val soundMapUp = mutableMapOf<String, Int>()
 
     private fun loadAssetSound(assetPath: String): Int {
         return try {
@@ -1893,11 +1896,11 @@ class KeyboardView @JvmOverloads constructor(
                 .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build()
             soundPool = android.media.SoundPool.Builder()
-                .setMaxStreams(5)
+                .setMaxStreams(8)
                 .setAudioAttributes(audioAttrs)
                 .build()
 
-            // Mechvibes Recorded Switch Sound Packs
+            // Standard Mechvibes Recorded Switch Sound Packs
             soundMap["REC_BLUE_PBT"] = loadAssetSound("audio/sound_cherry_blue_pbt.wav")
             soundMap["REC_BLUE_ABS"] = loadAssetSound("audio/sound_cherry_blue_abs.wav")
             soundMap["REC_BROWN_PBT"] = loadAssetSound("audio/sound_cherry_brown_pbt.wav")
@@ -1917,14 +1920,55 @@ class KeyboardView @JvmOverloads constructor(
             soundMap["SYNTH_LINEAR"] = loadAssetSound("audio/switch_cherry_red.wav")
             soundMap["SYNTH_THOCK"] = loadAssetSound("audio/switch_cherry_black.wav")
             soundMap["SYNTH_SPRING"] = loadAssetSound("audio/switch_ibm_buckling.wav")
+
+            // Split Key Down Sound Packs
+            soundMapDown["REC_BLUE_PBT"] = loadAssetSound("audio_split/sound_cherry_blue_pbt_down.wav")
+            soundMapDown["REC_BLUE_ABS"] = loadAssetSound("audio_split/sound_cherry_blue_abs_down.wav")
+            soundMapDown["REC_BROWN_PBT"] = loadAssetSound("audio_split/sound_cherry_brown_pbt_down.wav")
+            soundMapDown["REC_BROWN_ABS"] = loadAssetSound("audio_split/sound_cherry_brown_abs_down.wav")
+            soundMapDown["REC_RED_PBT"] = loadAssetSound("audio_split/sound_cherry_red_pbt_down.wav")
+            soundMapDown["REC_RED_ABS"] = loadAssetSound("audio_split/sound_cherry_red_abs_down.wav")
+            soundMapDown["REC_BLACK_PBT"] = loadAssetSound("audio_split/sound_cherry_black_pbt_down.wav")
+            soundMapDown["REC_BLACK_ABS"] = loadAssetSound("audio_split/sound_cherry_black_abs_down.wav")
+            soundMapDown["REC_NK_CREAM"] = loadAssetSound("audio_split/sound_nk_cream_down.wav")
+            soundMapDown["REC_EG_OREO"] = loadAssetSound("audio_split/sound_eg_oreo_down.wav")
+            soundMapDown["REC_EG_PURPLE"] = loadAssetSound("audio_split/sound_eg_crystal_purple_down.wav")
+            soundMapDown["REC_TOPRE"] = loadAssetSound("audio_split/sound_topre_purple_down.wav")
+
+            soundMapDown["SYNTH_CLICKY"] = loadAssetSound("audio_split/switch_cherry_blue_down.wav")
+            soundMapDown["SYNTH_TACTILE"] = loadAssetSound("audio_split/switch_cherry_brown_down.wav")
+            soundMapDown["SYNTH_LINEAR"] = loadAssetSound("audio_split/switch_cherry_red_down.wav")
+            soundMapDown["SYNTH_THOCK"] = loadAssetSound("audio_split/switch_cherry_black_down.wav")
+            soundMapDown["SYNTH_SPRING"] = loadAssetSound("audio_split/switch_ibm_buckling_down.wav")
+
+            // Split Key Up Sound Packs
+            soundMapUp["REC_BLUE_PBT"] = loadAssetSound("audio_split/sound_cherry_blue_pbt_up.wav")
+            soundMapUp["REC_BLUE_ABS"] = loadAssetSound("audio_split/sound_cherry_blue_abs_up.wav")
+            soundMapUp["REC_BROWN_PBT"] = loadAssetSound("audio_split/sound_cherry_brown_pbt_up.wav")
+            soundMapUp["REC_BROWN_ABS"] = loadAssetSound("audio_split/sound_cherry_brown_abs_up.wav")
+            soundMapUp["REC_RED_PBT"] = loadAssetSound("audio_split/sound_cherry_red_pbt_up.wav")
+            soundMapUp["REC_RED_ABS"] = loadAssetSound("audio_split/sound_cherry_red_abs_up.wav")
+            soundMapUp["REC_BLACK_PBT"] = loadAssetSound("audio_split/sound_cherry_black_pbt_up.wav")
+            soundMapUp["REC_BLACK_ABS"] = loadAssetSound("audio_split/sound_cherry_black_abs_up.wav")
+            soundMapUp["REC_NK_CREAM"] = loadAssetSound("audio_split/sound_nk_cream_up.wav")
+            soundMapUp["REC_EG_OREO"] = loadAssetSound("audio_split/sound_eg_oreo_up.wav")
+            soundMapUp["REC_EG_PURPLE"] = loadAssetSound("audio_split/sound_eg_crystal_purple_up.wav")
+            soundMapUp["REC_TOPRE"] = loadAssetSound("audio_split/sound_topre_purple_up.wav")
+
+            soundMapUp["SYNTH_CLICKY"] = loadAssetSound("audio_split/switch_cherry_blue_up.wav")
+            soundMapUp["SYNTH_TACTILE"] = loadAssetSound("audio_split/switch_cherry_brown_up.wav")
+            soundMapUp["SYNTH_LINEAR"] = loadAssetSound("audio_split/switch_cherry_red_up.wav")
+            soundMapUp["SYNTH_THOCK"] = loadAssetSound("audio_split/switch_cherry_black_up.wav")
+            soundMapUp["SYNTH_SPRING"] = loadAssetSound("audio_split/switch_ibm_buckling_up.wav")
         }
     }
 
-    private fun playKeyClickSound() {
+    private fun playKeyClickSound(isKeyDown: Boolean = true) {
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val isSoundEnabled = prefs.getBoolean("pref_key_click_sound_enabled", true)
         if (!isSoundEnabled) return
 
+        val isSplitAudioEnabled = prefs.getBoolean("pref_split_key_click_sound_enabled", true)
         val switchType = prefs.getString("pref_switch_type", "REC_EG_PURPLE") ?: "REC_EG_PURPLE"
         val volumePercent = prefs.getInt("pref_key_click_volume", 80).coerceIn(0, 100)
         val vol = volumePercent / 100f
@@ -1933,7 +1977,15 @@ class KeyboardView @JvmOverloads constructor(
         if (soundPool == null) {
             initSoundPool()
         }
-        val soundId = soundMap[switchType] ?: soundMap["REC_EG_PURPLE"] ?: soundMap.values.firstOrNull() ?: 0
+
+        val soundId = if (isSplitAudioEnabled) {
+            val targetMap = if (isKeyDown) soundMapDown else soundMapUp
+            targetMap[switchType] ?: targetMap["REC_EG_PURPLE"] ?: targetMap.values.firstOrNull() ?: 0
+        } else {
+            if (!isKeyDown) return
+            soundMap[switchType] ?: soundMap["REC_EG_PURPLE"] ?: soundMap.values.firstOrNull() ?: 0
+        }
+
         var played = false
         if (soundId != 0) {
             val streamId = soundPool?.play(soundId, vol, vol, 1, 0, 1.0f) ?: 0
@@ -1942,13 +1994,14 @@ class KeyboardView @JvmOverloads constructor(
             }
         }
 
-        if (!played) {
+        if (!played && isKeyDown) {
             try {
                 val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? android.media.AudioManager
                 audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD, vol)
             } catch (_: Exception) {}
         }
     }
+
 
     private fun findHitKeyBounds(x: Float, y: Float): KeyBounds? {
         val density = context.resources.displayMetrics.density
@@ -2107,6 +2160,7 @@ class KeyboardView @JvmOverloads constructor(
             } else {
                 keyPopupOverlay?.handleTouchEvent(event)
                 if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
+                    playKeyClickSound(isKeyDown = false)
                     keyPopupOverlay?.dismiss()
                     keyPopupOverlay = null
                     pressedKeyBounds = null
@@ -2188,10 +2242,8 @@ class KeyboardView @JvmOverloads constructor(
                     lastKeyTapTimeMs = now
                     lastKeyTapLabel = targetKeyLabel
 
-                    if (!isTouchInScrollableRegion) {
-                        performKeypressHapticFeedback()
-                        playKeyClickSound()
-                    }
+                    performKeypressHapticFeedback()
+                    playKeyClickSound(isKeyDown = true)
                     showKeyPreview(pressedKeyBounds!!.key, pressedKeyBounds!!.rect)
                     handler.postDelayed(longPressRunnable, getLongPressTimeoutMs())
 
@@ -2430,20 +2482,18 @@ class KeyboardView @JvmOverloads constructor(
 
                 if (!isLongPressTriggered) {
                     releasedBounds?.key?.let { key ->
-                        if (isTouchInScrollableRegion) {
-                            performKeypressHapticFeedback()
-                            playKeyClickSound()
-                        }
                         executeAction(key.onPressAction, key)
                     }
                 } else if (zoomedText != null) {
                     executeAction(KeyAction.SendText(zoomedText), pressedKeyBounds?.key)
                 }
 
+                playKeyClickSound(isKeyDown = false)
                 pressedKeyBounds = null
                 isLongPressTriggered = false
                 invalidate()
                 return true
+
             }
         }
         return super.onTouchEvent(event)
