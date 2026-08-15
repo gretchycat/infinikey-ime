@@ -491,8 +491,8 @@
         },
         {
           "label": "n",
-          "secondaryLabel": "ñ",
           "alternates": [
+            "ñ",
             "ń",
             "ņ",
             "ň",
@@ -508,8 +508,8 @@
         },
         {
           "label": "m",
-          "secondaryLabel": "μ",
           "alternates": [
+            "μ",
             "м"
           ],
           "style": "alphaKey",
