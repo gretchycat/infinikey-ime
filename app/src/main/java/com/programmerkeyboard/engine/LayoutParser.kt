@@ -661,7 +661,7 @@ object LayoutParser {
 
                     val isLetter = label.length == 1 && label[0].isLetter()
                     val topLeftLabel = kObj.get("topLeftLabel")?.asString
-                    val topRightLabel = kObj.get("topRightLabel")?.asString ?: secondaryLabel ?: if (!isLetter) alternatesList.firstOrNull() else null
+                    val topRightLabel = kObj.get("topRightLabel")?.asString ?: secondaryLabel ?: if (!isLetter) alternatesList.firstOrNull { !isActionLabel(it) } else null
 
                     // Popups come EXCLUSIVELY from the layout definition
                     val layoutPopupOptions = mutableListOf<String>()
@@ -809,6 +809,12 @@ object LayoutParser {
             "SWITCH IME", "SWITCH_IME", "KEYBOARD", "⌨" -> KeyAction.SwitchIme
             else -> KeyAction.SendText(label)
         }
+    }
+
+    private fun isActionLabel(label: String?): Boolean {
+        if (label.isNullOrEmpty()) return false
+        val action = resolveActionFromLabel(label)
+        return action !is KeyAction.SendText
     }
 
     private fun parseDimensionValue(element: JsonElement?): DimensionValue? {

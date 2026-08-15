@@ -998,7 +998,12 @@ class KeyboardView @JvmOverloads constructor(
                 (key.onLongPressAction as? KeyAction.ShowPopup)?.options ?: emptyList()
             }
 
-            val mostUsedAlt = if (altList.isNotEmpty()) {
+            val showPopup = key.onLongPressAction as? KeyAction.ShowPopup
+            val hasActionPopup = showPopup != null && showPopup.actions.isNotEmpty() && showPopup.actions.any { it !is KeyAction.SendText }
+            val hasActionAlternates = altList.isNotEmpty() && altList.any { isActionLabel(it) }
+            val isSetOfActions = hasActionPopup || hasActionAlternates
+
+            val mostUsedAlt = if (altList.isNotEmpty() && !isSetOfActions) {
                 val currentLayoutId = layoutDefinition?.id ?: "main"
                 val usageCounts = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutId)
                 altList.maxByOrNull { usageCounts[if (it.length == 1 && it[0].isLetter()) it.lowercase() else it] ?: 0 } ?: altList.firstOrNull()
@@ -1008,7 +1013,7 @@ class KeyboardView @JvmOverloads constructor(
                 if (keyboardState.isShiftActive) mostUsedAlt.uppercase() else mostUsedAlt.lowercase()
             } else mostUsedAlt
 
-            val rawSecToDraw = if (isKeyPrimaryLetter) {
+            val candidateSec = if (isKeyPrimaryLetter) {
                 formattedMostUsedAlt
             } else {
                 key.topRightLabel ?: key.secondaryLabel ?: formattedMostUsedAlt ?: when {
@@ -1017,6 +1022,8 @@ class KeyboardView @JvmOverloads constructor(
                     else -> null
                 }
             }
+
+            val rawSecToDraw = if (isActionLabel(candidateSec)) null else candidateSec
 
             if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key)) {
                 val secPaint = Paint(secondaryTextPaint).apply {
@@ -2610,6 +2617,12 @@ class KeyboardView @JvmOverloads constructor(
             "IME", "SWITCH IME", "SWITCH_IME", "KEYBOARD" -> KeyAction.SwitchIme
             else -> KeyAction.SendText(label)
         }
+    }
+
+    private fun isActionLabel(label: String?): Boolean {
+        if (label.isNullOrEmpty()) return false
+        val action = resolveActionFromLabel(label)
+        return action !is KeyAction.SendText
     }
 
     private fun isTrackpadEligibleKey(key: KeyDefinition?): Boolean {
