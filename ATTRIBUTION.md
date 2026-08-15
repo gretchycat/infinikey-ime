@@ -1,7 +1,7 @@
 # Attributions & Acknowledgments
 
 ## Mechvibes Mechanical Keyboard Sound Packs
-Mechanical keyboard switch audio samples used in Programmer Keyboard are sourced from and credited to **[Mechvibes](https://mechvibes.com/)** and their open-source community sound pack contributors.
+Mechanical keyboard switch audio samples used in Infinikey IME are sourced from and credited to **[Mechvibes](https://mechvibes.com/)** and their open-source community sound pack contributors.
 
 ### Audio Switch Sound Packs Included:
 - **Cherry MX Blue (ABS & PBT Keycaps)** - Mechvibes Sound Pack

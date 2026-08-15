@@ -1,6 +1,6 @@
 # Layout Descriptor Format Specification
 
-The **Programmer Keyboard** uses a declarative JSON layout descriptor format to define standalone keyboard layouts, physical rows, key actions, visual styling, multi-touch gestures, and dynamic geometry. Each layout is stored in its own JSON file (e.g. `main.json`, `function.json`, `emoji.json`).
+The **Infinikey IME** uses a declarative JSON layout descriptor format to define standalone keyboard layouts, physical rows, key actions, visual styling, multi-touch gestures, and dynamic geometry. Each layout is stored in its own JSON file (e.g. `main.json`, `function.json`, `emoji.json`).
 
 ---
 
@@ -20,7 +20,7 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, spa
   "id": "main",
   "name": "Main Base Layout",
   "version": "2.0",
-  "author": "Programmer Keyboard Team",
+  "author": "Infinikey IME Team",
   "description": "Primary 5-row desktop-style layout with key style classes and gesture definitions.",
   "metadata": {
     "horizontalSpacing": 4,
@@ -184,7 +184,7 @@ Actions are strongly-typed JSON objects with a `type` field:
   "id": "main",
   "name": "Main Base Layout",
   "version": "2.0",
-  "author": "Programmer Keyboard Team",
+  "author": "Infinikey IME Team",
   "description": "5-row QWERTY base layout with key style classes, hidden Fn row, and gesture actions",
   "metadata": {
     "horizontalSpacing": 4,

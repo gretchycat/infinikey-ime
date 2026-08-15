@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import com.programmerkeyboard.R
 
 /**
- * Native System Emoji Picker Overlay for Programmer Keyboard.
+ * Native System Emoji Picker Overlay for Infinikey IME.
  * Uses the device's native system emoji font (Typeface.DEFAULT) to dynamically render standard Unicode emojis.
  */
 class EmojiPickerOverlay(

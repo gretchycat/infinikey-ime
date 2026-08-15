@@ -309,7 +309,7 @@ object LayoutParser {
         val prevLayoutDef = layoutMap[previousLayoutId]
         val previousDisplayName = prevLayoutDef?.name?.takeIf { it.isNotBlank() }
             ?: when (previousLayoutId) {
-                "main" -> "Full Programmer Keyboard"
+                "main" -> "Full Infinikey IME"
                 "mobile" -> "Standard Mobile Layout"
                 "function" -> "Function & Nav"
                 "mobile_number" -> "Numeric Keypad"
@@ -423,7 +423,7 @@ object LayoutParser {
             id = "meta",
             name = "Meta Layout Picker",
             version = "1.0",
-            author = "Programmer Keyboard Team",
+            author = "Infinikey IME Team",
             description = "Dynamic Meta Layout listing all available keyboard layouts.",
             metadata = LayoutMetadata(
                 horizontalSpacing = DimensionValue.Absolute(6),
@@ -941,7 +941,7 @@ object LayoutParser {
         } catch (_: Exception) {
             LayoutDefinition(
                 id = "main",
-                name = "Full Programmer Keyboard",
+                name = "Full Infinikey IME",
                 version = "1.0",
                 rows = emptyList()
             )

@@ -17,7 +17,7 @@ import com.programmerkeyboard.view.KeyboardView
 import com.programmerkeyboard.view.TrackpadView
 
 /**
- * Main Android InputMethodService implementation for Programmer Keyboard.
+ * Main Android InputMethodService implementation for Infinikey IME.
  */
 class ProgrammerInputMethodService : InputMethodService() {
 
