@@ -34,13 +34,18 @@ class KeyPopupOverlay(
         val density = context.resources.displayMetrics.density
         val padding = 6f * density
         val availableWidth = view.width.toFloat() - (padding * 2f)
-        if (availableWidth <= 0f || index !in view.options.indices) return null
+        val availableHeight = view.height.toFloat() - (padding * 2f)
+        if (availableWidth <= 0f || availableHeight <= 0f || index !in view.options.indices) return null
         
-        val itemWidth = availableWidth / view.options.size
-        val left = popupX + padding + (index * itemWidth)
+        val itemWidth = availableWidth / view.numCols
+        val itemHeight = availableHeight / view.numRows
+        val row = index / view.numCols
+        val col = index % view.numCols
+
+        val left = popupX + padding + (col * itemWidth)
         val right = left + itemWidth
-        val top = popupY + padding
-        val bottom = popupY + view.height.toFloat() - padding
+        val top = popupY + padding + (row * itemHeight)
+        val bottom = top + itemHeight
         
         return RectF(left, top, right, bottom)
     }
@@ -60,16 +65,47 @@ class KeyPopupOverlay(
 
         val maxTextWidth = options.maxOfOrNull { testPaint.measureText(getDisplayOption(it)) } ?: (40f * density)
         val itemWidthPx = maxOf(keyWidth * 1.05f, maxTextWidth + (22f * density), 62f * density).toInt()
-        val popupWidth = options.size * itemWidthPx + (16f * density).toInt()
-        val popupHeight = (keyHeight * 1.25f).toInt().coerceAtLeast((56f * density).toInt())
+        val containerPaddingPx = (16f * density).toInt()
+        val singleRowWidth = options.size * itemWidthPx + containerPaddingPx
+
+        val screenWidth = if (anchorView.width > 0) anchorView.width.toFloat() else context.resources.displayMetrics.widthPixels.toFloat()
+
+        val (numRows, numCols, actualItemWidthPx) = if (singleRowWidth <= screenWidth) {
+            Triple(1, options.size, itemWidthPx)
+        } else {
+            val maxColsPerRow = maxOf(1, ((screenWidth - containerPaddingPx) / itemWidthPx).toInt())
+            val rowsNeeded = (options.size + maxColsPerRow - 1) / maxColsPerRow
+            val colsPerRow = (options.size + rowsNeeded - 1) / rowsNeeded
+            val adjustedItemWidth = minOf(itemWidthPx, maxOf((30f * density).toInt(), ((screenWidth - containerPaddingPx) / colsPerRow).toInt()))
+            Triple(rowsNeeded, colsPerRow, adjustedItemWidth)
+        }
+
+        val popupWidth = (numCols * actualItemWidthPx + containerPaddingPx).coerceAtMost(screenWidth.toInt())
+        val singleRowHeight = (keyHeight * 1.25f).toInt().coerceAtLeast((56f * density).toInt())
+        val popupHeight = singleRowHeight * numRows
         val fontSize = 13f * density
-        val screenWidth = anchorView.width.toFloat()
 
         val idealPopupX = anchorRect.left - (8f * density)
         popupX = idealPopupX.coerceIn(10f, maxOf(10f, screenWidth - popupWidth - 10f))
-        popupY = anchorRect.top - popupHeight - (10f * density)
 
-        popupView = PopupContentView(context, options, fontSize, onItemSelected, onDismissRequest = { dismiss() }, onHoverChanged = onHoverChanged).apply {
+        val idealPopupY = anchorRect.top - popupHeight - (10f * density)
+        val screenHeight = if (anchorView.height > 0) anchorView.height.toFloat() else context.resources.displayMetrics.heightPixels.toFloat()
+        popupY = if (idealPopupY < 10f && anchorRect.bottom + popupHeight + (10f * density) <= screenHeight) {
+            anchorRect.bottom + (10f * density)
+        } else {
+            idealPopupY.coerceAtLeast(10f)
+        }
+
+        popupView = PopupContentView(
+            context = context,
+            options = options,
+            numRows = numRows,
+            numCols = numCols,
+            fontSize = fontSize,
+            onItemSelected = onItemSelected,
+            onDismissRequest = { dismiss() },
+            onHoverChanged = onHoverChanged
+        ).apply {
             layoutParams = ViewGroup.MarginLayoutParams(
                 popupWidth,
                 popupHeight
@@ -94,7 +130,8 @@ class KeyPopupOverlay(
 
     fun handleTouchEvent(event: MotionEvent): Boolean {
         val localX = event.x - popupX
-        popupView?.updateSelection(localX, event.action)
+        val localY = event.y - popupY
+        popupView?.updateSelection(localX, localY, event.action)
 
         if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
             popupView?.commitSelection()
@@ -128,6 +165,8 @@ class KeyPopupOverlay(
     private class PopupContentView(
         context: Context,
         val options: List<String>,
+        val numRows: Int,
+        val numCols: Int,
         private val fontSize: Float,
         private val onItemSelected: (Int, String) -> Unit,
         private val onDismissRequest: () -> Unit,
@@ -184,6 +223,7 @@ class KeyPopupOverlay(
 
         private var selectedIndex = 0
         private var initialTouchX: Float? = null
+        private var initialTouchY: Float? = null
 
         private fun drawSvgIcon(canvas: Canvas, iconName: String, rect: RectF, paint: Paint) {
             val iconSize = minOf(rect.width(), rect.height())
@@ -290,15 +330,20 @@ class KeyPopupOverlay(
             // 2. Draw Individual Tactile Key Button Caps
             val padding = 6f * density
             val availableWidth = width.toFloat() - (padding * 2f)
-            val itemWidth = availableWidth / options.size
+            val availableHeight = height.toFloat() - (padding * 2f)
+            val itemWidth = availableWidth / numCols
+            val itemHeight = availableHeight / numRows
             val buttonRadius = 10f * density
 
             options.forEachIndexed { index, option ->
+                val row = index / numCols
+                val col = index % numCols
+
                 val buttonRect = RectF(
-                    padding + (index * itemWidth) + (3f * density),
-                    padding,
-                    padding + ((index + 1) * itemWidth) - (3f * density),
-                    height.toFloat() - padding
+                    padding + (col * itemWidth) + (3f * density),
+                    padding + (row * itemHeight) + (3f * density),
+                    padding + ((col + 1) * itemWidth) - (3f * density),
+                    padding + ((row + 1) * itemHeight) - (3f * density)
                 )
 
                 val isSelected = (index == selectedIndex)
@@ -364,9 +409,14 @@ class KeyPopupOverlay(
             val density = context.resources.displayMetrics.density
             val padding = 6f * density
             val availableWidth = width.toFloat() - (padding * 2f)
-            if (availableWidth > 0f && options.isNotEmpty()) {
-                val itemWidth = availableWidth / options.size
-                val tappedIdx = ((event.x - padding) / itemWidth).toInt().coerceIn(0, options.size - 1)
+            val availableHeight = height.toFloat() - (padding * 2f)
+            if (availableWidth > 0f && availableHeight > 0f && options.isNotEmpty()) {
+                val itemWidth = availableWidth / numCols
+                val itemHeight = availableHeight / numRows
+
+                val col = ((event.x - padding) / itemWidth).toInt().coerceIn(0, numCols - 1)
+                val row = ((event.y - padding) / itemHeight).toInt().coerceIn(0, numRows - 1)
+                val tappedIdx = (row * numCols + col).coerceIn(0, options.size - 1)
 
                 when (event.action) {
                     MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
@@ -386,16 +436,19 @@ class KeyPopupOverlay(
             return true
         }
 
-        fun updateSelection(localX: Float, action: Int? = null) {
+        fun updateSelection(localX: Float, localY: Float, action: Int? = null) {
             val density = context.resources.displayMetrics.density
             val padding = 6f * density
             val availableWidth = width.toFloat() - (padding * 2f)
-            if (availableWidth <= 0f || options.isEmpty()) return
+            val availableHeight = height.toFloat() - (padding * 2f)
+            if (availableWidth <= 0f || availableHeight <= 0f || options.isEmpty()) return
 
-            val itemWidth = availableWidth / options.size
+            val itemWidth = availableWidth / numCols
+            val itemHeight = availableHeight / numRows
 
-            if (initialTouchX == null || action == MotionEvent.ACTION_DOWN) {
+            if (initialTouchX == null || initialTouchY == null || action == MotionEvent.ACTION_DOWN) {
                 initialTouchX = localX
+                initialTouchY = localY
                 selectedIndex = 0
                 invalidate()
                 onHoverChanged?.invoke(selectedIndex, options[selectedIndex])
@@ -403,17 +456,24 @@ class KeyPopupOverlay(
             }
 
             val startX = initialTouchX ?: localX
-            val touchDelta = Math.abs(localX - startX)
+            val startY = initialTouchY ?: localY
+            val touchDelta = Math.hypot((localX - startX).toDouble(), (localY - startY).toDouble())
             val dragThreshold = 28f * density
 
             val newIndex = if (touchDelta < dragThreshold) {
                 0
             } else {
-                val rawIdx = ((localX - padding) / itemWidth).toInt().coerceIn(0, options.size - 1)
+                val rawCol = ((localX - padding) / itemWidth).toInt().coerceIn(0, numCols - 1)
+                val rawRow = ((localY - padding) / itemHeight).toInt().coerceIn(0, numRows - 1)
+                val rawIdx = (rawRow * numCols + rawCol).coerceIn(0, options.size - 1)
+
                 if (rawIdx != selectedIndex) {
-                    val currentCenter = padding + (selectedIndex + 0.5f) * itemWidth
-                    val deltaFromCurrentCenter = Math.abs(localX - currentCenter)
-                    if (deltaFromCurrentCenter > itemWidth * 0.4f) {
+                    val currentCol = selectedIndex % numCols
+                    val currentRow = selectedIndex / numCols
+                    val currentCenterX = padding + (currentCol + 0.5f) * itemWidth
+                    val currentCenterY = padding + (currentRow + 0.5f) * itemHeight
+                    val deltaFromCurrentCenter = Math.hypot((localX - currentCenterX).toDouble(), (localY - currentCenterY).toDouble())
+                    if (deltaFromCurrentCenter > minOf(itemWidth, itemHeight) * 0.4f) {
                         rawIdx
                     } else {
                         selectedIndex
