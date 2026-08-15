@@ -828,7 +828,8 @@ class ProgrammerInputMethodService : InputMethodService() {
                             val matches = results?.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION)
                             if (!matches.isNullOrEmpty()) {
                                 val textWithSpace = matches[0] + " "
-                                currentInputConnection?.commitText(textWithSpace, 1)
+                                val formattedText = if (keyboardState.isShiftActive) textWithSpace.uppercase() else textWithSpace
+                                currentInputConnection?.commitText(formattedText, 1)
                             }
                             keyboardView.activeListeningStatus = null
                             oneShotRecognizer?.destroy()
@@ -838,7 +839,8 @@ class ProgrammerInputMethodService : InputMethodService() {
                         override fun onPartialResults(partialResults: Bundle?) {
                             val matches = partialResults?.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION)
                             if (!matches.isNullOrEmpty()) {
-                                keyboardView.activeListeningStatus = "🗣 ${matches[0]}"
+                                val partialText = if (keyboardState.isShiftActive) matches[0].uppercase() else matches[0]
+                                keyboardView.activeListeningStatus = "🗣 $partialText"
                             }
                         }
 
@@ -859,7 +861,8 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
 
         VoiceInputActivity.onSpeechResultListener = { text ->
-            currentInputConnection?.commitText(text, 1)
+            val formattedText = if (keyboardState.isShiftActive) text.uppercase() else text
+            currentInputConnection?.commitText(formattedText, 1)
         }
         val intent = Intent(this, VoiceInputActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -892,10 +895,12 @@ class ProgrammerInputMethodService : InputMethodService() {
 
         if (!launchedVoiceIme) {
             VoiceInputActivity.onSpeechResultListener = { text ->
-                currentInputConnection?.commitText(text, 1)
+                val formattedText = if (keyboardState.isShiftActive) text.uppercase() else text
+                currentInputConnection?.commitText(formattedText, 1)
             }
             VoiceInputContinuousActivity.onContinuousSpeechResultListener = { text ->
-                currentInputConnection?.commitText(text, 1)
+                val formattedText = if (keyboardState.isShiftActive) text.uppercase() else text
+                currentInputConnection?.commitText(formattedText, 1)
             }
             val intent = Intent(this, VoiceInputContinuousActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
