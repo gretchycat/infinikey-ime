@@ -2045,7 +2045,6 @@ class SettingsActivity : AppCompatActivity() {
         val etPrimary = view.findViewById<EditText>(R.id.etEditKeyPrimaryLabel)
         val etSecondary = view.findViewById<EditText>(R.id.etEditKeySecondaryLabel)
         val etTopLeft = view.findViewById<EditText>(R.id.etEditKeyTopLeftLabel)
-        val etTopRight = view.findViewById<EditText>(R.id.etEditKeyShiftLabel)
         val etAlternates = view.findViewById<EditText>(R.id.etEditKeyAlternates)
         val etWeight = view.findViewById<EditText>(R.id.etEditKeyWidthWeight)
 
@@ -2073,7 +2072,6 @@ class SettingsActivity : AppCompatActivity() {
         etPrimary.setText(key.primaryLabel)
         etSecondary.setText(key.secondaryLabel ?: "")
         etTopLeft.setText(key.topLeftLabel ?: "")
-        etTopRight.setText(key.topRightLabel ?: "")
 
         val existingAlternates = if (key.alternates.isNotEmpty()) {
             key.alternates
@@ -2507,7 +2505,7 @@ class SettingsActivity : AppCompatActivity() {
             }, 100)
         }
 
-        val allEditTexts = listOf(etPrimary, etSecondary, etTopLeft, etTopRight, etAlternates, etWeight, etActionParam, etLongPressParam, etSwipeUpParam, etSwipeDownParam)
+        val allEditTexts = listOf(etPrimary, etSecondary, etTopLeft, etAlternates, etWeight, etActionParam, etLongPressParam, etSwipeUpParam, etSwipeDownParam)
         allEditTexts.forEach { et ->
             et.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
@@ -2551,7 +2549,6 @@ class SettingsActivity : AppCompatActivity() {
                 val newPrimary = etPrimary.text.toString().ifEmpty { "Key" }
                 val newSecondary = etSecondary.text.toString().ifEmpty { null }
                 val newTopLeft = etTopLeft.text.toString().ifEmpty { null }
-                val newTopRight = etTopRight.text.toString().ifEmpty { null }
                 val newAlternatesRaw = etAlternates.text.toString().trim()
                 val newAlternatesList = if (newAlternatesRaw.isNotEmpty()) {
                     newAlternatesRaw.split(",").map { it.trim() }.filter { it.isNotEmpty() }
@@ -2582,7 +2579,7 @@ class SettingsActivity : AppCompatActivity() {
                                 primaryLabel = newPrimary,
                                 secondaryLabel = newSecondary,
                                 topLeftLabel = newTopLeft,
-                                topRightLabel = newTopRight,
+                                topRightLabel = newSecondary,
                                 alternates = newAlternatesList,
                                 styleName = newCat,
                                 widthWeight = DimensionValue.Ratio(newWeightVal),
