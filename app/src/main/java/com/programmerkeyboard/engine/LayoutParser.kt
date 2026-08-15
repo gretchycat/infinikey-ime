@@ -51,6 +51,7 @@ object LayoutParser {
         try {
             val dir = java.io.File(context.getExternalFilesDir(null), "layouts")
             if (!dir.exists()) dir.mkdirs()
+            AlternatePriorityManager.getAlternatePrioritiesDir(context)
 
             val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
 
@@ -637,6 +638,12 @@ object LayoutParser {
                     kObj.getAsJsonArray("alternates")?.forEach { elem -> alternatesList.add(elem.asString) }
                     if (alternatesList.isEmpty()) {
                         kObj.getAsJsonArray("alternateKeys")?.forEach { elem -> alternatesList.add(elem.asString) }
+                    }
+
+                    val shiftedVersion = getShiftedVersion(label, secondaryLabel, onSwipeUpAction)
+                    if (!shiftedVersion.isNullOrEmpty()) {
+                        alternatesList.remove(shiftedVersion)
+                        alternatesList.add(0, shiftedVersion)
                     }
 
                     val longPressOptionsList = mutableListOf<String>()

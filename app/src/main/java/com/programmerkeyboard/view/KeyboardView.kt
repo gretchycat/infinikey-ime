@@ -1551,7 +1551,7 @@ class KeyboardView @JvmOverloads constructor(
             }
             return
         }
-        val actionToExecute = if (sourceKey != null && keyboardState.shouldShiftKey(sourceKey)) {
+        val actionToExecute = if (sourceKey != null && keyboardState.shouldShiftKey(sourceKey) && action !is KeyAction.ShowPopup && action !is KeyAction.ShowWidget) {
             val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLowerCase()
             val firstAlt = sourceKey.alternates.firstOrNull()
             val upAct = sourceKey.onSwipeUpAction
@@ -1592,18 +1592,51 @@ class KeyboardView @JvmOverloads constructor(
             is KeyAction.ShowPopup -> {
                 if (layoutDefinition?.id == "phone") return
                 val rect = (sourceKey?.let { k -> keyBoundsList.firstOrNull { it.key == k } } ?: pressedKeyBounds)?.rect ?: return
-                val optionsToDisplay = if (keyboardState.isShiftActive) {
-                    actionToExecute.options.map { opt ->
-                        if (opt.length == 1 && opt[0].isLowerCase()) opt.uppercase() else opt
+                val currentLayoutId = layoutDefinition?.id ?: "main"
+                val usageCounts = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutId)
+
+                val baseOptions = actionToExecute.options.map { opt ->
+                    if (opt.length == 1 && opt[0].isLetter()) {
+                        if (keyboardState.isShiftActive) opt.uppercase() else opt.lowercase()
+                    } else {
+                        opt
                     }
-                } else {
-                    actionToExecute.options
                 }
+
+                val baseActions = actionToExecute.actions
+                val pairedList = baseOptions.mapIndexed { idx, opt ->
+                    val act = if (idx in baseActions.indices) baseActions[idx] else null
+                    Pair(opt, act)
+                }
+
+                val sortedPairs = if (pairedList.size > 1) {
+                    val firstPair = pairedList[0]
+                    val remainingPairs = pairedList.subList(1, pairedList.size)
+                    val sortedRemaining = remainingPairs.sortedByDescending { pair ->
+                        val opt = pair.first
+                        val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
+                        usageCounts[normOpt] ?: 0
+                    }
+                    listOf(firstPair) + sortedRemaining
+                } else {
+                    pairedList
+                }
+
+                val optionsToDisplay = sortedPairs.map { it.first }
+                val sortedActions = sortedPairs.mapNotNull { it.second }
+
                 keyPopupOverlay = KeyPopupOverlay(
                     context = context,
                     onItemSelected = { selectedIndex, selectedLabel ->
-                        val actionToRun = if (selectedIndex in actionToExecute.actions.indices && actionToExecute.actions[selectedIndex] !is KeyAction.SendText) {
-                            actionToExecute.actions[selectedIndex]
+                        val keyLabel = sourceKey?.primaryLabel ?: pressedKeyBounds?.key?.primaryLabel
+                        com.programmerkeyboard.engine.AlternatePriorityManager.recordAlternateSelection(
+                            context = context,
+                            layoutId = currentLayoutId,
+                            sourceKeyLabel = keyLabel,
+                            selectedLabel = selectedLabel
+                        )
+                        val actionToRun = if (selectedIndex in sortedActions.indices && sortedActions[selectedIndex] !is KeyAction.SendText) {
+                            sortedActions[selectedIndex]
                         } else {
                             resolveActionFromLabel(selectedLabel)
                         }
