@@ -602,6 +602,9 @@ class ProgrammerInputMethodService : InputMethodService() {
             is KeyAction.ToggleModifier -> {
                 toggleModifierState(action.modifier)
             }
+            is KeyAction.LockModifier -> {
+                lockModifierState(action.modifier)
+            }
             is KeyAction.SelectAll -> {
                 if (!inputConnection.performContextMenuAction(android.R.id.selectAll)) {
                     sendShortcutKey(inputConnection, KeyEvent.KEYCODE_A)
@@ -947,6 +950,41 @@ class ProgrammerInputMethodService : InputMethodService() {
                     ModifierState.OFF -> ModifierState.LATCHED
                     ModifierState.LATCHED -> ModifierState.LOCKED
                     ModifierState.LOCKED -> ModifierState.OFF
+                }
+            }
+        }
+        keyboardView.invalidate()
+    }
+
+    private fun lockModifierState(modifierName: String) {
+        val key = modifierName.uppercase()
+        when (key) {
+            "SHIFT" -> {
+                keyboardState.shiftState = if (keyboardState.shiftState == ModifierState.LOCKED) {
+                    ModifierState.OFF
+                } else {
+                    ModifierState.LOCKED
+                }
+            }
+            "CTRL" -> {
+                keyboardState.ctrlState = if (keyboardState.ctrlState == ModifierState.LOCKED) {
+                    ModifierState.OFF
+                } else {
+                    ModifierState.LOCKED
+                }
+            }
+            "ALT" -> {
+                keyboardState.altState = if (keyboardState.altState == ModifierState.LOCKED) {
+                    ModifierState.OFF
+                } else {
+                    ModifierState.LOCKED
+                }
+            }
+            "SUPER" -> {
+                keyboardState.superState = if (keyboardState.superState == ModifierState.LOCKED) {
+                    ModifierState.OFF
+                } else {
+                    ModifierState.LOCKED
                 }
             }
         }

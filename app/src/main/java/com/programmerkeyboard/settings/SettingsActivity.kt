@@ -1507,7 +1507,7 @@ class SettingsActivity : AppCompatActivity() {
                     val newLayout = com.programmerkeyboard.model.LayoutDefinition(
                         id = targetId,
                         name = layoutName,
-                        version = "0.1.28",
+                        version = com.programmerkeyboard.BuildConfig.VERSION_NAME,
                         author = "User Custom",
                         description = "Custom layout created by user.",
                         metadata = com.programmerkeyboard.model.LayoutMetadata(
@@ -1964,7 +1964,7 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.SendText -> 1
             is KeyAction.SendCode -> 2
             is KeyAction.AutoRepeat -> 3
-            is KeyAction.ToggleModifier -> 4
+            is KeyAction.ToggleModifier, is KeyAction.LockModifier -> 4
             is KeyAction.SwitchLayout -> 5
             is KeyAction.ShowWidget -> 6
             is KeyAction.SetScreenMode -> 7
@@ -1980,6 +1980,7 @@ class SettingsActivity : AppCompatActivity() {
             is KeyAction.SendCode -> "${action.code}"
             is KeyAction.AutoRepeat -> "${action.code}"
             is KeyAction.ToggleModifier -> action.modifier
+            is KeyAction.LockModifier -> action.modifier
             is KeyAction.SwitchLayout -> action.target
             is KeyAction.ShowWidget -> action.widget
             is KeyAction.SetScreenMode -> action.mode
@@ -2919,6 +2920,10 @@ class SettingsActivity : AppCompatActivity() {
             }
             is KeyAction.ToggleModifier -> {
                 obj.addProperty("type", "TOGGLE_MODIFIER")
+                obj.addProperty("modifier", action.modifier)
+            }
+            is KeyAction.LockModifier -> {
+                obj.addProperty("type", "LOCK_MODIFIER")
                 obj.addProperty("modifier", action.modifier)
             }
             is KeyAction.SwitchLayout -> {

@@ -217,6 +217,7 @@ def main():
             "id": layout_id,
             "name": cat_info["name"],
             "version": app_version,
+            "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
             "author": "Dynamic Emoji Generator",
             "description": f"Generated from amio/emoji.json for category {cat_name}.",
             "metadata": {

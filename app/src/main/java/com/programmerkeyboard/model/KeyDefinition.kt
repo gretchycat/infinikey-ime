@@ -44,6 +44,7 @@ enum class KeyActionType {
     @SerializedName("AUTO_REPEAT") AUTO_REPEAT,
     @SerializedName("TOGGLE_ROW") TOGGLE_ROW,
     @SerializedName("TOGGLE_MODIFIER") TOGGLE_MODIFIER,
+    @SerializedName("LOCK_MODIFIER") LOCK_MODIFIER,
     @SerializedName("SELECT_ALL") SELECT_ALL,
     @SerializedName("COPY") COPY,
     @SerializedName("CUT") CUT,
@@ -68,6 +69,7 @@ sealed class KeyAction {
     data class AutoRepeat(val code: Int, val intervalMs: Long = 50L) : KeyAction()
     data class ToggleRow(val rowId: Any) : KeyAction()
     data class ToggleModifier(val modifier: String) : KeyAction()
+    data class LockModifier(val modifier: String) : KeyAction()
     object SelectAll : KeyAction()
     object Copy : KeyAction()
     object Cut : KeyAction()

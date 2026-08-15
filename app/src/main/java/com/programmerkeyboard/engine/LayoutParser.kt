@@ -651,7 +651,7 @@ object LayoutParser {
                     longPressOptionsList.forEach { if (!layoutPopupOptions.contains(it)) layoutPopupOptions.add(it) }
 
                     val parsedLongPress = if (onLongPressObj != null) parseAction(onLongPressObj) else null
-                    val onLongPressAction = when {
+                    var onLongPressAction = when {
                         parsedLongPress is KeyAction.ShowPopup -> {
                             val mergedList = mutableListOf<String>()
                             layoutPopupOptions.forEach { opt -> if (!mergedList.contains(opt)) mergedList.add(opt) }
@@ -661,6 +661,9 @@ object LayoutParser {
                         parsedLongPress != null -> parsedLongPress
                         layoutPopupOptions.isNotEmpty() -> KeyAction.ShowPopup(layoutPopupOptions)
                         else -> KeyAction.None
+                    }
+                    if (onLongPressAction is KeyAction.None && onPressAction is KeyAction.ToggleModifier) {
+                        onLongPressAction = KeyAction.LockModifier(onPressAction.modifier)
                     }
 
                     val keyDef = KeyDefinition(
@@ -758,7 +761,15 @@ object LayoutParser {
                 }
                 KeyAction.ToggleRow(rowId)
             }
-            "TOGGLE_MODIFIER" -> KeyAction.ToggleModifier(obj.get("modifier")?.asString ?: "SHIFT")
+            "TOGGLE_MODIFIER" -> {
+                val mod = obj.get("modifier")?.asString ?: "SHIFT"
+                if (obj.get("lock")?.asBoolean == true) {
+                    KeyAction.LockModifier(mod)
+                } else {
+                    KeyAction.ToggleModifier(mod)
+                }
+            }
+            "LOCK_MODIFIER" -> KeyAction.LockModifier(obj.get("modifier")?.asString ?: "SHIFT")
             "SELECT_ALL" -> KeyAction.SelectAll
             "COPY" -> KeyAction.Copy
             "CUT" -> KeyAction.Cut
@@ -888,12 +899,17 @@ object LayoutParser {
             "Backspace", "Enter", "Shift", "Tab", "Ctrl" -> DimensionValue.Ratio(1.4f)
             else -> DimensionValue.Ratio(1.0f)
         }
+        val longPressAction = if (action is KeyAction.ToggleModifier) {
+            KeyAction.LockModifier(action.modifier)
+        } else {
+            KeyAction.None
+        }
 
         return KeyDefinition(
             primaryLabel = label,
             widthWeight = weight,
             onPressAction = action,
-            onLongPressAction = KeyAction.None
+            onLongPressAction = longPressAction
         )
     }
 

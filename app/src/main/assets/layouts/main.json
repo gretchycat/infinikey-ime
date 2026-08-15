@@ -1,7 +1,8 @@
 {
   "id": "main",
   "name": "Full Programmer Baseline Layout",
-  "version": "2.0",
+  "version": "0.1.31",
+  "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Comprehensive 5-row desktop programmer keyboard layout with function row, modifier toggles, long-press popups, and multi-touch geometry gestures.",
   "metadata": {
@@ -102,7 +103,7 @@
       "id": 4,
       "splitIndex": 6,
       "keys": [
-        { "label": "Ctrl", "style": "modifierKey", "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "CTRL" } },
+        { "label": "Ctrl", "style": "modifierKey", "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "CTRL" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "CTRL" } },
         { "label": "a", "secondaryLabel": "á", "alternates": ["á", "à", "ä", "â", "å", "æ", "ã", "α"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "a" } },
         { "label": "s", "secondaryLabel": "ß", "alternates": ["ß", "§", "σ", "Σ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "s" } },
         { "label": "d", "alternates": ["ð", "δ", "Δ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "d" } },
@@ -121,7 +122,7 @@
       "id": 5,
       "splitIndex": 6,
       "keys": [
-        { "label": "⇧", "style": "modifierKey", "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
+        { "label": "⇧", "style": "modifierKey", "flexible": true, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "SHIFT" } },
         { "label": "z", "alternates": ["ź", "ż", "ž"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "z" } },
         { "label": "x", "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "x" } },
         { "label": "c", "secondaryLabel": "ç", "alternates": ["ç", "¢", "©", "χ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "c" } },
@@ -138,7 +139,7 @@
           "onPress": { "type": "SEND_CODE", "code": 19 },
           "onLongPress": { "type": "AUTO_REPEAT", "code": 19, "intervalMs": 50 }
         },
-        { "label": "⇧", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } }
+        { "label": "⇧", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "SHIFT" } }
       ]
     },
     {
@@ -149,8 +150,8 @@
         { "label": "⌨", "style": "functionKey", "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
         { "label": "📋", "icon": "clipboard", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "CLIPBOARD_HISTORY" } },
         { "label": "🎙", "icon": "mic", "style": "functionKey", "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
-        { "label": "Alt", "style": "modifierKey", "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" } },
-        { "label": "❖", "style": "modifierKey", "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" } },
+        { "label": "Alt", "style": "modifierKey", "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "ALT" } },
+        { "label": "❖", "style": "modifierKey", "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "SUPER" } },
         { "label": "␣", "style": "alphaKey", "isSplitKey": true, "splitLeftWeight": 1.0, "splitRightWeight": 3.0, "flexible": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "NONE" } },
         {
           "label": "Fn",

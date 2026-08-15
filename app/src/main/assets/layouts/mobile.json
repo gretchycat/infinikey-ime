@@ -1,7 +1,8 @@
 {
   "id": "mobile",
   "name": "Standard Mobile Layout",
-  "version": "1.0",
+  "version": "0.1.31",
+  "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",
   "metadata": {
@@ -57,7 +58,7 @@
       "id": 3,
       "splitIndex": 5,
       "keys": [
-        { "label": "⇧", "style": "modifierKey", "weight": 1.25, "flexible": true, "maxWeight": 1.5, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
+        { "label": "⇧", "style": "modifierKey", "weight": 1.25, "flexible": true, "maxWeight": 1.5, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "SHIFT" } },
         { "label": "z", "alternates": ["_"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "z" } },
         { "label": "x", "alternates": ["="], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "x" } },
         { "label": "c", "alternates": ["ç", "¢", "©", "χ"], "style": "alphaKey", "onPress": { "type": "SEND_TEXT", "text": "c" } },

@@ -1,7 +1,8 @@
 {
   "id": "function",
   "name": "Function & Utility Layer",
-  "version": "2.0",
+  "version": "0.1.31",
+  "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Utility layout with expanded function keys, dedicated numeric keypad, and navigation controls on a uniform 12-column rectangular grid.",
   "metadata": {
@@ -66,7 +67,7 @@
       "id": 3,
       "splitIndex": 5,
       "keys": [
-        { "label": "Ctrl", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "CTRL" } },
+        { "label": "Ctrl", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "CTRL" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "CTRL" } },
         { "label": "F9", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 139 } },
         { "label": "F10", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 140 } },
         { "label": "F11", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SEND_CODE", "code": 141 } },
@@ -83,7 +84,7 @@
       "id": 4,
       "splitIndex": 5,
       "keys": [
-        { "label": "⇧", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" } },
+        { "label": "⇧", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "SHIFT" } },
         { "label": "✨", "icon": "select_all", "style": "editingKey", "weight": 1.0, "onPress": { "type": "SELECT_ALL" } },
         { "label": "📄", "icon": "copy", "style": "editingKey", "weight": 1.0, "onPress": { "type": "COPY" } },
         { "label": "✂️", "icon": "cut", "style": "editingKey", "weight": 1.0, "onPress": { "type": "CUT" } },
@@ -104,8 +105,8 @@
         { "label": "⌨", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
         { "label": "📋", "icon": "clipboard", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "CLIPBOARD_HISTORY" } },
         { "label": "🎙", "icon": "mic", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
-        { "label": "Alt", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" } },
-        { "label": "❖", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" } },
+        { "label": "Alt", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "ALT" } },
+        { "label": "❖", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "SUPER" } },
         { "label": "␣", "style": "alphaKey", "weight": 3.0, "isSplitKey": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "NONE" } },
         {
           "label": "Fn",

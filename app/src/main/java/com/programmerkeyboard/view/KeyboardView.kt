@@ -1699,7 +1699,7 @@ class KeyboardView @JvmOverloads constructor(
                 requestLayout()
                 invalidate()
             }
-            is KeyAction.ToggleModifier -> {
+            is KeyAction.ToggleModifier, is KeyAction.LockModifier -> {
                 onKeyActionListener?.invoke(actionToExecute)
             }
             is KeyAction.SelectAll, is KeyAction.Copy, is KeyAction.Cut, is KeyAction.Paste, is KeyAction.PasteEcho, is KeyAction.SwitchIme, is KeyAction.LaunchApp -> {
@@ -2396,14 +2396,21 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun isModifierKey(key: KeyDefinition): Boolean {
-        if (key.onPressAction is KeyAction.ToggleModifier || key.onPressAction is KeyAction.SwitchLayout) return true
+        if (key.onPressAction is KeyAction.ToggleModifier || key.onPressAction is KeyAction.LockModifier || key.onLongPressAction is KeyAction.LockModifier || key.onPressAction is KeyAction.SwitchLayout) return true
         return key.primaryLabel in listOf("Ctrl", "Control", "Shift", "⇧", "Alt", "Option", "Super", "Win", "Cmd", "⌘", "❖", "Fn")
     }
 
     private fun getModifierState(key: KeyDefinition): com.programmerkeyboard.model.ModifierState {
         val action = key.onPressAction
-        if (action is KeyAction.ToggleModifier) {
-            return when (action.modifier.uppercase()) {
+        val lpAction = key.onLongPressAction
+        val modName = when {
+            action is KeyAction.ToggleModifier -> action.modifier
+            action is KeyAction.LockModifier -> action.modifier
+            lpAction is KeyAction.LockModifier -> lpAction.modifier
+            else -> null
+        }
+        if (modName != null) {
+            return when (modName.uppercase()) {
                 "SHIFT" -> keyboardState.shiftState
                 "CTRL" -> keyboardState.ctrlState
                 "ALT" -> keyboardState.altState

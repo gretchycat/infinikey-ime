@@ -165,6 +165,7 @@ Actions are strongly-typed JSON objects with a `type` field:
 | `"AUTO_REPEAT"` | `"code"` (`int`), `"intervalMs"` (`int`) | Auto-repeats keycode action continuously while key is held. |
 | `"TOGGLE_ROW"` | `"rowId"` (`int` \| `string`) | Toggles visibility state of row(s) dynamically (or `"all_hidden"` for layer toggle). |
 | `"TOGGLE_MODIFIER"` | `"modifier"` (`string`) | Toggles modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`, `"META"`). |
+| `"LOCK_MODIFIER"` | `"modifier"` (`string`) | Locks modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`, `"META"`). Automatically set for long-press on modifier keys. |
 | `"SELECT_ALL"` | None | Selects all text in target input control (`performContextMenuAction` with key fallback). |
 | `"COPY"` | None | Copies current selection to system clipboard. |
 | `"CUT"` | None | Cuts current selection to system clipboard. |
