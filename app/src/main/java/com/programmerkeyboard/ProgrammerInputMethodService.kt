@@ -860,11 +860,13 @@ class ProgrammerInputMethodService : InputMethodService() {
             }
         }
 
+        val isCapsLockActive = keyboardState.shiftState == ModifierState.LOCKED || keyboardState.isShiftActive
         VoiceInputActivity.onSpeechResultListener = { text ->
-            val formattedText = if (keyboardState.isShiftActive) text.uppercase() else text
+            val formattedText = if (isCapsLockActive) text.uppercase() else text
             currentInputConnection?.commitText(formattedText, 1)
         }
         val intent = Intent(this, VoiceInputActivity::class.java).apply {
+            putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         try {
@@ -894,15 +896,17 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
 
         if (!launchedVoiceIme) {
+            val isCapsLockActive = keyboardState.shiftState == ModifierState.LOCKED || keyboardState.isShiftActive
             VoiceInputActivity.onSpeechResultListener = { text ->
-                val formattedText = if (keyboardState.isShiftActive) text.uppercase() else text
+                val formattedText = if (isCapsLockActive) text.uppercase() else text
                 currentInputConnection?.commitText(formattedText, 1)
             }
             VoiceInputContinuousActivity.onContinuousSpeechResultListener = { text ->
-                val formattedText = if (keyboardState.isShiftActive) text.uppercase() else text
+                val formattedText = if (isCapsLockActive) text.uppercase() else text
                 currentInputConnection?.commitText(formattedText, 1)
             }
             val intent = Intent(this, VoiceInputContinuousActivity::class.java).apply {
+                putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             try {
@@ -910,6 +914,7 @@ class ProgrammerInputMethodService : InputMethodService() {
             } catch (_: Exception) {
                 val fallbackIntent = Intent(this, VoiceInputActivity::class.java).apply {
                     putExtra("IS_CONTINUOUS", true)
+                    putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 try {

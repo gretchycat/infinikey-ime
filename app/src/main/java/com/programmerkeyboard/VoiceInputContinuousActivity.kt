@@ -132,7 +132,9 @@ class VoiceInputContinuousActivity : Activity() {
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     if (!matches.isNullOrEmpty()) {
-                        val recognizedText = matches[0] + " "
+                        val isCapsLock = intent.getBooleanExtra("IS_CAPS_LOCK_ACTIVE", false)
+                        val rawText = matches[0] + " "
+                        val recognizedText = if (isCapsLock) rawText.uppercase() else rawText
                         tvPreview.text = recognizedText
                         onContinuousSpeechResultListener?.invoke(recognizedText)
                     }
@@ -144,7 +146,9 @@ class VoiceInputContinuousActivity : Activity() {
                 override fun onPartialResults(partialResults: Bundle?) {
                     val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     if (!matches.isNullOrEmpty()) {
-                        tvPreview.text = matches[0]
+                        val isCapsLock = intent.getBooleanExtra("IS_CAPS_LOCK_ACTIVE", false)
+                        val partialText = if (isCapsLock) matches[0].uppercase() else matches[0]
+                        tvPreview.text = partialText
                     }
                 }
 
@@ -207,7 +211,9 @@ class VoiceInputContinuousActivity : Activity() {
         if (requestCode == REQUEST_SPEECH_INPUT && resultCode == RESULT_OK && data != null) {
             val results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (!results.isNullOrEmpty()) {
-                val text = results[0] + " "
+                val isCapsLock = intent.getBooleanExtra("IS_CAPS_LOCK_ACTIVE", false)
+                val rawText = results[0] + " "
+                val text = if (isCapsLock) rawText.uppercase() else rawText
                 onContinuousSpeechResultListener?.invoke(text)
             }
         }

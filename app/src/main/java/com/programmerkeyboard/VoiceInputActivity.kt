@@ -73,7 +73,9 @@ class VoiceInputActivity : Activity() {
         if (requestCode == REQUEST_SPEECH_INPUT && resultCode == RESULT_OK && data != null) {
             val results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (!results.isNullOrEmpty()) {
-                val textWithSpace = results[0] + " "
+                val isCapsLock = intent.getBooleanExtra("IS_CAPS_LOCK_ACTIVE", false)
+                val rawText = results[0] + " "
+                val textWithSpace = if (isCapsLock) rawText.uppercase() else rawText
                 onSpeechResultListener?.invoke(textWithSpace)
             }
         }
