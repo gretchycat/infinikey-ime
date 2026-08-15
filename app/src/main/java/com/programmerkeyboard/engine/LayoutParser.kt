@@ -579,7 +579,7 @@ object LayoutParser {
                     val kObj = keyElem.asJsonObject
                     val label = kObj.get("label")?.asString ?: ""
                     val rawSecondaryLabel = kObj.get("secondaryLabel")?.asString
-                    val secondaryLabel = if (label.length == 1 && label[0].isLetter()) null else rawSecondaryLabel
+                    val secondaryLabel = rawSecondaryLabel
                     val styleName = kObj.get("style")?.asString
 
                     val onPressObj = kObj.getAsJsonObject("onPress")
@@ -659,9 +659,8 @@ object LayoutParser {
                     val longPressOptionsList = mutableListOf<String>()
                     kObj.getAsJsonArray("longPressOptions")?.forEach { elem -> longPressOptionsList.add(elem.asString) }
 
-                    val isLetter = label.length == 1 && label[0].isLetter()
                     val topLeftLabel = kObj.get("topLeftLabel")?.asString
-                    val topRightLabel = kObj.get("topRightLabel")?.asString ?: secondaryLabel ?: if (!isLetter) alternatesList.firstOrNull { !isActionLabel(it) } else null
+                    val topRightLabel = kObj.get("topRightLabel")?.asString ?: secondaryLabel ?: alternatesList.firstOrNull { !isActionLabel(it) }
 
                     // Popups come EXCLUSIVELY from the layout definition
                     val layoutPopupOptions = mutableListOf<String>()

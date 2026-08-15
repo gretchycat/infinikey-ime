@@ -1018,8 +1018,6 @@ class KeyboardView @JvmOverloads constructor(
 
             val candidateSec = if (!isEchoOrCodeAction && key.topRightLabel.isNullOrEmpty() && key.secondaryLabel.isNullOrEmpty()) {
                 null
-            } else if (isKeyPrimaryLetter) {
-                formattedMostUsedAlt
             } else {
                 val secFromKey = key.topRightLabel ?: key.secondaryLabel
                 secFromKey ?: formattedMostUsedAlt ?: when {

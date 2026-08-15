@@ -1,7 +1,7 @@
 {
   "id": "mobile",
   "name": "Standard Mobile Layout",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",
@@ -35,8 +35,8 @@
       "keys": [
         {
           "label": "q",
+          "secondaryLabel": "1",
           "alternates": [
-            "1",
             "θ",
             "я"
           ],
@@ -48,8 +48,8 @@
         },
         {
           "label": "w",
+          "secondaryLabel": "2",
           "alternates": [
-            "2",
             "ŵ",
             "ω",
             "ш",
@@ -63,8 +63,8 @@
         },
         {
           "label": "e",
+          "secondaryLabel": "3",
           "alternates": [
-            "3",
             "é",
             "è",
             "ë",
@@ -74,7 +74,6 @@
             "ė",
             "ę",
             "ě",
-            "€",
             "ε",
             "е",
             "ё",
@@ -89,12 +88,11 @@
         },
         {
           "label": "r",
+          "secondaryLabel": "4",
           "alternates": [
-            "4",
             "ŕ",
             "ŗ",
             "ř",
-            "®",
             "ρ",
             "р"
           ],
@@ -106,8 +104,8 @@
         },
         {
           "label": "t",
+          "secondaryLabel": "5",
           "alternates": [
-            "5",
             "þ",
             "ť",
             "ţ",
@@ -124,12 +122,11 @@
         },
         {
           "label": "y",
+          "secondaryLabel": "6",
           "alternates": [
-            "6",
             "ý",
             "ÿ",
             "ŷ",
-            "¥",
             "ψ",
             "ы",
             "ю"
@@ -142,8 +139,8 @@
         },
         {
           "label": "u",
+          "secondaryLabel": "7",
           "alternates": [
-            "7",
             "ú",
             "ù",
             "ü",
@@ -165,8 +162,8 @@
         },
         {
           "label": "i",
+          "secondaryLabel": "8",
           "alternates": [
-            "8",
             "í",
             "ì",
             "ï",
@@ -189,8 +186,8 @@
         },
         {
           "label": "o",
+          "secondaryLabel": "9",
           "alternates": [
-            "9",
             "ó",
             "ò",
             "ö",
@@ -212,8 +209,8 @@
         },
         {
           "label": "p",
+          "secondaryLabel": "0",
           "alternates": [
-            "0",
             "π",
             "ψ",
             "п"
@@ -237,8 +234,8 @@
         },
         {
           "label": "a",
+          "secondaryLabel": "@",
           "alternates": [
-            "@",
             "á",
             "à",
             "ä",
@@ -261,15 +258,14 @@
         },
         {
           "label": "s",
+          "secondaryLabel": "#",
           "alternates": [
-            "#",
             "ß",
             "ś",
             "ŝ",
             "ş",
             "š",
             "ș",
-            "§",
             "σ",
             "ς",
             "с"
@@ -282,8 +278,8 @@
         },
         {
           "label": "d",
+          "secondaryLabel": "$",
           "alternates": [
-            "$",
             "ð",
             "ď",
             "đ",
@@ -298,8 +294,8 @@
         },
         {
           "label": "f",
+          "secondaryLabel": "%",
           "alternates": [
-            "%",
             "ƒ",
             "φ",
             "ф"
@@ -312,8 +308,8 @@
         },
         {
           "label": "g",
+          "secondaryLabel": "&",
           "alternates": [
-            "&",
             "ğ",
             "ġ",
             "ģ",
@@ -330,8 +326,8 @@
         },
         {
           "label": "h",
+          "secondaryLabel": "*",
           "alternates": [
-            "*",
             "ĥ",
             "ħ",
             "η",
@@ -346,8 +342,8 @@
         },
         {
           "label": "j",
+          "secondaryLabel": "-",
           "alternates": [
-            "-",
             "ĵ",
             "ϳ",
             "ж",
@@ -361,8 +357,8 @@
         },
         {
           "label": "k",
+          "secondaryLabel": "+",
           "alternates": [
-            "+",
             "ķ",
             "κ",
             "к"
@@ -375,8 +371,8 @@
         },
         {
           "label": "l",
+          "secondaryLabel": "/",
           "alternates": [
-            "/",
             "ĺ",
             "ļ",
             "ľ",
@@ -419,8 +415,8 @@
         },
         {
           "label": "z",
+          "secondaryLabel": "_",
           "alternates": [
-            "_",
             "ź",
             "ż",
             "ž",
@@ -435,8 +431,8 @@
         },
         {
           "label": "x",
+          "secondaryLabel": "=",
           "alternates": [
-            "=",
             "ξ",
             "х"
           ],
@@ -448,14 +444,13 @@
         },
         {
           "label": "c",
+          "secondaryLabel": "¢",
           "alternates": [
-            "¢",
             "ç",
             "ć",
             "č",
             "ĉ",
             "ċ",
-            "©",
             "χ",
             "ц",
             "ч"
@@ -468,8 +463,8 @@
         },
         {
           "label": "v",
+          "secondaryLabel": "<",
           "alternates": [
-            "<",
             "ϖ",
             "в"
           ],
@@ -481,8 +476,8 @@
         },
         {
           "label": "b",
+          "secondaryLabel": ">",
           "alternates": [
-            ">",
             "β",
             "б",
             "в",
@@ -496,8 +491,8 @@
         },
         {
           "label": "n",
+          "secondaryLabel": "ñ",
           "alternates": [
-            "ñ",
             "ń",
             "ņ",
             "ň",
@@ -513,8 +508,8 @@
         },
         {
           "label": "m",
+          "secondaryLabel": "μ",
           "alternates": [
-            "μ",
             "м"
           ],
           "style": "alphaKey",
@@ -623,8 +618,8 @@
         },
         {
           "label": ".",
+          "secondaryLabel": ",",
           "alternates": [
-            ",",
             "!",
             "?",
             ":",
