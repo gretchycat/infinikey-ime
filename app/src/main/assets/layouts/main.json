@@ -1,7 +1,7 @@
 {
   "id": "main",
   "name": "Full Programmer Baseline Layout",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Comprehensive 5-row desktop programmer keyboard layout with function row, modifier toggles, long-press popups, and multi-touch geometry gestures.",
@@ -460,7 +460,8 @@
         {
           "label": "q",
           "alternates": [
-            "θ"
+            "θ",
+            "я"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -471,7 +472,10 @@
         {
           "label": "w",
           "alternates": [
-            "ω"
+            "ŵ",
+            "ω",
+            "ш",
+            "щ"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -481,14 +485,22 @@
         },
         {
           "label": "e",
-          "secondaryLabel": "é",
           "alternates": [
+            "€",
             "é",
             "è",
             "ë",
             "ê",
-            "€",
-            "ε"
+            "ē",
+            "ĕ",
+            "ė",
+            "ę",
+            "ě",
+            "ε",
+            "е",
+            "ё",
+            "є",
+            "э"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -500,7 +512,11 @@
           "label": "r",
           "alternates": [
             "®",
-            "ρ"
+            "ŕ",
+            "ŗ",
+            "ř",
+            "ρ",
+            "р"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -512,7 +528,12 @@
           "label": "t",
           "alternates": [
             "þ",
-            "τ"
+            "ť",
+            "ţ",
+            "ț",
+            "ŧ",
+            "τ",
+            "т"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -523,9 +544,13 @@
         {
           "label": "y",
           "alternates": [
+            "¥",
             "ý",
             "ÿ",
-            "¥"
+            "ŷ",
+            "ψ",
+            "ы",
+            "ю"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -535,13 +560,19 @@
         },
         {
           "label": "u",
-          "secondaryLabel": "ú",
           "alternates": [
             "ú",
             "ù",
             "ü",
             "û",
-            "υ"
+            "ū",
+            "ŭ",
+            "ů",
+            "ű",
+            "ų",
+            "υ",
+            "у",
+            "ў"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -551,14 +582,20 @@
         },
         {
           "label": "i",
-          "secondaryLabel": "í",
           "alternates": [
             "í",
             "ì",
             "ï",
             "î",
+            "ī",
+            "ĭ",
+            "į",
             "ı",
-            "ι"
+            "ι",
+            "и",
+            "і",
+            "ї",
+            "й"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -568,7 +605,6 @@
         },
         {
           "label": "o",
-          "secondaryLabel": "ó",
           "alternates": [
             "ó",
             "ò",
@@ -576,7 +612,12 @@
             "ô",
             "ø",
             "œ",
-            "õ"
+            "õ",
+            "ō",
+            "ŏ",
+            "ő",
+            "ο",
+            "о"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -588,7 +629,8 @@
           "label": "p",
           "alternates": [
             "π",
-            "ψ"
+            "ψ",
+            "п"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -669,7 +711,6 @@
         },
         {
           "label": "a",
-          "secondaryLabel": "á",
           "alternates": [
             "á",
             "à",
@@ -678,7 +719,12 @@
             "å",
             "æ",
             "ã",
-            "α"
+            "ā",
+            "ă",
+            "ą",
+            "ª",
+            "α",
+            "а"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -688,11 +734,17 @@
         },
         {
           "label": "s",
-          "secondaryLabel": "ß",
           "alternates": [
-            "ß",
             "§",
-            "σ"
+            "ß",
+            "ś",
+            "ŝ",
+            "ş",
+            "š",
+            "ș",
+            "σ",
+            "ς",
+            "с"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -704,7 +756,10 @@
           "label": "d",
           "alternates": [
             "ð",
-            "δ"
+            "ď",
+            "đ",
+            "δ",
+            "д"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -716,7 +771,8 @@
           "label": "f",
           "alternates": [
             "ƒ",
-            "φ"
+            "φ",
+            "ф"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -727,7 +783,13 @@
         {
           "label": "g",
           "alternates": [
-            "γ"
+            "ğ",
+            "ġ",
+            "ģ",
+            "ĝ",
+            "γ",
+            "г",
+            "ґ"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -738,7 +800,11 @@
         {
           "label": "h",
           "alternates": [
-            "θ"
+            "ĥ",
+            "ħ",
+            "η",
+            "θ",
+            "х"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -752,12 +818,20 @@
           "onPress": {
             "type": "SEND_TEXT",
             "text": "j"
-          }
+          },
+          "alternates": [
+            "ĵ",
+            "ϳ",
+            "ж",
+            "ј"
+          ]
         },
         {
           "label": "k",
           "alternates": [
-            "κ"
+            "ķ",
+            "κ",
+            "к"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -768,8 +842,13 @@
         {
           "label": "l",
           "alternates": [
+            "ĺ",
+            "ļ",
+            "ľ",
+            "ŀ",
             "ł",
-            "λ"
+            "λ",
+            "л"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -844,7 +923,9 @@
           "alternates": [
             "ź",
             "ż",
-            "ž"
+            "ž",
+            "ζ",
+            "з"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -858,16 +939,25 @@
           "onPress": {
             "type": "SEND_TEXT",
             "text": "x"
-          }
+          },
+          "alternates": [
+            "ξ",
+            "х"
+          ]
         },
         {
           "label": "c",
-          "secondaryLabel": "ç",
           "alternates": [
-            "ç",
             "¢",
+            "ç",
+            "ć",
+            "č",
+            "ĉ",
+            "ċ",
             "©",
-            "χ"
+            "χ",
+            "ц",
+            "ч"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -881,7 +971,11 @@
           "onPress": {
             "type": "SEND_TEXT",
             "text": "v"
-          }
+          },
+          "alternates": [
+            "ϖ",
+            "в"
+          ]
         },
         {
           "label": "b",
@@ -889,14 +983,24 @@
           "onPress": {
             "type": "SEND_TEXT",
             "text": "b"
-          }
+          },
+          "alternates": [
+            "β",
+            "б",
+            "в",
+            "þ"
+          ]
         },
         {
           "label": "n",
-          "secondaryLabel": "ñ",
           "alternates": [
             "ñ",
-            "ν"
+            "ń",
+            "ņ",
+            "ň",
+            "ŋ",
+            "ν",
+            "н"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -907,7 +1011,8 @@
         {
           "label": "m",
           "alternates": [
-            "µ"
+            "μ",
+            "м"
           ],
           "style": "alphaKey",
           "onPress": {

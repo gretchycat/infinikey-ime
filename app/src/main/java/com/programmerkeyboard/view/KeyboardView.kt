@@ -972,14 +972,35 @@ class KeyboardView @JvmOverloads constructor(
                 canvas.drawText(topLeft, rect.left + (5f * density), secY, topLeftPaint)
             }
 
-            // Top-Right Corner Text Drawing (First Alternate)
+            // Top-Right Corner Text Drawing (First Alternate Sorted by Usage Frequency)
             val lpAction = key.onLongPressAction
             val upAction = key.onSwipeUpAction
-            val rawSecToDraw = key.topRightLabel ?: firstAlt ?: when {
-                !key.secondaryLabel.isNullOrEmpty() -> key.secondaryLabel
-                upAction is KeyAction.SendText -> upAction.text
-                lpAction is KeyAction.SendText -> lpAction.text
-                else -> null
+            val isKeyPrimaryLetter = key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()
+
+            val altList = if (key.alternates.isNotEmpty()) {
+                key.alternates
+            } else {
+                (key.onLongPressAction as? KeyAction.ShowPopup)?.options ?: emptyList()
+            }
+
+            val mostUsedAlt = if (altList.isNotEmpty()) {
+                val currentLayoutId = layoutDefinition?.id ?: "main"
+                val usageCounts = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutId)
+                altList.maxByOrNull { usageCounts[if (it.length == 1 && it[0].isLetter()) it.lowercase() else it] ?: 0 } ?: altList.firstOrNull()
+            } else null
+
+            val formattedMostUsedAlt = if (!mostUsedAlt.isNullOrEmpty() && mostUsedAlt.length == 1 && mostUsedAlt[0].isLetter()) {
+                if (keyboardState.isShiftActive) mostUsedAlt.uppercase() else mostUsedAlt.lowercase()
+            } else mostUsedAlt
+
+            val rawSecToDraw = if (isKeyPrimaryLetter) {
+                formattedMostUsedAlt
+            } else {
+                key.topRightLabel ?: key.secondaryLabel ?: formattedMostUsedAlt ?: when {
+                    upAction is KeyAction.SendText -> upAction.text
+                    lpAction is KeyAction.SendText -> lpAction.text
+                    else -> null
+                }
             }
 
             if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key)) {
@@ -1552,7 +1573,7 @@ class KeyboardView @JvmOverloads constructor(
             return
         }
         val actionToExecute = if (sourceKey != null && keyboardState.shouldShiftKey(sourceKey) && action !is KeyAction.ShowPopup && action !is KeyAction.ShowWidget) {
-            val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLowerCase()
+            val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLetter()
             val firstAlt = sourceKey.alternates.firstOrNull()
             val upAct = sourceKey.onSwipeUpAction
             val lpAct = sourceKey.onLongPressAction

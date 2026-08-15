@@ -55,18 +55,6 @@ object LayoutParser {
 
             val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
 
-            // Cleanup legacy pref_custom_layout_json if it was assigned to a non-main layout
-            val legacyJson = prefs.getString("pref_custom_layout_json", null)
-            if (!legacyJson.isNullOrEmpty()) {
-                try {
-                    val parsed = com.google.gson.JsonParser.parseString(legacyJson).asJsonObject
-                    val parsedId = parsed.get("id")?.asString
-                    if (parsedId != null && parsedId != "main") {
-                        prefs.edit().remove("pref_custom_layout_json").apply()
-                    }
-                } catch (_: Exception) {}
-            }
-
             val assetFiles = try {
                 context.assets.list("layouts")?.filter { it.endsWith(".json") } ?: emptyList()
             } catch (_: Exception) {
@@ -76,8 +64,6 @@ object LayoutParser {
             for (file in assetFiles) {
                 val targetId = file.removeSuffix(".json")
                 val isEdited = prefs.getBoolean("pref_layout_is_edited_$targetId", false)
-                val customPref = prefs.getString("pref_custom_layout_json_$targetId", null)
-                    ?: if (targetId == "main") prefs.getString("pref_custom_layout_json", null) else null
 
                 val targetFile = java.io.File(dir, file)
                 val assetJson = try {
@@ -86,11 +72,24 @@ object LayoutParser {
 
                 if (assetJson.isEmpty()) continue
 
-                // If user has never custom edited this layout, automatically sync/upgrade to the latest asset version!
-                if (!isEdited && customPref == null) {
-                    val fileJson = if (targetFile.exists()) targetFile.readText().trim() else ""
+                // Always create default file in user-accessible layouts directory if missing!
+                if (!targetFile.exists()) {
+                    try {
+                        targetFile.writeText(assetJson)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                } else if (!isEdited) {
+                    val fileJson = targetFile.readText().trim()
+                    val needsUpgrade = try {
+                        val assetObj = com.google.gson.JsonParser.parseString(assetJson).asJsonObject
+                        val fileObj = com.google.gson.JsonParser.parseString(fileJson).asJsonObject
+                        val assetVer = assetObj.get("version")?.asString ?: ""
+                        val fileVer = fileObj.get("version")?.asString ?: ""
+                        fileVer != assetVer || fileJson != assetJson
+                    } catch (_: Exception) { true }
 
-                    if (!targetFile.exists() || fileJson != assetJson) {
+                    if (needsUpgrade) {
                         try {
                             targetFile.writeText(assetJson)
                         } catch (e: Exception) {
@@ -579,7 +578,8 @@ object LayoutParser {
                 if (keyElem.isJsonObject) {
                     val kObj = keyElem.asJsonObject
                     val label = kObj.get("label")?.asString ?: ""
-                    val secondaryLabel = kObj.get("secondaryLabel")?.asString
+                    val rawSecondaryLabel = kObj.get("secondaryLabel")?.asString
+                    val secondaryLabel = if (label.length == 1 && label[0].isLetter()) null else rawSecondaryLabel
                     val styleName = kObj.get("style")?.asString
 
                     val onPressObj = kObj.getAsJsonObject("onPress")
@@ -635,9 +635,19 @@ object LayoutParser {
                     val bgImgStr = kObj.get("backgroundImage")?.asString ?: styleObj?.backgroundImage
                     
                     val alternatesList = mutableListOf<String>()
-                    kObj.getAsJsonArray("alternates")?.forEach { elem -> alternatesList.add(elem.asString) }
+                    kObj.getAsJsonArray("alternates")?.forEach { elem ->
+                        val item = elem.asString
+                        if (item != label && !alternatesList.contains(item)) {
+                            alternatesList.add(item)
+                        }
+                    }
                     if (alternatesList.isEmpty()) {
-                        kObj.getAsJsonArray("alternateKeys")?.forEach { elem -> alternatesList.add(elem.asString) }
+                        kObj.getAsJsonArray("alternateKeys")?.forEach { elem ->
+                            val item = elem.asString
+                            if (item != label && !alternatesList.contains(item)) {
+                                alternatesList.add(item)
+                            }
+                        }
                     }
 
                     val shiftedVersion = getShiftedVersion(label, secondaryLabel, onSwipeUpAction)
@@ -649,8 +659,9 @@ object LayoutParser {
                     val longPressOptionsList = mutableListOf<String>()
                     kObj.getAsJsonArray("longPressOptions")?.forEach { elem -> longPressOptionsList.add(elem.asString) }
 
+                    val isLetter = label.length == 1 && label[0].isLetter()
                     val topLeftLabel = kObj.get("topLeftLabel")?.asString
-                    val topRightLabel = kObj.get("topRightLabel")?.asString ?: alternatesList.firstOrNull() ?: secondaryLabel
+                    val topRightLabel = kObj.get("topRightLabel")?.asString ?: secondaryLabel ?: if (!isLetter) alternatesList.firstOrNull() else null
 
                     // Popups come EXCLUSIVELY from the layout definition
                     val layoutPopupOptions = mutableListOf<String>()

@@ -1,7 +1,7 @@
 {
   "id": "mobile",
   "name": "Standard Mobile Layout",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",
@@ -37,7 +37,8 @@
           "label": "q",
           "alternates": [
             "1",
-            "θ"
+            "θ",
+            "я"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -49,7 +50,10 @@
           "label": "w",
           "alternates": [
             "2",
-            "ω"
+            "ŵ",
+            "ω",
+            "ш",
+            "щ"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -65,8 +69,17 @@
             "è",
             "ë",
             "ê",
+            "ē",
+            "ĕ",
+            "ė",
+            "ę",
+            "ě",
             "€",
-            "ε"
+            "ε",
+            "е",
+            "ё",
+            "є",
+            "э"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -78,8 +91,12 @@
           "label": "r",
           "alternates": [
             "4",
+            "ŕ",
+            "ŗ",
+            "ř",
             "®",
-            "ρ"
+            "ρ",
+            "р"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -92,7 +109,12 @@
           "alternates": [
             "5",
             "þ",
-            "τ"
+            "ť",
+            "ţ",
+            "ț",
+            "ŧ",
+            "τ",
+            "т"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -106,7 +128,11 @@
             "6",
             "ý",
             "ÿ",
-            "¥"
+            "ŷ",
+            "¥",
+            "ψ",
+            "ы",
+            "ю"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -122,7 +148,14 @@
             "ù",
             "ü",
             "û",
-            "υ"
+            "ū",
+            "ŭ",
+            "ů",
+            "ű",
+            "ų",
+            "υ",
+            "у",
+            "ў"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -138,8 +171,15 @@
             "ì",
             "ï",
             "î",
+            "ī",
+            "ĭ",
+            "į",
             "ı",
-            "ι"
+            "ι",
+            "и",
+            "і",
+            "ї",
+            "й"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -157,7 +197,12 @@
             "ô",
             "ø",
             "œ",
-            "õ"
+            "õ",
+            "ō",
+            "ŏ",
+            "ő",
+            "ο",
+            "о"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -170,7 +215,8 @@
           "alternates": [
             "0",
             "π",
-            "ψ"
+            "ψ",
+            "п"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -200,7 +246,12 @@
             "å",
             "æ",
             "ã",
-            "α"
+            "ā",
+            "ă",
+            "ą",
+            "ª",
+            "α",
+            "а"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -213,8 +264,15 @@
           "alternates": [
             "#",
             "ß",
+            "ś",
+            "ŝ",
+            "ş",
+            "š",
+            "ș",
             "§",
-            "σ"
+            "σ",
+            "ς",
+            "с"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -227,7 +285,10 @@
           "alternates": [
             "$",
             "ð",
-            "δ"
+            "ď",
+            "đ",
+            "δ",
+            "д"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -240,7 +301,8 @@
           "alternates": [
             "%",
             "ƒ",
-            "φ"
+            "φ",
+            "ф"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -252,7 +314,13 @@
           "label": "g",
           "alternates": [
             "&",
-            "γ"
+            "ğ",
+            "ġ",
+            "ģ",
+            "ĝ",
+            "γ",
+            "г",
+            "ґ"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -264,7 +332,11 @@
           "label": "h",
           "alternates": [
             "*",
-            "θ"
+            "ĥ",
+            "ħ",
+            "η",
+            "θ",
+            "х"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -275,7 +347,11 @@
         {
           "label": "j",
           "alternates": [
-            "-"
+            "-",
+            "ĵ",
+            "ϳ",
+            "ж",
+            "ј"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -287,7 +363,9 @@
           "label": "k",
           "alternates": [
             "+",
-            "κ"
+            "ķ",
+            "κ",
+            "к"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -299,8 +377,13 @@
           "label": "l",
           "alternates": [
             "/",
+            "ĺ",
+            "ļ",
+            "ľ",
+            "ŀ",
             "ł",
-            "λ"
+            "λ",
+            "л"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -337,7 +420,12 @@
         {
           "label": "z",
           "alternates": [
-            "_"
+            "_",
+            "ź",
+            "ż",
+            "ž",
+            "ζ",
+            "з"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -348,7 +436,9 @@
         {
           "label": "x",
           "alternates": [
-            "="
+            "=",
+            "ξ",
+            "х"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -359,10 +449,16 @@
         {
           "label": "c",
           "alternates": [
-            "ç",
             "¢",
+            "ç",
+            "ć",
+            "č",
+            "ĉ",
+            "ċ",
             "©",
-            "χ"
+            "χ",
+            "ц",
+            "ч"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -373,7 +469,9 @@
         {
           "label": "v",
           "alternates": [
-            "<"
+            "<",
+            "ϖ",
+            "в"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -384,7 +482,11 @@
         {
           "label": "b",
           "alternates": [
-            ">"
+            ">",
+            "β",
+            "б",
+            "в",
+            "þ"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -396,7 +498,12 @@
           "label": "n",
           "alternates": [
             "ñ",
-            "ν"
+            "ń",
+            "ņ",
+            "ň",
+            "ŋ",
+            "ν",
+            "н"
           ],
           "style": "alphaKey",
           "onPress": {
@@ -407,7 +514,8 @@
         {
           "label": "m",
           "alternates": [
-            "µ"
+            "μ",
+            "м"
           ],
           "style": "alphaKey",
           "onPress": {

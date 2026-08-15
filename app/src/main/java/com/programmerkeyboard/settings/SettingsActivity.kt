@@ -67,9 +67,14 @@ class SettingsActivity : AppCompatActivity() {
             btnGrantOverlayPermission?.visibility = View.GONE
         }
 
+        val tvSelectedTabTitle = findViewById<TextView>(R.id.tvSelectedTabTitle)
+
+        updateTabDisplay(0)
+
         tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
                 val position = tab?.position ?: 0
+                updateTabDisplay(position)
                 panelLayout.visibility = if (position == 0) View.VISIBLE else View.GONE
                 panelBehavior.visibility = if (position == 1) View.VISIBLE else View.GONE
                 panelHaptics.visibility = if (position == 2) View.VISIBLE else View.GONE
@@ -2033,9 +2038,10 @@ class SettingsActivity : AppCompatActivity() {
         val etSecondary = view.findViewById<EditText>(R.id.etEditKeySecondaryLabel)
         val etTopLeft = view.findViewById<EditText>(R.id.etEditKeyTopLeftLabel)
         val etTopRight = view.findViewById<EditText>(R.id.etEditKeyShiftLabel)
-        val spCategory = view.findViewById<Spinner>(R.id.spEditKeyCategoryStyle)
+        val etAlternates = view.findViewById<EditText>(R.id.etEditKeyAlternates)
         val etWeight = view.findViewById<EditText>(R.id.etEditKeyWidthWeight)
 
+        val spCategory = view.findViewById<Spinner>(R.id.spEditKeyCategoryStyle)
         val spActionType = view.findViewById<Spinner>(R.id.spEditKeyActionType)
         val etActionParam = view.findViewById<EditText>(R.id.etEditKeyActionParam)
 
@@ -2060,6 +2066,13 @@ class SettingsActivity : AppCompatActivity() {
         etSecondary.setText(key.secondaryLabel ?: "")
         etTopLeft.setText(key.topLeftLabel ?: "")
         etTopRight.setText(key.topRightLabel ?: "")
+
+        val existingAlternates = if (key.alternates.isNotEmpty()) {
+            key.alternates
+        } else {
+            (key.onLongPressAction as? KeyAction.ShowPopup)?.options ?: emptyList()
+        }
+        etAlternates.setText(existingAlternates.joinToString(", "))
 
         val currentWeight = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
         etWeight.setText("$currentWeight")
@@ -2486,7 +2499,7 @@ class SettingsActivity : AppCompatActivity() {
             }, 100)
         }
 
-        val allEditTexts = listOf(etPrimary, etSecondary, etTopLeft, etTopRight, etWeight, etActionParam, etLongPressParam, etSwipeUpParam, etSwipeDownParam)
+        val allEditTexts = listOf(etPrimary, etSecondary, etTopLeft, etTopRight, etAlternates, etWeight, etActionParam, etLongPressParam, etSwipeUpParam, etSwipeDownParam)
         allEditTexts.forEach { et ->
             et.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
@@ -2531,13 +2544,24 @@ class SettingsActivity : AppCompatActivity() {
                 val newSecondary = etSecondary.text.toString().ifEmpty { null }
                 val newTopLeft = etTopLeft.text.toString().ifEmpty { null }
                 val newTopRight = etTopRight.text.toString().ifEmpty { null }
+                val newAlternatesRaw = etAlternates.text.toString().trim()
+                val newAlternatesList = if (newAlternatesRaw.isNotEmpty()) {
+                    newAlternatesRaw.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                } else {
+                    emptyList<String>()
+                }
                 val newCat = availableStyles[spCategory.selectedItemPosition.coerceIn(0, availableStyles.size - 1)]
                 val newWeightVal = etWeight.text.toString().toFloatOrNull() ?: 1.0f
                 val newIconName = currentIconName?.ifEmpty { null }
                 val newIsSpacer = cbIsSpacer.isChecked
 
                 val newOnPress = parseKeyActionFromInputs(spActionType.selectedItemPosition, etActionParam.text.toString(), newPrimary)
-                val newLongPress = parseKeyActionFromInputs(spLongPressType.selectedItemPosition, etLongPressParam.text.toString(), "")
+                val parsedLongPress = parseKeyActionFromInputs(spLongPressType.selectedItemPosition, etLongPressParam.text.toString(), "")
+                val newLongPress = if (newAlternatesList.isNotEmpty() && (parsedLongPress is KeyAction.None || parsedLongPress is KeyAction.ShowPopup)) {
+                    KeyAction.ShowPopup(newAlternatesList)
+                } else {
+                    parsedLongPress
+                }
                 val newSwipeUp = parseKeyActionFromInputs(spSwipeUpType.selectedItemPosition, etSwipeUpParam.text.toString(), "")
                 val newSwipeDown = parseKeyActionFromInputs(spSwipeDownType.selectedItemPosition, etSwipeDownParam.text.toString(), "")
 
@@ -2551,6 +2575,7 @@ class SettingsActivity : AppCompatActivity() {
                                 secondaryLabel = newSecondary,
                                 topLeftLabel = newTopLeft,
                                 topRightLabel = newTopRight,
+                                alternates = newAlternatesList,
                                 styleName = newCat,
                                 widthWeight = DimensionValue.Ratio(newWeightVal),
                                 isSpacer = newIsSpacer,
@@ -2969,6 +2994,11 @@ class SettingsActivity : AppCompatActivity() {
         key.secondaryLabel?.let { obj.addProperty("secondaryLabel", it) }
         key.topLeftLabel?.let { obj.addProperty("topLeftLabel", it) }
         key.topRightLabel?.let { obj.addProperty("topRightLabel", it) }
+        if (key.alternates.isNotEmpty()) {
+            val altsArr = com.google.gson.JsonArray()
+            key.alternates.forEach { altsArr.add(it) }
+            obj.add("alternates", altsArr)
+        }
         key.styleName?.let { obj.addProperty("style", it) }
         key.iconName?.let { obj.addProperty("icon", it) }
         key.backgroundImage?.let { obj.addProperty("backgroundImage", it) }
@@ -3068,9 +3098,53 @@ class SettingsActivity : AppCompatActivity() {
         return com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(root)
     }
 
+    private val tabsInfo = listOf(
+        Pair("🎨", "Geometry"),
+        Pair("⚡", "Behavior"),
+        Pair("📳", "Haptics"),
+        Pair("🔊", "Audio"),
+        Pair("🖌️", "Themes"),
+        Pair("📐", "Editor")
+    )
+
+    private fun updateTabDisplay(position: Int) {
+        val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tabLayout) ?: return
+        val tvSelectedTabTitle = findViewById<TextView>(R.id.tvSelectedTabTitle)
+
+        val screenWidthDp = resources.configuration.screenWidthDp
+        val isLandscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        val showFullLabels = isLandscape || screenWidthDp >= 600
+
+        for (i in 0 until tabLayout.tabCount) {
+            val tab = tabLayout.getTabAt(i) ?: continue
+            val info = tabsInfo.getOrNull(i) ?: continue
+            tab.text = if (showFullLabels) "${info.first} ${info.second}" else info.first
+        }
+
+        if (showFullLabels) {
+            tvSelectedTabTitle?.visibility = View.GONE
+        } else {
+            tvSelectedTabTitle?.visibility = View.VISIBLE
+            val info = tabsInfo.getOrNull(position)
+            if (info != null) {
+                tvSelectedTabTitle?.text = "${info.first} ${info.second}"
+            }
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tabLayout)
+        val pos = tabLayout?.selectedTabPosition?.coerceAtLeast(0) ?: 0
+        updateTabDisplay(pos)
+    }
+
     override fun onResume() {
         super.onResume()
         updatePermissionStatusUI()
+        val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tabLayout)
+        val pos = tabLayout?.selectedTabPosition?.coerceAtLeast(0) ?: 0
+        updateTabDisplay(pos)
     }
 
     private fun updatePermissionStatusUI() {

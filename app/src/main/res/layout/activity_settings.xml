@@ -34,48 +34,64 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-    <!-- Category Tabs -->
+    <!-- Category Tabs (Icon-Only Bar) -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="44dp"
         android:background="@color/settings_bg"
         app:tabIndicatorColor="#38BDF8"
         app:tabIndicatorHeight="3dp"
-        app:tabMode="scrollable"
+        app:tabMode="fixed"
+        app:tabGravity="fill"
         app:tabSelectedTextColor="#38BDF8"
         app:tabTextColor="@color/settings_text_sub">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🎨 Geometry" />
+            android:text="🎨" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⚡ Behavior" />
+            android:text="⚡" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📳 Haptics" />
+            android:text="📳" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔊 Audio" />
+            android:text="🔊" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🖌️ Themes &amp; Colors" />
+            android:text="🖌️" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📐 Layout Editor" />
+            android:text="📐" />
     </com.google.android.material.tabs.TabLayout>
+
+    <!-- Selected Tab Name Banner Below Tab Bar -->
+    <TextView
+        android:id="@+id/tvSelectedTabTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#0F172A"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="🎨 Geometry"
+        android:textColor="#38BDF8"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <!-- Main Content Area -->
     <ScrollView

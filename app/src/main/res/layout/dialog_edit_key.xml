@@ -104,6 +104,31 @@
             android:textSize="14sp"
             android:layout_marginBottom="12dp" />
 
+        <!-- Alternate Keys / Long Press Options -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alternate Keys / Long-Press Options (Comma-separated)"
+            android:textColor="@color/settings_text_sub"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEditKeyAlternates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="44dp"
+            android:background="@drawable/bg_spinner_card"
+            android:hint="Alternates (e.g. θ, 1, 2, 3 or á, à, ä)"
+            android:textColorHint="#64748B"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/settings_text_header"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
+
         <!-- Shift Label -->
         <TextView
             android:layout_width="wrap_content"
