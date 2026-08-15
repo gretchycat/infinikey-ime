@@ -27,8 +27,8 @@ echo " Publishing Release: $TAG_NAME"
 echo "=========================================="
 
 # 1. Build signed release APK
-echo "--> Building release APK with ./gradlew assembleRelease..."
-./gradlew assembleRelease
+echo "--> Building release APK with sh gradlew assembleRelease..."
+sh gradlew assembleRelease
 
 APK_PATH=$(ls app/build/outputs/apk/release/infinikey-ime-v${VERSION}-b*-release.apk 2>/dev/null | head -n 1)
 
