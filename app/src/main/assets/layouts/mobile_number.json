@@ -1,7 +1,7 @@
 {
   "id": "mobile_number",
   "name": "Mobile Numeric & Symbols",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Gboard-style mobile numeric and symbols layout.",

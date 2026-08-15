@@ -987,43 +987,13 @@ class KeyboardView @JvmOverloads constructor(
                 canvas.drawText(topLeft, rect.left + (5f * density), secY, topLeftPaint)
             }
 
-            // Top-Right Corner Text Drawing (First Alternate Sorted by Usage Frequency)
+            // Top-Right Corner Text Drawing (First item of resulting key popup list)
+            val popupList = computeKeyPopupList(key)
+            val firstItemLabel = popupList.firstOrNull()?.first
             val lpAction = key.onLongPressAction
-            val pressAction = key.onPressAction
             val upAction = key.onSwipeUpAction
-            val isKeyPrimaryLetter = key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()
 
-            val longPopup = lpAction as? KeyAction.ShowPopup
-            val pressPopup = pressAction as? KeyAction.ShowPopup
-
-            val altList = if (key.alternates.isNotEmpty()) {
-                key.alternates
-            } else {
-                longPopup?.options ?: pressPopup?.options ?: emptyList()
-            }
-
-            // Top-right secondary text is ONLY rendered if the long press (or popup) action is a text echo or key code output
-            val isEchoOrCodeAction = isTextOrCodeEchoAction(lpAction) || isTextOrCodeEchoAction(pressPopup) ||
-                (key.alternates.isNotEmpty() && key.alternates.all { isTextOrCodeEchoAction(resolveActionFromLabel(it)) })
-
-            val currentLayoutIdForAlt = layoutDefinition?.id ?: "main"
-            val usageCountsForAlt = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutIdForAlt)
-
-            val mostUsedAlt = if (altList.isNotEmpty() && isEchoOrCodeAction) {
-                altList.maxByOrNull { usageCountsForAlt[if (it.length == 1 && it[0].isLetter()) it.lowercase() else it] ?: 0 }
-            } else null
-
-            val mostUsedCount = if (!mostUsedAlt.isNullOrEmpty()) {
-                val normKey = if (mostUsedAlt.length == 1 && mostUsedAlt[0].isLetter()) mostUsedAlt.lowercase() else mostUsedAlt
-                usageCountsForAlt[normKey] ?: 0
-            } else 0
-
-            val formattedMostUsedAlt = if (!mostUsedAlt.isNullOrEmpty() && mostUsedAlt.length == 1 && mostUsedAlt[0].isLetter()) {
-                if (keyboardState.isShiftActive) mostUsedAlt.uppercase() else mostUsedAlt.lowercase()
-            } else mostUsedAlt
-
-            val secFromKey = key.topRightLabel ?: key.secondaryLabel
-            val candidateSec = secFromKey ?: formattedMostUsedAlt ?: when {
+            val candidateSec = firstItemLabel ?: when {
                 upAction is KeyAction.SendText -> upAction.text
                 lpAction is KeyAction.SendText -> lpAction.text
                 else -> null
@@ -1586,6 +1556,66 @@ class KeyboardView @JvmOverloads constructor(
     var onKeyTapForEditingListener: ((rowIdx: Int, keyIdx: Int, key: KeyDefinition) -> Unit)? = null
     var onSpacingTapForEditingListener: (() -> Unit)? = null
 
+    private fun computeKeyPopupList(key: KeyDefinition?): List<Pair<String, KeyAction>> {
+        if (key == null) return emptyList()
+        val lpAction = key.onLongPressAction
+        val pressAction = key.onPressAction
+        val longPopup = lpAction as? KeyAction.ShowPopup
+        val pressPopup = pressAction as? KeyAction.ShowPopup
+
+        val rawOptions = if (key.alternates.isNotEmpty()) {
+            key.alternates
+        } else {
+            longPopup?.options ?: pressPopup?.options ?: emptyList()
+        }
+
+        if (rawOptions.isEmpty()) return emptyList()
+
+        val baseActions = longPopup?.actions ?: pressPopup?.actions ?: emptyList()
+
+        val formattedOptions = rawOptions.map { opt ->
+            if (opt.length == 1 && opt[0].isLetter()) {
+                if (keyboardState.isShiftActive) opt.uppercase() else opt.lowercase()
+            } else {
+                opt
+            }
+        }
+
+        val pairedList = formattedOptions.mapIndexed { idx, opt ->
+            val act = if (idx in baseActions.indices) baseActions[idx] else resolveActionFromLabel(opt)
+            Pair(opt, act)
+        }
+
+        val currentLayoutId = layoutDefinition?.id ?: "main"
+        val usageCounts = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutId)
+
+        // 1. Sort the entire alternate keys list by popularity (index 0 to end)
+        val sortedEntireList = if (pairedList.size > 1) {
+            pairedList.sortedByDescending { pair ->
+                val opt = pair.first
+                val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
+                usageCounts[normOpt] ?: 0
+            }
+        } else {
+            pairedList
+        }
+
+        // 2. Extract and format secondaryLabel if set on key definition
+        val secFromKey = key.secondaryLabel ?: key.topRightLabel
+        val formattedSecondary = if (!secFromKey.isNullOrEmpty() && secFromKey.length == 1 && secFromKey[0].isLetter()) {
+            if (keyboardState.isShiftActive) secFromKey.uppercase() else secFromKey.lowercase()
+        } else secFromKey
+
+        // 3. Prepend secondaryLabel if present to the popularity-sorted alternates list
+        return if (!formattedSecondary.isNullOrEmpty()) {
+            val pinnedPair = Pair(formattedSecondary, resolveActionFromLabel(formattedSecondary))
+            val remainingPairs = sortedEntireList.filter { !it.first.equals(formattedSecondary, ignoreCase = true) }
+            listOf(pinnedPair) + remainingPairs
+        } else {
+            sortedEntireList
+        }
+    }
+
     private fun executeAction(action: KeyAction, sourceKey: KeyDefinition? = null) {
         if (isEditorPreviewMode) {
             sourceKey?.let { targetKey ->
@@ -1640,58 +1670,20 @@ class KeyboardView @JvmOverloads constructor(
             }
             is KeyAction.ShowPopup -> {
                 if (layoutDefinition?.id == "phone") return
+                val targetKey = sourceKey ?: pressedKeyBounds?.key ?: return
                 val rect = (sourceKey?.let { k -> keyBoundsList.firstOrNull { it.key == k } } ?: pressedKeyBounds)?.rect ?: return
                 val currentLayoutId = layoutDefinition?.id ?: "main"
-                val usageCounts = com.programmerkeyboard.engine.AlternatePriorityManager.getAlternateUsageCounts(context, currentLayoutId)
 
-                val baseOptions = actionToExecute.options.map { opt ->
-                    if (opt.length == 1 && opt[0].isLetter()) {
-                        if (keyboardState.isShiftActive) opt.uppercase() else opt.lowercase()
-                    } else {
-                        opt
-                    }
-                }
-
-                val baseActions = actionToExecute.actions
-                val pairedList = baseOptions.mapIndexed { idx, opt ->
-                    val act = if (idx in baseActions.indices) baseActions[idx] else null
-                    Pair(opt, act)
-                }
-
-                // 1. Sort the entire alternate keys list by popularity (from index 0 to end)
-                val sortedEntireList = if (pairedList.size > 1) {
-                    pairedList.sortedByDescending { pair ->
-                        val opt = pair.first
-                        val normOpt = if (opt.length == 1 && opt[0].isLetter()) opt.lowercase() else opt
-                        usageCounts[normOpt] ?: 0
-                    }
-                } else {
-                    pairedList
-                }
-
-                // 2. Extract and format secondaryLabel if set on key definition
-                val keyForPopup = sourceKey ?: pressedKeyBounds?.key
-                val secondaryFromKey = keyForPopup?.secondaryLabel ?: keyForPopup?.topRightLabel
-                val formattedSecondary = if (!secondaryFromKey.isNullOrEmpty() && secondaryFromKey.length == 1 && secondaryFromKey[0].isLetter()) {
-                    if (keyboardState.isShiftActive) secondaryFromKey.uppercase() else secondaryFromKey.lowercase()
-                } else secondaryFromKey
-
-                // 3. Prepend secondaryLabel if present to the popularity-sorted alternates list
-                val sortedPairs = if (!formattedSecondary.isNullOrEmpty()) {
-                    val pinnedPair = Pair(formattedSecondary, resolveActionFromLabel(formattedSecondary))
-                    val remainingPairs = sortedEntireList.filter { !it.first.equals(formattedSecondary, ignoreCase = true) }
-                    listOf(pinnedPair) + remainingPairs
-                } else {
-                    sortedEntireList
-                }
+                val sortedPairs = computeKeyPopupList(targetKey)
+                if (sortedPairs.isEmpty()) return
 
                 val optionsToDisplay = sortedPairs.map { it.first }
-                val sortedActions = sortedPairs.mapNotNull { it.second }
+                val sortedActions = sortedPairs.map { it.second }
 
                 keyPopupOverlay = KeyPopupOverlay(
                     context = context,
                     onItemSelected = { selectedIndex, selectedLabel ->
-                        val keyLabel = sourceKey?.primaryLabel ?: pressedKeyBounds?.key?.primaryLabel
+                        val keyLabel = targetKey.primaryLabel
                         com.programmerkeyboard.engine.AlternatePriorityManager.recordAlternateSelection(
                             context = context,
                             layoutId = currentLayoutId,
@@ -1703,7 +1695,7 @@ class KeyboardView @JvmOverloads constructor(
                         } else {
                             resolveActionFromLabel(selectedLabel)
                         }
-                        executeAction(actionToRun, sourceKey)
+                        executeAction(actionToRun, targetKey)
                         playKeyClickSound(isKeyDown = false)
                     },
                     onHoverChanged = { hoveredIndex, hoveredLabel ->
