@@ -942,10 +942,9 @@ class KeyboardView @JvmOverloads constructor(
             val displayLabel = if (keyboardState.isShiftActive && key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()) {
                 key.primaryLabel.uppercase()
             } else if (keyboardState.isShiftActive) {
-                val upAct = key.onSwipeUpAction
+                val officialShifted = getOfficialShiftedValue(key)
                 when {
-                    !key.secondaryLabel.isNullOrEmpty() -> if (key.secondaryLabel.any { it.isLowerCase() }) key.secondaryLabel.uppercase() else key.secondaryLabel
-                    upAct is KeyAction.SendText -> if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text
+                    !officialShifted.isNullOrEmpty() -> if (officialShifted.any { it.isLowerCase() }) officialShifted.uppercase() else officialShifted
                     else -> key.primaryLabel
                 }
             } else {
@@ -1639,25 +1638,24 @@ class KeyboardView @JvmOverloads constructor(
             return
         }
         val actionToExecute = if (sourceKey != null && keyboardState.shouldShiftKey(sourceKey) && action !is KeyAction.ShowPopup && action !is KeyAction.ShowWidget) {
-            when (action) {
-                is KeyAction.SendText -> {
+            val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLetter()
+            if (isLetter) {
+                if (action is KeyAction.SendText) {
                     val txt = action.text
                     KeyAction.SendText(if (txt.any { it.isLowerCase() }) txt.uppercase() else txt)
+                } else {
+                    KeyAction.SendText(sourceKey.primaryLabel.uppercase())
                 }
-                else -> {
-                    if (sourceKey != null) {
-                        val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLetter()
-                        val popupList = computeKeyPopupList(sourceKey)
-                        val firstAlt = popupList.firstOrNull()?.first
-                        val upAct = sourceKey.onSwipeUpAction
-                        when {
-                            isLetter -> KeyAction.SendText(sourceKey.primaryLabel.uppercase())
-                            !firstAlt.isNullOrEmpty() -> KeyAction.SendText(if (firstAlt.any { it.isLowerCase() }) firstAlt.uppercase() else firstAlt)
-                            !sourceKey.secondaryLabel.isNullOrEmpty() -> KeyAction.SendText(if (sourceKey.secondaryLabel.any { it.isLowerCase() }) sourceKey.secondaryLabel.uppercase() else sourceKey.secondaryLabel)
-                            upAct is KeyAction.SendText -> KeyAction.SendText(if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text)
-                            else -> action
-                        }
-                    } else action
+            } else {
+                val isPrimaryPress = action == sourceKey.onPressAction || (action is KeyAction.SendText && action.text == sourceKey.primaryLabel)
+                val officialShifted = if (isPrimaryPress) getOfficialShiftedValue(sourceKey) else null
+                if (!officialShifted.isNullOrEmpty()) {
+                    KeyAction.SendText(if (officialShifted.any { it.isLowerCase() }) officialShifted.uppercase() else officialShifted)
+                } else if (action is KeyAction.SendText) {
+                    val txt = action.text
+                    KeyAction.SendText(if (txt.any { it.isLowerCase() }) txt.uppercase() else txt)
+                } else {
+                    action
                 }
             }
         } else {
@@ -1827,15 +1825,17 @@ class KeyboardView @JvmOverloads constructor(
         if (keyPreviewOverlay == null) {
             keyPreviewOverlay = KeyPreviewOverlay(context)
         }
-        val upAct = key.onSwipeUpAction
-        val lpAct = key.onLongPressAction
         val label = if (keyboardState.shouldShiftKey(key)) {
-            when {
-                key.primaryLabel.length == 1 && key.primaryLabel[0].isLowerCase() -> key.primaryLabel.uppercase()
-                !key.secondaryLabel.isNullOrEmpty() -> key.secondaryLabel
-                upAct is KeyAction.SendText -> upAct.text
-                lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> lpAct.options.first()
-                else -> key.primaryLabel
+            val isLetter = key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()
+            if (isLetter) {
+                key.primaryLabel.uppercase()
+            } else {
+                val officialShifted = getOfficialShiftedValue(key)
+                if (!officialShifted.isNullOrEmpty()) {
+                    if (officialShifted.any { it.isLowerCase() }) officialShifted.uppercase() else officialShifted
+                } else {
+                    key.primaryLabel
+                }
             }
         } else {
             key.primaryLabel
