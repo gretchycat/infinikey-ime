@@ -1,7 +1,7 @@
 {
   "id": "main",
   "name": "Full Programmer Baseline Layout",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Comprehensive 5-row desktop Infinikey IME layout with function row, modifier toggles, long-press popups, and multi-touch geometry gestures.",
@@ -205,10 +205,24 @@
           "secondaryLabel": "!",
           "alternates": [
             "!",
+            "①",
+            "❶",
+            "⓵",
+            "⑴",
+            "⒈",
             "¹",
+            "₁",
+            "Ⅰ",
+            "ⅰ",
             "½",
             "⅓",
-            "¼"
+            "¼",
+            "⅕",
+            "⅙",
+            "⅛",
+            "𝟙",
+            "𝟷",
+            "🯱"
           ],
           "style": "numberKey",
           "onPress": {
@@ -225,8 +239,20 @@
           "secondaryLabel": "@",
           "alternates": [
             "@",
+            "②",
+            "❷",
+            "⓶",
+            "⑵",
+            "⒉",
             "²",
-            "⅔"
+            "₂",
+            "Ⅱ",
+            "ⅱ",
+            "⅔",
+            "⅖",
+            "𝟚",
+            "𝟸",
+            "🯲"
           ],
           "style": "numberKey",
           "onPress": {
@@ -243,9 +269,21 @@
           "secondaryLabel": "#",
           "alternates": [
             "#",
+            "③",
+            "❸",
+            "⓷",
+            "⑶",
+            "⒊",
             "³",
+            "₃",
+            "Ⅲ",
+            "ⅲ",
             "¾",
-            "⅜"
+            "⅜",
+            "⅗",
+            "𝟛",
+            "𝟹",
+            "🯳"
           ],
           "style": "numberKey",
           "onPress": {
@@ -262,12 +300,25 @@
           "secondaryLabel": "$",
           "alternates": [
             "$",
+            "④",
+            "❹",
+            "⓸",
+            "⑷",
+            "⒋",
+            "⁴",
+            "₄",
+            "Ⅳ",
+            "ⅳ",
             "¢",
             "£",
             "€",
             "¥",
             "₹",
-            "¤"
+            "¤",
+            "⅘",
+            "𝟜",
+            "𝟺",
+            "🯴"
           ],
           "style": "numberKey",
           "onPress": {
@@ -284,8 +335,21 @@
           "secondaryLabel": "%",
           "alternates": [
             "%",
+            "⑤",
+            "❺",
+            "⓹",
+            "⑸",
+            "⒌",
+            "⁵",
+            "₅",
+            "Ⅴ",
+            "ⅴ",
             "‰",
-            "⅝"
+            "⅝",
+            "⅚",
+            "𝟝",
+            "𝟻",
+            "🯵"
           ],
           "style": "numberKey",
           "onPress": {
@@ -302,9 +366,21 @@
           "secondaryLabel": "^",
           "alternates": [
             "^",
+            "⑥",
+            "❻",
+            "⓺",
+            "⑹",
+            "⒍",
+            "⁶",
+            "₆",
+            "Ⅵ",
+            "ⅵ",
             "↑",
             "↖",
-            "↗"
+            "↗",
+            "𝟞",
+            "𝟼",
+            "🯶"
           ],
           "style": "numberKey",
           "onPress": {
@@ -321,7 +397,20 @@
           "secondaryLabel": "&",
           "alternates": [
             "&",
-            "⅞"
+            "⑦",
+            "❼",
+            "⓻",
+            "⑺",
+            "⒎",
+            "⁷",
+            "₇",
+            "Ⅶ",
+            "ⅶ",
+            "⁊",
+            "⅞",
+            "𝟩",
+            "𝟽",
+            "🯷"
           ],
           "style": "numberKey",
           "onPress": {
@@ -338,9 +427,21 @@
           "secondaryLabel": "*",
           "alternates": [
             "*",
+            "⑧",
+            "❽",
+            "⓼",
+            "⑻",
+            "⒏",
+            "⁸",
+            "₈",
+            "Ⅷ",
+            "ⅷ",
             "∞",
             "°",
-            "×"
+            "×",
+            "𝟠",
+            "𝟾",
+            "🯸"
           ],
           "style": "numberKey",
           "onPress": {
@@ -357,9 +458,21 @@
           "secondaryLabel": "(",
           "alternates": [
             "(",
+            "⑨",
+            "❾",
+            "⓽",
+            "⑼",
+            "⒐",
+            "⁹",
+            "₉",
+            "Ⅸ",
+            "ⅸ",
             "[",
             "{",
-            "<"
+            "<",
+            "𝟡",
+            "𝟿",
+            "🯹"
           ],
           "style": "numberKey",
           "onPress": {
@@ -376,9 +489,20 @@
           "secondaryLabel": ")",
           "alternates": [
             ")",
+            "⓪",
+            "⓿",
+            "⁰",
+            "₀",
+            "Ⅹ",
+            "ⅹ",
             "]",
             "}",
-            ">"
+            ">",
+            "∅",
+            "Ø",
+            "𝟘",
+            "𝟶",
+            "🯰"
           ],
           "style": "numberKey",
           "onPress": {
@@ -472,6 +596,10 @@
         {
           "label": "w",
           "alternates": [
+            "ẅ",
+            "ẃ",
+            "ẁ",
+            "ƿ",
             "ŵ",
             "ω",
             "ш",
@@ -486,6 +614,9 @@
         {
           "label": "e",
           "alternates": [
+            "ẹ",
+            "ɛ",
+            "ə",
             "€",
             "é",
             "è",
@@ -544,6 +675,8 @@
         {
           "label": "y",
           "alternates": [
+            "ỳ",
+            "ȳ",
             "¥",
             "ý",
             "ÿ",
@@ -583,6 +716,8 @@
         {
           "label": "i",
           "alternates": [
+            "İ",
+            "ĳ",
             "í",
             "ì",
             "ï",
@@ -606,6 +741,8 @@
         {
           "label": "o",
           "alternates": [
+            "ọ",
+            "ɔ",
             "ó",
             "ò",
             "ö",
@@ -712,6 +849,7 @@
         {
           "label": "a",
           "alternates": [
+            "ǣ",
             "á",
             "à",
             "ä",
@@ -735,6 +873,9 @@
         {
           "label": "s",
           "alternates": [
+            "ṣ",
+            "ẞ",
+            "ſ",
             "§",
             "ß",
             "ś",
@@ -755,6 +896,7 @@
         {
           "label": "d",
           "alternates": [
+            "ɗ",
             "ð",
             "ď",
             "đ",
@@ -783,6 +925,7 @@
         {
           "label": "g",
           "alternates": [
+            "ȝ",
             "ğ",
             "ġ",
             "ģ",
@@ -985,6 +1128,7 @@
             "text": "b"
           },
           "alternates": [
+            "ɓ",
             "β",
             "б",
             "в",

@@ -1,7 +1,7 @@
 {
   "id": "mobile",
   "name": "Standard Mobile Layout",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",
@@ -50,6 +50,10 @@
           "label": "w",
           "secondaryLabel": "2",
           "alternates": [
+            "ẅ",
+            "ẃ",
+            "ẁ",
+            "ƿ",
             "ŵ",
             "ω",
             "ш",
@@ -65,6 +69,9 @@
           "label": "e",
           "secondaryLabel": "3",
           "alternates": [
+            "ẹ",
+            "ɛ",
+            "ə",
             "é",
             "è",
             "ë",
@@ -124,6 +131,8 @@
           "label": "y",
           "secondaryLabel": "6",
           "alternates": [
+            "ỳ",
+            "ȳ",
             "ý",
             "ÿ",
             "ŷ",
@@ -164,6 +173,8 @@
           "label": "i",
           "secondaryLabel": "8",
           "alternates": [
+            "İ",
+            "ĳ",
             "í",
             "ì",
             "ï",
@@ -188,6 +199,8 @@
           "label": "o",
           "secondaryLabel": "9",
           "alternates": [
+            "ọ",
+            "ɔ",
             "ó",
             "ò",
             "ö",
@@ -236,6 +249,7 @@
           "label": "a",
           "secondaryLabel": "@",
           "alternates": [
+            "ǣ",
             "á",
             "à",
             "ä",
@@ -260,6 +274,9 @@
           "label": "s",
           "secondaryLabel": "#",
           "alternates": [
+            "ṣ",
+            "ẞ",
+            "ſ",
             "ß",
             "ś",
             "ŝ",
@@ -280,6 +297,7 @@
           "label": "d",
           "secondaryLabel": "$",
           "alternates": [
+            "ɗ",
             "ð",
             "ď",
             "đ",
@@ -310,6 +328,7 @@
           "label": "g",
           "secondaryLabel": "&",
           "alternates": [
+            "ȝ",
             "ğ",
             "ġ",
             "ģ",
@@ -478,6 +497,7 @@
           "label": "b",
           "secondaryLabel": ">",
           "alternates": [
+            "ɓ",
             "β",
             "б",
             "в",

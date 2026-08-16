@@ -1,7 +1,7 @@
 {
   "id": "mobile_number",
   "name": "Mobile Numeric & Symbols",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Gboard-style mobile numeric and symbols layout.",
@@ -38,16 +38,16 @@
       "id": 1,
       "splitIndex": 5,
       "keys": [
-        { "label": "1", "alternates": ["!", "¹", "½", "⅓", "¼"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "1" } },
-        { "label": "2", "alternates": ["@", "²", "⅔"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "2" } },
-        { "label": "3", "alternates": ["#", "³", "¾", "⅜"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "3" } },
-        { "label": "4", "alternates": ["$", "¢", "£", "€", "¥", "₹", "¤"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "4" } },
-        { "label": "5", "alternates": ["%", "‰", "⅝"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "5" } },
-        { "label": "6", "alternates": ["^", "↑", "↖", "↗"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "6" } },
-        { "label": "7", "alternates": ["&", "⅞"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "7" } },
-        { "label": "8", "alternates": ["*", "∞", "°", "×"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "8" } },
-        { "label": "9", "alternates": ["(", "[", "{", "<"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "9" } },
-        { "label": "0", "alternates": [")", "]", "}", ">"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "0" } }
+        { "label": "1", "alternates": ["!", "①", "❶", "⓵", "⑴", "⒈", "¹", "₁", "Ⅰ", "ⅰ", "½", "⅓", "¼", "⅕", "⅙", "⅛", "𝟙", "𝟷", "🯱"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "1" } },
+        { "label": "2", "alternates": ["@", "②", "❷", "⓶", "⑵", "⒉", "²", "₂", "Ⅱ", "ⅱ", "⅔", "⅖", "𝟚", "𝟸", "🯲"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "2" } },
+        { "label": "3", "alternates": ["#", "③", "❸", "⓷", "⑶", "⒊", "³", "₃", "Ⅲ", "ⅲ", "¾", "⅜", "⅗", "𝟛", "𝟹", "🯳"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "3" } },
+        { "label": "4", "alternates": ["$", "④", "❹", "⓸", "⑷", "⒋", "⁴", "₄", "Ⅳ", "ⅳ", "¢", "£", "€", "¥", "₹", "¤", "⅘", "𝟜", "𝟺", "🯴"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "4" } },
+        { "label": "5", "alternates": ["%", "⑤", "❺", "⓹", "⑸", "⒌", "⁵", "₅", "Ⅴ", "ⅴ", "‰", "⅝", "⅚", "𝟝", "𝟻", "🯵"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "5" } },
+        { "label": "6", "alternates": ["^", "⑥", "❻", "⓺", "⑹", "⒍", "⁶", "₆", "Ⅵ", "ⅵ", "↑", "↖", "↗", "𝟞", "𝟼", "🯶"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "6" } },
+        { "label": "7", "alternates": ["&", "⑦", "❼", "⓻", "⑺", "⒎", "⁷", "₇", "Ⅶ", "ⅶ", "⁊", "⅞", "𝟩", "𝟽", "🯷"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "7" } },
+        { "label": "8", "alternates": ["*", "⑧", "❽", "⓼", "⑻", "⒏", "⁸", "₈", "Ⅷ", "ⅷ", "∞", "°", "×", "𝟠", "𝟾", "🯸"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "8" } },
+        { "label": "9", "alternates": ["(", "⑨", "❾", "⓽", "⑼", "⒐", "⁹", "₉", "Ⅸ", "ⅸ", "[", "{", "<", "𝟡", "𝟿", "🯹"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "9" } },
+        { "label": "0", "alternates": [")", "⓪", "⓿", "⁰", "₀", "Ⅹ", "ⅹ", "]", "}", ">", "∅", "Ø", "𝟘", "𝟶", "🯰"], "style": "numberKey", "onPress": { "type": "SEND_TEXT", "text": "0" } }
       ]
     },
     {
