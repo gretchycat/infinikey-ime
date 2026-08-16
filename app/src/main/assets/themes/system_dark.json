@@ -1,0 +1,16 @@
+{
+  "theme": {
+    "backgroundColor": "#0F172A",
+    "modifierLatchedDotColor": "#38BDF8",
+    "modifierLockedDotColor": "#EF4444"
+  },
+  "styles": {
+    "alphaKey": { "bgColor": "#161923", "fgColor": "#F8FAFC", "secondaryFgColor": "#F8FAFC", "pressedBgColor": "#252B3C" },
+    "numberKey": { "bgColor": "#141722", "fgColor": "#38BDF8", "secondaryFgColor": "#38BDF8", "pressedBgColor": "#222736" },
+    "modifierKey": { "bgColor": "#1D212F", "fgColor": "#F59E0B", "secondaryFgColor": "#F59E0B", "activeBgColor": "#1E3A5F" },
+    "functionKey": { "bgColor": "#1B2030", "fgColor": "#A855F7", "secondaryFgColor": "#A855F7", "pressedBgColor": "#2A324B" },
+    "actionKey": { "bgColor": "#1E293B", "fgColor": "#38BDF8", "secondaryFgColor": "#38BDF8", "pressedBgColor": "#334155" },
+    "navigationKey": { "bgColor": "#1E2638", "fgColor": "#34D399", "secondaryFgColor": "#34D399", "pressedBgColor": "#2D374D" },
+    "editingKey": { "bgColor": "#221D36", "fgColor": "#F472B6", "secondaryFgColor": "#F472B6", "pressedBgColor": "#362C54" }
+  }
+}
