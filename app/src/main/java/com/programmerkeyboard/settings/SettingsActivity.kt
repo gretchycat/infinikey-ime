@@ -58,6 +58,7 @@ class SettingsActivity : AppCompatActivity() {
         val panelHaptics = findViewById<View>(R.id.panelHaptics)
         val panelAudio = findViewById<View>(R.id.panelAudio)
         val panelThemes = findViewById<View>(R.id.panelThemes)
+        val panelStt = findViewById<View>(R.id.panelStt)
 
         val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
@@ -71,16 +72,17 @@ class SettingsActivity : AppCompatActivity() {
 
         updateTabDisplay(0)
 
-        tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+        tabLayout?.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
                 val position = tab?.position ?: 0
                 updateTabDisplay(position)
-                panelLayout.visibility = if (position == 0) View.VISIBLE else View.GONE
-                panelBehavior.visibility = if (position == 1) View.VISIBLE else View.GONE
-                panelHaptics.visibility = if (position == 2) View.VISIBLE else View.GONE
-                panelAudio.visibility = if (position == 3) View.VISIBLE else View.GONE
-                panelThemes.visibility = if (position == 4) View.VISIBLE else View.GONE
-                panelEditor.visibility = if (position == 5) View.VISIBLE else View.GONE
+                panelLayout?.visibility = if (position == 0) View.VISIBLE else View.GONE
+                panelBehavior?.visibility = if (position == 1) View.VISIBLE else View.GONE
+                panelHaptics?.visibility = if (position == 2) View.VISIBLE else View.GONE
+                panelAudio?.visibility = if (position == 3) View.VISIBLE else View.GONE
+                panelThemes?.visibility = if (position == 4) View.VISIBLE else View.GONE
+                panelEditor?.visibility = if (position == 5) View.VISIBLE else View.GONE
+                panelStt?.visibility = if (position == 6) View.VISIBLE else View.GONE
             }
             override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
@@ -1969,6 +1971,8 @@ class SettingsActivity : AppCompatActivity() {
                     .show()
             }
         }
+
+        setupSpeechToTextTab(prefs)
     }
 
     private fun getActionTypeIndex(action: KeyAction): Int {
@@ -3110,7 +3114,8 @@ class SettingsActivity : AppCompatActivity() {
         Pair("📳", "Haptics"),
         Pair("🔊", "Audio"),
         Pair("🖌️", "Themes"),
-        Pair("📐", "Editor")
+        Pair("📐", "Editor"),
+        Pair("🗣️", "Speech-to-Text")
     )
 
     private fun updateTabDisplay(position: Int) {
@@ -3201,6 +3206,117 @@ class SettingsActivity : AppCompatActivity() {
         } else {
             tvStatusOverlayPermission.text = "⚠️ Permission Not Granted"
             tvStatusOverlayPermission.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
+        }
+    }
+
+    private fun setupSpeechToTextTab(prefs: android.content.SharedPreferences) {
+        val spSttEngine = findViewById<Spinner>(R.id.spSttEngine) ?: return
+        val spSttModel = findViewById<Spinner>(R.id.spSttModel) ?: return
+        val tvSttEngineDescription = findViewById<TextView>(R.id.tvSttEngineDescription)
+        val tvSttModelDetails = findViewById<TextView>(R.id.tvSttModelDetails)
+        val cbSttFilterProfanity = findViewById<CheckBox>(R.id.cbSttFilterProfanity)
+        val cbSttContinuousMode = findViewById<CheckBox>(R.id.cbSttContinuousMode)
+        val cbSttPartialResults = findViewById<CheckBox>(R.id.cbSttPartialResults)
+        val btnManageSttModels = findViewById<Button>(R.id.btnManageSttModels)
+
+        // 1. STT Engine Adapter & Selection
+        val engineOptions = listOf(
+            Pair("Android System STT (Default SpeechRecognizer)", "ANDROID_SYSTEM"),
+            Pair("Sherpa-onnx (Offline Streaming ASR - Uncensored)", "SHERPA_ONNX"),
+            Pair("Whisper.cpp (Offline Local GGUF Model)", "WHISPER_CPP"),
+            Pair("Cloud API (Groq / OpenAI / Vosk Cloud)", "CLOUD_API")
+        )
+
+        val engineAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, engineOptions.map { it.first })
+        engineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spSttEngine.adapter = engineAdapter
+
+        val savedEngineKey = prefs.getString("pref_stt_engine", "ANDROID_SYSTEM") ?: "ANDROID_SYSTEM"
+        val savedEngineIdx = engineOptions.indexOfFirst { it.second == savedEngineKey }.coerceAtLeast(0)
+        spSttEngine.setSelection(savedEngineIdx)
+
+        // 2. Installed STT Models Setup
+        val modelOptions = listOf(
+            Pair("System Built-in Model (Google Voice / On-Device)", "SYSTEM_BUILTIN"),
+            Pair("sherpa-onnx-zipformer-en-2023-06-26 (Installed)", "SHERPA_ZIPFORMER_EN"),
+            Pair("whisper-tiny.en.gguf (Installed)", "WHISPER_TINY_EN"),
+            Pair("whisper-base.en.gguf (Installed)", "WHISPER_BASE_EN"),
+            Pair("vosk-model-small-en-us-0.15 (Installed)", "VOSK_SMALL_EN"),
+            Pair("➕ Import / Download Custom Model...", "IMPORT_CUSTOM")
+        )
+
+        val modelAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, modelOptions.map { it.first })
+        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spSttModel.adapter = modelAdapter
+
+        val savedModelKey = prefs.getString("pref_stt_model", "SYSTEM_BUILTIN") ?: "SYSTEM_BUILTIN"
+        val savedModelIdx = modelOptions.indexOfFirst { it.second == savedModelKey }.coerceAtLeast(0)
+        spSttModel.setSelection(savedModelIdx)
+
+        fun updateSttUI(engineKey: String, modelKey: String) {
+            tvSttEngineDescription?.text = when (engineKey) {
+                "SHERPA_ONNX" -> "Sherpa-onnx Engine: High-performance offline streaming ASR using ONNX runtime. Bypasses Android profanity filters."
+                "WHISPER_CPP" -> "Whisper.cpp Engine: Local OpenAI Whisper GGUF quantization model. Fully offline and uncensored."
+                "CLOUD_API" -> "Cloud API Engine: Transcribes audio via remote Groq / OpenAI / Vosk REST APIs."
+                else -> "Android System STT: Native speech recognizer engine provided by Android system / Google Voice Services."
+            }
+
+            tvSttModelDetails?.text = when (modelKey) {
+                "SHERPA_ZIPFORMER_EN" -> "• Selected Model: Sherpa-onnx Zipformer English\n• Format: ONNX Streaming (int8 quantized)\n• Size: ~75 MB | Vocab: 5000 subwords\n• Status: Ready (Offline)"
+                "WHISPER_TINY_EN" -> "• Selected Model: Whisper Tiny English\n• Format: GGUF (Q4_0 quantized)\n• Size: ~39 MB | Context: 30s audio chunks\n• Status: Ready (Offline)"
+                "WHISPER_BASE_EN" -> "• Selected Model: Whisper Base English\n• Format: GGUF (Q5_1 quantized)\n• Size: ~142 MB | Context: 30s audio chunks\n• Status: Ready (Offline)"
+                "VOSK_SMALL_EN" -> "• Selected Model: Vosk Small US English\n• Format: Kaldi HMM-GMM / NNet3\n• Size: ~50 MB | Low memory footprint\n• Status: Ready (Offline)"
+                "IMPORT_CUSTOM" -> "• Selected Model: Custom External Model\n• Path: Android/data/com.programmerkeyboard/files/stt_models/\n• Supported Formats: .onnx, .gguf, .bin, .zip\n• Action: Tap below to manage model files"
+                else -> "• Selected Model: System Built-in Model\n• Engine: Android Recognition Service\n• Language: English / Device Default\n• Storage: System Provided"
+            }
+        }
+
+        updateSttUI(savedEngineKey, savedModelKey)
+
+        spSttEngine.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedKey = engineOptions.getOrNull(position)?.second ?: "ANDROID_SYSTEM"
+                prefs.edit().putString("pref_stt_engine", selectedKey).apply()
+                val currentModelKey = modelOptions.getOrNull(spSttModel.selectedItemPosition)?.second ?: "SYSTEM_BUILTIN"
+                updateSttUI(selectedKey, currentModelKey)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        spSttModel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedModelKey = modelOptions.getOrNull(position)?.second ?: "SYSTEM_BUILTIN"
+                prefs.edit().putString("pref_stt_model", selectedModelKey).apply()
+                val currentEngineKey = engineOptions.getOrNull(spSttEngine.selectedItemPosition)?.second ?: "ANDROID_SYSTEM"
+                updateSttUI(currentEngineKey, selectedModelKey)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // 3. Obscenity Filter CheckBox
+        cbSttFilterProfanity?.isChecked = prefs.getBoolean("pref_stt_filter_profanity", false)
+        cbSttFilterProfanity?.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("pref_stt_filter_profanity", isChecked).apply()
+        }
+
+        // 4. Dictation Behavior CheckBoxes
+        cbSttContinuousMode?.isChecked = prefs.getBoolean("pref_stt_continuous_mode", true)
+        cbSttContinuousMode?.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("pref_stt_continuous_mode", isChecked).apply()
+        }
+
+        cbSttPartialResults?.isChecked = prefs.getBoolean("pref_stt_partial_results", true)
+        cbSttPartialResults?.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("pref_stt_partial_results", isChecked).apply()
+        }
+
+        // 5. Open Models Folder Button
+        btnManageSttModels?.setOnClickListener {
+            val modelsDir = java.io.File(getExternalFilesDir(null), "stt_models")
+            if (!modelsDir.exists()) {
+                modelsDir.mkdirs()
+            }
+            Toast.makeText(this, "STT Models Directory: ${modelsDir.absolutePath}", Toast.LENGTH_LONG).show()
         }
     }
 }

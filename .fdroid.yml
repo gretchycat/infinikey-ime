@@ -1,0 +1,39 @@
+Categories:
+  - System
+  - Development
+License: MIT
+AuthorName: Gretchen Maculo
+SourceCode: https://github.com/gretchycat/infinikey-ime
+IssueTracker: https://github.com/gretchycat/infinikey-ime/issues
+Changelog: https://github.com/gretchycat/infinikey-ime/releases
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+CurrentVersion: 0.2.23
+CurrentVersionCode: 156
+
+Name: Infinikey IME
+Summary: Highly customizable keyboard layout engine for programmers and power users
+Description: |-
+  Infinikey IME is an open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
+
+  Key Features:
+  - Declarative Layout Engine: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
+  - Powerful Macro System: Bind complex macros, multi-touch gestures, swipe actions, long-press popups, keycode auto-repeats, and app launchers directly to keys.
+  - Decoupled Theme Engine: 7 built-in presets plus custom HSL/RGB palette generation and theme JSON override loading.
+  - Multiple Form Factors & Split Mode: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
+  - Clipboard History Overlay: Persistent overlay saving up to 30 copied items with index badges, character lengths, individual item deletion, clear-all, and direct echo-paste connection.
+  - Vector SVG Icon Engine: Crisp native canvas rendering for vector icons scaling cleanly across all screen densities.
+  - Trackpad Cursor Navigation: Independent spacebar trackpad and arrow key trackpad modes for fluid desktop-class cursor control.
+  - Authentic Mechanical Switch Audio Engine: Integrated Mechvibes switch packs and synthesized click audio with volume control.
+  - Speech-to-Text Integration: Floating voice recognition modal with customizable speech-to-text engine selection.
+  - Visual WYSIWYG Layout Editor: Built-in 6-tab Settings Activity with real-time drag-and-drop key reordering, row properties, undo/redo state stack, and layout customization.
+  - 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
+
+Builds:
+  - versionName: 0.2.23
+    versionCode: 156
+    commit: v0.2.23
+    subdir: app
+    gradle:
+      - yes

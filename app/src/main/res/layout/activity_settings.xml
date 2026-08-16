@@ -42,7 +42,7 @@
         android:background="@color/settings_bg"
         app:tabIndicatorColor="#38BDF8"
         app:tabIndicatorHeight="3dp"
-        app:tabMode="fixed"
+        app:tabMode="scrollable"
         app:tabGravity="fill"
         app:tabSelectedTextColor="#38BDF8"
         app:tabTextColor="@color/settings_text_sub">
@@ -76,6 +76,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="📐" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🗣️" />
     </com.google.android.material.tabs.TabLayout>
 
     <!-- Selected Tab Name Banner Below Tab Bar -->
@@ -1878,6 +1883,284 @@
                         android:layout_height="48dp"
                         android:backgroundTint="#0F766E"
                         android:text="📁 Open Themes Directory in Files App"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- TAB 7: SPEECH TO TEXT ENGINE & MODELS -->
+            <LinearLayout
+                android:id="@+id/panelStt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- STT Section 1: STT Engine Selection -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="🎙️ Speech-to-Text Engine"
+                            android:textColor="@color/settings_text_header"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select the primary speech-to-text recognition backend used for continuous dictation and phrase-by-phrase voice typing."
+                        android:textColor="@color/settings_text_sub"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="12dp" />
+
+                    <Spinner
+                        android:id="@+id/spSttEngine"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:id="@+id/tvSttEngineDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Android System STT: Native speech recognizer (requires microphone permission)."
+                        android:textColor="#38BDF8"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- STT Section 2: Installed Speech-to-Text Models -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="🧠 Installed STT Models"
+                            android:textColor="@color/settings_text_header"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select an installed speech recognition model (Sherpa-onnx, Whisper, or System default) for offline voice decoding."
+                        android:textColor="@color/settings_text_sub"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="12dp" />
+
+                    <Spinner
+                        android:id="@+id/spSttModel"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:id="@+id/tvSttModelDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#0F172A"
+                        android:padding="12dp"
+                        android:text="• Selected Model: System Built-in Model\n• Engine: Android Recognition Service\n• Language: English / Device Locale\n• Storage: System Default"
+                        android:textColor="@color/settings_text_sub"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:layout_marginBottom="12dp" />
+                </LinearLayout>
+
+                <!-- STT Section 3: Obscenity & Profanity Filtering -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="🤬 Obscenity &amp; Profanity Filtering"
+                            android:textColor="@color/settings_text_header"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <CheckBox
+                        android:id="@+id/cbSttFilterProfanity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Mask offensive words with asterisks (e.g. f***)"
+                        android:textColor="@color/settings_text_header"
+                        android:textSize="13sp"
+                        android:buttonTint="#38BDF8"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ℹ️ Note: Android System STT enforces server-side profanity filtering due to Google Speech service defaults. Custom offline engines (Sherpa-onnx, Whisper) strictly obey this toggle setting."
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- STT Section 4: Dictation Behavior -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="⚙️ Dictation Settings"
+                            android:textColor="@color/settings_text_header"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <CheckBox
+                        android:id="@+id/cbSttContinuousMode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Enable Segmented Continuous Dictation (auto-restart listener between phrases)"
+                        android:textColor="@color/settings_text_header"
+                        android:textSize="13sp"
+                        android:buttonTint="#38BDF8"
+                        android:layout_marginBottom="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/cbSttPartialResults"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Show Real-Time Partial Results while speaking"
+                        android:textColor="@color/settings_text_header"
+                        android:textSize="13sp"
+                        android:buttonTint="#38BDF8" />
+                </LinearLayout>
+
+                <!-- STT Section 5: Models Storage Directory -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="📂 Offline Models Storage"
+                            android:textColor="@color/settings_text_header"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="STT model files (.onnx, .gguf, .zip) are stored in Infinikey IME's models folder (Android/data/com.programmerkeyboard/files/stt_models).\n\nYou can copy custom models into this directory using any file manager."
+                        android:textColor="@color/settings_text_sub"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <Button
+                        android:id="@+id/btnManageSttModels"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:backgroundTint="#0F766E"
+                        android:text="📁 Open Models Directory in Files App"
                         android:textColor="#FFFFFF"
                         android:textSize="13sp"
                         android:textStyle="bold" />

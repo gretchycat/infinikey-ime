@@ -1,0 +1,4 @@
+• Added Speech-to-Text engine selection setting.
+• Optimized key click audio splitting pipeline for Mechvibes sound packs.
+• Refined clipboard history overlay and direct terminal echo-paste connection.
+• Stability and performance improvements for visual WYSIWYG layout editor.

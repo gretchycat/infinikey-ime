@@ -1,0 +1,30 @@
+# Fastfile for fastlane
+default_platform(:android)
+
+platform :android do
+  desc "Deploy a new release build and store metadata to Google Play"
+  lane :deploy do
+    gradle(task: "assembleRelease")
+    supply(
+      package_name: "com.programmerkeyboard",
+      track: "production"
+    )
+  end
+
+  desc "Upload metadata only to Google Play Store"
+  lane :upload_metadata do
+    supply(
+      package_name: "com.programmerkeyboard",
+      skip_upload_apk: true,
+      skip_upload_aab: true
+    )
+  end
+
+  desc "Validate store metadata"
+  lane :validate_metadata do
+    supply(
+      package_name: "com.programmerkeyboard",
+      validate_only: true
+    )
+  end
+end
