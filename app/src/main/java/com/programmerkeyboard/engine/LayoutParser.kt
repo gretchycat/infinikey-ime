@@ -857,7 +857,7 @@ object LayoutParser {
             "Alt" -> KeyAction.ToggleModifier("ALT")
             "Super" -> KeyAction.ToggleModifier("SUPER")
             "Fn" -> KeyAction.SwitchLayout("function")
-            "Mic" -> KeyAction.ShowWidget("VOICE_INPUT")
+            "Mic" -> KeyAction.ShowWidget("VOICE_INPUT_ONESHOT")
             "Settings", "⚙" -> KeyAction.ShowWidget("SETTINGS")
             "Emoji" -> KeyAction.ShowWidget("EMOJI_PICKER")
             "SelAll" -> KeyAction.SelectAll

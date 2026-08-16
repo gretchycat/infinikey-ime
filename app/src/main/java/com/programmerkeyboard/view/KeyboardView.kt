@@ -235,6 +235,17 @@ class KeyboardView @JvmOverloads constructor(
         }
     }
 
+    fun showVoiceInputOverlay() {
+        voiceInputOverlay?.dismiss()
+        voiceInputOverlay = VoiceInputOverlay(context) { recognizedText ->
+            val isCapsLockActive = keyboardState.shiftState == com.programmerkeyboard.model.ModifierState.LOCKED || keyboardState.isShiftActive
+            val formattedText = if (isCapsLockActive) recognizedText.uppercase() else recognizedText
+            onKeyActionListener?.invoke(KeyAction.SendText(formattedText))
+        }.also {
+            it.show(this)
+        }
+    }
+
     // Multi-touch tracking
     private var initialPointersDistance = 0f
     private var initialPointersCenterX = 0f
@@ -1005,7 +1016,6 @@ class KeyboardView @JvmOverloads constructor(
                 canvas.restoreToCount(saveCount)
             }
         }
-
         // Draw Minimal In-Keyboard Listening Toast/Badge if active
         activeListeningStatus?.let { status ->
             val pillWidth = 220f * density
@@ -1036,7 +1046,6 @@ class KeyboardView @JvmOverloads constructor(
             val baseline = pillRect.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2f
             canvas.drawText(status, pillRect.centerX(), baseline, pillTextPaint)
         }
-
         // Draw Row Gear Buttons in Layout Editor Mode
         if (isEditorPreviewMode && rowGearBoundsList.isNotEmpty()) {
             val gearBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -1736,25 +1745,8 @@ class KeyboardView @JvmOverloads constructor(
                             it.show(this, keyCenterX, keyCenterY, keyCode)
                         }
                     }
-                    "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL" -> {
-                        val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-                        val useMinimalToast = prefs.getBoolean("pref_minimal_voice_feedback", true)
-                        if (useMinimalToast) {
-                            onKeyActionListener?.invoke(actionToExecute)
-                        } else {
-                            voiceInputOverlay = VoiceInputOverlay(context) { recognizedText ->
-                                onKeyActionListener?.invoke(KeyAction.SendText(recognizedText))
-                            }.also {
-                                it.show(this)
-                            }
-                        }
-                    }
-                    "VOICE_INPUT_EMBEDDED" -> {
-                        voiceInputOverlay = VoiceInputOverlay(context) { recognizedText ->
-                            onKeyActionListener?.invoke(KeyAction.SendText(recognizedText))
-                        }.also {
-                            it.show(this)
-                        }
+                    "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL", "VOICE_INPUT_STANDARD", "VOICE_INPUT_MOBILE", "VOICE_INPUT_CONTINUOUS" -> {
+                        onKeyActionListener?.invoke(actionToExecute)
                     }
                     "EMOJI_PICKER", "EMOJI_PICKER_EMBEDDED", "EMOJI", "EMOJI_KEYBOARD" -> {
                         showEmojiPicker()

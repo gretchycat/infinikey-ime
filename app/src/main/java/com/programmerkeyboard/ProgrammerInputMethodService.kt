@@ -715,8 +715,8 @@ class ProgrammerInputMethodService : InputMethodService() {
                     "VOICE_INPUT", "VOICE_INPUT_ONESHOT", "VOICE_INPUT_TERMINAL" -> {
                         toggleOneShotVoiceRecognition()
                     }
-                    "VOICE_INPUT_CONTINUOUS", "VOICE_INPUT_MOBILE" -> {
-                        toggleContinuousVoiceRecognition()
+                    "VOICE_INPUT_STANDARD", "VOICE_INPUT_CONTINUOUS", "VOICE_INPUT_MOBILE" -> {
+                        startStandardVoiceInput()
                     }
                     "READ_TEXT", "TEXT_TO_SPEECH", "READ_SELECTION" -> {
                         speakSelectedOrCurrentText()
@@ -859,7 +859,28 @@ class ProgrammerInputMethodService : InputMethodService() {
                 keyboardView.activeListeningStatus = null
             }
         }
+    }
 
+    private fun startStandardVoiceInput() {
+        keyboardView.activeListeningStatus = null
+
+        // Try switching directly to System Voice Input Method (Google Voice Typing) like Hacker's Keyboard
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+        if (imm != null) {
+            try {
+                val enabledImes = imm.enabledInputMethodList
+                val voiceIme = enabledImes.firstOrNull { info ->
+                    val id = info.id.lowercase()
+                    id.contains("voice") || id.contains("googlequicksearchbox") || id.contains("speech") || id.contains("tts")
+                }
+                if (voiceIme != null) {
+                    switchInputMethod(voiceIme.id)
+                    return
+                }
+            } catch (_: Exception) {}
+        }
+
+        // Fallback: Proxy VoiceInputActivity with standard RecognizerIntent
         val isCapsLockActive = keyboardState.shiftState == ModifierState.LOCKED || keyboardState.isShiftActive
         VoiceInputActivity.onSpeechResultListener = { text ->
             val formattedText = if (isCapsLockActive) text.uppercase() else text
@@ -872,37 +893,7 @@ class ProgrammerInputMethodService : InputMethodService() {
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            android.widget.Toast.makeText(this, "Voice input activity not available", android.widget.Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun toggleContinuousVoiceRecognition() {
-        val isCapsLockActive = keyboardState.shiftState == ModifierState.LOCKED || keyboardState.isShiftActive
-        VoiceInputActivity.onSpeechResultListener = { text ->
-            val formattedText = if (isCapsLockActive) text.uppercase() else text
-            currentInputConnection?.commitText(formattedText, 1)
-        }
-        VoiceInputContinuousActivity.onContinuousSpeechResultListener = { text ->
-            val formattedText = if (isCapsLockActive) text.uppercase() else text
-            currentInputConnection?.commitText(formattedText, 1)
-        }
-        val intent = Intent(this, VoiceInputContinuousActivity::class.java).apply {
-            putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        try {
-            startActivity(intent)
-        } catch (_: Exception) {
-            val fallbackIntent = Intent(this, VoiceInputActivity::class.java).apply {
-                putExtra("IS_CONTINUOUS", true)
-                putExtra("IS_CAPS_LOCK_ACTIVE", isCapsLockActive)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            try {
-                startActivity(fallbackIntent)
-            } catch (e: Exception) {
-                android.widget.Toast.makeText(this, "Google Voice Typing or Speech Recognizer is required", android.widget.Toast.LENGTH_LONG).show()
-            }
+            android.widget.Toast.makeText(this, "Google Voice Typing or Speech Recognizer is not available", android.widget.Toast.LENGTH_SHORT).show()
         }
     }
 

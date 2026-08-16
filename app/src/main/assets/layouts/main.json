@@ -1139,7 +1139,7 @@
           "style": "functionKey",
           "onPress": {
             "type": "SHOW_WIDGET",
-            "widget": "VOICE_INPUT"
+            "widget": "VOICE_INPUT_ONESHOT"
           },
           "onLongPress": {
             "type": "SHOW_WIDGET",

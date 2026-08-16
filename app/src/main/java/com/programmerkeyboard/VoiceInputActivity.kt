@@ -24,6 +24,8 @@ class VoiceInputActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -37,15 +39,9 @@ class VoiceInputActivity : Activity() {
     }
 
     private fun startSpeechRecognition() {
-        val isContinuous = intent.getBooleanExtra("IS_CONTINUOUS", false)
         val speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_PROMPT, if (isContinuous) "Dictate speech continuously..." else "Speak now...")
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
-            if (isContinuous) {
-                putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-                putExtra("android.speech.extra.DICTATION_MODE", true)
-            }
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
         }
 
         try {

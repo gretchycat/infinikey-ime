@@ -131,17 +131,28 @@ class VoiceInputOverlay(
                 return
             }
 
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
+            speechRecognizer = if (android.os.Build.VERSION.SDK_INT >= 33 && SpeechRecognizer.isOnDeviceRecognitionAvailable(context)) {
+                try {
+                    SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
+                } catch (_: Exception) {
+                    SpeechRecognizer.createSpeechRecognizer(context)
+                }
+            } else {
+                SpeechRecognizer.createSpeechRecognizer(context)
+            }.apply {
                 setRecognitionListener(this@VoiceInputView)
             }
 
             val intent = android.content.Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+                putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                putExtra("android.speech.extra.DICTATION_MODE", true)
+                putExtra("android.speech.extra.EXTRA_SEGMENTED_SESSION", true)
             }
 
             isListening = true
-            statusMessage = "🎙 Listening..."
+            statusMessage = "🎙 Continuous Speech Input..."
             speechRecognizer?.startListening(intent)
             postAnimationRunnable()
         }
@@ -192,7 +203,7 @@ class VoiceInputOverlay(
 
             // Status message
             canvas.drawText(statusMessage, centerX, height - (45f * density), textPaint)
-            canvas.drawText("Tap anywhere to close", centerX, height - (18f * density), hintPaint)
+            canvas.drawText("Tap anywhere to stop dictation", centerX, height - (18f * density), hintPaint)
         }
 
         override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -202,13 +213,27 @@ class VoiceInputOverlay(
             return true
         }
 
+        private fun restartListening() {
+            if (!isListening) return
+            try {
+                val intent = android.content.Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                    putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                    putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+                    putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                    putExtra("android.speech.extra.DICTATION_MODE", true)
+                    putExtra("android.speech.extra.EXTRA_SEGMENTED_SESSION", true)
+                }
+                speechRecognizer?.startListening(intent)
+            } catch (_: Exception) {}
+        }
+
         override fun onReadyForSpeech(params: Bundle?) {
-            statusMessage = "🎙 Speak now..."
+            statusMessage = "🎙 Listening continuously..."
             invalidate()
         }
 
         override fun onBeginningOfSpeech() {
-            statusMessage = "Listening..."
+            statusMessage = "🗣 Recording speech..."
             invalidate()
         }
 
@@ -220,36 +245,37 @@ class VoiceInputOverlay(
         override fun onBufferReceived(buffer: ByteArray?) {}
 
         override fun onEndOfSpeech() {
-            statusMessage = "Processing speech..."
-            isListening = false
-            invalidate()
+            if (isListening) {
+                statusMessage = "Processing speech..."
+                invalidate()
+            }
         }
 
         override fun onError(error: Int) {
-            isListening = false
-            statusMessage = when (error) {
-                SpeechRecognizer.ERROR_NO_MATCH -> "No speech recognized"
-                SpeechRecognizer.ERROR_AUDIO -> "Audio recording error"
-                SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Audio permission required"
-                else -> "Speech recognition error ($error)"
+            if (isListening) {
+                restartListening()
+            } else {
+                statusMessage = "Speech error ($error)"
+                invalidate()
             }
-            invalidate()
         }
 
         override fun onResults(results: Bundle?) {
-            isListening = false
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (!matches.isNullOrEmpty()) {
                 val textWithSpace = matches[0] + " "
                 onTextRecognized(textWithSpace)
+                statusMessage = "🗣 " + matches[0]
             }
-            onCloseRequested()
+            if (isListening) {
+                restartListening()
+            }
         }
 
         override fun onPartialResults(partialResults: Bundle?) {
             val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (!matches.isNullOrEmpty()) {
-                statusMessage = matches[0]
+                statusMessage = "🗣 " + matches[0]
                 invalidate()
             }
         }

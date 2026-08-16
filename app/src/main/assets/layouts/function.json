@@ -104,7 +104,7 @@
       "keys": [
         { "label": "⌨", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SWITCH_LAYOUT", "target": "mobile" }, "onLongPress": { "type": "SWITCH_LAYOUT", "target": "meta" } },
         { "label": "📋", "icon": "clipboard", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "CLIPBOARD_HISTORY" } },
-        { "label": "🎙", "icon": "mic", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
+        { "label": "🎙", "icon": "mic", "style": "functionKey", "weight": 1.0, "onPress": { "type": "SHOW_WIDGET", "widget": "VOICE_INPUT_ONESHOT" }, "onLongPress": { "type": "SHOW_WIDGET", "widget": "SETTINGS" } },
         { "label": "Alt", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "ALT" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "ALT" } },
         { "label": "❖", "style": "modifierKey", "weight": 1.0, "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SUPER" }, "onLongPress": { "type": "LOCK_MODIFIER", "modifier": "SUPER" } },
         { "label": "␣", "style": "alphaKey", "weight": 3.0, "isSplitKey": true, "onPress": { "type": "SEND_TEXT", "text": " " }, "onLongPress": { "type": "NONE" } },
