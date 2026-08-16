@@ -1135,6 +1135,7 @@
         },
         {
           "label": "🎙",
+          "topLeftLabel": "⚙",
           "icon": "mic",
           "style": "functionKey",
           "onPress": {

@@ -2180,7 +2180,8 @@ class SettingsActivity : AppCompatActivity() {
             val layoutOptions = layoutTargets.map { Pair("Layout Target: $it", it) } + Pair("Custom Layout Target...", "custom")
 
             val widgetOptions = listOf(
-                Pair("Voice Input (Continuous)", "VOICE_INPUT"),
+                Pair("Voice Input (Phrase-by-Phrase)", "VOICE_INPUT_ONESHOT"),
+                Pair("Voice Input (System Voice Typing)", "VOICE_INPUT_STANDARD"),
                 Pair("Joystick Navigation", "JOYSTICK"),
                 Pair("Clipboard History Overlay", "CLIPBOARD_OVERLAY"),
                 Pair("Emoji Picker Overlay", "EMOJI_PICKER"),
