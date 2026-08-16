@@ -1,7 +1,7 @@
 {
   "id": "mobile",
   "name": "Standard Mobile Layout",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",

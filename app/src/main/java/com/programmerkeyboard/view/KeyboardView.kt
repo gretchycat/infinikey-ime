@@ -1626,20 +1626,26 @@ class KeyboardView @JvmOverloads constructor(
             return
         }
         val actionToExecute = if (sourceKey != null && keyboardState.shouldShiftKey(sourceKey) && action !is KeyAction.ShowPopup && action !is KeyAction.ShowWidget) {
-            val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLetter()
-            val firstAlt = sourceKey.alternates.firstOrNull()
-            val upAct = sourceKey.onSwipeUpAction
-            val lpAct = sourceKey.onLongPressAction
-            when {
-                isLetter -> KeyAction.SendText(sourceKey.primaryLabel.uppercase())
-                firstAlt != null -> KeyAction.SendText(if (firstAlt.any { it.isLowerCase() }) firstAlt.uppercase() else firstAlt)
-                !sourceKey.secondaryLabel.isNullOrEmpty() -> KeyAction.SendText(if (sourceKey.secondaryLabel.any { it.isLowerCase() }) sourceKey.secondaryLabel.uppercase() else sourceKey.secondaryLabel)
-                upAct is KeyAction.SendText -> KeyAction.SendText(if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text)
-                lpAct is KeyAction.ShowPopup && lpAct.options.isNotEmpty() -> {
-                    val opt = lpAct.options.first()
-                    KeyAction.SendText(if (opt.any { it.isLowerCase() }) opt.uppercase() else opt)
+            when (action) {
+                is KeyAction.SendText -> {
+                    val txt = action.text
+                    KeyAction.SendText(if (txt.any { it.isLowerCase() }) txt.uppercase() else txt)
                 }
-                else -> action
+                else -> {
+                    if (sourceKey != null) {
+                        val isLetter = sourceKey.primaryLabel.length == 1 && sourceKey.primaryLabel[0].isLetter()
+                        val popupList = computeKeyPopupList(sourceKey)
+                        val firstAlt = popupList.firstOrNull()?.first
+                        val upAct = sourceKey.onSwipeUpAction
+                        when {
+                            isLetter -> KeyAction.SendText(sourceKey.primaryLabel.uppercase())
+                            !firstAlt.isNullOrEmpty() -> KeyAction.SendText(if (firstAlt.any { it.isLowerCase() }) firstAlt.uppercase() else firstAlt)
+                            !sourceKey.secondaryLabel.isNullOrEmpty() -> KeyAction.SendText(if (sourceKey.secondaryLabel.any { it.isLowerCase() }) sourceKey.secondaryLabel.uppercase() else sourceKey.secondaryLabel)
+                            upAct is KeyAction.SendText -> KeyAction.SendText(if (upAct.text.any { it.isLowerCase() }) upAct.text.uppercase() else upAct.text)
+                            else -> action
+                        }
+                    } else action
+                }
             }
         } else {
             action
