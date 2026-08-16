@@ -38,12 +38,15 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="46dp"
         android:background="@color/settings_bg"
         app:tabIndicatorColor="#38BDF8"
         app:tabIndicatorHeight="3dp"
-        app:tabMode="scrollable"
+        app:tabMode="fixed"
         app:tabGravity="fill"
+        app:tabMinWidth="0dp"
+        app:tabPaddingStart="2dp"
+        app:tabPaddingEnd="2dp"
         app:tabSelectedTextColor="#38BDF8"
         app:tabTextColor="@color/settings_text_sub">
 
