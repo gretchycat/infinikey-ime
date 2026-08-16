@@ -927,7 +927,6 @@ class KeyboardView @JvmOverloads constructor(
             }
 
             // Key Labels & Icons
-            val firstAlt = key.alternates.firstOrNull()
             val displayLabel = if (keyboardState.isShiftActive && key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()) {
                 key.primaryLabel.uppercase()
             } else if (keyboardState.isShiftActive) {
@@ -989,19 +988,11 @@ class KeyboardView @JvmOverloads constructor(
 
             // Top-Right Corner Text Drawing (First item of resulting key popup list)
             val popupList = computeKeyPopupList(key)
-            val firstItemLabel = popupList.firstOrNull()?.first
-            val lpAction = key.onLongPressAction
-            val upAction = key.onSwipeUpAction
+            val firstPair = popupList.firstOrNull()
+            val rawSecToDraw = firstPair?.first
+            val firstAction = firstPair?.second
 
-            val candidateSec = firstItemLabel ?: when {
-                upAction is KeyAction.SendText -> upAction.text
-                lpAction is KeyAction.SendText -> lpAction.text
-                else -> null
-            }
-
-            val rawSecToDraw = candidateSec
-
-            if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key)) {
+            if (!rawSecToDraw.isNullOrEmpty() && rawSecToDraw != displayLabel && !isModifierKey(key) && isTextOrCodeEchoAction(firstAction)) {
                 val secPaint = Paint(secondaryTextPaint).apply {
                     textSize = secFontSize
                     textAlign = Paint.Align.RIGHT
@@ -1569,7 +1560,12 @@ class KeyboardView @JvmOverloads constructor(
             longPopup?.options ?: pressPopup?.options ?: emptyList()
         }
 
-        if (rawOptions.isEmpty()) return emptyList()
+        val secFromKey = if (!key.secondaryLabel.isNullOrEmpty()) {
+            key.secondaryLabel
+        } else if (!key.topRightLabel.isNullOrEmpty() && key.alternates.isEmpty()) {
+            key.topRightLabel
+        } else null
+        if (rawOptions.isEmpty() && secFromKey.isNullOrEmpty()) return emptyList()
 
         val baseActions = longPopup?.actions ?: pressPopup?.actions ?: emptyList()
 
@@ -1601,7 +1597,6 @@ class KeyboardView @JvmOverloads constructor(
         }
 
         // 2. Extract and format secondaryLabel if set on key definition
-        val secFromKey = key.secondaryLabel ?: key.topRightLabel
         val formattedSecondary = if (!secFromKey.isNullOrEmpty() && secFromKey.length == 1 && secFromKey[0].isLetter()) {
             if (keyboardState.isShiftActive) secFromKey.uppercase() else secFromKey.lowercase()
         } else secFromKey
@@ -2642,22 +2637,7 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun isTextOrCodeEchoAction(action: KeyAction?): Boolean {
-        if (action == null) return false
-        return when (action) {
-            is KeyAction.SendText -> true
-            is KeyAction.SendCode -> true
-            is KeyAction.ShowPopup -> {
-                if (action.actions.isNotEmpty()) {
-                    action.actions.all { it is KeyAction.SendText || it is KeyAction.SendCode }
-                } else if (action.options.isNotEmpty()) {
-                    action.options.all { opt ->
-                        val resolved = resolveActionFromLabel(opt)
-                        resolved is KeyAction.SendText || resolved is KeyAction.SendCode
-                    }
-                } else false
-            }
-            else -> false
-        }
+        return action is KeyAction.SendText || action is KeyAction.SendCode
     }
 
     private fun getOfficialShiftedValue(key: KeyDefinition?): String? {
