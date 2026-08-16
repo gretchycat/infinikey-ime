@@ -37,6 +37,26 @@ class SettingsActivity : AppCompatActivity() {
     private var isUpdatingAspectRatioFromText = false
 
     private var editingLayout: LayoutDefinition? = null
+    private var previewKeyboardView: com.infinikey_ime.view.KeyboardView? = null
+    private var onConfigChangedListener: (() -> Unit)? = null
+
+    fun refreshLiveKeyboardTheme() {
+        try {
+            val layoutId = editingLayout?.id?.removeSuffix(".json") ?: "main"
+            val targetFile = if (layoutId.endsWith(".json")) layoutId else "$layoutId.json"
+            val layoutsDir = java.io.File(getExternalFilesDir(null), "layouts")
+            val customFile = java.io.File(layoutsDir, targetFile)
+            val rawLayout = if (customFile.exists() && customFile.length() > 0L) {
+                com.infinikey_ime.engine.LayoutParser.parseJsonLayoutDescriptor(customFile.readText())
+            } else {
+                com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
+            }
+            val updatedLayout = com.infinikey_ime.engine.LayoutParser.applyThemeOverrides(this, rawLayout)
+            editingLayout = updatedLayout
+            previewKeyboardView?.setLayout(updatedLayout)
+            previewKeyboardView?.invalidate()
+        } catch (_: Exception) {}
+    }
 
     private lateinit var importFileLauncher: ActivityResultLauncher<String>
     private lateinit var exportFileLauncher: ActivityResultLauncher<String>
@@ -764,6 +784,11 @@ class SettingsActivity : AppCompatActivity() {
         val btnPickCatFgColor = findViewById<android.widget.Button>(R.id.btnPickCatFgColor)
         val btnPickCatPressedBgColor = findViewById<android.widget.Button>(R.id.btnPickCatPressedBgColor)
 
+        val layoutAutoThemeCustomizer = findViewById<View>(R.id.layoutAutoThemeCustomizer)
+        val layoutNormalThemeCustomizer = findViewById<View>(R.id.layoutNormalThemeCustomizer)
+        val spAutoLightThemeSelector = findViewById<Spinner>(R.id.spAutoLightThemeSelector)
+        val spAutoDarkThemeSelector = findViewById<Spinner>(R.id.spAutoDarkThemeSelector)
+
         val btnLaunchThemesFolder = findViewById<android.widget.Button>(R.id.btnLaunchThemesFolder)
 
         fun updateButtonTint(button: android.widget.Button, hexStr: String) {
@@ -774,21 +799,175 @@ class SettingsActivity : AppCompatActivity() {
             } catch (_: Exception) {}
         }
 
-        val themePresets = listOf(
-            getString(R.string.setting_theme_system_auto),
-            getString(R.string.setting_theme_slate),
-            getString(R.string.setting_theme_cyberpunk),
-            getString(R.string.setting_theme_oled),
-            getString(R.string.setting_theme_matrix),
-            getString(R.string.setting_theme_retro),
-            getString(R.string.setting_theme_muted_slate),
-            getString(R.string.setting_theme_custom)
+        val defaultPresetTitles = mapOf(
+            "system_auto" to "System Auto (Follow System)",
+            "system_light" to "System Light",
+            "system_dark" to "System Dark",
+            "slate" to "Slate (Dark Slate)",
+            "cyberpunk" to "Cyberpunk (Neon Dark)",
+            "oled" to "OLED (True Black)",
+            "matrix" to "Matrix (Hacker Green)",
+            "retro" to "Retro (Beige / Vintage)",
+            "muted_slate" to "Muted Slate (Soft Dark)"
         )
-        val themeAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, themePresets)
-        spThemePreset.adapter = themeAdapter
 
-        val savedPresetIdx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, 7)
-        spThemePreset.setSelection(savedPresetIdx)
+        data class ThemeSelectorEntry(
+            val displayName: String,
+            val targetKey: String,
+            val isUserCreated: Boolean = false,
+            val isActionItem: Boolean = false
+        ) {
+            fun getFullFormattedTitle(): String {
+                if (isActionItem) return displayName
+                val prefix = if (isUserCreated) "👤 " else "🎨 "
+                return "$prefix$displayName"
+            }
+        }
+
+        fun loadThemeEntries(): MutableList<ThemeSelectorEntry> {
+            com.infinikey_ime.util.ThemeManager.ensureDefaultThemesCopied(this@SettingsActivity)
+            val entries = mutableListOf<ThemeSelectorEntry>()
+            val themesDir = com.infinikey_ime.util.ThemeManager.getUserThemesDir(this@SettingsActivity)
+
+            for (key in com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES) {
+                val title = defaultPresetTitles[key] ?: key.replace('_', ' ').capitalize()
+                entries.add(ThemeSelectorEntry(title, key, isUserCreated = false))
+            }
+
+            val userFiles = try {
+                themesDir.listFiles { _, name ->
+                    name.endsWith(".json") && name.removeSuffix(".json") !in com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES && name != "custom.json"
+                }?.sortedBy { it.name } ?: emptyList()
+            } catch (_: Exception) { emptyList() }
+
+            for (userFile in userFiles) {
+                val targetKey = userFile.name.removeSuffix(".json")
+                val content = try { userFile.readText() } catch (_: Exception) { "" }
+                val parsedName = try {
+                    com.google.gson.JsonParser.parseString(content).asJsonObject.get("name")?.asString
+                } catch (_: Exception) { null }
+                val title = parsedName?.ifEmpty { null } ?: targetKey.replace('_', ' ').capitalize()
+                entries.add(ThemeSelectorEntry(title, targetKey, isUserCreated = true))
+            }
+
+            entries.add(ThemeSelectorEntry("➕ Create New Custom Theme...", "create_new_theme_action", isActionItem = true))
+            return entries
+        }
+
+        var themeEntries = loadThemeEntries()
+
+        val btnResetTheme = findViewById<android.widget.Button>(R.id.btnResetTheme)
+
+        fun updateResetThemeButtonState(entry: ThemeSelectorEntry?) {
+            val isUserCreated = entry?.isUserCreated == true
+            if (isUserCreated) {
+                btnResetTheme?.isEnabled = true
+                btnResetTheme?.alpha = 1.0f
+                btnResetTheme?.text = "🗑️ Delete Custom Theme"
+                btnResetTheme?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#991B1B"))
+                btnResetTheme?.setTextColor(android.graphics.Color.parseColor("#FFFFFF"))
+            } else {
+                btnResetTheme?.isEnabled = true
+                btnResetTheme?.alpha = 1.0f
+                btnResetTheme?.text = "🔄 Reset Theme to Default"
+                btnResetTheme?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1E293B"))
+                btnResetTheme?.setTextColor(android.graphics.Color.parseColor("#94A3B8"))
+            }
+        }
+
+        var isAutoSpinnersUpdating = false
+
+        fun setupAutoThemeSpinners() {
+            val nonAutoEntries = themeEntries.filter { !it.isActionItem && it.targetKey != "system_auto" }
+            val titles = nonAutoEntries.map { it.getFullFormattedTitle() }
+            val adapterLight = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, titles)
+            val adapterDark = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, titles)
+            spAutoLightThemeSelector.adapter = adapterLight
+            spAutoDarkThemeSelector.adapter = adapterDark
+
+            val systemAutoJson = com.infinikey_ime.util.ThemeManager.loadThemeJson(this, "system_auto")
+            var lightTarget = "system_light"
+            var darkTarget = "system_dark"
+            try {
+                val root = com.google.gson.JsonParser.parseString(systemAutoJson).asJsonObject
+                lightTarget = root.get("lightTheme")?.asString ?: "system_light"
+                darkTarget = root.get("darkTheme")?.asString ?: "system_dark"
+            } catch (_: Exception) {}
+
+            val lightIdx = nonAutoEntries.indexOfFirst { it.targetKey == lightTarget }.coerceAtLeast(0)
+            val darkIdx = nonAutoEntries.indexOfFirst { it.targetKey == darkTarget }.coerceAtLeast(0)
+
+            isAutoSpinnersUpdating = true
+            spAutoLightThemeSelector.setSelection(lightIdx)
+            spAutoDarkThemeSelector.setSelection(darkIdx)
+            isAutoSpinnersUpdating = false
+        }
+
+        fun saveAutoThemeMapping() {
+            if (isAutoSpinnersUpdating) return
+            val nonAutoEntries = themeEntries.filter { !it.isActionItem && it.targetKey != "system_auto" }
+            val lightEntry = nonAutoEntries.getOrNull(spAutoLightThemeSelector.selectedItemPosition) ?: return
+            val darkEntry = nonAutoEntries.getOrNull(spAutoDarkThemeSelector.selectedItemPosition) ?: return
+
+            val systemAutoJson = com.infinikey_ime.util.ThemeManager.loadThemeJson(this, "system_auto")
+            val rootObj = try {
+                com.google.gson.JsonParser.parseString(systemAutoJson).asJsonObject
+            } catch (_: Exception) {
+                com.google.gson.JsonObject()
+            }
+            rootObj.addProperty("name", "System Auto (Follow System)")
+            rootObj.addProperty("type", "auto")
+            rootObj.addProperty("lightTheme", lightEntry.targetKey)
+            rootObj.addProperty("darkTheme", darkEntry.targetKey)
+
+            com.infinikey_ime.util.ThemeManager.saveThemeJson(this, "system_auto", rootObj.toString(), markEdited = true)
+            prefs.edit().putString("pref_active_theme_key", "system_auto").putLong("pref_theme_last_updated_time", System.currentTimeMillis()).apply()
+            refreshLiveKeyboardTheme()
+        }
+
+        spAutoLightThemeSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                saveAutoThemeMapping()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        spAutoDarkThemeSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                saveAutoThemeMapping()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        fun refreshThemePanelVisibility(targetKey: String) {
+            if (targetKey == "system_auto") {
+                layoutAutoThemeCustomizer?.visibility = View.VISIBLE
+                layoutNormalThemeCustomizer?.visibility = View.GONE
+                setupAutoThemeSpinners()
+            } else {
+                layoutAutoThemeCustomizer?.visibility = View.GONE
+                layoutNormalThemeCustomizer?.visibility = View.VISIBLE
+            }
+        }
+
+        fun updateThemeSpinner() {
+            themeEntries = loadThemeEntries()
+            val titles = themeEntries.map { it.getFullFormattedTitle() }
+            val themeAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, titles)
+            spThemePreset.adapter = themeAdapter
+
+            val activeKey = prefs.getString("pref_active_theme_key", null)
+                ?: run {
+                    val idx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES.lastIndex)
+                    com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES[idx]
+                }
+            val selIdx = themeEntries.indexOfFirst { it.targetKey == activeKey }.coerceAtLeast(0)
+            spThemePreset.setSelection(selIdx)
+
+            val currentEntry = themeEntries.getOrNull(selIdx)
+            updateResetThemeButtonState(currentEntry)
+            refreshThemePanelVisibility(activeKey)
+        }
 
         val keyCategories = listOf(
             "🔤 Alpha Keys (alphaKey)",
@@ -805,15 +984,30 @@ class SettingsActivity : AppCompatActivity() {
 
         var isInternalUpdating = false
 
-        fun getActiveThemeJson(): String {
-            val presetIdx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, 7)
-            val presetNames = listOf("system_auto", "slate", "cyberpunk", "oled", "matrix", "retro", "muted_slate", "custom")
-            val targetPreset = if (presetIdx == 0) {
-                val isNight = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-                if (isNight) "slate" else "system_light"
-            } else presetNames[presetIdx]
+        fun getActiveThemeKey(): String {
+            return prefs.getString("pref_active_theme_key", null)
+                ?: run {
+                    val idx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES.lastIndex)
+                    com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES[idx]
+                }
+        }
 
-            val jsonStr = com.infinikey_ime.util.ThemeManager.loadThemeJson(this, targetPreset)
+        fun getActiveThemeJson(): String {
+            val activeKey = getActiveThemeKey()
+            val targetKey = if (activeKey == "system_auto") {
+                val systemAutoJson = com.infinikey_ime.util.ThemeManager.loadThemeJson(this, "system_auto")
+                val isNight = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+                var dark = "system_dark"
+                var light = "system_light"
+                try {
+                    val root = com.google.gson.JsonParser.parseString(systemAutoJson).asJsonObject
+                    dark = root.get("darkTheme")?.asString ?: "system_dark"
+                    light = root.get("lightTheme")?.asString ?: "system_light"
+                } catch (_: Exception) {}
+                if (isNight) dark else light
+            } else activeKey
+
+            val jsonStr = com.infinikey_ime.util.ThemeManager.loadThemeJson(this, targetKey)
             return if (jsonStr.isNotEmpty()) formatPrettyJson(jsonStr) else getDefaultThemeJson()
         }
 
@@ -847,6 +1041,9 @@ class SettingsActivity : AppCompatActivity() {
 
         fun saveCategoryStyleValues() {
             if (isInternalUpdating) return
+            val activeKey = getActiveThemeKey()
+            if (activeKey == "system_auto") return // system_auto only relinks themes; never touch linked theme files!
+
             val categoryIdx = spKeyCategory.selectedItemPosition.coerceIn(0, 6)
             val categoryName = categoryKeyNames[categoryIdx]
 
@@ -878,6 +1075,7 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 if (catFg.startsWith("#") && catFg.length in 4..9) {
                     catObj.addProperty("fgColor", catFg)
+                    catObj.addProperty("secondaryFgColor", catFg)
                     updateButtonTint(btnPickCatFgColor, catFg)
                 }
                 if (catPressed.startsWith("#") && catPressed.length in 4..9) {
@@ -887,20 +1085,10 @@ class SettingsActivity : AppCompatActivity() {
 
                 val newJsonStr = formatPrettyJson(rootObj.toString())
 
-                val presetIdx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, 7)
-                val presetNames = listOf("system_auto", "slate", "cyberpunk", "oled", "matrix", "retro", "muted_slate", "custom")
-                val targetPreset = if (presetIdx == 0) {
-                    val isNight = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-                    if (isNight) "slate" else "system_light"
-                } else presetNames[presetIdx]
+                com.infinikey_ime.util.ThemeManager.saveThemeJson(this@SettingsActivity, activeKey, newJsonStr, markEdited = true)
 
-                com.infinikey_ime.util.ThemeManager.saveThemeJson(this@SettingsActivity, targetPreset, newJsonStr)
-                com.infinikey_ime.util.ThemeManager.saveThemeJson(this@SettingsActivity, "custom", newJsonStr)
-
-                prefs.edit().putString("pref_custom_theme_json", newJsonStr).putInt("pref_theme_preset_idx", 7).apply()
-                if (spThemePreset.selectedItemPosition != 7) {
-                    spThemePreset.setSelection(7)
-                }
+                prefs.edit().putString("pref_custom_theme_json", newJsonStr).putString("pref_active_theme_key", activeKey).putLong("pref_theme_last_updated_time", System.currentTimeMillis()).apply()
+                refreshLiveKeyboardTheme()
             } catch (_: Exception) {}
         }
 
@@ -1158,16 +1346,88 @@ class SettingsActivity : AppCompatActivity() {
         etCatFgHex.addTextChangedListener(textStyleWatcher)
         etCatPressedBgHex.addTextChangedListener(textStyleWatcher)
 
+        updateThemeSpinner()
         loadCategoryStyleValues("alphaKey")
 
-        spThemePreset.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                prefs.edit().putInt("pref_theme_preset_idx", position).apply()
-                if (position in 0..6) {
-                    prefs.edit().remove("pref_custom_theme_json").apply()
+        onConfigChangedListener = {
+            try {
+                refreshLiveKeyboardTheme()
+                val activeKey = getActiveThemeKey()
+                if (activeKey == "system_auto") {
+                    setupAutoThemeSpinners()
                 }
                 val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
                 loadCategoryStyleValues(catName)
+            } catch (_: Exception) {}
+        }
+
+        fun showCreateCustomThemeDialog() {
+            val input = EditText(this).apply {
+                hint = "Theme Name (e.g. Neon Cyber)"
+                setSingleLine()
+            }
+            val container = android.widget.FrameLayout(this).apply {
+                val p = (16 * resources.displayMetrics.density).toInt()
+                setPadding(p, p / 2, p, p / 2)
+                addView(input)
+            }
+
+            AlertDialog.Builder(this)
+                .setTitle("Create New Custom Theme")
+                .setMessage("Enter a name for your new custom theme:")
+                .setView(container)
+                .setPositiveButton("Create") { _, _ ->
+                    val themeName = input.text.toString().trim().ifEmpty { "Custom Theme" }
+                    val rawSlug = themeName.lowercase().replace(Regex("[^a-z0-9_]"), "_").trim('_')
+                    val baseTargetKey = if (rawSlug.isEmpty()) "custom_theme" else rawSlug
+
+                    var targetKey = baseTargetKey
+                    var targetFile = java.io.File(com.infinikey_ime.util.ThemeManager.getUserThemesDir(this), "${targetKey}.json")
+                    var count = 2
+                    while (targetFile.exists()) {
+                        targetKey = "${baseTargetKey}_$count"
+                        targetFile = java.io.File(com.infinikey_ime.util.ThemeManager.getUserThemesDir(this), "${targetKey}.json")
+                        count++
+                    }
+
+                    val baseJson = getActiveThemeJson()
+
+                    val rootObj = try {
+                        com.google.gson.JsonParser.parseString(baseJson).asJsonObject
+                    } catch (_: Exception) {
+                        com.google.gson.JsonObject()
+                    }
+                    rootObj.addProperty("name", themeName)
+
+                    com.infinikey_ime.util.ThemeManager.saveThemeJson(this, targetKey, rootObj.toString(), markEdited = true)
+
+                    prefs.edit().putString("pref_active_theme_key", targetKey).apply()
+                    updateThemeSpinner()
+                    val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
+                    loadCategoryStyleValues(catName)
+                    Toast.makeText(this, "Custom theme '$themeName' created!", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    val activeKey = getActiveThemeKey()
+                    val selIdx = themeEntries.indexOfFirst { it.targetKey == activeKey }.coerceAtLeast(0)
+                    spThemePreset.setSelection(selIdx)
+                }
+                .show()
+        }
+
+        spThemePreset.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedEntry = themeEntries.getOrNull(position) ?: return
+                if (selectedEntry.isActionItem) {
+                    showCreateCustomThemeDialog()
+                } else {
+                    prefs.edit().putString("pref_active_theme_key", selectedEntry.targetKey).putLong("pref_theme_last_updated_time", System.currentTimeMillis()).apply()
+                    updateResetThemeButtonState(selectedEntry)
+                    refreshThemePanelVisibility(selectedEntry.targetKey)
+                    refreshLiveKeyboardTheme()
+                    val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
+                    loadCategoryStyleValues(catName)
+                }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
@@ -1177,10 +1437,16 @@ class SettingsActivity : AppCompatActivity() {
                 try {
                     val jsonStr = contentResolver.openInputStream(fileUri)?.bufferedReader()?.use { it.readText() }
                     if (!jsonStr.isNullOrEmpty()) {
-                        com.google.gson.JsonParser.parseString(jsonStr)
-                        prefs.edit().putString("pref_custom_theme_json", jsonStr).putInt("pref_theme_preset_idx", 7).apply()
-                        spThemePreset.setSelection(7)
-                        Toast.makeText(this, "Theme JSON imported from file!", Toast.LENGTH_SHORT).show()
+                        val parsed = com.google.gson.JsonParser.parseString(jsonStr).asJsonObject
+                        val importedName = parsed.get("name")?.asString ?: "Imported Theme"
+                        val rawSlug = importedName.lowercase().replace(Regex("[^a-z0-9_]"), "_").trim('_')
+                        val targetKey = if (rawSlug.isEmpty()) "imported_theme" else rawSlug
+                        com.infinikey_ime.util.ThemeManager.saveThemeJson(this, targetKey, jsonStr, markEdited = true)
+                        prefs.edit().putString("pref_active_theme_key", targetKey).apply()
+                        updateThemeSpinner()
+                        val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
+                        loadCategoryStyleValues(catName)
+                        Toast.makeText(this, "Theme '$importedName' imported!", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     Toast.makeText(this, "Invalid JSON theme file: ${e.message}", Toast.LENGTH_LONG).show()
@@ -1191,7 +1457,7 @@ class SettingsActivity : AppCompatActivity() {
         exportFileLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri: Uri? ->
             uri?.let { fileUri ->
                 try {
-                    val currentJson = prefs.getString("pref_custom_theme_json", null) ?: getDefaultThemeJson()
+                    val currentJson = getActiveThemeJson()
                     val prettyJson = formatPrettyJson(currentJson)
                     contentResolver.openOutputStream(fileUri)?.use { out ->
                         out.write(prettyJson.toByteArray(Charsets.UTF_8))
@@ -1201,22 +1467,6 @@ class SettingsActivity : AppCompatActivity() {
                     Toast.makeText(this, "Failed to save theme file: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
-        }
-
-        val themePresetFileNames = listOf(
-            "theme_system_auto.json",
-            "theme_slate.json",
-            "theme_cyberpunk.json",
-            "theme_oled.json",
-            "theme_matrix.json",
-            "theme_retro.json",
-            "theme_muted_slate.json",
-            "theme_custom.json"
-        )
-
-        fun getExportedThemeFileName(): String {
-            val idx = spThemePreset.selectedItemPosition.coerceIn(0, 7)
-            return themePresetFileNames[idx]
         }
 
         fun getUserThemesDir(): java.io.File {
@@ -1230,29 +1480,38 @@ class SettingsActivity : AppCompatActivity() {
             com.infinikey_ime.util.FileManagerLauncher.openDirectory(this, "themes", dir)
         }
 
-        val btnResetTheme = findViewById<android.widget.Button>(R.id.btnResetTheme)
         btnResetTheme?.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("🔄 Reset Theme")
-                .setMessage("Reset current theme back to factory default preset values?")
-                .setPositiveButton("Reset Theme") { _, _ ->
-                    val presetIdx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, 7)
-                    val presetNames = listOf("system_auto", "slate", "cyberpunk", "oled", "matrix", "retro", "muted_slate", "custom")
-                    val targetPreset = presetNames[presetIdx]
-                    com.infinikey_ime.util.ThemeManager.resetThemeToDefault(this, targetPreset)
-                    com.infinikey_ime.util.ThemeManager.resetThemeToDefault(this, "custom")
+            val activeKey = getActiveThemeKey()
+            val currentEntry = themeEntries.firstOrNull { it.targetKey == activeKey }
 
-                    prefs.edit()
-                        .remove("pref_custom_theme_json")
-                        .putInt("pref_theme_preset_idx", 0)
-                        .apply()
-                    spThemePreset.setSelection(0)
-                    val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
-                    loadCategoryStyleValues(catName)
-                    Toast.makeText(this, "Theme reset to default factory preset!", Toast.LENGTH_SHORT).show()
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
+            if (currentEntry?.isUserCreated == true) {
+                AlertDialog.Builder(this)
+                    .setTitle("🗑️ Delete Custom Theme")
+                    .setMessage("Are you sure you want to delete '${currentEntry.displayName}'?")
+                    .setPositiveButton("Delete") { _, _ ->
+                        com.infinikey_ime.util.ThemeManager.deleteCustomTheme(this, activeKey)
+                        prefs.edit().putString("pref_active_theme_key", "system_auto").apply()
+                        updateThemeSpinner()
+                        val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
+                        loadCategoryStyleValues(catName)
+                        Toast.makeText(this, "Custom theme deleted!", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            } else {
+                AlertDialog.Builder(this)
+                    .setTitle("🔄 Reset Theme")
+                    .setMessage("Reset current theme back to factory default preset values?")
+                    .setPositiveButton("Reset Theme") { _, _ ->
+                        com.infinikey_ime.util.ThemeManager.resetThemeToDefault(this, activeKey)
+                        updateThemeSpinner()
+                        val catName = categoryKeyNames[spKeyCategory.selectedItemPosition.coerceIn(0, 6)]
+                        loadCategoryStyleValues(catName)
+                        Toast.makeText(this, "Theme reset to default factory preset!", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
         }
 
         fun getUserLayoutsDir(): java.io.File {
@@ -1271,6 +1530,7 @@ class SettingsActivity : AppCompatActivity() {
         // --- WYSIWYG LAYOUT EDITOR SETUP ---
         val editorKeyboardView = findViewById<com.infinikey_ime.view.KeyboardView>(R.id.editorKeyboardView)
         editorKeyboardView.isEditorPreviewMode = true
+        previewKeyboardView = editorKeyboardView
 
         val btnPreviewFullWidth = findViewById<Button>(R.id.btnPreviewFullWidth)
         val btnPreviewLeftDocked = findViewById<Button>(R.id.btnPreviewLeftDocked)
@@ -3143,6 +3403,7 @@ class SettingsActivity : AppCompatActivity() {
         val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tabLayout)
         val pos = tabLayout?.selectedTabPosition?.coerceAtLeast(0) ?: 0
         updateTabDisplay(pos)
+        onConfigChangedListener?.invoke()
     }
 
     override fun onResume() {
@@ -3151,6 +3412,7 @@ class SettingsActivity : AppCompatActivity() {
         val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tabLayout)
         val pos = tabLayout?.selectedTabPosition?.coerceAtLeast(0) ?: 0
         updateTabDisplay(pos)
+        onConfigChangedListener?.invoke()
     }
 
     private fun updatePermissionStatusUI() {

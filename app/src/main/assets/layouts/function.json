@@ -1,7 +1,7 @@
 {
   "id": "function",
   "name": "Function & Utility Layer",
-  "version": "0.2.26",
+  "version": "0.2.27",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Utility layout with expanded function keys, dedicated numeric keypad, and navigation controls on a uniform 12-column rectangular grid.",

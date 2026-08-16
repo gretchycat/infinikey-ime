@@ -994,7 +994,8 @@ class KeyboardView @JvmOverloads constructor(
                     textAlign = Paint.Align.LEFT
                 }
                 com.infinikey_ime.util.FontFallbackManager.applyToPaint(topLeftPaint, topLeft)
-                key.secondaryFgColor?.let { topLeftPaint.color = it }
+                val cornerColor = key.secondaryFgColor ?: key.fgColor ?: secondaryTextPaint.color
+                topLeftPaint.color = cornerColor
                 canvas.drawText(topLeft, rect.left + (5f * density), secY, topLeftPaint)
             }
 
@@ -1010,7 +1011,8 @@ class KeyboardView @JvmOverloads constructor(
                     textAlign = Paint.Align.RIGHT
                 }
                 com.infinikey_ime.util.FontFallbackManager.applyToPaint(secPaint, rawSecToDraw)
-                key.secondaryFgColor?.let { secPaint.color = it }
+                val cornerColor = key.secondaryFgColor ?: key.fgColor ?: secondaryTextPaint.color
+                secPaint.color = cornerColor
                 canvas.drawText(rawSecToDraw, rect.right - (5f * density), secY, secPaint)
             }
 

@@ -5,12 +5,12 @@
     "modifierLockedDotColor": "#94A3B8"
   },
   "styles": {
-    "alphaKey": { "bgColor": "#22262E", "fgColor": "#E2E8F0", "pressedBgColor": "#2D323E" },
-    "numberKey": { "bgColor": "#1F232B", "fgColor": "#94A3B8", "pressedBgColor": "#2A2F3A" },
-    "modifierKey": { "bgColor": "#262B34", "fgColor": "#CBD5E1", "activeBgColor": "#334155" },
-    "functionKey": { "bgColor": "#242932", "fgColor": "#A1A1AA", "pressedBgColor": "#2F3542" },
-    "actionKey": { "bgColor": "#282D39", "fgColor": "#E2E8F0", "pressedBgColor": "#363C4B" },
-    "navigationKey": { "bgColor": "#222732", "fgColor": "#9CA3AF", "pressedBgColor": "#2C3340" },
-    "editingKey": { "bgColor": "#222732", "fgColor": "#9CA3AF", "pressedBgColor": "#2C3340" }
+    "alphaKey": { "bgColor": "#22262E", "fgColor": "#E2E8F0", "secondaryFgColor": "#E2E8F0", "pressedBgColor": "#2D323E" },
+    "numberKey": { "bgColor": "#1F232B", "fgColor": "#94A3B8", "secondaryFgColor": "#94A3B8", "pressedBgColor": "#2A2F3A" },
+    "modifierKey": { "bgColor": "#262B34", "fgColor": "#CBD5E1", "secondaryFgColor": "#CBD5E1", "activeBgColor": "#334155" },
+    "functionKey": { "bgColor": "#242932", "fgColor": "#A1A1AA", "secondaryFgColor": "#A1A1AA", "pressedBgColor": "#2F3542" },
+    "actionKey": { "bgColor": "#282D39", "fgColor": "#E2E8F0", "secondaryFgColor": "#E2E8F0", "pressedBgColor": "#363C4B" },
+    "navigationKey": { "bgColor": "#222732", "fgColor": "#9CA3AF", "secondaryFgColor": "#9CA3AF", "pressedBgColor": "#2C3340" },
+    "editingKey": { "bgColor": "#222732", "fgColor": "#9CA3AF", "secondaryFgColor": "#9CA3AF", "pressedBgColor": "#2C3340" }
   }
 }

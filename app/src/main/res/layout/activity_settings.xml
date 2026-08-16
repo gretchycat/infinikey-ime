@@ -1642,8 +1642,90 @@
                         android:paddingEnd="12dp" />
                 </LinearLayout>
 
+                <!-- Card Auto: System Auto Theme Mapping Box (Visible when system_auto is selected) -->
+                <LinearLayout
+                    android:id="@+id/layoutAutoThemeCustomizer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone">
+
+                    <!-- Section Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="System Auto Theme Mapping"
+                            android:textColor="@color/settings_text_header"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Choose which themes to activate when your device switches between Light and Dark mode:"
+                        android:textColor="@color/settings_text_sub"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="14dp" />
+
+                    <!-- Light Mode Theme Selector -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="☀️ Light Mode Theme:"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <Spinner
+                        android:id="@+id/spAutoLightThemeSelector"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Dark Mode Theme Selector -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🌙 Dark Mode Theme:"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <Spinner
+                        android:id="@+id/spAutoDarkThemeSelector"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="6dp" />
+                </LinearLayout>
+
                 <!-- Card 1: Live Color Customization Box -->
                 <LinearLayout
+                    android:id="@+id/layoutNormalThemeCustomizer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_settings_card"

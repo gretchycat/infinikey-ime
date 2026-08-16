@@ -61,6 +61,8 @@ class ProgrammerInputMethodService : InputMethodService() {
     private val prefChangeListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == "pref_custom_theme_json" ||
             key == "pref_theme_preset_idx" ||
+            key == "pref_active_theme_key" ||
+            key == "pref_theme_last_updated_time" ||
             key == "pref_keyboard_height_percent" ||
             key == "pref_keyboard_height_percent_portrait" ||
             key == "pref_keyboard_height_percent_landscape" ||
@@ -114,15 +116,10 @@ class ProgrammerInputMethodService : InputMethodService() {
             }
             keyboardState.formFactorMode = targetFormFactor
 
-            val currentLayout = keyboardView.layoutDefinition
-            if (currentLayout != null) {
-                val updatedLayout = com.infinikey_ime.engine.LayoutParser.applyThemeOverrides(this, currentLayout)
-                keyboardView.layoutDefinition = updatedLayout
-            }
-
-            keyboardView.requestLayout()
-            keyboardView.recalculateKeyBounds()
-            keyboardView.invalidate()
+            val currentLayoutId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: prefs.getString("pref_keyboard_layout_target", "main") ?: "main"
+            val targetFile = if (currentLayoutId.endsWith(".json")) currentLayoutId else "$currentLayoutId.json"
+            val freshLayout = com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
+            keyboardView.setLayout(freshLayout)
         }
     }
 

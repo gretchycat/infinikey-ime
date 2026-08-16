@@ -114,6 +114,7 @@ object LayoutParser {
         if (cleanName.startsWith("emoji_auto") || cleanName.equals("emoji_picker", ignoreCase = true)) {
             return loadLayoutFromAsset(context, "emoji_recents.json", previousLayoutId)
         }
+        syncAndUpgradeDefaultLayouts(context)
         val cleanFileName = if (fileName.startsWith("layouts/")) fileName.removePrefix("layouts/") else fileName
         val targetJsonName = if (cleanFileName.endsWith(".json")) cleanFileName else "$cleanFileName.json"
         val externalLayoutFile = java.io.File(java.io.File(context.getExternalFilesDir(null), "layouts"), targetJsonName)
@@ -169,17 +170,28 @@ object LayoutParser {
 
     fun applyThemeOverrides(context: Context, layout: LayoutDefinition): LayoutDefinition {
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-        val presetIdx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, 7)
-        val presetNames = listOf("system_auto", "slate", "cyberpunk", "oled", "matrix", "retro", "muted_slate", "custom")
+        val activeThemeKey = prefs.getString("pref_active_theme_key", null)
+            ?: run {
+                val idx = prefs.getInt("pref_theme_preset_idx", 0).coerceIn(0, com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES.lastIndex)
+                com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES[idx]
+            }
 
-        val targetPreset = if (presetIdx == 0) {
+        val targetThemeKey = if (activeThemeKey == "system_auto") {
+            val systemAutoJson = com.infinikey_ime.util.ThemeManager.loadThemeJson(context, "system_auto")
             val isNight = (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-            if (isNight) "slate" else "system_light"
+            var dark = "system_dark"
+            var light = "system_light"
+            try {
+                val root = com.google.gson.JsonParser.parseString(systemAutoJson).asJsonObject
+                dark = root.get("darkTheme")?.asString ?: "system_dark"
+                light = root.get("lightTheme")?.asString ?: "system_light"
+            } catch (_: Exception) {}
+            if (isNight) dark else light
         } else {
-            presetNames[presetIdx]
+            activeThemeKey
         }
 
-        val (presetTheme, presetStyles) = loadThemePresetFromAssets(context, targetPreset)
+        val (presetTheme, presetStyles) = loadThemePresetFromAssets(context, targetThemeKey)
 
         var currentTheme = layout.theme
         if (presetTheme != null) {
@@ -194,41 +206,21 @@ object LayoutParser {
         val mergedStyles = layout.styles.toMutableMap()
         presetStyles.forEach { (k, v) -> mergedStyles[k] = v }
 
-        val customThemeJson = prefs.getString("pref_custom_theme_json", null)
-        if (presetIdx == 7 && !customThemeJson.isNullOrEmpty()) {
-            try {
-                val themeRoot = com.google.gson.JsonParser.parseString(customThemeJson).asJsonObject
-                val customThemeObj = themeRoot.getAsJsonObject("theme")
-                val customBgStr = customThemeObj?.get("backgroundColor")?.asString
-                val customOffDotStr = customThemeObj?.get("modifierOffDotColor")?.asString
-                val customLatchedDotStr = customThemeObj?.get("modifierLatchedDotColor")?.asString
-                val customLockedDotStr = customThemeObj?.get("modifierLockedDotColor")?.asString
-
-                currentTheme = currentTheme.copy(
-                    backgroundColor = parseColorHex(customBgStr) ?: currentTheme.backgroundColor,
-                    modifierOffDotColor = parseColorHex(customOffDotStr) ?: currentTheme.modifierOffDotColor,
-                    modifierLatchedDotColor = parseColorHex(customLatchedDotStr) ?: currentTheme.modifierLatchedDotColor,
-                    modifierLockedDotColor = parseColorHex(customLockedDotStr) ?: currentTheme.modifierLockedDotColor
-                )
-
-                val customStylesObj = themeRoot.getAsJsonObject("styles")
-                customStylesObj?.entrySet()?.forEach { (key, elem) ->
-                    if (elem.isJsonObject) {
-                        mergedStyles[key] = parseKeyStyle(elem.asJsonObject)
-                    }
-                }
-            } catch (_: Exception) {}
-        }
-
         // Re-apply merged category styles onto every KeyDefinition across all rows
         val updatedRows = layout.rows.map { row ->
             val updatedKeys = row.keys.map { key ->
-                val categoryStyle = key.styleName?.let { mergedStyles[it] }
+                val styleName = key.styleName ?: inferStyleNameForKey(key.primaryLabel, key.onPressAction)
+                val categoryStyle = mergedStyles[styleName] ?: mergedStyles["alphaKey"]
 
                 if (categoryStyle != null) {
+                    val secColor = categoryStyle.secondaryFgColor?.let { parseColorHex(it) }
+                        ?: categoryStyle.fgColor?.let { parseColorHex(it) }
+                        ?: key.secondaryFgColor
                     key.copy(
+                        styleName = styleName,
                         bgColor = categoryStyle.bgColor?.let { parseColorHex(it) } ?: key.bgColor,
                         fgColor = categoryStyle.fgColor?.let { parseColorHex(it) } ?: key.fgColor,
+                        secondaryFgColor = secColor,
                         pressedBgColor = categoryStyle.pressedBgColor?.let { parseColorHex(it) } ?: key.pressedBgColor,
                         activeBgColor = categoryStyle.activeBgColor?.let { parseColorHex(it) } ?: key.activeBgColor
                     )
@@ -238,6 +230,19 @@ object LayoutParser {
         }
 
         return layout.copy(theme = currentTheme, styles = mergedStyles, rows = updatedRows)
+    }
+
+    fun inferStyleNameForKey(label: String, action: KeyAction): String {
+        val lowerLabel = label.lowercase()
+        return when {
+            action is KeyAction.ToggleModifier || action is KeyAction.LockModifier || lowerLabel in listOf("shift", "ctrl", "alt", "meta", "sym", "fn", "⌘", "⌥", "⌃", "⇧") -> "modifierKey"
+            lowerLabel.matches(Regex("f[0-9]+")) -> "functionKey"
+            lowerLabel in listOf("enter", "return", "backspace", "delete", "tab", "space", "␣", "⌫", "⏎", "⇥") -> "actionKey"
+            lowerLabel in listOf("up", "down", "left", "right", "home", "end", "pageup", "pagedown", "↑", "↓", "←", "→") -> "navigationKey"
+            action is KeyAction.Copy || action is KeyAction.Cut || action is KeyAction.Paste || action is KeyAction.SelectAll || lowerLabel in listOf("copy", "paste", "cut", "undo", "redo", "select_all") -> "editingKey"
+            lowerLabel.matches(Regex("[0-9]")) -> "numberKey"
+            else -> "alphaKey"
+        }
     }
 
     fun ensureNavigationKey(layout: LayoutDefinition): LayoutDefinition {
@@ -530,12 +535,13 @@ object LayoutParser {
     }
 
     private fun parseKeyStyle(obj: JsonObject): KeyStyle {
+        val fg = obj.get("fgColor")?.asString
         return KeyStyle(
             bgColor = obj.get("bgColor")?.asString,
             pressedBgColor = obj.get("pressedBgColor")?.asString,
             activeBgColor = obj.get("activeBgColor")?.asString,
-            fgColor = obj.get("fgColor")?.asString,
-            secondaryFgColor = obj.get("secondaryFgColor")?.asString,
+            fgColor = fg,
+            secondaryFgColor = obj.get("secondaryFgColor")?.asString ?: fg,
             activeFgColor = obj.get("activeFgColor")?.asString,
             borderColor = obj.get("borderColor")?.asString,
             borderWidth = parseDimensionValue(obj.get("borderWidth")),
@@ -571,9 +577,8 @@ object LayoutParser {
                 if (keyElem.isJsonObject) {
                     val kObj = keyElem.asJsonObject
                     val label = kObj.get("label")?.asString ?: ""
-                    val rawSecondaryLabel = kObj.get("secondaryLabel")?.asString
-                    val secondaryLabel = rawSecondaryLabel
-                    val styleName = kObj.get("style")?.asString
+                    val secondaryLabel = kObj.get("secondaryLabel")?.asString
+                    val rawStyleName = kObj.get("style")?.asString
 
                     val onPressObj = kObj.getAsJsonObject("onPress")
                     val onLongPressObj = kObj.getAsJsonObject("onLongPress")
@@ -588,7 +593,8 @@ object LayoutParser {
                     val onSwipeLeftAction = if (onSwipeLeftObj != null) parseAction(onSwipeLeftObj) else KeyAction.None
                     val onSwipeRightAction = if (onSwipeRightObj != null) parseAction(onSwipeRightObj) else KeyAction.None
 
-                    val styleObj = styleName?.let { stylesMap[it] }
+                    val styleName = rawStyleName ?: inferStyleNameForKey(label, onPressAction)
+                    val styleObj = stylesMap[styleName] ?: stylesMap["alphaKey"]
 
                     val isSplitKey = kObj.get("isSplitKey")?.asBoolean ?: (label.equals("space", ignoreCase = true) || label == "␣")
                     val splitLeftWeight = parseDimensionValue(kObj.get("splitLeftWeight"))
@@ -612,7 +618,7 @@ object LayoutParser {
 
                     // Visual colors (local override -> style class default)
                     val fgColorStr = kObj.get("fgColor")?.asString ?: styleObj?.fgColor
-                    val secondaryFgColorStr = kObj.get("secondaryFgColor")?.asString ?: styleObj?.secondaryFgColor
+                    val secondaryFgColorStr = kObj.get("secondaryFgColor")?.asString ?: styleObj?.secondaryFgColor ?: fgColorStr
                     val bgColorStr = kObj.get("bgColor")?.asString ?: styleObj?.bgColor
                     val pressedBgColorStr = kObj.get("pressedBgColor")?.asString ?: styleObj?.pressedBgColor
                     val activeBgColorStr = kObj.get("activeBgColor")?.asString ?: styleObj?.activeBgColor

@@ -18,14 +18,14 @@ object ThemeManager {
 
     val PRESET_KEY_NAMES = listOf(
         "system_auto",
+        "system_light",
+        "system_dark",
         "slate",
         "cyberpunk",
         "oled",
         "matrix",
         "retro",
-        "muted_slate",
-        "system_light",
-        "custom"
+        "muted_slate"
     )
 
     /**
@@ -67,11 +67,13 @@ object ThemeManager {
                 }
             }
 
-            val rootThemes = listOf("system_light", "custom", "system_auto")
+            val rootThemes = listOf("system_light", "system_dark", "system_auto", "slate", "cyberpunk", "oled", "matrix", "retro", "muted_slate")
             for (themeKey in rootThemes) {
                 val targetFile = File(themesDir, "$themeKey.json")
                 val assetJson = loadDefaultThemeFromAssets(context, themeKey)
-                processThemeCopyOrUpgrade(assetJson, targetFile)
+                if (assetJson.isNotEmpty()) {
+                    processThemeCopyOrUpgrade(assetJson, targetFile)
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error in ensureDefaultThemesCopied: ${e.message}")
@@ -198,6 +200,17 @@ object ThemeManager {
             Log.e(TAG, "Error resetting theme '$themeName': ${e.message}")
             false
         }
+    }
+
+    /**
+     * Deletes a custom theme from user storage.
+     */
+    fun deleteCustomTheme(context: Context, themeName: String): Boolean {
+        val themesDir = getUserThemesDir(context)
+        val targetFile = File(themesDir, "$themeName.json")
+        return if (targetFile.exists()) {
+            targetFile.delete()
+        } else false
     }
 
     private fun loadDefaultThemeFromAssets(context: Context, themeName: String): String {
