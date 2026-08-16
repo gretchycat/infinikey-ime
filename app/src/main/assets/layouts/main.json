@@ -1,7 +1,7 @@
 {
   "id": "main",
   "name": "Full Programmer Baseline Layout",
-  "version": "0.2.22",
+  "version": "0.2.23",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Comprehensive 5-row desktop Infinikey IME layout with function row, modifier toggles, long-press popups, and multi-touch geometry gestures.",
