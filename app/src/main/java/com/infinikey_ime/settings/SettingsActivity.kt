@@ -131,37 +131,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        // Eye Tracking Service Controls
-        val btnToggleEyeTracking = findViewById<Button>(R.id.btnToggleEyeTracking)
-        val tvEyeTrackingStatus = findViewById<TextView>(R.id.tvEyeTrackingStatus)
 
-        fun updateEyeTrackingUi() {
-            val running = com.infinikey_ime.eyetracking.EyeTrackingManager.isServiceRunning()
-            if (running) {
-                tvEyeTrackingStatus?.text = "Status: Running 🟢 (Status Bar Indicator Active)"
-                tvEyeTrackingStatus?.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
-                btnToggleEyeTracking?.text = "Stop Eye Tracking Service"
-            } else {
-                tvEyeTrackingStatus?.text = "Status: Stopped"
-                tvEyeTrackingStatus?.setTextColor(android.graphics.Color.parseColor("#888888"))
-                btnToggleEyeTracking?.text = "Start Eye Tracking Service"
-            }
-        }
-
-        updateEyeTrackingUi()
-
-        btnToggleEyeTracking?.setOnClickListener {
-            com.infinikey_ime.eyetracking.EyeTrackingManager.toggle(this) {
-                Toast.makeText(this, "Camera permission required for Eye Tracking Service.", Toast.LENGTH_SHORT).show()
-            }
-            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({ updateEyeTrackingUi() }, 500)
-        }
-
-        val btnCalibrateEyeTracking = findViewById<Button>(R.id.btnCalibrateEyeTracking)
-        btnCalibrateEyeTracking?.setOnClickListener {
-            com.infinikey_ime.eyetracking.EyeTrackingManager.startCalibration(this)
-            updateEyeTrackingUi()
-        }
 
 
 
