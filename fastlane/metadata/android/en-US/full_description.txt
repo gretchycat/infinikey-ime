@@ -1,13 +1,14 @@
-InfiniKey IME is an open-source, extensible Android input method designed for developers, terminal power users, and custom layout enthusiasts.
+Infinikey IME is an open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
 
 Features:
-• Fully customizable JSON layout descriptors (Main, Function, Mobile Alphabetic, Code Symbol, Emoji).
-• Built-in Clipboard History Manager saving up to 30 copied items with individual item deletion (🗑) and instant echo-paste into text fields and raw terminal shells (Termux, VNC, SSH).
-• Native Canvas Vector SVG Icon Rendering (Paperclip, Clipboard, Copy, Cut, Paste, Select All, Microphone, TTS).
-• 3D Tactile Popup Overlays with relaxed gesture tracking (28dp drag threshold, hysteresis deadzone, and direct tap-to-select support).
-• Smart Target Detection automatically adjusting clipboard dispatches between standard Android text boxes and raw TYPE_NULL terminal streams.
-• Docked, Split-Thumb Cluster, Left-Handed, Right-Handed, and Floating form factor modes with spacebar long-press split toggling.
-• Authentic Mechvibes mechanical keyboard audio switch sound packs (Cherry MX Blue/Brown/Red/Black, NovelKeys Cream, IBM Model M Buckling Spring).
-• Embedded Voice-to-Text and TTS speech integration.
-• Advanced key preview overlays, long-press options, auto-repeat customization, and trackpad cursor navigation.
-• 100% offline and privacy-first with zero analytics or internet tracking.
+• Declarative Layout & Macro Engine: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
+• Powerful Macro System: Bind complex macros, multi-touch gestures, swipe actions (up, down, left, right), long-press popups, keycode auto-repeats, and app launchers directly to keys.
+• Decoupled Theme Engine: 7 built-in presets (Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate, System Auto Light/Dark) plus custom HSL/RGB palette generation.
+• Multiple Form Factors & Split Mode: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
+• Clipboard History Overlay: Persistent overlay saving up to 30 copied items with index badges, character lengths, individual item deletion (🗑), clear-all, and direct echo-paste connection to text fields and raw terminal streams.
+• Native Canvas Vector SVG Icon Rendering: Crisp native canvas rendering for vector icons (Paperclip, Clipboard, Copy, Cut, Paste, Select All, Microphone, TTS) scaling cleanly across all screen densities.
+• Trackpad Cursor Navigation: Independent spacebar trackpad and arrow key trackpad modes for fluid desktop-class cursor control.
+• Authentic Mechanical Switch Audio Engine: Integrated Mechvibes switch sound packs (Cherry MX Blue/Brown/Red/Black, NovelKeys Cream, IBM Model M Buckling Spring) and synthesized click audio with volume control.
+• Speech-to-Text Integration: Floating voice recognition modal with customizable speech-to-text engine selection.
+• Visual WYSIWYG Layout Editor: Built-in 6-tab Settings Activity with real-time drag-and-drop key reordering, row properties, undo/redo state stack, and layout customization.
+• 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
