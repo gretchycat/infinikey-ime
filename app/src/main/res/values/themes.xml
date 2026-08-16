@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.ProgrammerKeyboard" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#38BDF8</item>
-        <item name="colorPrimaryVariant">#0284C7</item>
-        <item name="colorOnPrimary">#0F172A</item>
-        <item name="android:statusBarColor">#12141C</item>
-        <item name="android:navigationBarColor">#12141C</item>
+        <item name="colorPrimary">#0284C7</item>
+        <item name="colorPrimaryVariant">#0369A1</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:statusBarColor">@color/settings_bg</item>
+        <item name="android:navigationBarColor">@color/settings_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
+
     <style name="Theme.ProgrammerKeyboard.IME" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>

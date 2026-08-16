@@ -16,11 +16,11 @@ val baseVersionName = "0.2.23"
 val fullVersionName = "$baseVersionName-b$gitBuildNumber"
 
 android {
-    namespace = "com.programmerkeyboard"
+    namespace = "com.infinikey_ime"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.programmerkeyboard"
+        applicationId = "com.infinikey_ime"
         minSdk = 24
         targetSdk = 34
         versionCode = maxOf(gitBuildNumber, 100)

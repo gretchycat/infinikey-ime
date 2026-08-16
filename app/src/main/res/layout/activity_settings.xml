@@ -88,13 +88,13 @@
         android:id="@+id/tvSelectedTabTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0F172A"
+        android:background="@color/settings_card_bg"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:text="🎨 Geometry"
-        android:textColor="#38BDF8"
+        android:textColor="@color/key_text_accent"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -266,11 +266,11 @@
                         android:layout_marginBottom="12dp" />
 
                     <!-- Live Keyboard Preview View -->
-                    <com.programmerkeyboard.view.KeyboardView
+                    <com.infinikey_ime.view.KeyboardView
                         android:id="@+id/editorKeyboardView"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
-                        android:background="#0F172A" />
+                        android:background="@color/settings_card_bg" />
 
                     <!-- Row & Spacing Control Action Bar -->
                     <LinearLayout
@@ -404,13 +404,30 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Layout JSON files are stored directly in Infinikey IME's external storage folder (Android/data/com.programmerkeyboard/files/layouts).\n\nNote: You can edit these layout files live using any SAF (Storage Access Framework) enabled editor, or access and manage them directly using the system Files application."
-                        android:textColor="@color/settings_text_sub"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="16dp" />
+                        android:background="@drawable/bg_settings_card"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="📂 System Files App Required"
+                            android:textColor="#38BDF8"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Layout JSON files are stored directly in Infinikey IME's external storage folder (Android/data/com.infinikey_ime/files/layouts).\n\nNote: Standard text editors or third-party apps cannot navigate app internal storage. Select the System Files App (com.google.android.documentsui) when prompted to open and manage layout files."
+                            android:textColor="@color/settings_text_sub"
+                            android:textSize="12sp" />
+                    </LinearLayout>
 
                     <!-- Launcher Button for Files Application -->
                     <Button
@@ -1868,13 +1885,30 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Theme JSON files are stored directly in Infinikey IME's external storage folder (Android/data/com.programmerkeyboard/files/themes).\n\nYou can access, back up, or modify theme JSON files directly using the system Files application."
-                        android:textColor="@color/settings_text_sub"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="16dp" />
+                        android:background="@drawable/bg_settings_card"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="📂 System Files App Required"
+                            android:textColor="#38BDF8"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Theme JSON files are stored directly in Infinikey IME's external storage folder (Android/data/com.infinikey_ime/files/themes).\n\nNote: Standard text editors or third-party apps cannot navigate app internal storage. Select the System Files App (com.google.android.documentsui) when prompted to open and manage theme files."
+                            android:textColor="@color/settings_text_sub"
+                            android:textSize="12sp" />
+                    </LinearLayout>
 
                     <!-- Launcher Button for Themes Directory in Files Application -->
                     <Button
@@ -1936,6 +1970,50 @@
                         android:textColor="@color/settings_text_sub"
                         android:textSize="12sp"
                         android:layout_marginBottom="12dp" />
+
+                    <!-- Engine & Model Load Status Indicator Light -->
+                    <LinearLayout
+                        android:id="@+id/llSttStatusBadge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/settings_card_bg"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:id="@+id/tvSttStatusIndicatorLight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🟢"
+                            android:textSize="20sp"
+                            android:layout_marginEnd="10dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSttStatusTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Engine Status: Ready"
+                                android:textColor="#10B981"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvSttStatusDetail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Engine and model initialized successfully."
+                                android:textColor="@color/settings_text_sub"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <Spinner
                         android:id="@+id/spSttEngine"
@@ -2007,7 +2085,7 @@
                         android:id="@+id/tvSttModelDetails"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#0F172A"
+                        android:background="@color/settings_card_bg"
                         android:padding="12dp"
                         android:text="• Selected Model: System Built-in Model\n• Engine: Android Recognition Service\n• Language: English / Device Locale\n• Storage: System Default"
                         android:textColor="@color/settings_text_sub"
@@ -2016,56 +2094,7 @@
                         android:layout_marginBottom="12dp" />
                 </LinearLayout>
 
-                <!-- STT Section 3: Obscenity & Profanity Filtering -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_settings_card"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="14dp">
-
-                        <View
-                            android:layout_width="4dp"
-                            android:layout_height="18dp"
-                            android:background="@drawable/bg_vertical_rule" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="🤬 Obscenity &amp; Profanity Filtering"
-                            android:textColor="@color/settings_text_header"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <CheckBox
-                        android:id="@+id/cbSttFilterProfanity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Mask offensive words with asterisks (e.g. f***)"
-                        android:textColor="@color/settings_text_header"
-                        android:textSize="13sp"
-                        android:buttonTint="#38BDF8"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="ℹ️ Note: Android System STT enforces server-side profanity filtering due to Google Speech service defaults. Custom offline engines (Sherpa-onnx, Whisper) strictly obey this toggle setting."
-                        android:textColor="#94A3B8"
-                        android:textSize="11sp" />
-                </LinearLayout>
-
-                <!-- STT Section 4: Dictation Behavior -->
+                <!-- STT Section 3: Dictation Behavior -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -2147,13 +2176,30 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="STT model files (.onnx, .gguf, .zip) are stored in Infinikey IME's models folder (Android/data/com.programmerkeyboard/files/stt_models).\n\nYou can copy custom models into this directory using any file manager."
-                        android:textColor="@color/settings_text_sub"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="16dp" />
+                        android:background="@drawable/bg_settings_card"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="📂 System Files App Required"
+                            android:textColor="#38BDF8"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="STT model files (.onnx, .gguf, .zip) are stored in Infinikey IME's models folder (Android/data/com.infinikey_ime/files/stt_models).\n\nNote: Select the System Files App (com.google.android.documentsui) to manage or copy model files into this folder."
+                            android:textColor="@color/settings_text_sub"
+                            android:textSize="12sp" />
+                    </LinearLayout>
 
                     <Button
                         android:id="@+id/btnManageSttModels"

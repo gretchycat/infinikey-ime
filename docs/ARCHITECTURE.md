@@ -28,7 +28,7 @@ Infinikey IME is a high-performance, layout-driven, customizable Android Input M
    +--------------+  +--------------+  +--------------+
 ```
 
-### 1. `ProgrammerInputMethodService` (`com.programmerkeyboard`)
+### 1. `ProgrammerInputMethodService` (`com.infinikey_ime`)
 * **Role**: Primary entry point implementing Android `InputMethodService`.
 * **Responsibilities**:
   - Manages `InputConnection` dispatches (`commitText`, `sendDownUpKeyEvents`, `performEditorAction`).
@@ -38,27 +38,27 @@ Infinikey IME is a high-performance, layout-driven, customizable Android Input M
   - Handles screen mode transitions (`FULL_WIDTH_DOCKED`, `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, `FLOATING`).
   - Processes macro actions (`SEND_TEXT`, `SEND_CODE`, `SWITCH_LAYOUT`, `LAUNCH_APP`, `TOGGLE_ROW`, `TOGGLE_MODIFIER`).
 
-### 2. `KeyboardView` (`com.programmerkeyboard.view`)
+### 2. `KeyboardView` (`com.infinikey_ime.view`)
 * **Role**: Custom high-FPS canvas surface for dynamic key layout rendering and touch interaction.
 * **Responsibilities**:
   - Renders staggered and ortholinear key rows, keycaps, primary/secondary labels, and native SVG vector icon paths (`drawSvgCopyIcon`, `drawSvgCutIcon`, `drawSvgPasteIcon`, `drawSvgSelectAllIcon`, `drawSvgPaperclipIcon`, `drawSvgClipboardIcon`, `drawSvgMicIcon`, `drawSvgTtsIcon`).
   - Multi-touch gesture processing (swipe-up for secondary symbols, directional key swipes, long-press popups, trackpad gestures).
   - Integrates `SoundPool` for asset-based mechanical switch audio feedback and `Vibrator` for haptics.
 
-### 3. `KeyPopupOverlay` & `ClipboardHistoryOverlay` (`com.programmerkeyboard.view`)
+### 3. `KeyPopupOverlay` & `ClipboardHistoryOverlay` (`com.infinikey_ime.view`)
 * **Role**: Floating overlay windows for action menus and history management.
 * **Responsibilities**:
   - **`KeyPopupOverlay`**: Renders 3D tactile button caps with SVG vector icons and relaxed gesture tracking (28dp movement threshold, 40% hysteresis, direct tap-to-select support, and active dismissal callbacks).
   - **`ClipboardHistoryOverlay`**: Renders a floating scrollable history view displaying index numbers, character lengths, individual item deletion (`🗑`), long-press removal, clear-all, and direct echo paste.
 
-### 4. `LayoutParser` (`com.programmerkeyboard.engine`)
+### 4. `LayoutParser` (`com.infinikey_ime.engine`)
 * **Role**: Declarative JSON layout parser and theme engine.
 * **Responsibilities**:
   - Parses JSON layout descriptors (`main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`, `phone.json`, `emoji*.json`).
   - Merges styles, row offsets, split keys, and preset color themes (`themes.json`, `themes/*.json`).
   - Implements System Dynamic Day/Night theme resolution and custom HSL/RGB user palette generator.
 
-### 5. `InteractiveLayoutEditorView` & `SettingsActivity` (`com.programmerkeyboard.settings`)
+### 5. `InteractiveLayoutEditorView` & `SettingsActivity` (`com.infinikey_ime.settings`)
 * **Role**: WYSIWYG layout editor and configuration manager.
 * **Responsibilities**:
   - Provides a 6-tab configuration UI (Geometry, Behavior, Haptics, Audio, Themes, Layout Editor).

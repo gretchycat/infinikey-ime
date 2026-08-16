@@ -6,7 +6,7 @@ platform :android do
   lane :deploy do
     gradle(task: "assembleRelease")
     supply(
-      package_name: "com.programmerkeyboard",
+      package_name: "com.infinikey_ime",
       track: "production"
     )
   end
@@ -14,7 +14,7 @@ platform :android do
   desc "Upload metadata only to Google Play Store"
   lane :upload_metadata do
     supply(
-      package_name: "com.programmerkeyboard",
+      package_name: "com.infinikey_ime",
       skip_upload_apk: true,
       skip_upload_aab: true
     )
@@ -23,7 +23,7 @@ platform :android do
   desc "Validate store metadata"
   lane :validate_metadata do
     supply(
-      package_name: "com.programmerkeyboard",
+      package_name: "com.infinikey_ime",
       validate_only: true
     )
   end

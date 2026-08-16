@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="com.programmerkeyboard.settings.SettingsActivity">
+    android:settingsActivity="com.infinikey_ime.settings.SettingsActivity">
     <subtype
         android:label="@string/subtype_en_us"
         android:imeSubtypeLocale="en_US"
