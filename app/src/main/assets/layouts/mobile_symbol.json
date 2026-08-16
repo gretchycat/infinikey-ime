@@ -1,7 +1,7 @@
 {
   "id": "mobile_symbol",
   "name": "Mobile Secondary Symbols",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Dedicated Gboard-style mobile secondary symbols page.",
