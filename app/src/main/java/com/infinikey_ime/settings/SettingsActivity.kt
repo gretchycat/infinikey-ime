@@ -63,12 +63,6 @@ class SettingsActivity : AppCompatActivity() {
 
         val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
-        if (!com.infinikey_ime.util.OverlayPermissionUtil.hasOverlayPermission(this)) {
-            btnGrantOverlayPermission?.visibility = View.VISIBLE
-        } else {
-            btnGrantOverlayPermission?.visibility = View.GONE
-        }
-
         val tvSelectedTabTitle = findViewById<TextView>(R.id.tvSelectedTabTitle)
 
         if (!com.infinikey_ime.BuildConfig.DEBUG) {
@@ -123,12 +117,10 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         btnGrantOverlayPermission?.setOnClickListener {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(this)) {
-                val intent = Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
-                startActivity(intent)
-            } else {
+            if (com.infinikey_ime.util.OverlayPermissionUtil.hasOverlayPermission(this)) {
                 Toast.makeText(this, "Display over apps permission is already granted!", Toast.LENGTH_SHORT).show()
             }
+            com.infinikey_ime.util.OverlayPermissionUtil.requestOverlayPermission(this)
         }
 
 
