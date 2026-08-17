@@ -143,7 +143,7 @@ class VoiceInputOverlay(
                     if (granted) {
                         startListening()
                     } else {
-                        updateStatusText("Mic Permission Needed")
+                        post { onCloseRequested() }
                     }
                 }
                 val intent = android.content.Intent(context, com.infinikey_ime.PermissionRequestActivity::class.java).apply {
@@ -324,11 +324,8 @@ class VoiceInputOverlay(
         }
 
         override fun onError(errorMessage: String) {
-            updateStatusText(errorMessage)
-            val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-            val isContinuous = prefs.getBoolean("pref_stt_continuous_mode", false)
-            if (!isContinuous) {
-                postDelayed({ onCloseRequested() }, 1200)
+            post {
+                onCloseRequested()
             }
         }
     }
