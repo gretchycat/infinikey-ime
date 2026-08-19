@@ -38,7 +38,7 @@ class WhisperSttEngine(private val context: Context) : SttEngine {
 
         recorder.start(
             callback = callback,
-            onAudioFrame = { pcmShorts, readSize ->
+            onAudioFrame = { _, _ ->
                 // Native Whisper.cpp frame processing
             },
             onRecordingComplete = { finalShorts ->

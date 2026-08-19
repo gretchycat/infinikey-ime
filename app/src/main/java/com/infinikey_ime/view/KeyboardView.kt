@@ -352,7 +352,7 @@ class KeyboardView @JvmOverloads constructor(
         pressedKeyBounds?.let { bounds ->
             val key = bounds.key
             val isEmoji = isEmojiKey(key)
-            if (isEmoji && (key.onLongPressAction is KeyAction.None || key.onLongPressAction == null)) {
+            if (isEmoji && key.onLongPressAction is KeyAction.None) {
                 isLongPressTriggered = true
                 performKeypressHapticFeedback()
                 showZoomPreview(key.primaryLabel, bounds.rect)
@@ -781,8 +781,6 @@ class KeyboardView @JvmOverloads constructor(
         if (w <= 0 || h <= 0) return
 
         val density = context.resources.displayMetrics.density
-        val aspectRatio = getKeyboardAspectRatio()
-        val activeWidth = (w * (aspectRatio / 2.0f)).coerceIn(150f, w)
         if (keyBoundsList.isEmpty()) {
             recalculateKeyBounds()
         }
@@ -978,7 +976,6 @@ class KeyboardView @JvmOverloads constructor(
                 val scaleFactor = kotlin.math.min(scaleWidth, scaleHeight).coerceIn(0.25f, 1.0f)
                 targetFontSize *= scaleFactor
                 textPaintToUse.textSize = targetFontSize
-                fontMetrics = textPaintToUse.fontMetrics
             }
 
             drawKeyIconOrLabel(canvas, key, displayLabel, rect, textPaintToUse)
@@ -2652,7 +2649,7 @@ class KeyboardView @JvmOverloads constructor(
             return sec
         }
         if (key.onSwipeUpAction is KeyAction.SendText) {
-            val txt = (key.onSwipeUpAction as KeyAction.SendText).text
+            val txt = key.onSwipeUpAction.text
             if (txt.isNotEmpty()) return txt
         }
         val label = key.primaryLabel

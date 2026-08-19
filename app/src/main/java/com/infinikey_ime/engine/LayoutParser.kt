@@ -518,7 +518,7 @@ object LayoutParser {
 
         // Rows
         val rowsArray = root.getAsJsonArray("rows") ?: JsonArray()
-        val rows = parseRows(rowsArray, stylesMap, id)
+        val rows = parseRows(rowsArray, stylesMap)
 
         return LayoutDefinition(
             id = id,
@@ -553,7 +553,7 @@ object LayoutParser {
         )
     }
 
-    private fun parseRows(rowsArray: JsonArray, stylesMap: Map<String, KeyStyle>, layoutId: String): List<KeyRow> {
+    private fun parseRows(rowsArray: JsonArray, stylesMap: Map<String, KeyStyle>): List<KeyRow> {
         val rowsList = mutableListOf<KeyRow>()
 
         rowsArray.forEachIndexed { rowIndex, rowElem ->
@@ -954,7 +954,7 @@ object LayoutParser {
         }
     }
 
-    fun generateRecentEmojisLayout(context: Context, previousLayoutId: String): LayoutDefinition {
+    fun generateRecentEmojisLayout(context: Context, @Suppress("UNUSED_PARAMETER") previousLayoutId: String): LayoutDefinition {
         val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val recentStr = prefs.getString("pref_recent_emojis", "") ?: ""
         var recentList = if (recentStr.isEmpty()) emptyList() else recentStr.split(",")

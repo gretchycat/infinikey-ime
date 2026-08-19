@@ -466,7 +466,6 @@ class ProgrammerInputMethodService : InputMethodService() {
 
         if (isNewProfile) {
             val lowerPkg = pkgName.lowercase()
-            val isUriField = (inputType and android.text.InputType.TYPE_TEXT_VARIATION_URI) == android.text.InputType.TYPE_TEXT_VARIATION_URI
 
             if (lowerPkg.contains("termux") || lowerPkg.contains("terminal") || lowerPkg.contains("ide") || lowerPkg.contains("code")) {
                 profile.layoutTarget = "main"
@@ -1161,7 +1160,12 @@ class ProgrammerInputMethodService : InputMethodService() {
             override fun onDone(utteranceId: String?) {
                 keyboardView.activeListeningStatus = null
             }
+            @Deprecated("Deprecated in Java")
+            @Suppress("OVERRIDE_DEPRECATION")
             override fun onError(utteranceId: String?) {
+                keyboardView.activeListeningStatus = null
+            }
+            override fun onError(utteranceId: String?, errorCode: Int) {
                 keyboardView.activeListeningStatus = null
             }
         })

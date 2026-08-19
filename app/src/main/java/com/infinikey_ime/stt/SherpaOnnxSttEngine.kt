@@ -72,7 +72,7 @@ class SherpaOnnxSttEngine(private val context: Context) : SttEngine {
         Log.i(TAG, "Sherpa-onnx startListening: Starting PcmAudioRecorder...")
         recorder.start(
             callback = callback,
-            onAudioFrame = { pcmShorts, readSize ->
+            onAudioFrame = { _, _ ->
                 // Native JNI frame streaming
             },
             onRecordingComplete = { finalShorts ->

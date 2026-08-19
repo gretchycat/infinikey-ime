@@ -84,8 +84,6 @@ class SettingsActivity : AppCompatActivity() {
 
         val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
-        val tvSelectedTabTitle = findViewById<TextView>(R.id.tvSelectedTabTitle)
-
         if (!com.infinikey_ime.BuildConfig.DEBUG) {
             tabLayout?.getTabAt(6)?.let { tab ->
                 tabLayout.removeTab(tab)
@@ -831,7 +829,7 @@ class SettingsActivity : AppCompatActivity() {
             val themesDir = com.infinikey_ime.util.ThemeManager.getUserThemesDir(this@SettingsActivity)
 
             for (key in com.infinikey_ime.util.ThemeManager.PRESET_KEY_NAMES) {
-                val title = defaultPresetTitles[key] ?: key.replace('_', ' ').capitalize()
+                val title = defaultPresetTitles[key] ?: key.replace('_', ' ').replaceFirstChar { it.uppercase() }
                 entries.add(ThemeSelectorEntry(title, key, isUserCreated = false))
             }
 
@@ -847,7 +845,7 @@ class SettingsActivity : AppCompatActivity() {
                 val parsedName = try {
                     com.google.gson.JsonParser.parseString(content).asJsonObject.get("name")?.asString
                 } catch (_: Exception) { null }
-                val title = parsedName?.ifEmpty { null } ?: targetKey.replace('_', ' ').capitalize()
+                val title = parsedName?.ifEmpty { null } ?: targetKey.replace('_', ' ').replaceFirstChar { it.uppercase() }
                 entries.add(ThemeSelectorEntry(title, targetKey, isUserCreated = true))
             }
 
@@ -1640,7 +1638,7 @@ class SettingsActivity : AppCompatActivity() {
                 "emoji_sports.json" -> "⚽ Emoji Sports"
                 "emoji_symbols.json" -> "🔣 Emoji Symbols"
                 "emoji_travel.json" -> "✈️ Emoji Travel"
-                else -> "📄 ${fileName.removeSuffix(".json").replace('_', ' ').capitalize()}"
+                else -> "📄 ${fileName.removeSuffix(".json").replace('_', ' ').replaceFirstChar { it.uppercase() }}"
             }
         }
 
@@ -2206,11 +2204,11 @@ class SettingsActivity : AppCompatActivity() {
                     .setNegativeButton("Cancel", null)
                     .show()
             } else {
-                val activeTarget = currentEntry.targetId
-                val targetFile = currentEntry.assetFileName ?: "${activeTarget}.json"
+                val targetIdToReset = currentEntry.targetId
+                val targetFile = currentEntry.assetFileName ?: "${targetIdToReset}.json"
                 AlertDialog.Builder(this)
                     .setTitle("Reset Keyboard Layout")
-                    .setMessage("Reset layout '$activeTarget' to static factory default?")
+                    .setMessage("Reset layout '$targetIdToReset' to static factory default?")
                     .setPositiveButton("Reset Layout") { _, _ ->
                         pushUndoState()
                         prefs.edit()
@@ -2723,7 +2721,6 @@ class SettingsActivity : AppCompatActivity() {
             options.add(Pair("Import New User Icon...", "custom"))
 
             currentIconOptions = options.toList()
-            val customIdx = currentIconOptions.lastIndex
 
             val iconAdapter = com.infinikey_ime.util.IconSpinnerAdapter(this, currentIconOptions)
             spIcon.adapter = iconAdapter
@@ -2878,6 +2875,7 @@ class SettingsActivity : AppCompatActivity() {
 
         dialogRef = createdDialog
 
+        @Suppress("DEPRECATION")
         createdDialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         createdDialog.window?.decorView?.viewTreeObserver?.addOnGlobalLayoutListener {
@@ -3019,7 +3017,7 @@ class SettingsActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null)
             .create()
 
-        dialogRef?.show()
+        dialogRef.show()
     }
 
     private fun showPhantomSpacerEditorDialog(
@@ -3116,14 +3114,12 @@ class SettingsActivity : AppCompatActivity() {
         val currentH = when (val h = layout.metadata.horizontalSpacing) {
             is DimensionValue.Absolute -> h.value
             is DimensionValue.Ratio -> h.value.toInt()
-            else -> 4
         }
         val currentV = when (val v = layout.metadata.verticalSpacing) {
             is DimensionValue.Absolute -> v.value
             is DimensionValue.Ratio -> v.value.toInt()
-            else -> 4
         }
-        val currentHeight = layout.metadata.defaultHeightPercentage ?: 30
+        val currentHeight = layout.metadata.defaultHeightPercentage
 
         sbH.progress = currentH.coerceIn(0, 24)
         etH.setText("$currentH")
@@ -3176,6 +3172,7 @@ class SettingsActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null)
             .create()
 
+        @Suppress("DEPRECATION")
         createdDialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         createdDialog.show()
     }
@@ -3289,7 +3286,6 @@ class SettingsActivity : AppCompatActivity() {
         when (val w = key.widthWeight) {
             is DimensionValue.Ratio -> obj.addProperty("weight", w.value)
             is DimensionValue.Absolute -> obj.addProperty("weight", "${w.value}dp")
-            null -> {}
         }
         when (val h = key.heightRatio) {
             is DimensionValue.Ratio -> obj.addProperty("height", h.value)
