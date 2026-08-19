@@ -1,7 +1,7 @@
 {
   "id": "mobile",
   "name": "Standard Mobile Layout",
-  "version": "0.2.28",
+  "version": "0.2.30",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional mobile QWERTY keyboard layout with per-key alternates.",
@@ -594,17 +594,13 @@
               "Select All",
               "Copy",
               "Cut",
-              "Paste"
+              "Paste",
+              "History"
             ]
           },
           "onLongPress": {
-            "type": "SHOW_POPUP",
-            "options": [
-              "Select All",
-              "Copy",
-              "Cut",
-              "Paste"
-            ]
+            "type": "SHOW_WIDGET",
+            "widget": "CLIPBOARD_HISTORY"
           }
         },
         {

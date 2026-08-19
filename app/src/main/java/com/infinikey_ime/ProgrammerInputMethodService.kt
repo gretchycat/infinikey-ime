@@ -125,21 +125,36 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     private val clipboardHistoryList = mutableListOf<String>()
 
+    private var lastSelfSetClipText: String? = null
+    private var lastSelfSetClipTimeMs: Long = 0L
+
     private fun initClipboardHistoryListener() {
-        loadClipboardHistoryFromPrefs()
-        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
-        clipboardManager?.addPrimaryClipChangedListener {
-            try {
-                val clip = clipboardManager.primaryClip
-                if (clip != null && clip.itemCount > 0) {
-                    val text = clip.getItemAt(0).text?.toString() ?: clip.getItemAt(0).coerceToText(this)?.toString()
-                    if (!text.isNullOrEmpty()) {
-                        addClipboardHistoryItem(text)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+        try {
+            synchronized(clipboardHistoryList) {
+                loadClipboardHistoryFromPrefsLocked()
             }
+            val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+            clipboardManager?.addPrimaryClipChangedListener {
+                try {
+                    val clip = clipboardManager.primaryClip
+                    if (clip != null && clip.itemCount > 0) {
+                        val text = clip.getItemAt(0).text?.toString() ?: clip.getItemAt(0).coerceToText(this)?.toString()
+                        if (!text.isNullOrEmpty()) {
+                            val now = System.currentTimeMillis()
+                            val cleanText = text.trim()
+                            val cappedText = if (cleanText.length > 10000) cleanText.substring(0, 10000) else cleanText
+                            if (cappedText == lastSelfSetClipText && (now - lastSelfSetClipTimeMs) < 3000L) {
+                                return@addPrimaryClipChangedListener
+                            }
+                            addClipboardHistoryItem(text)
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -149,63 +164,135 @@ class ProgrammerInputMethodService : InputMethodService() {
     private fun addClipboardHistoryItem(text: String) {
         val clean = text.trim()
         if (clean.isEmpty()) return
+        val cappedText = if (clean.length > 10000) clean.substring(0, 10000) else clean
 
         val now = System.currentTimeMillis()
-        if (now - lastClipChangeTimeMs < 300L && clean == lastClipText) {
+        if (now - lastClipChangeTimeMs < 300L && cappedText == lastClipText) {
             return
         }
         lastClipChangeTimeMs = now
-        lastClipText = clean
+        lastClipText = cappedText
 
-        loadClipboardHistoryFromPrefs()
+        synchronized(clipboardHistoryList) {
+            loadClipboardHistoryFromPrefsLocked()
 
-        clipboardHistoryList.remove(clean)
-        clipboardHistoryList.add(0, clean)
-        while (clipboardHistoryList.size > 30) {
-            clipboardHistoryList.removeAt(clipboardHistoryList.size - 1)
+            clipboardHistoryList.remove(cappedText)
+            clipboardHistoryList.add(0, cappedText)
+            while (clipboardHistoryList.size > 30) {
+                clipboardHistoryList.removeAt(clipboardHistoryList.size - 1)
+            }
+            saveClipboardHistoryToPrefsLocked()
         }
-        saveClipboardHistoryToPrefs()
+    }
+
+    private fun saveClipboardHistoryToPrefsLocked() {
+        try {
+            val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+            val jsonArray = org.json.JSONArray()
+            clipboardHistoryList.forEach { jsonArray.put(it) }
+            prefs.edit().putString("pref_clipboard_history_json", jsonArray.toString()).apply()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun saveClipboardHistoryToPrefs() {
-        val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-        val jsonArray = org.json.JSONArray()
-        clipboardHistoryList.forEach { jsonArray.put(it) }
-        prefs.edit().putString("pref_clipboard_history_json", jsonArray.toString()).commit()
+        synchronized(clipboardHistoryList) {
+            saveClipboardHistoryToPrefsLocked()
+        }
     }
 
-    private fun loadClipboardHistoryFromPrefs() {
+    private fun loadClipboardHistoryFromPrefsLocked() {
         clipboardHistoryList.clear()
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val jsonStr = prefs.getString("pref_clipboard_history_json", null) ?: return
         try {
             val jsonArray = org.json.JSONArray(jsonStr)
             for (i in 0 until jsonArray.length()) {
-                clipboardHistoryList.add(jsonArray.getString(i))
+                val item = jsonArray.optString(i, null)
+                if (!item.isNullOrEmpty()) {
+                    clipboardHistoryList.add(item)
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
+    private fun loadClipboardHistoryFromPrefs() {
+        synchronized(clipboardHistoryList) {
+            loadClipboardHistoryFromPrefsLocked()
+        }
+    }
+
+    private var activeClipboardOverlay: com.infinikey_ime.view.ClipboardHistoryOverlay? = null
+
+    private fun dismissClipboardHistoryOverlay() {
+        try {
+            activeClipboardOverlay?.dismiss()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        activeClipboardOverlay = null
+    }
+
     private fun showClipboardHistoryOverlay() {
-        loadClipboardHistoryFromPrefs()
-        com.infinikey_ime.view.ClipboardHistoryOverlay(
+        if (!::keyboardView.isInitialized || !keyboardView.isAttachedToWindow) {
+            return
+        }
+        if (activeClipboardOverlay?.isShowing() == true) {
+            dismissClipboardHistoryOverlay()
+            return
+        }
+        dismissClipboardHistoryOverlay()
+
+        val itemsCopy = synchronized(clipboardHistoryList) {
+            loadClipboardHistoryFromPrefsLocked()
+            clipboardHistoryList.toMutableList()
+        }
+        val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val initialEchoMode = prefs.getString("pref_clipboard_paste_method", "ECHO") == "ECHO"
+
+        val overlay = com.infinikey_ime.view.ClipboardHistoryOverlay(
             context = this,
-            historyItems = clipboardHistoryList,
-            onItemPicked = { selectedText ->
-                currentInputConnection?.commitText(selectedText, 1)
+            historyItems = itemsCopy,
+            initialEchoMode = initialEchoMode,
+            onItemPicked = { selectedText, _ ->
+                try {
+                    val inputConnection = currentInputConnection
+                    if (inputConnection == null || !inputConnection.commitText(selectedText, 1)) {
+                        if (inputConnection?.performContextMenuAction(android.R.id.paste) != true) {
+                            sendShortcutKey(inputConnection, android.view.KeyEvent.KEYCODE_V)
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             },
-            onDeleteItem = { _, _ ->
-                saveClipboardHistoryToPrefs()
+            onPasteMethodChanged = { isEchoMode ->
+                val methodStr = if (isEchoMode) "ECHO" else "DIRECT"
+                prefs.edit().putString("pref_clipboard_paste_method", methodStr).apply()
+            },
+            onDeleteItem = { _, deletedText ->
+                synchronized(clipboardHistoryList) {
+                    clipboardHistoryList.remove(deletedText)
+                    saveClipboardHistoryToPrefsLocked()
+                }
             },
             onClearHistory = {
-                clipboardHistoryList.clear()
-                lastClipText = ""
-                lastClipChangeTimeMs = 0L
-                saveClipboardHistoryToPrefs()
+                synchronized(clipboardHistoryList) {
+                    clipboardHistoryList.clear()
+                    lastClipText = ""
+                    lastClipChangeTimeMs = 0L
+                    saveClipboardHistoryToPrefsLocked()
+                }
+            },
+            onDismissListener = {
+                activeClipboardOverlay = null
             }
-        ).show(keyboardView)
+        )
+        activeClipboardOverlay = overlay
+        overlay.show(keyboardView)
     }
 
     override fun onCreate() {
@@ -631,15 +718,18 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
             }
             is KeyAction.Paste -> {
-                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
                 var textToCommit: String? = null
-
-                if (clipboard != null && clipboard.hasPrimaryClip()) {
-                    val clipData = clipboard.primaryClip
-                    if (clipData != null && clipData.itemCount > 0) {
-                        val item = clipData.getItemAt(0)
-                        textToCommit = item.text?.toString() ?: item.coerceToText(this)?.toString()
+                try {
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                    if (clipboard != null && clipboard.hasPrimaryClip()) {
+                        val clipData = clipboard.primaryClip
+                        if (clipData != null && clipData.itemCount > 0) {
+                            val item = clipData.getItemAt(0)
+                            textToCommit = item.text?.toString() ?: item.coerceToText(this)?.toString()
+                        }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
                 if (!textToCommit.isNullOrEmpty()) {
@@ -654,19 +744,32 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
             }
             is KeyAction.PasteEcho -> {
-                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
                 var textToCommit: String? = null
+                try {
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                    if (clipboard != null && clipboard.hasPrimaryClip()) {
+                        val clipData = clipboard.primaryClip
+                        if (clipData != null && clipData.itemCount > 0) {
+                            val item = clipData.getItemAt(0)
+                            textToCommit = item.text?.toString() ?: item.coerceToText(this)?.toString()
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
-                if (clipboard != null && clipboard.hasPrimaryClip()) {
-                    val clipData = clipboard.primaryClip
-                    if (clipData != null && clipData.itemCount > 0) {
-                        val item = clipData.getItemAt(0)
-                        textToCommit = item.text?.toString() ?: item.coerceToText(this)?.toString()
+                if (textToCommit.isNullOrEmpty()) {
+                    textToCommit = synchronized(clipboardHistoryList) {
+                        clipboardHistoryList.firstOrNull()
                     }
                 }
 
                 if (!textToCommit.isNullOrEmpty()) {
-                    inputConnection.commitText(textToCommit, 1)
+                    if (!inputConnection.commitText(textToCommit, 1)) {
+                        if (!inputConnection.performContextMenuAction(android.R.id.paste)) {
+                            sendShortcutKey(inputConnection, KeyEvent.KEYCODE_V)
+                        }
+                    }
                 } else {
                     if (!inputConnection.performContextMenuAction(android.R.id.paste)) {
                         sendShortcutKey(inputConnection, KeyEvent.KEYCODE_V)
@@ -804,7 +907,18 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
     }
 
+    override fun onFinishInputView(finishingInput: Boolean) {
+        super.onFinishInputView(finishingInput)
+        dismissClipboardHistoryOverlay()
+    }
+
+    override fun onWindowHidden() {
+        super.onWindowHidden()
+        dismissClipboardHistoryOverlay()
+    }
+
     override fun onDestroy() {
+        dismissClipboardHistoryOverlay()
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         prefs.unregisterOnSharedPreferenceChangeListener(prefChangeListener)
         textToSpeech?.stop()

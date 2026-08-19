@@ -61,11 +61,13 @@ object FontFallbackManager {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && symbolTypeface != null) {
-            val checkPaint = Paint().apply { typeface = defaultTypeface }
-            if (!checkPaint.hasGlyph(text)) {
-                checkPaint.typeface = symbolTypeface
-                if (checkPaint.hasGlyph(text)) return symbolTypeface!!
-            }
+            try {
+                val checkPaint = Paint().apply { typeface = defaultTypeface }
+                if (!checkPaint.hasGlyph(text)) {
+                    checkPaint.typeface = symbolTypeface
+                    if (checkPaint.hasGlyph(text)) return symbolTypeface!!
+                }
+            } catch (_: Exception) {}
         }
 
         return symbolTypeface ?: defaultTypeface

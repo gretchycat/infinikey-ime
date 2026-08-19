@@ -40,7 +40,7 @@ class EmojiPickerOverlay(
             layoutParams = ViewGroup.LayoutParams(width, height)
         }
 
-        popupWindow = PopupWindow(popupView, width, height, true).apply {
+        popupWindow = PopupWindow(popupView, width, height, false).apply {
             isClippingEnabled = true
             showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y)
         }

@@ -52,7 +52,7 @@ class KeyPopupOverlay(
 
     fun show(anchorView: View, anchorRect: RectF, options: List<String>) {
         dismiss()
-        if (options.isEmpty()) return
+        if (options.isEmpty() || !anchorView.isAttachedToWindow || anchorView.windowToken == null) return
 
         val density = context.resources.displayMetrics.density
         val keyHeight = anchorRect.height()
@@ -134,8 +134,9 @@ class KeyPopupOverlay(
         popupView?.updateSelection(localX, localY, event.action)
 
         if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
-            popupView?.commitSelection()
+            val view = popupView
             dismiss()
+            view?.commitSelection()
         }
         return true
     }

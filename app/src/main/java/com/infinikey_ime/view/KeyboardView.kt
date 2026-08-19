@@ -2559,7 +2559,7 @@ class KeyboardView @JvmOverloads constructor(
                     releasedBounds?.key?.let { key ->
                         executeAction(key.onPressAction, key)
                     }
-                } else if (zoomedText != null) {
+                } else if (keyPopupOverlay?.isShowing() == true && zoomedText != null) {
                     executeAction(KeyAction.SendText(zoomedText), pressedKeyBounds?.key)
                 }
 
@@ -2624,6 +2624,7 @@ class KeyboardView @JvmOverloads constructor(
             "COPY", "复制" -> KeyAction.Copy
             "CUT", "剪切" -> KeyAction.Cut
             "PASTE", "粘贴" -> KeyAction.Paste
+            "HISTORY", "CLIPBOARD HISTORY", "CLIPBOARD_HISTORY", "CLIPBOARD" -> KeyAction.ShowWidget("CLIPBOARD_HISTORY")
             "ECHO", "PASTE ECHO", "ECHO_CLIPBOARD", "PASTE_ECHO", "PASTE_TEXT", "📋", "📎" -> KeyAction.PasteEcho
             "IME", "SWITCH IME", "SWITCH_IME", "KEYBOARD" -> KeyAction.SwitchIme
             else -> KeyAction.SendText(label)
@@ -2633,7 +2634,7 @@ class KeyboardView @JvmOverloads constructor(
     private fun isActionLabel(label: String?): Boolean {
         if (label.isNullOrEmpty()) return false
         val clean = label.replace("✨", "").replace("📄", "").replace("✂️", "").replace("📥", "").replace("📢", "").replace("⌨", "").trim().uppercase()
-        if (clean in setOf("ALL", "SELECT ALL", "SELECT_ALL", "全选", "COPY", "复制", "CUT", "剪切", "PASTE", "粘贴", "ECHO", "PASTE ECHO", "ECHO_CLIPBOARD", "PASTE_ECHO", "PASTE_TEXT", "📋", "📎", "IME", "SWITCH IME", "SWITCH_IME", "KEYBOARD", "SETTINGS", "VOICE", "MIC", "UNDO", "REDO")) {
+        if (clean in setOf("ALL", "SELECT ALL", "SELECT_ALL", "全选", "COPY", "复制", "CUT", "剪切", "PASTE", "粘贴", "HISTORY", "CLIPBOARD HISTORY", "CLIPBOARD_HISTORY", "CLIPBOARD", "ECHO", "PASTE ECHO", "ECHO_CLIPBOARD", "PASTE_ECHO", "PASTE_TEXT", "📋", "📎", "IME", "SWITCH IME", "SWITCH_IME", "KEYBOARD", "SETTINGS", "VOICE", "MIC", "UNDO", "REDO")) {
             return true
         }
         val action = resolveActionFromLabel(label)

@@ -804,6 +804,7 @@ object LayoutParser {
             "COPY", "复制" -> KeyAction.Copy
             "CUT", "剪切" -> KeyAction.Cut
             "PASTE", "粘贴" -> KeyAction.Paste
+            "HISTORY", "CLIPBOARD HISTORY", "CLIPBOARD_HISTORY", "CLIPBOARD" -> KeyAction.ShowWidget("CLIPBOARD_HISTORY")
             "PASTE ECHO", "ECHO", "ECHO_CLIPBOARD", "PASTE_ECHO", "PASTE_TEXT", "📋" -> KeyAction.PasteEcho
             "SWITCH IME", "SWITCH_IME", "KEYBOARD", "⌨" -> KeyAction.SwitchIme
             else -> KeyAction.SendText(label)
