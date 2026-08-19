@@ -464,42 +464,51 @@ class ProgrammerInputMethodService : InputMethodService() {
         val inputType = info?.inputType ?: 0
         val inputClass = inputType and android.text.InputType.TYPE_MASK_CLASS
 
-        if (isNewProfile) {
-            val lowerPkg = pkgName.lowercase()
+        val savedAppPrefLayout = com.infinikey_ime.util.AppPreferencesManager.getLastLayoutForApp(this, pkgName)
 
-            if (lowerPkg.contains("termux") || lowerPkg.contains("terminal") || lowerPkg.contains("ide") || lowerPkg.contains("code")) {
-                profile.layoutTarget = "main"
-                profile.rowVisibility["main:1"] = true
-                profile.rowVisibility["1"] = true
+        val targetLayout = if (savedAppPrefLayout != null) {
+            savedAppPrefLayout
+        } else {
+            if (isNewProfile) {
+                val lowerPkg = pkgName.lowercase()
+
+                if (lowerPkg.contains("termux") || lowerPkg.contains("terminal") || lowerPkg.contains("ide") || lowerPkg.contains("code")) {
+                    profile.layoutTarget = "main"
+                    profile.rowVisibility["main:1"] = true
+                    profile.rowVisibility["1"] = true
+                } else {
+                    profile.layoutTarget = prefs.getString("pref_default_unseen_layout", "mobile") ?: "mobile"
+                }
+            }
+
+            val lastPrimaryGlobal = prefs.getString("pref_last_actual_layout", "main") ?: "main"
+            val appSavedTarget = profile.layoutTarget
+
+            val activePrimaryTarget = if (!appSavedTarget.isNullOrEmpty() &&
+                !appSavedTarget.equals("mobile_symbol", ignoreCase = true) &&
+                !appSavedTarget.equals("mobile_number", ignoreCase = true) &&
+                !appSavedTarget.equals("phone", ignoreCase = true) &&
+                !appSavedTarget.equals("meta", ignoreCase = true) &&
+                !appSavedTarget.startsWith("emoji_auto", ignoreCase = true)) {
+                appSavedTarget
             } else {
-                profile.layoutTarget = prefs.getString("pref_default_unseen_layout", "mobile") ?: "mobile"
+                lastPrimaryGlobal
+            }
+
+            when (inputClass) {
+                android.text.InputType.TYPE_CLASS_PHONE -> "phone"
+                android.text.InputType.TYPE_CLASS_NUMBER,
+                android.text.InputType.TYPE_CLASS_DATETIME -> "mobile_number"
+                else -> activePrimaryTarget
             }
         }
 
-        val lastPrimaryGlobal = prefs.getString("pref_last_actual_layout", "main") ?: "main"
-        val appSavedTarget = profile.layoutTarget
-
-        val activePrimaryTarget = if (!appSavedTarget.isNullOrEmpty() &&
-            !appSavedTarget.equals("mobile_symbol", ignoreCase = true) &&
-            !appSavedTarget.equals("mobile_number", ignoreCase = true) &&
-            !appSavedTarget.equals("phone", ignoreCase = true) &&
-            !appSavedTarget.equals("meta", ignoreCase = true) &&
-            !appSavedTarget.startsWith("emoji_auto", ignoreCase = true)) {
-            appSavedTarget
-        } else {
-            lastPrimaryGlobal
-        }
-
-        val targetLayout = when (inputClass) {
-            android.text.InputType.TYPE_CLASS_PHONE -> "phone"
-            android.text.InputType.TYPE_CLASS_NUMBER,
-            android.text.InputType.TYPE_CLASS_DATETIME -> "mobile_number"
-            else -> activePrimaryTarget
-        }
+        profile.layoutTarget = targetLayout
 
         if (!isGeneratedLayoutId(targetLayout)) {
             layoutStack.clear()
             prefs.edit().putString("pref_last_actual_layout", targetLayout).apply()
+            com.infinikey_ime.util.AppPreferencesManager.saveLastLayoutForApp(this, pkgName, targetLayout)
         }
 
         val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
@@ -678,6 +687,7 @@ class ProgrammerInputMethodService : InputMethodService() {
                         .apply()
                     val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
                     profile.layoutTarget = target
+                    com.infinikey_ime.util.AppPreferencesManager.saveLastLayoutForApp(this, currentPackageName, target)
                 }
 
                 val layoutFile = if (target.endsWith(".json")) target else "${target}.json"

@@ -12,7 +12,7 @@ val gitBuildNumber: Int = try {
     1
 }
 
-val baseVersionName = "0.2.28"
+val baseVersionName = "0.2.29"
 val fullVersionName = "$baseVersionName-b$gitBuildNumber"
 
 android {
@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.gson)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.11.0")
 }
 
 
