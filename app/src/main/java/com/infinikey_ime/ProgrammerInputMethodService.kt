@@ -157,6 +157,8 @@ class ProgrammerInputMethodService : InputMethodService() {
         lastClipChangeTimeMs = now
         lastClipText = clean
 
+        loadClipboardHistoryFromPrefs()
+
         clipboardHistoryList.remove(clean)
         clipboardHistoryList.add(0, clean)
         while (clipboardHistoryList.size > 30) {
@@ -169,7 +171,7 @@ class ProgrammerInputMethodService : InputMethodService() {
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val jsonArray = org.json.JSONArray()
         clipboardHistoryList.forEach { jsonArray.put(it) }
-        prefs.edit().putString("pref_clipboard_history_json", jsonArray.toString()).apply()
+        prefs.edit().putString("pref_clipboard_history_json", jsonArray.toString()).commit()
     }
 
     private fun loadClipboardHistoryFromPrefs() {
@@ -194,11 +196,13 @@ class ProgrammerInputMethodService : InputMethodService() {
             onItemPicked = { selectedText ->
                 currentInputConnection?.commitText(selectedText, 1)
             },
-            onDeleteItem = { idx, deletedText ->
+            onDeleteItem = { _, _ ->
                 saveClipboardHistoryToPrefs()
             },
             onClearHistory = {
                 clipboardHistoryList.clear()
+                lastClipText = ""
+                lastClipChangeTimeMs = 0L
                 saveClipboardHistoryToPrefs()
             }
         ).show(keyboardView)
