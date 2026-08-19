@@ -343,6 +343,8 @@ class ProgrammerInputMethodService : InputMethodService() {
                 showWindow(true)
             } catch (_: Exception) {}
         }
+        // WORKAROUND [ANDROID-BUG-SELECTION]: Restore cursor position if keyboard service restarted after crash while modifying active selection. Remove when upstream Android framework selection bug is resolved.
+        restoreCursorAfterCrash()
     }
 
     override fun onStartInputView(info: android.view.inputmethod.EditorInfo?, restarting: Boolean) {
@@ -350,6 +352,8 @@ class ProgrammerInputMethodService : InputMethodService() {
         try {
             showWindow(true)
         } catch (_: Exception) {}
+        // WORKAROUND [ANDROID-BUG-SELECTION]: Restore cursor position if keyboard service restarted after crash while modifying active selection. Remove when upstream Android framework selection bug is resolved.
+        restoreCursorAfterCrash()
         currentEditorInfo = info
         if (::keyboardView.isInitialized) {
             keyboardView.preloadAudio()
@@ -939,6 +943,63 @@ class ProgrammerInputMethodService : InputMethodService() {
         val hasSelection = newSelStart != newSelEnd
         if (::keyboardView.isInitialized) {
             keyboardView.isTextSelected = hasSelection
+        }
+        if (newSelStart >= 0 && newSelEnd >= 0) {
+            saveCursorSelectionState(newSelStart, newSelEnd, hasSelection)
+        }
+    }
+
+    /**
+     * WORKAROUND [ANDROID-BUG-SELECTION]:
+     * Android framework/library bug where modifying text during an active selection can crash the IME.
+     * This method persists the cursor/selection bounds to disk so cursor position can be restored post-crash.
+     * 
+     * REMOVAL NOTICE:
+     * Remove this method, saveCursorSelectionState calls, restoreCursorAfterCrash(), and pref_has_active_selection logic
+     * once the upstream Android framework text selection crash bug is resolved.
+     */
+    private fun saveCursorSelectionState(selStart: Int, selEnd: Int, hasSelection: Boolean) {
+        try {
+            val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+            val editor = prefs.edit()
+            if (hasSelection) {
+                editor.putInt("pref_saved_selection_start", selStart)
+                editor.putInt("pref_saved_selection_end", selEnd)
+                editor.putBoolean("pref_has_active_selection", true)
+                editor.commit()
+            } else {
+                editor.putInt("pref_saved_cursor_pos", selStart)
+                editor.putBoolean("pref_has_active_selection", false)
+                editor.apply()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * WORKAROUND [ANDROID-BUG-SELECTION]:
+     * Restores cursor position to the start of the saved selection if the keyboard service comes back after a crash.
+     * 
+     * REMOVAL NOTICE:
+     * Remove this method once the upstream Android framework text selection crash bug is resolved.
+     */
+    private fun restoreCursorAfterCrash() {
+        try {
+            val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+            val hasActiveSelection = prefs.getBoolean("pref_has_active_selection", false)
+            val savedStart = prefs.getInt("pref_saved_selection_start", -1)
+
+            if (hasActiveSelection && savedStart >= 0) {
+                val inputConnection = currentInputConnection
+                if (inputConnection != null) {
+                    val targetPos = savedStart.coerceAtLeast(0)
+                    inputConnection.setSelection(targetPos, targetPos)
+                }
+                prefs.edit().putBoolean("pref_has_active_selection", false).apply()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
