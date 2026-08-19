@@ -754,8 +754,6 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
     }
 
-    private var oneShotRecognizer: android.speech.SpeechRecognizer? = null
-
     private fun toggleOneShotVoiceRecognition() {
         android.util.Log.d("STT_DEBUG", "toggleOneShotVoiceRecognition -> Custom Interface (Minimal Floating Pill Overlay)")
         keyboardView.showVoiceInputOverlay()

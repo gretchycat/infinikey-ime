@@ -2302,6 +2302,50 @@
                     </LinearLayout>
 
                     <Button
+                        android:id="@+id/btnConfigureCloudApi"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:backgroundTint="#0284C7"
+                        android:text="☁️ Configure Cloud API Endpoint &amp; Key"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp" />
+
+                    <Button
+                        android:id="@+id/btnDownloadSttModels"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:backgroundTint="#7C3AED"
+                        android:text="🌐 Download STT Models Online (HF / GitHub)"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp" />
+
+                    <Button
+                        android:id="@+id/btnUnpackSttModels"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:backgroundTint="#D97706"
+                        android:text="📦 Unpack Compressed Model (.tar.bz2 / .zip)"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp" />
+
+                    <Button
+                        android:id="@+id/btnImportSttModelFile"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:backgroundTint="#2563EB"
+                        android:text="📥 Import STT Model File via System Picker"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp" />
+
+                    <Button
                         android:id="@+id/btnManageSttModels"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"

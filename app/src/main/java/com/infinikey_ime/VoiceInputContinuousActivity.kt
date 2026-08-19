@@ -94,30 +94,12 @@ class VoiceInputContinuousActivity : Activity(), SttCallback {
 
     private fun startDictation() {
         sttEngine = SttEngineFactory.getActiveEngine(this)
-        if (sttEngine?.isAvailable == true || sttEngine is com.infinikey_ime.stt.AndroidSystemSttEngine) {
-            try {
-                isListening = true
-                tvStatus.text = "🎙 Listening (${sttEngine?.engineName})..."
-                sttEngine?.startListening(this)
-                return
-            } catch (_: Exception) {}
-        }
-        launchSystemVoiceIntent()
-    }
-
-    private fun launchSystemVoiceIntent() {
-        stopListening()
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to dictate text...")
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-        }
-
         try {
-            startActivityForResult(intent, REQUEST_SPEECH_INPUT)
+            isListening = true
+            tvStatus.text = "🎙 Listening (${sttEngine?.engineName})..."
+            sttEngine?.startListening(this)
         } catch (e: Exception) {
-            Toast.makeText(this, "Google Voice Typing or Speech Recognizer is required for voice input", Toast.LENGTH_LONG).show()
-            finish()
+            tvStatus.text = "Failed to start ${sttEngine?.engineName}: ${e.message}"
         }
     }
 
@@ -156,11 +138,7 @@ class VoiceInputContinuousActivity : Activity(), SttCallback {
     }
 
     override fun onError(errorMessage: String) {
-        if (isListening) {
-            tvStatus.text = errorMessage
-        } else {
-            launchSystemVoiceIntent()
-        }
+        tvStatus.text = errorMessage
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -131,6 +131,7 @@ class VoiceInputOverlay(
 
         private val pillBounds = RectF()
         private val closeRect = RectF()
+        private var audioManager: android.media.AudioManager? = null
 
         fun startListening() {
             val hasPermission = ContextCompat.checkSelfPermission(
@@ -154,9 +155,6 @@ class VoiceInputOverlay(
             }
 
             sttEngine = SttEngineFactory.getActiveEngine(context)
-            if (sttEngine?.isAvailable != true && sttEngine !is com.infinikey_ime.stt.AndroidSystemSttEngine) {
-                sttEngine = SttEngineFactory.createEngine(context, "ANDROID_SYSTEM")
-            }
 
             isListening = true
             updateStatusText("Listening...")
@@ -293,33 +291,53 @@ class VoiceInputOverlay(
             return true
         }
 
+        private fun playPromptBeepForCustomEngine() {
+            try {
+                val toneGen = android.media.ToneGenerator(android.media.AudioManager.STREAM_SYSTEM, 70)
+                toneGen.startTone(android.media.ToneGenerator.TONE_PROP_BEEP, 120)
+            } catch (_: Exception) {}
+        }
+
         // SttCallback Implementation
         override fun onReadyForSpeech() {
-            updateStatusText("Listening...")
+            post {
+                updateStatusText("Listening...")
+                if (sttEngine !is com.infinikey_ime.stt.AndroidSystemSttEngine) {
+                    playPromptBeepForCustomEngine()
+                }
+            }
         }
 
         override fun onBeginningOfSpeech() {
-            updateStatusText("Recording...")
+            post {
+                updateStatusText("Recording...")
+            }
         }
 
         override fun onRmsChanged(rmsdB: Float) {
-            micPulseRadius = (11f + rmsdB * 0.8f).coerceIn(11f, 20f)
-            invalidate()
+            post {
+                micPulseRadius = (11f + rmsdB * 0.8f).coerceIn(11f, 20f)
+                invalidate()
+            }
         }
 
         override fun onPartialResult(text: String) {
-            updateStatusText(text)
+            post {
+                updateStatusText(text)
+            }
         }
 
         override fun onFinalResult(text: String) {
-            val textWithSpace = text + " "
-            onTextRecognized(textWithSpace)
-            updateStatusText(text)
+            post {
+                val textWithSpace = text + " "
+                onTextRecognized(textWithSpace)
+                updateStatusText(text)
 
-            val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-            val isContinuous = prefs.getBoolean("pref_stt_continuous_mode", false)
-            if (!isContinuous) {
-                onCloseRequested()
+                val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+                val isContinuous = prefs.getBoolean("pref_stt_continuous_mode", false)
+                if (!isContinuous) {
+                    onCloseRequested()
+                }
             }
         }
 

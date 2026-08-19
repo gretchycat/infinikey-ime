@@ -32,7 +32,6 @@ class AndroidSystemSttEngine(private val context: Context) : SttEngine, Recognit
     private val mainHandler = Handler(Looper.getMainLooper())
 
     override fun startListening(callback: SttCallback) {
-        destroy()
         activeCallback = callback
         lastPartialText = ""
 
@@ -41,13 +40,20 @@ class AndroidSystemSttEngine(private val context: Context) : SttEngine, Recognit
             return
         }
 
-        initializeSpeechRecognizer()
+        if (speechRecognizer == null) {
+            initializeSpeechRecognizer()
+        } else {
+            try {
+                speechRecognizer?.cancel()
+            } catch (_: Exception) {}
+        }
         isListening = true
         restartListening()
     }
 
     private fun initializeSpeechRecognizer() {
         try {
+            speechRecognizer?.cancel()
             speechRecognizer?.destroy()
         } catch (_: Exception) {}
 
@@ -64,14 +70,11 @@ class AndroidSystemSttEngine(private val context: Context) : SttEngine, Recognit
         if (!isListening) return
         lastPartialText = ""
         try {
-            val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
             val shouldMaskProfanity = ProfanityFilter.isSystemProfanityFilterEnabled(context) == true
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
                 putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-                putExtra("android.speech.extra.DICTATION_MODE", true)
-                putExtra("android.speech.extra.EXTRA_SEGMENTED_SESSION", true)
                 putExtra("android.speech.extra.MASK_OFFENSIVE_WORDS", shouldMaskProfanity)
                 putExtra("mask_offensive_words", shouldMaskProfanity)
                 putExtra("android.speech.extras.SPEECH_INPUT_MASK_OFFENSIVE_WORDS", shouldMaskProfanity)
@@ -86,6 +89,7 @@ class AndroidSystemSttEngine(private val context: Context) : SttEngine, Recognit
     override fun stopListening() {
         isListening = false
         try {
+            speechRecognizer?.cancel()
             speechRecognizer?.stopListening()
         } catch (_: Exception) {}
     }
@@ -95,6 +99,7 @@ class AndroidSystemSttEngine(private val context: Context) : SttEngine, Recognit
         isRetryPending = false
         mainHandler.removeCallbacksAndMessages(null)
         try {
+            speechRecognizer?.cancel()
             speechRecognizer?.stopListening()
             speechRecognizer?.destroy()
         } catch (_: Exception) {}

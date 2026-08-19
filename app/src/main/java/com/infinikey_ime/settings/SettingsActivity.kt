@@ -63,6 +63,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var importLayoutLauncher: ActivityResultLauncher<String>
     private lateinit var exportLayoutLauncher: ActivityResultLauncher<String>
     private lateinit var browseKeyImageLauncher: ActivityResultLauncher<String>
+    private lateinit var importSttModelLauncher: ActivityResultLauncher<String>
     private var onKeyIconPickedListener: ((String) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1465,6 +1466,35 @@ class SettingsActivity : AppCompatActivity() {
                     Toast.makeText(this, "Theme saved to JSON file!", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Toast.makeText(this, "Failed to save theme file: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        importSttModelLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { fileUri ->
+                try {
+                    val modelsDir = java.io.File(getExternalFilesDir(null), "stt_models")
+                    if (!modelsDir.exists()) modelsDir.mkdirs()
+
+                    val fileName = getFileNameFromUri(fileUri) ?: "imported_model_${System.currentTimeMillis()}"
+                    val destFile = java.io.File(modelsDir, fileName)
+
+                    contentResolver.openInputStream(fileUri)?.use { input ->
+                        java.io.FileOutputStream(destFile).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    if (fileName.endsWith(".zip", ignoreCase = true) ||
+                        fileName.endsWith(".tar.bz2", ignoreCase = true) ||
+                        fileName.endsWith(".tar.gz", ignoreCase = true)) {
+                        com.infinikey_ime.util.SttArchiveUnpacker.unpackAllArchives(modelsDir)
+                    }
+
+                    Toast.makeText(this, "STT Model '$fileName' imported successfully!", Toast.LENGTH_SHORT).show()
+                    setupSpeechToTextTab(prefs)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Failed to import model file: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -3466,6 +3496,116 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun showCloudEndpointDialog(prefs: android.content.SharedPreferences) {
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 36, 48, 24)
+            setBackgroundColor(android.graphics.Color.parseColor("#0F172A"))
+        }
+
+        val tvTitle = TextView(this).apply {
+            text = "☁️ Configure Cloud API STT Endpoint"
+            setTextColor(android.graphics.Color.parseColor("#38BDF8"))
+            textSize = 16f
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setPadding(0, 0, 0, 16)
+        }
+        container.addView(tvTitle)
+
+        val tvSub = TextView(this).apply {
+            text = "Enter your REST API endpoint URL (Groq, OpenAI Whisper, Vosk, or local server) and optional API Authorization key."
+            setTextColor(android.graphics.Color.parseColor("#94A3B8"))
+            textSize = 12f
+            setPadding(0, 0, 0, 24)
+        }
+        container.addView(tvSub)
+
+        val tvUrlLabel = TextView(this).apply {
+            text = "Endpoint REST API URL:"
+            setTextColor(android.graphics.Color.parseColor("#E2E8F0"))
+            textSize = 13f
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setPadding(0, 0, 0, 8)
+        }
+        container.addView(tvUrlLabel)
+
+        val currentUrl = prefs.getString("pref_stt_cloud_url", "") ?: ""
+        val etUrl = EditText(this).apply {
+            setText(currentUrl)
+            hint = "e.g. https://api.groq.com/openai/v1/audio/transcriptions"
+            setHintTextColor(android.graphics.Color.parseColor("#64748B"))
+            setTextColor(android.graphics.Color.parseColor("#F8FAFC"))
+            setBackgroundColor(android.graphics.Color.parseColor("#1E293B"))
+            textSize = 13f
+            setPadding(24, 20, 24, 20)
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_URI
+        }
+        container.addView(etUrl)
+
+        val tvKeyLabel = TextView(this).apply {
+            text = "API Key / Authorization Token (Optional):"
+            setTextColor(android.graphics.Color.parseColor("#E2E8F0"))
+            textSize = 13f
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            setPadding(0, 24, 0, 8)
+        }
+        container.addView(tvKeyLabel)
+
+        val currentKey = prefs.getString("pref_stt_cloud_api_key", "") ?: ""
+        val etApiKey = EditText(this).apply {
+            setText(currentKey)
+            hint = "Bearer API Key / Secret Token"
+            setHintTextColor(android.graphics.Color.parseColor("#64748B"))
+            setTextColor(android.graphics.Color.parseColor("#F8FAFC"))
+            setBackgroundColor(android.graphics.Color.parseColor("#1E293B"))
+            textSize = 13f
+            setPadding(24, 20, 24, 20)
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        container.addView(etApiKey)
+
+        AlertDialog.Builder(this)
+            .setView(container)
+            .setPositiveButton("Save Endpoint") { _, _ ->
+                val newUrl = etUrl.text.toString().trim()
+                val newKey = etApiKey.text.toString().trim()
+                prefs.edit()
+                    .putString("pref_stt_cloud_url", newUrl)
+                    .putString("pref_stt_cloud_api_key", newKey)
+                    .apply()
+                android.widget.Toast.makeText(this, "Cloud STT Endpoint configuration saved!", android.widget.Toast.LENGTH_SHORT).show()
+                setupSpeechToTextTab(prefs)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showSttModelDownloadSourcesDialog() {
+        val options = arrayOf(
+            "🧠 Sherpa-onnx ASR Models (GitHub Releases / Hugging Face)",
+            "🧠 Whisper.cpp GGUF Models (Hugging Face)",
+            "🧠 Vosk Offline Models (Alphacephei)"
+        )
+        AlertDialog.Builder(this)
+            .setTitle("🌐 Online STT Model Download Repositories")
+            .setItems(options) { _, which ->
+                val url = when (which) {
+                    0 -> "https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models"
+                    1 -> "https://huggingface.co/ggerganov/whisper.cpp/tree/main"
+                    2 -> "https://alphacephei.com/vosk/models"
+                    else -> "https://huggingface.co"
+                }
+                try {
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    android.widget.Toast.makeText(this, "Unable to open web browser: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Close", null)
+            .show()
+    }
+
     private fun setupSpeechToTextTab(prefs: android.content.SharedPreferences) {
         val spSttEngine = findViewById<Spinner>(R.id.spSttEngine) ?: return
         val spSttModel = findViewById<Spinner>(R.id.spSttModel) ?: return
@@ -3476,7 +3616,17 @@ class SettingsActivity : AppCompatActivity() {
         val tvSttStatusDetail = findViewById<TextView>(R.id.tvSttStatusDetail)
         val cbSttContinuousMode = findViewById<CheckBox>(R.id.cbSttContinuousMode)
         val cbSttPartialResults = findViewById<CheckBox>(R.id.cbSttPartialResults)
+        val btnConfigureCloudApi = findViewById<Button>(R.id.btnConfigureCloudApi)
+        val btnDownloadSttModels = findViewById<Button>(R.id.btnDownloadSttModels)
         val btnManageSttModels = findViewById<Button>(R.id.btnManageSttModels)
+
+        btnConfigureCloudApi?.setOnClickListener {
+            showCloudEndpointDialog(prefs)
+        }
+
+        btnDownloadSttModels?.setOnClickListener {
+            showSttModelDownloadSourcesDialog()
+        }
 
         // 1. STT Engine Adapter & Selection
         val engineOptions = listOf(
@@ -3528,17 +3678,25 @@ class SettingsActivity : AppCompatActivity() {
         spSttModel.setSelection(savedModelIdx)
 
         fun updateSttUI(engineKey: String, modelKey: String) {
+            val modelsDir = java.io.File(getExternalFilesDir(null), "stt_models")
+            val foundOnnxFiles = com.infinikey_ime.stt.SherpaOnnxSttEngine.findOnnxFilesRecursively(modelsDir)
+            if (foundOnnxFiles.isNotEmpty()) {
+                val activeModelPath = foundOnnxFiles.first().absolutePath
+                prefs.edit().putString("pref_sherpa_onnx_path", activeModelPath).apply()
+            }
+
             val testEngine = com.infinikey_ime.stt.SttEngineFactory.createEngine(this, engineKey)
             if (testEngine.isAvailable || testEngine is com.infinikey_ime.stt.AndroidSystemSttEngine) {
                 tvSttStatusIndicatorLight?.text = "🟢"
-                tvSttStatusTitle?.text = "Engine Status: Ready"
+                tvSttStatusTitle?.text = "Engine Status: Ready (Model Linked)"
                 tvSttStatusTitle?.setTextColor(android.graphics.Color.parseColor("#10B981"))
-                tvSttStatusDetail?.text = "${testEngine.engineName} verified and ready for dictation."
+                val linkedInfo = if (foundOnnxFiles.isNotEmpty()) "Linked ONNX: ${foundOnnxFiles.first().name}" else "Verified in stt_models"
+                tvSttStatusDetail?.text = "${testEngine.engineName} model file ready. ($linkedInfo)"
             } else {
                 tvSttStatusIndicatorLight?.text = "🔴"
                 tvSttStatusTitle?.text = "Engine Status: Model File Missing"
                 tvSttStatusTitle?.setTextColor(android.graphics.Color.parseColor("#EF4444"))
-                tvSttStatusDetail?.text = "${testEngine.engineName} model file missing in stt_models directory. Dictation will fall back to System STT."
+                tvSttStatusDetail?.text = "${testEngine.engineName} model missing in stt_models directory."
             }
 
             tvSttEngineDescription?.text = when (engineKey) {
@@ -3548,18 +3706,21 @@ class SettingsActivity : AppCompatActivity() {
                 else -> "Android System STT: Native speech recognizer engine provided by Android system / Google Voice Services."
             }
 
-            tvSttModelDetails?.text = when (modelKey) {
-                "SHERPA_ZIPFORMER_EN" -> "• Selected Model: Sherpa-onnx Zipformer English\n• Format: ONNX Streaming (int8 quantized)\n• Size: ~75 MB | Vocab: 5000 subwords\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
-                "SHERPA_BILINGUAL" -> "• Selected Model: Sherpa-onnx Streaming Bilingual (ZH/EN)\n• Format: ONNX Transducer (int8 quantized)\n• Size: ~110 MB | Vocab: 8000 subwords\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
-                "WHISPER_TINY_EN" -> "• Selected Model: Whisper Tiny English\n• Format: GGUF (Q4_0 quantized)\n• Size: ~39 MB | Context: 30s audio chunks\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
-                "WHISPER_BASE_EN" -> "• Selected Model: Whisper Base English\n• Format: GGUF (Q5_1 quantized)\n• Size: ~142 MB | Context: 30s audio chunks\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
-                "WHISPER_SMALL_EN" -> "• Selected Model: Whisper Small English\n• Format: GGUF (Q5_1 quantized)\n• Size: ~466 MB | High accuracy\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
-                "GROQ_WHISPER_V3" -> "• Selected Model: Groq Whisper Large v3\n• Format: Cloud REST API Endpoint\n• Latency: Ultra-low (~200ms)\n• Status: Ready (Online API)"
-                "OPENAI_WHISPER_API" -> "• Selected Model: OpenAI Whisper API\n• Format: Cloud REST API Endpoint\n• Model: whisper-1\n• Status: Ready (Online API)"
-                "VOSK_SMALL_EN" -> "• Selected Model: Vosk Small US English\n• Format: Kaldi HMM-GMM / NNet3\n• Size: ~50 MB | Low memory footprint\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
-                "IMPORT_CUSTOM" -> "• Selected Model: Custom External Model\n• Path: Android/data/com.infinikey_ime/files/stt_models/\n• Supported Formats: .onnx, .gguf, .bin, .zip\n• Status: Select or Copy Model Files"
+            val savedCloudUrl = prefs.getString("pref_stt_cloud_url", "") ?: ""
+            val cloudUrlInfo = if (savedCloudUrl.isNotEmpty()) "\n• Endpoint: $savedCloudUrl" else "\n• Endpoint: None configured"
+
+            tvSttModelDetails?.text = (when (modelKey) {
+                "SHERPA_ZIPFORMER_EN" -> "• Selected Model: Sherpa-onnx Zipformer English\n• Format: ONNX Streaming (int8 quantized)\n• Path: ${foundOnnxFiles.firstOrNull()?.absolutePath ?: "Android/data/com.infinikey_ime/files/stt_models/"}\n• Status: " + (if (testEngine.isAvailable) "Ready (Linked)" else "Missing (Copy .onnx to stt_models)")
+                "SHERPA_BILINGUAL" -> "• Selected Model: Sherpa-onnx Streaming Bilingual (ZH/EN)\n• Format: ONNX Transducer (int8 quantized)\n• Path: ${foundOnnxFiles.firstOrNull()?.absolutePath ?: "Android/data/com.infinikey_ime/files/stt_models/"}\n• Status: " + (if (testEngine.isAvailable) "Ready (Linked)" else "Missing (Copy .onnx to stt_models)")
+                "WHISPER_TINY_EN" -> "• Selected Model: Whisper Tiny English\n• Format: GGUF (Q4_0 quantized)\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
+                "WHISPER_BASE_EN" -> "• Selected Model: Whisper Base English\n• Format: GGUF (Q5_1 quantized)\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
+                "WHISPER_SMALL_EN" -> "• Selected Model: Whisper Small English\n• Format: GGUF (Q5_1 quantized)\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing")
+                "GROQ_WHISPER_V3" -> "• Selected Model: Groq Whisper Large v3\n• Format: Cloud REST API Endpoint\n• Latency: Ultra-low (~200ms)\n• Status: Ready (Online API)" + cloudUrlInfo
+                "OPENAI_WHISPER_API" -> "• Selected Model: OpenAI Whisper API\n• Format: Cloud REST API Endpoint\n• Model: whisper-1\n• Status: Ready (Online API)" + cloudUrlInfo
+                "VOSK_SMALL_EN" -> "• Selected Model: Vosk Small US English\n• Format: Kaldi HMM-GMM / NNet3\n• Status: " + (if (testEngine.isAvailable) "Ready" else "Missing") + cloudUrlInfo
+                "IMPORT_CUSTOM" -> "• Selected Model: Custom External Model / Endpoint\n• Path: Android/data/com.infinikey_ime/files/stt_models/\n• Supported Files: .onnx, .gguf, .bin" + cloudUrlInfo
                 else -> "• Selected Model: System Built-in Model\n• Engine: Android Recognition Service\n• Language: English / Device Default\n• Status: Ready"
-            }
+            })
         }
 
         updateSttUI(savedEngineKey, savedModelKey)
@@ -3599,6 +3760,10 @@ class SettingsActivity : AppCompatActivity() {
                 prefs.edit().putString("pref_stt_model", selectedModelKey).apply()
                 val currentEngineKey = engineOptions.getOrNull(spSttEngine.selectedItemPosition)?.second ?: "ANDROID_SYSTEM"
                 updateSttUI(currentEngineKey, selectedModelKey)
+
+                if (selectedModelKey == "IMPORT_CUSTOM") {
+                    showCloudEndpointDialog(prefs)
+                }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
@@ -3614,7 +3779,31 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit().putBoolean("pref_stt_partial_results", isChecked).apply()
         }
 
-        // 5. Open Models Folder Button
+        // 5. Open Models Folder, Import & Unpack Archive Buttons
+        val btnUnpackSttModels = findViewById<Button>(R.id.btnUnpackSttModels)
+        btnUnpackSttModels?.setOnClickListener {
+            val modelsDir = java.io.File(getExternalFilesDir(null), "stt_models")
+            if (!modelsDir.exists()) modelsDir.mkdirs()
+            kotlin.concurrent.thread {
+                val count = com.infinikey_ime.util.SttArchiveUnpacker.unpackAllArchives(modelsDir)
+                runOnUiThread {
+                    if (count > 0) {
+                        android.widget.Toast.makeText(this, "Successfully unpacked $count model file(s) into stt_models!", android.widget.Toast.LENGTH_LONG).show()
+                    } else {
+                        android.widget.Toast.makeText(this, "No archives found in stt_models directory.", android.widget.Toast.LENGTH_LONG).show()
+                    }
+                    val currentEngineKey = engineOptions.getOrNull(spSttEngine.selectedItemPosition)?.second ?: "ANDROID_SYSTEM"
+                    val currentModelKey = prefs.getString("pref_stt_model", "SYSTEM_BUILTIN") ?: "SYSTEM_BUILTIN"
+                    updateSttUI(currentEngineKey, currentModelKey)
+                }
+            }
+        }
+
+        val btnImportSttModelFile = findViewById<Button>(R.id.btnImportSttModelFile)
+        btnImportSttModelFile?.setOnClickListener {
+            importSttModelLauncher.launch("*/*")
+        }
+
         btnManageSttModels?.setOnClickListener {
             val modelsDir = java.io.File(getExternalFilesDir(null), "stt_models")
             if (!modelsDir.exists()) {
@@ -3622,5 +3811,27 @@ class SettingsActivity : AppCompatActivity() {
             }
             com.infinikey_ime.util.FileManagerLauncher.openDirectory(this, "stt_models", modelsDir)
         }
+    }
+
+    private fun getFileNameFromUri(uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex != -1) {
+                        result = cursor.getString(nameIndex)
+                    }
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/') ?: -1
+            if (cut != -1) {
+                result = result?.substring(cut + 1)
+            }
+        }
+        return result
     }
 }
