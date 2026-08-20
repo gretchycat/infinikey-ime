@@ -106,11 +106,11 @@ class ClipboardHistoryOverlay(
             }
             fun updateStyle() {
                 if (isEchoMode) {
-                    text = "📢 Echo Paste"
+                    text = "Echo"
                     setTextColor(Color.WHITE)
                     setBackgroundColor(Color.parseColor("#7C3AED"))
                 } else {
-                    text = "⚡ Direct"
+                    text = "Normal"
                     setTextColor(Color.WHITE)
                     setBackgroundColor(Color.parseColor("#0284C7"))
                 }
