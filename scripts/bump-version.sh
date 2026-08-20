@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 set -e
 
 # Usage: ./scripts/bump-version.sh [patch|minor|major]

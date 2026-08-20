@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 set -e
 
 # Usage: ./scripts/publish-release.sh ["Optional release notes text"]

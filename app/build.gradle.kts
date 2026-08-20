@@ -12,7 +12,7 @@ val gitBuildNumber: Int = try {
     1
 }
 
-val baseVersionName = "0.2.31"
+val baseVersionName = "0.2.32"
 val fullVersionName = "$baseVersionName-b$gitBuildNumber"
 
 android {
