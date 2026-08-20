@@ -1,9 +1,49 @@
-#!/data/data/com.termux/files/usr/bin/env python3
+#!/usr/bin/env python3
+import os
 import sys
+import shutil
 import subprocess
 import threading
 
-AAPT2_BIN = "/data/data/com.termux/files/usr/bin/aapt2"
+def find_aapt2_binary():
+    # 1. AAPT2_EXECUTABLE environment variable override
+    env_aapt2 = os.environ.get("AAPT2_EXECUTABLE")
+    if env_aapt2 and os.path.isfile(env_aapt2) and os.access(env_aapt2, os.X_OK):
+        return env_aapt2
+
+    # 2. Check if running in Termux
+    termux_aapt2 = "/data/data/com.termux/files/usr/bin/aapt2"
+    if os.path.isfile(termux_aapt2) and os.access(termux_aapt2, os.X_OK):
+        return termux_aapt2
+
+    # 3. Check system PATH
+    which_aapt2 = shutil.which("aapt2")
+    if which_aapt2 and os.path.isfile(which_aapt2) and os.access(which_aapt2, os.X_OK):
+        return which_aapt2
+
+    # 4. Check Android SDK build-tools directories
+    sdk_candidates = [
+        os.environ.get("ANDROID_HOME"),
+        os.environ.get("ANDROID_SDK_ROOT"),
+        os.path.expanduser("~/Android/Sdk"),
+        os.path.expanduser("~/.android/sdk"),
+        "/opt/android-sdk",
+        "/usr/lib/android-sdk"
+    ]
+    for sdk in filter(None, sdk_candidates):
+        build_tools = os.path.join(sdk, "build-tools")
+        if os.path.isdir(build_tools):
+            try:
+                versions = sorted(os.listdir(build_tools), reverse=True)
+                for v in versions:
+                    cand = os.path.join(build_tools, v, "aapt2")
+                    if os.path.isfile(cand) and os.access(cand, os.X_OK):
+                        return cand
+            except Exception:
+                pass
+
+    # 5. Default fallback
+    return "aapt2"
 
 def filter_stderr(pipe):
     try:
@@ -17,8 +57,9 @@ def filter_stderr(pipe):
         pipe.close()
 
 def main():
+    aapt2_bin = find_aapt2_binary()
     proc = subprocess.Popen(
-        [AAPT2_BIN] + sys.argv[1:],
+        [aapt2_bin] + sys.argv[1:],
         stdin=sys.stdin,
         stdout=sys.stdout,
         stderr=subprocess.PIPE,

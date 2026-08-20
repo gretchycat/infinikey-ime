@@ -8,7 +8,12 @@ content (envelope energy, transient peaks, zero crossings, and silence gap analy
 import os
 import sys
 import wave
-import numpy as np
+
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
 
 def analyze_and_split(filepath, output_dir):
     filename = os.path.basename(filepath)
@@ -171,6 +176,15 @@ def main():
         src_dir = sys.argv[1]
     if len(sys.argv) > 2:
         out_dir = sys.argv[2]
+
+    if not HAS_NUMPY:
+        if os.path.exists(out_dir) and any(f.endswith('.wav') for f in os.listdir(out_dir)):
+            print(f"Notice: 'numpy' package not installed; using pre-split audio assets in '{out_dir}'.")
+            return
+        else:
+            print("Error: 'numpy' package is required to split raw key click audio files.", file=sys.stderr)
+            print("Please install numpy using: pip install numpy", file=sys.stderr)
+            sys.exit(1)
 
     print(f"Analyzing key clicks from '{src_dir}'...")
     print(f"Outputting split audio files to '{out_dir}'...\n")
