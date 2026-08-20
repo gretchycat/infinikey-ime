@@ -1,7 +1,7 @@
 {
   "id": "emoji_animals",
   "name": "Emoji - Animals & Nature",
-  "version": "0.2.31",
+  "version": "0.2.32",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Dynamic Emoji Generator",
   "description": "Generated from amio/emoji.json for category Animals & Nature.",

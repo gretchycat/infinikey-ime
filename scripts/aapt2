@@ -11,10 +11,12 @@ def find_aapt2_binary():
     if env_aapt2 and os.path.isfile(env_aapt2) and os.access(env_aapt2, os.X_OK):
         return env_aapt2
 
-    # 2. Check if running in Termux
-    termux_aapt2 = "/data/data/com.termux/files/usr/bin/aapt2"
-    if os.path.isfile(termux_aapt2) and os.access(termux_aapt2, os.X_OK):
-        return termux_aapt2
+    # 2. Check PREFIX env var (e.g. Termux or custom environment prefix)
+    prefix = os.environ.get("PREFIX")
+    if prefix:
+        cand_aapt2 = os.path.join(prefix, "bin", "aapt2")
+        if os.path.isfile(cand_aapt2) and os.access(cand_aapt2, os.X_OK):
+            return cand_aapt2
 
     # 3. Check system PATH
     which_aapt2 = shutil.which("aapt2")
