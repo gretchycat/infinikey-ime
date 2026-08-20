@@ -1,0 +1,35 @@
+#!/data/data/com.termux/files/usr/bin/env python3
+import sys
+import subprocess
+import threading
+
+AAPT2_BIN = "/data/data/com.termux/files/usr/bin/aapt2"
+
+def filter_stderr(pipe):
+    try:
+        for line in iter(pipe.readline, ''):
+            if "E aapt2   : No package ID 7f found for resource ID" not in line and "No package ID 7f found" not in line:
+                sys.stderr.write(line)
+                sys.stderr.flush()
+    except Exception:
+        pass
+    finally:
+        pipe.close()
+
+def main():
+    proc = subprocess.Popen(
+        [AAPT2_BIN] + sys.argv[1:],
+        stdin=sys.stdin,
+        stdout=sys.stdout,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1
+    )
+    t = threading.Thread(target=filter_stderr, args=(proc.stderr,), daemon=True)
+    t.start()
+    rc = proc.wait()
+    t.join(timeout=1.0)
+    sys.exit(rc)
+
+if __name__ == "__main__":
+    main()
