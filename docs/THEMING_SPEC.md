@@ -14,14 +14,16 @@ Themes can be loaded from:
 
 | Index | Identifier | Display Name | Theme Description |
 |-------|------------|--------------|-------------------|
-| `0` | `system_auto` | System Dynamic | Follows device OS Light Mode (`system_light`) and Dark Mode (`slate`). |
-| `1` | `slate` | Slate Dark (Default) | Deep slate blue background `#0F172A` with bright cyan `#38BDF8` and amber `#F59E0B` accents. |
-| `2` | `cyberpunk` | Cyberpunk Neon | High-contrast neon purple background `#12092B` with neon yellow `#FACC15`, magenta `#EC4899`, and cyan `#00F0FF` keycaps. |
-| `3` | `oled` | OLED True Black | `#000000` pitch black background for OLED display energy efficiency. |
-| `4` | `matrix` | Matrix Terminal | Hacker green `#10B981` terminal theme on deep black `#030712` background. |
-| `5` | `retro` | Retro Vintage (Classic Beige) | Warm tan keycaps `#B8AD9C`/`#ADA291` on taupe beige `#6E6454` background. |
-| `6` | `muted_slate` | Low Saturation Slate | Low-contrast monochromatic slate palette for minimal distraction. |
-| `7` | `custom` | Custom Theme | Reads `pref_custom_theme_json` for user-defined JSON color palettes. |
+| `0` | `system_auto` | System Dynamic | Follows device OS Light Mode (`system_light`) and Dark Mode (`system_dark`) by default (customizable). |
+| `1` | `system_light` | System Light | Clean light mode theme with light slate background and crisp keycaps. |
+| `2` | `system_dark` | System Dark | Deep dark mode theme for low-light environments. |
+| `3` | `slate` | Slate Dark (Default) | Deep slate blue background `#0F172A` with bright cyan `#38BDF8` and amber `#F59E0B` accents. |
+| `4` | `cyberpunk` | Cyberpunk Neon | High-contrast neon purple background `#12092B` with neon yellow `#FACC15`, magenta `#EC4899`, and cyan `#00F0FF` keycaps. |
+| `5` | `oled` | OLED True Black | `#000000` pitch black background for OLED display energy efficiency. |
+| `6` | `matrix` | Matrix Terminal | Hacker green `#10B981` terminal theme on deep black `#030712` background. |
+| `7` | `retro` | Retro Vintage (Classic Beige) | Warm tan keycaps `#B8AD9C`/`#ADA291` on taupe beige `#6E6454` background. |
+| `8` | `muted_slate` | Low Saturation Slate | Low-contrast monochromatic slate palette for minimal distraction. |
+| `9` | `custom` | Custom Theme | Reads user-configured JSON color palettes from user storage or `SharedPreferences`. |
 
 ---
 

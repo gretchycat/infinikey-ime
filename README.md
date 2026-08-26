@@ -10,13 +10,13 @@ An open-source, layout-driven, highly customizable soft keyboard for Android des
 
 - **Declarative Layout Engine**: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
 - **Powerful Macro System**: Bind complex macros, multi-touch gestures, swipe actions (`onSwipeUp`, `onSwipeDown`, `onSwipeLeft`, `onSwipeRight`), long-press popups, keycode auto-repeats, and app launchers directly to keys.
-- **Decoupled Theme & Color Palette Engine**: 7 built-in presets (Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate, System Auto Light/Dark) plus custom HSL/RGB palette generation and theme JSON override loading.
+- **Decoupled Theme & Color Palette Engine**: 9 built-in presets (System Auto, System Light, System Dark, Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate) plus custom HSL/RGB palette generation and theme JSON override loading.
 - **Multiple Form Factors & Split Mode**: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
 - **Clipboard History Overlay**: Persistent overlay saving up to 30 copied items with index badges, character lengths, individual item deletion (`🗑`), clear-all, and direct echo-paste connection to both standard text fields and raw terminal shells.
-- **Vector SVG Icon Engine**: Crisp native canvas rendering for vector icons (`mic`, `tts`, `paperclip`, `clipboard`, `copy`, `cut`, `paste`, `select_all`) scaling cleanly across all screen densities.
+- **Vector SVG Icon Engine**: Crisp native canvas rendering for vector icons (`mic`, `tts`, `paperclip`, `clipboard`, `copy`, `cut`, `paste`, `select_all`, `keyboard`) and user custom graphics scaling cleanly across all screen densities.
 - **Trackpad Cursor Navigation**: Independent spacebar trackpad and arrow key trackpad modes for fluid desktop-class mouse and cursor control.
-- **Authentic Mechanical Switch Audio Engine**: Integrated Mechvibes switch packs (Cherry MX Blue, Brown, Red, Black, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre, IBM Model M Buckling Spring) and synthesized click audio with volume control.
-- **Visual WYSIWYG Layout Editor**: Built-in 6-tab Settings Activity with real-time drag-and-drop key reordering, row properties, undo/redo state stack, and layout customization.
+- **Authentic Mechanical Switch Audio Engine**: Integrated Mechvibes switch packs (Cherry MX Blue ABS/PBT, Brown ABS/PBT, Red ABS/PBT, Black ABS/PBT, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre Silent Purple, IBM Model M Buckling Spring) and 5 synthesized click audio modes with volume control.
+- **Visual WYSIWYG Layout Editor**: Built-in Settings Activity with real-time drag-and-drop key reordering, row properties, undo/redo state stack, and layout customization.
 
 ---
 
@@ -24,7 +24,7 @@ An open-source, layout-driven, highly customizable soft keyboard for Android des
 
 ### 1. Declarative Layout & Macro System
 
-Infinikey IME uses a flexible JSON layout descriptor specification (`LAYOUT_DESCRIPTOR_SPEC.md`). Layouts are stored as standalone JSON files in `assets/layouts/` (e.g., `main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`, `phone.json`).
+Infinikey IME uses a flexible JSON layout descriptor specification (`docs/LAYOUT_DESCRIPTOR_SPEC.md`). Layouts are stored as standalone JSON files in `assets/layouts/` (e.g., `main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`, `phone.json`).
 
 #### Geometry & Dimensioning Rules
 All key widths, heights, spacing gaps, font sizes, and corner radiuses use a strict dual-unit system:
@@ -50,7 +50,9 @@ Each key descriptor can define multiple touch event actions:
 | `"AUTO_REPEAT"` | Continuously auto-repeats keycode execution while key is held down. |
 | `"TOGGLE_ROW"` | Dynamically shows/hides individual row IDs (e.g. Fn row) or toggles layer visibility (`"all_hidden"`). |
 | `"TOGGLE_MODIFIER"` | Toggles modifier state (`SHIFT`, `CTRL`, `ALT`, `SUPER`, `META`). |
+| `"LOCK_MODIFIER"` | Locks modifier state (`SHIFT`, `CTRL`, `ALT`, `SUPER`, `META`). |
 | `"SELECT_ALL"`, `"COPY"`, `"CUT"`, `"PASTE"` | Direct text editing and clipboard controls with fallback context support. |
+| `"PASTE_ECHO"` | Echo-pastes primary clip to text input or raw terminal stream. |
 | `"SWITCH_IME"` | Opens system Input Method Manager picker dialog. |
 | `"LAUNCH_APP"` | Launches target Android application package directly from a key tap. |
 
@@ -58,17 +60,19 @@ Each key descriptor can define multiple touch event actions:
 
 ### 2. Theme & Color Palette Engine
 
-The color system is completely decoupled from layout descriptors (`THEMING_SPEC.md`). Themes can be loaded from preset asset files (`themes.json`, `themes/cyberpunk.json`, etc.) or generated on the fly via the built-in custom palette picker.
+The color system is completely decoupled from layout descriptors (`docs/THEMING_SPEC.md`). Themes can be loaded from preset asset files (`themes.json`, `themes/cyberpunk.json`, etc.) or generated on the fly via the built-in custom palette picker.
 
 #### Preset Color Themes
-1. **System Dynamic (`system_auto`)**: Follows Android OS Light Mode (`system_light`) and Dark Mode (`slate`).
-2. **Slate Dark (`slate`)**: Default dark slate blue `#0F172A` theme with cyan and amber accents.
-3. **Cyberpunk Neon (`cyberpunk`)**: High-contrast neon purple, yellow, magenta, and cyan palette.
-4. **OLED True Black (`oled`)**: `#000000` pitch black background optimized for OLED display power saving.
-5. **Matrix Terminal (`matrix`)**: Hacker green monochrome text on deep black.
-6. **Retro Vintage (`retro`)**: Classic beige and taupe mechanical keyboard aesthetic.
-7. **Muted Slate (`muted_slate`)**: Monochromatic low-saturation slate for distraction-free typing.
-8. **Custom Palette (`custom`)**: User-configured theme defined via HSL/RGB palette generator.
+1. **System Dynamic (`system_auto`)**: Follows device OS Light Mode (`system_light`) and Dark Mode (`system_dark`) by default (customizable).
+2. **System Light (`system_light`)**: Clean light mode theme with light slate background and crisp keycaps.
+3. **System Dark (`system_dark`)**: Dark mode theme optimized for low-light environments.
+4. **Slate Dark (`slate`)**: Default dark slate blue `#0F172A` theme with cyan and amber accents.
+5. **Cyberpunk Neon (`cyberpunk`)**: High-contrast neon purple, yellow, magenta, and cyan palette.
+6. **OLED True Black (`oled`)**: `#000000` pitch black background optimized for OLED display power saving.
+7. **Matrix Terminal (`matrix`)**: Hacker green monochrome text on deep black.
+8. **Retro Vintage (`retro`)**: Classic beige and taupe mechanical keyboard aesthetic.
+9. **Muted Slate (`muted_slate`)**: Monochromatic low-saturation slate for distraction-free typing.
+10. **Custom Palette (`custom`)**: User-configured theme defined via HSL/RGB palette generator or custom theme JSON files.
 
 #### Category Style Mapping & Style Inheritance
 Keys inherit visual attributes from style classes (`styles`), which can be overridden per key:
@@ -103,7 +107,7 @@ Infinikey IME includes dual trackpad cursor emulation modes:
 
 ### 5. Mechanical Switch Audio & Haptic Feedback
 
-- **Sound Engine**: Powered by `SoundPool` with 8 authentic recorded switch sound packs (Cherry MX Blue, Brown, Red, Black, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre, IBM Model M Buckling Spring) and synthesized switch audio.
+- **Sound Engine**: Powered by `SoundPool` with recorded switch sound packs (Cherry MX Blue ABS/PBT, Brown ABS/PBT, Red ABS/PBT, Black ABS/PBT, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre Silent Purple, IBM Model M Buckling Spring) and 5 synthesized audio modes.
 - **Build-Time Key Click Splitting Pipeline**: Automated Python pipeline (`scripts/split_key_clicks.py`) runs as part of the normal build process (`splitKeyClicks` Gradle task). It analyzes key press recordings, detects key-down (press) vs. key-up (release) transients using energy envelope and zero-crossing alignment, and outputs split sound sets to `app/src/main/assets/audio_split/`. Gradle automatically checks for missing or out-of-date split assets during `preBuild`.
 - **Haptic Engine**: Supports System Haptics (`HapticFeedbackConstants`) and Android `Vibrator` with custom vibration styles (`SHARP_CLICK`, `CRISP_TICK`, `HEAVY_CLICK`, `DOUBLE_CLICK`, `CUSTOM_PULSE`), duration, and amplitude controls.
 
@@ -114,29 +118,43 @@ Infinikey IME includes dual trackpad cursor emulation modes:
 - **Build-Time Generation**: Python pipeline (`generate_emoji_layouts.py`) fetches Unicode emoji datasets, groups skin tones under base emojis in `alternates` arrays, and generates category asset layouts.
 - **Runtime Recents Tracker**: Logs recently used emojis to `SharedPreferences` (up to 24) and dynamically generates the `"emoji_recents"` layout when tapping `😀`.
 
-
 ---
 
 ## Project Structure
 
-- **`app/src/main/java/com/programmerkeyboard/`**:
+- **`app/src/main/java/com/infinikey_ime/`**:
   - `ProgrammerInputMethodService.kt`: Core `InputMethodService` managing keyboard state, target terminal detection, clipboard listening, layout switching, and action dispatching.
-- **`app/src/main/java/com/programmerkeyboard/view/`**:
-  - `KeyboardView.kt`: High-performance custom canvas View rendering key rows, SVG vector icon paths, touch gestures, trackpad modes, and haptics.
-  - `KeyPopupOverlay.kt`: 3D tactile action popups with SVG icon caps and dismissal tracking.
-  - `ClipboardHistoryOverlay.kt`: Floating scrollable clipboard history view with single-item deletion and quick paste.
-  - `EmojiPickerOverlay.kt`: Grid emoji picker overlay window.
-  - `VoiceInputOverlay.kt`: Floating voice recognition dialog.
-  - `JoystickPopupWidget.kt`: Floating arrow trackpad widget.
-- **`app/src/main/java/com/programmerkeyboard/model/`**:
-  - `KeyDefinition.kt`: Strongly-typed `KeyAction`, `KeyDefinition`, `KeyStyle`, and `DimensionValue` data models.
-  - `LayoutDefinition.kt`: Schema models for layout metadata, rows, keys, and themes.
-- **`app/src/main/java/com/programmerkeyboard/engine/`**:
-  - `LayoutParser.kt`: JSON layout engine parsing layout descriptors and applying theme overrides.
-  - `KeyRepeatEngine.kt`: Handles long-press timeouts and key auto-repeats.
-- **`app/src/main/java/com/programmerkeyboard/settings/`**:
-  - `SettingsActivity.kt`: 6-tab preference and configuration activity.
-  - `InteractiveLayoutEditorView.kt`: WYSIWYG canvas for real-time drag-and-drop key layout editing.
+  - **`view/`**:
+    - `KeyboardView.kt`: High-performance custom canvas View rendering key rows, SVG vector icon paths, touch gestures, trackpad modes, and haptics.
+    - `InteractiveLayoutEditorView.kt`: WYSIWYG canvas for real-time drag-and-drop key layout editing.
+    - `KeyPopupOverlay.kt`: 3D tactile action popups with SVG icon caps and dismissal tracking.
+    - `ClipboardHistoryOverlay.kt`: Floating scrollable clipboard history view with single-item deletion and quick paste.
+    - `EmojiPickerOverlay.kt`: Grid emoji picker overlay window.
+    - `VoiceInputOverlay.kt`: Floating voice recognition dialog.
+    - `JoystickPopupWidget.kt`: Floating arrow trackpad widget.
+    - `KeyPreviewOverlay.kt`: Magnified key pop-up preview bubble.
+    - `TrackpadView.kt`: Precision trackpad navigation view.
+  - **`model/`**:
+    - `KeyDefinition.kt`: Strongly-typed `KeyAction`, `KeyDefinition`, `KeyStyle`, and `DimensionValue` data models.
+    - `LayoutDefinition.kt`: Schema models for layout metadata, rows, keys, and themes.
+    - `KeyboardMode.kt`: Screen mode and modifier state enums.
+  - **`engine/`**:
+    - `LayoutParser.kt`: JSON layout engine parsing layout descriptors and applying theme overrides.
+    - `KeyRepeatEngine.kt`: Handles long-press timeouts and key auto-repeats.
+    - `AlternatePriorityManager.kt`: Long-press alternate key prioritization engine.
+  - **`settings/`**:
+    - `SettingsActivity.kt`: Multi-tab preference and configuration activity.
+  - **`util/`**:
+    - `ThemeManager.kt`: Theme copying, versioning, upgrade protection, and management.
+    - `AppPreferencesManager.kt`: Per-app layout assignment and persistence.
+    - `IconRenderer.kt`: Native vector SVG rendering and custom icon loading.
+    - `FontFallbackManager.kt`: Custom symbols font loading and fallback management.
+    - `FileManagerLauncher.kt`: System document provider and file manager integration.
+    - `InfinikeyDocumentsProvider.kt`: Storage Access Framework documents provider for live file editing.
+    - `OverlayPermissionUtil.kt`: System overlay window permission utilities.
+    - `SttArchiveUnpacker.kt`: On-device STT speech recognition model asset extractor.
+  - **`stt/`**:
+    - `SttEngine.kt`, `SherpaOnnxSttEngine.kt`, `AndroidSystemSttEngine.kt`, `WhisperSttEngine.kt`, `CloudApiSttEngine.kt`, `SttEngineFactory.kt`: Offline and online Speech-to-Text engines.
 
 ---
 
@@ -145,13 +163,13 @@ Infinikey IME includes dual trackpad cursor emulation modes:
 Assemble debug or release APKs using Gradle:
 
 ```bash
-sh gradlew assembleDebug
-sh gradlew assembleRelease
+./gradlew assembleDebug
+./gradlew assembleRelease
 ```
 
 Generated APK output locations:
-- **Debug**: `app/build/outputs/apk/debug/infinikey-ime-v0.1.30-b114-debug.apk`
-- **Release**: `app/build/outputs/apk/release/infinikey-ime-v0.1.30-b114-release.apk`
+- **Debug**: `app/build/outputs/apk/debug/infinikey-ime-v0.2.32-b183-debug.apk`
+- **Release**: `app/build/outputs/apk/release/infinikey-ime-v0.2.32-b183-release.apk`
 
 ---
 
@@ -162,3 +180,4 @@ This project is open-source under the [MIT License](LICENSE).
 ## Attributions & Credits
 
 Mechanical keyboard switch audio samples are sourced from **[Mechvibes](https://mechvibes.com/)**. See [ATTRIBUTION.md](ATTRIBUTION.md) for full credits.
+

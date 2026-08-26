@@ -7,7 +7,7 @@ The WYSIWYG Layout Editor allows users to visually build, edit, reorder, and sav
 
 ## Editor Features
 
-1. **Interactive Canvas View (`InteractiveLayoutEditorView`)**:
+1. **Interactive Canvas View (`com.infinikey_ime.view.InteractiveLayoutEditorView`)**:
    - Renders keys in real time matching active layout ratios and styles.
    - Touch drag-and-drop key reordering (horizontally within a row or vertically across rows).
    - Semi-transparent ghost preview during touch drag.

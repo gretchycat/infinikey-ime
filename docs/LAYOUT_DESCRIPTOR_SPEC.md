@@ -96,9 +96,14 @@ The `metadata` block specifies keyboard constraints, dimensions, scaling, and sc
 * **`verticalSpacing`**: Gap space between adjacent rows (`int` for dp, `float` for ratio).
 * **`defaultScreenMode`** (`string`): Initial screen dock mode (`"FULL_WIDTH_DOCKED"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`, `"SPLIT"`).
 * **`defaultHeightPercentage`** (`int`): Default vertical height percentage of the screen space (from `15` to `60`).
+* **`longPressTimeoutMs`** (`long`, optional): Timeout in milliseconds before a touch-and-hold triggers long press action (default `350`).
+* **`autoRepeatIntervalMs`** (`long`, optional): Auto-repeat trigger interval in milliseconds for held keycodes (default `50`).
+* **`splitClusterRatio`** (`float`, optional): Center gap ratio proportion when rendered in split mode.
 * **`showKeyPreview`** (`boolean`): Whether to display pop-up key magnification bubbles on tap.
+* **`maxFontSize`**: Maximum font size ceiling for text labels (`int` for dp/sp, `float` for ratio).
 * **`scrollDirection`** (`string`, optional): Set to `"VERTICAL"` or `"HORIZONTAL"` to enable scrolling of rows (e.g. for emojis).
 * **`maxVisibleRows`** (`int`, optional): When vertical scrolling is enabled, specifies how many middle rows are rendered concurrently within the scrolling viewport between the top pinned row (row index 0) and the bottom pinned row (last row).
+* **`maxVisibleColumns`** (`int`, optional): Specifies max columns when horizontal scrolling is enabled.
 
 ---
 
@@ -130,14 +135,23 @@ Each style object can define any combination of visual properties:
 * **`style`** (`string`, optional): Name of the key style class to inherit from (e.g. `"modifierKey"`, `"numberKey"`).
 * **`label`** (`string`, required): Main text label rendered on key face.
 * **`secondaryLabel`** (`string`, optional): Small secondary text badge (e.g. top-right corner character).
+* **`topLeftLabel`** (`string`, optional): Small top-left corner badge label.
+* **`topRightLabel`** (`string`, optional): Small top-right corner badge label.
 * **`weight`** / **`width`**: Key width multiplier (`float` ratio relative to row weight sum, or `int` fixed dp).
 * **`height`**: Custom key height multiplier (`float` ratio relative to default row height, or `int` fixed dp).
-* **`icon`** (`string`, optional): Drawable icon resource identifier.
+* **`startOffset`**: Horizontal starting offset preceding the key (`float` ratio or `int` dp).
+* **`isSplitKey`** (`boolean`, optional): Identifies if the key spans across the split line in split screen mode.
+* **`splitLeftWeight`** / **`splitRightWeight`**: Width weights for left and right portions of a split key.
+* **`flexible`** (`boolean`, optional): Allows key to dynamically stretch to fill remaining row space (e.g. Spacebar).
+* **`spacer`** (`boolean`, optional): Renders key as an invisible structural spacing gap.
+* **`showPreview`** / **`showKeyPreview`** (`boolean`, optional): Overrides popup preview magnification bubble for this specific key.
+* **`alternates`** / **`alternateKeys`** (`array<string>`, optional): List of alternate characters/symbols displayed in long-press popup menus.
+* **`icon`** (`string`, optional): Vector SVG or drawable icon resource identifier (e.g. `"mic"`, `"paperclip"`, `"clipboard"`, `"copy"`, `"cut"`, `"paste"`, `"select_all"`, `"keyboard"`).
 * **`backgroundImage`** (`string`, optional): Custom key texture image path.
 
 ### Visual Overrides Per Key
 A key can override any visual attribute inherited from its `style` class:
-* `fgColor`, `secondaryFgColor`, `bgColor`, `pressedBgColor`, `activeBgColor`, `borderColor`, `borderWidth`, `cornerRadius`, `fontSize`, `secondaryFontSize`.
+* `fgColor`, `secondaryFgColor`, `bgColor`, `pressedBgColor`, `activeBgColor`, `borderColor`, `borderWidth`, `cornerRadius`, `fontSize`, `maxFontSize`, `secondaryFontSize`.
 
 ### Event Action Handlers
 * **`onPress`** (`Action object`, optional): Action performed on single tap.
