@@ -2,7 +2,7 @@
 
 An open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
 
-![Infinikey IME Banner](app/src/main/assets/images/infinikey-ime.png)
+![Infinikey IME Banner](app/src/main/res/mipmap-hdpi/ic_launcher.png)
 
 ---
 
