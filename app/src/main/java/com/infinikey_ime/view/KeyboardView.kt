@@ -937,13 +937,16 @@ class KeyboardView @JvmOverloads constructor(
             }
 
             // Key Labels & Icons
-            val displayLabel = if (keyboardState.isShiftActive && key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()) {
-                key.primaryLabel.uppercase()
-            } else if (keyboardState.isShiftActive) {
-                val officialShifted = getOfficialShiftedValue(key)
-                when {
-                    !officialShifted.isNullOrEmpty() -> if (officialShifted.any { it.isLowerCase() }) officialShifted.uppercase() else officialShifted
-                    else -> key.primaryLabel
+            val displayLabel = if (keyboardState.shouldShiftKey(key)) {
+                val isLetter = key.primaryLabel.length == 1 && key.primaryLabel[0].isLetter()
+                if (isLetter) {
+                    key.primaryLabel.uppercase()
+                } else {
+                    val officialShifted = getOfficialShiftedValue(key)
+                    when {
+                        !officialShifted.isNullOrEmpty() -> if (officialShifted.any { it.isLowerCase() }) officialShifted.uppercase() else officialShifted
+                        else -> key.primaryLabel
+                    }
                 }
             } else {
                 key.primaryLabel

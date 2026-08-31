@@ -60,19 +60,7 @@ def filter_stderr(pipe):
 
 def main():
     aapt2_bin = find_aapt2_binary()
-    proc = subprocess.Popen(
-        [aapt2_bin] + sys.argv[1:],
-        stdin=sys.stdin,
-        stdout=sys.stdout,
-        stderr=subprocess.PIPE,
-        text=True,
-        bufsize=1
-    )
-    t = threading.Thread(target=filter_stderr, args=(proc.stderr,), daemon=True)
-    t.start()
-    rc = proc.wait()
-    t.join(timeout=1.0)
-    sys.exit(rc)
+    os.execv(aapt2_bin, [aapt2_bin] + sys.argv[1:])
 
 if __name__ == "__main__":
     main()
