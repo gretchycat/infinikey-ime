@@ -69,13 +69,13 @@ data class KeyboardState(
     fun getMetaState(): Int {
         var meta = 0
         if (shiftState == ModifierState.LATCHED || (shiftState == ModifierState.LOCKED && shiftLockMode == ShiftLockMode.SHIFT_LOCK)) {
-            meta = meta or android.view.KeyEvent.META_SHIFT_ON
+            meta = meta or android.view.KeyEvent.META_SHIFT_ON or android.view.KeyEvent.META_SHIFT_LEFT_ON
         } else if (shiftState == ModifierState.LOCKED && shiftLockMode == ShiftLockMode.CAPS_LOCK) {
             meta = meta or android.view.KeyEvent.META_CAPS_LOCK_ON
         }
-        if (isCtrlActive) meta = meta or android.view.KeyEvent.META_CTRL_ON
-        if (isAltActive) meta = meta or android.view.KeyEvent.META_ALT_ON
-        if (isSuperActive) meta = meta or android.view.KeyEvent.META_META_ON
+        if (isCtrlActive) meta = meta or android.view.KeyEvent.META_CTRL_ON or android.view.KeyEvent.META_CTRL_LEFT_ON
+        if (isAltActive) meta = meta or android.view.KeyEvent.META_ALT_ON or android.view.KeyEvent.META_ALT_LEFT_ON
+        if (isSuperActive) meta = meta or android.view.KeyEvent.META_META_ON or android.view.KeyEvent.META_META_LEFT_ON
         return meta
     }
 
@@ -103,4 +103,24 @@ data class KeyboardState(
         }
         return changed
     }
+}
+
+/**
+ * Helper utility to parse combined modifier strings like "CTRL+ALT", "CTRL_SHIFT", "ALT,OPTION", etc.
+ */
+fun parseModifierComponents(modifierStr: String): List<String> {
+    if (modifierStr.isBlank()) return emptyList()
+    return modifierStr.uppercase()
+        .split(Regex("[+_,; ]+"))
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .map { mod ->
+            when (mod) {
+                "META", "WIN", "CMD" -> "SUPER"
+                "CONTROL" -> "CTRL"
+                "OPTION" -> "ALT"
+                else -> mod
+            }
+        }
+        .distinct()
 }

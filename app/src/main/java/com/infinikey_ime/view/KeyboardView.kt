@@ -2576,7 +2576,13 @@ class KeyboardView @JvmOverloads constructor(
 
     private fun isModifierKey(key: KeyDefinition): Boolean {
         if (key.onPressAction is KeyAction.ToggleModifier || key.onPressAction is KeyAction.LockModifier || key.onLongPressAction is KeyAction.LockModifier || key.onPressAction is KeyAction.SwitchLayout) return true
-        return key.primaryLabel in listOf("Ctrl", "Control", "Shift", "⇧", "Alt", "Option", "Super", "Win", "Cmd", "⌘", "❖", "Fn")
+        val label = key.primaryLabel
+        if (label in listOf("Ctrl", "Control", "Shift", "⇧", "Alt", "Option", "⌥", "Super", "Meta", "Win", "Cmd", "⌘", "❖", "Fn")) return true
+        if (label.contains("+") || label.contains("_")) {
+            val components = com.infinikey_ime.model.parseModifierComponents(label)
+            if (components.isNotEmpty() && components.all { it in listOf("CTRL", "SHIFT", "ALT", "SUPER", "FN", "SYM") }) return true
+        }
+        return false
     }
 
     private fun getModifierState(key: KeyDefinition): com.infinikey_ime.model.ModifierState {
@@ -2588,8 +2594,24 @@ class KeyboardView @JvmOverloads constructor(
             lpAction is KeyAction.LockModifier -> lpAction.modifier
             else -> null
         }
-        if (modName != null) {
-            return when (modName.uppercase()) {
+        val targetModStr = modName ?: when (key.primaryLabel) {
+            "Fn" -> "FN"
+            "Shift", "⇧" -> "SHIFT"
+            "Ctrl", "Control" -> "CTRL"
+            "Alt", "Option", "⌥" -> "ALT"
+            "Super", "Meta", "Win", "Cmd", "⌘", "❖" -> "SUPER"
+            else -> null
+        } ?: return com.infinikey_ime.model.ModifierState.OFF
+
+        if (targetModStr == "FN") {
+            return if (keyboardState.isFnActive) com.infinikey_ime.model.ModifierState.LATCHED else com.infinikey_ime.model.ModifierState.OFF
+        }
+
+        val mods = com.infinikey_ime.model.parseModifierComponents(targetModStr)
+        if (mods.isEmpty()) return com.infinikey_ime.model.ModifierState.OFF
+
+        val states = mods.map { mod ->
+            when (mod) {
                 "SHIFT" -> keyboardState.shiftState
                 "CTRL" -> keyboardState.ctrlState
                 "ALT" -> keyboardState.altState
@@ -2597,12 +2619,10 @@ class KeyboardView @JvmOverloads constructor(
                 else -> com.infinikey_ime.model.ModifierState.OFF
             }
         }
-        return when (key.primaryLabel) {
-            "Fn" -> if (keyboardState.isFnActive) com.infinikey_ime.model.ModifierState.LATCHED else com.infinikey_ime.model.ModifierState.OFF
-            "Shift", "⇧" -> keyboardState.shiftState
-            "Ctrl" -> keyboardState.ctrlState
-            "Alt" -> keyboardState.altState
-            "Super", "Win", "Cmd", "⌘", "❖" -> keyboardState.superState
+
+        return when {
+            states.all { it == com.infinikey_ime.model.ModifierState.LOCKED } -> com.infinikey_ime.model.ModifierState.LOCKED
+            states.all { it != com.infinikey_ime.model.ModifierState.OFF } -> com.infinikey_ime.model.ModifierState.LATCHED
             else -> com.infinikey_ime.model.ModifierState.OFF
         }
     }

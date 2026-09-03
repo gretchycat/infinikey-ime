@@ -235,7 +235,7 @@ object LayoutParser {
     fun inferStyleNameForKey(label: String, action: KeyAction): String {
         val lowerLabel = label.lowercase()
         return when {
-            action is KeyAction.ToggleModifier || action is KeyAction.LockModifier || lowerLabel in listOf("shift", "ctrl", "alt", "meta", "sym", "fn", "⌘", "⌥", "⌃", "⇧") -> "modifierKey"
+            action is KeyAction.ToggleModifier || action is KeyAction.LockModifier || lowerLabel in listOf("shift", "ctrl", "control", "alt", "option", "super", "meta", "win", "cmd", "sym", "fn", "⌘", "⌥", "⌃", "⇧", "❖") -> "modifierKey"
             lowerLabel.matches(Regex("f[0-9]+")) -> "functionKey"
             lowerLabel in listOf("enter", "return", "backspace", "delete", "tab", "space", "␣", "⌫", "⏎", "⇥") -> "actionKey"
             lowerLabel in listOf("up", "down", "left", "right", "home", "end", "pageup", "pagedown", "↑", "↓", "←", "→") -> "navigationKey"
@@ -779,14 +779,19 @@ object LayoutParser {
                 KeyAction.ToggleRow(rowId)
             }
             "TOGGLE_MODIFIER" -> {
-                val mod = obj.get("modifier")?.asString ?: "SHIFT"
+                val rawMod = obj.get("modifier")?.asString ?: "SHIFT"
+                val mod = com.infinikey_ime.model.parseModifierComponents(rawMod).joinToString("+").ifEmpty { "SHIFT" }
                 if (obj.get("lock")?.asBoolean == true) {
                     KeyAction.LockModifier(mod)
                 } else {
                     KeyAction.ToggleModifier(mod)
                 }
             }
-            "LOCK_MODIFIER" -> KeyAction.LockModifier(obj.get("modifier")?.asString ?: "SHIFT")
+            "LOCK_MODIFIER" -> {
+                val rawMod = obj.get("modifier")?.asString ?: "SHIFT"
+                val mod = com.infinikey_ime.model.parseModifierComponents(rawMod).joinToString("+").ifEmpty { "SHIFT" }
+                KeyAction.LockModifier(mod)
+            }
             "SELECT_ALL" -> KeyAction.SelectAll
             "COPY" -> KeyAction.Copy
             "CUT" -> KeyAction.Cut
@@ -852,10 +857,15 @@ object LayoutParser {
             "Backspace" -> KeyAction.SendCode(KeyEvent.KEYCODE_DEL)
             "Enter" -> KeyAction.SendCode(KeyEvent.KEYCODE_ENTER)
             "Esc" -> KeyAction.SendCode(KeyEvent.KEYCODE_ESCAPE)
-            "Ctrl" -> KeyAction.ToggleModifier("CTRL")
-            "Shift" -> KeyAction.ToggleModifier("SHIFT")
-            "Alt" -> KeyAction.ToggleModifier("ALT")
-            "Super" -> KeyAction.ToggleModifier("SUPER")
+            "Ctrl", "Control" -> KeyAction.ToggleModifier("CTRL")
+            "Shift", "⇧" -> KeyAction.ToggleModifier("SHIFT")
+            "Alt", "Option", "⌥" -> KeyAction.ToggleModifier("ALT")
+            "Super", "Meta", "Win", "Cmd", "⌘", "❖" -> KeyAction.ToggleModifier("SUPER")
+            "Ctrl+Alt", "Ctrl_Alt", "Control+Alt" -> KeyAction.ToggleModifier("CTRL+ALT")
+            "Ctrl+Shift", "Ctrl_Shift", "Control+Shift" -> KeyAction.ToggleModifier("CTRL+SHIFT")
+            "Alt+Shift", "Alt_Shift", "Option+Shift" -> KeyAction.ToggleModifier("ALT+SHIFT")
+            "Super+Alt", "Meta+Alt", "Win+Alt", "Cmd+Alt" -> KeyAction.ToggleModifier("SUPER+ALT")
+            "Ctrl+Alt+Shift", "Ctrl_Alt_Shift" -> KeyAction.ToggleModifier("CTRL+ALT+SHIFT")
             "Fn" -> KeyAction.SwitchLayout("function")
             "Mic" -> KeyAction.ShowWidget("VOICE_INPUT_ONESHOT")
             "Settings", "⚙" -> KeyAction.ShowWidget("SETTINGS")

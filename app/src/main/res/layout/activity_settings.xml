@@ -144,7 +144,7 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <EditText
+                <com.infinikey_ime.settings.TestInputEditText
                     android:id="@+id/etTestKeyboardInput"
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
@@ -156,6 +156,79 @@
                     android:paddingEnd="12dp"
                     android:textColor="@color/settings_text_header"
                     android:textSize="13sp" />
+
+                <!-- Header Row for Key Event & Code Monitor -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="16dp"
+                        android:background="@drawable/bg_vertical_rule" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Literal Key Monitor"
+                        android:textColor="#38BDF8"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvKeyMonitorStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:text="Tap box to listen"
+                        android:textColor="#64748B"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnClearKeyEventsLog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_spinner_card"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:text="Clear Log"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Monospace Key Event Output Box -->
+                <ScrollView
+                    android:id="@+id/svTestKeyEventsLog"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:background="@drawable/bg_spinner_card"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:id="@+id/tvTestKeyEventsLog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:gravity="top|start"
+                        android:hint="Tap here to start listening..."
+                        android:textColorHint="#475569"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:textColor="#4ADE80"
+                        android:textSize="11sp" />
+                </ScrollView>
             </LinearLayout>
 
 

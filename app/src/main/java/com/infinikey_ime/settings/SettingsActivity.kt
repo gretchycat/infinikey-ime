@@ -142,6 +142,30 @@ class SettingsActivity : AppCompatActivity() {
             com.infinikey_ime.util.OverlayPermissionUtil.requestOverlayPermission(this)
         }
 
+        val etTestKeyboardInput = findViewById<TestInputEditText>(R.id.etTestKeyboardInput)
+        val svTestKeyEventsLog = findViewById<android.widget.ScrollView>(R.id.svTestKeyEventsLog)
+        val tvTestKeyEventsLog = findViewById<TextView>(R.id.tvTestKeyEventsLog)
+        val btnClearKeyEventsLog = findViewById<TextView>(R.id.btnClearKeyEventsLog)
+
+        btnClearKeyEventsLog?.setOnClickListener {
+            logHtmlLines.clear()
+            logEntryCount = 0
+            tvTestKeyEventsLog?.text = ""
+        }
+
+        val toggleListenListener = View.OnClickListener {
+            setKeyMonitorListening(!isKeyMonitorListening)
+        }
+        svTestKeyEventsLog?.setOnClickListener(toggleListenListener)
+        tvTestKeyEventsLog?.setOnClickListener(toggleListenListener)
+
+        etTestKeyboardInput?.onInterceptTextCommit = { committedText ->
+            logTextCommit(committedText)
+        }
+        etTestKeyboardInput?.onInterceptKeyEvent = { keyEvent ->
+            logKeyEvent(keyEvent)
+        }
+
 
 
 
@@ -2290,7 +2314,11 @@ class SettingsActivity : AppCompatActivity() {
             }
             2 -> KeyAction.SendCode(trimmed.toIntOrNull() ?: 66)
             3 -> KeyAction.AutoRepeat(trimmed.toIntOrNull() ?: 67)
-            4 -> KeyAction.ToggleModifier(trimmed.uppercase().ifEmpty { "SHIFT" })
+            4 -> {
+                val rawMod = trimmed.ifEmpty { "SHIFT" }
+                val mod = com.infinikey_ime.model.parseModifierComponents(rawMod).joinToString("+").ifEmpty { "SHIFT" }
+                KeyAction.ToggleModifier(mod)
+            }
             5 -> KeyAction.SwitchLayout(trimmed.ifEmpty { "main" })
             6 -> KeyAction.ShowWidget(trimmed.ifEmpty { "VOICE_INPUT" })
             7 -> KeyAction.SetScreenMode(trimmed.uppercase().ifEmpty { "SPLIT" })
@@ -2438,7 +2466,13 @@ class SettingsActivity : AppCompatActivity() {
                 Pair("Shift Modifier", "SHIFT"),
                 Pair("Control (Ctrl) Modifier", "CTRL"),
                 Pair("Alt Modifier", "ALT"),
-                Pair("Meta / Super / Windows Modifier", "META"),
+                Pair("Meta / Super / Windows Modifier", "SUPER"),
+                Pair("Ctrl + Alt Combo", "CTRL+ALT"),
+                Pair("Ctrl + Shift Combo", "CTRL+SHIFT"),
+                Pair("Alt + Shift Combo", "ALT+SHIFT"),
+                Pair("Super + Alt Combo", "SUPER+ALT"),
+                Pair("Super + Ctrl Combo", "SUPER+CTRL"),
+                Pair("Ctrl + Alt + Shift Combo", "CTRL+ALT+SHIFT"),
                 Pair("Fn (Function) Layer Modifier", "FN"),
                 Pair("Sym (Symbols) Layer Modifier", "SYM"),
                 Pair("Caps Lock Toggle", "CAPS_LOCK"),
@@ -3829,5 +3863,124 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
         return result
+    }
+
+    private var isKeyMonitorListening = false
+    private var logEntryCount = 0
+    private val logHtmlLines = mutableListOf<String>()
+    private var lastLoggedKeyTime: Long = 0
+    private var lastLoggedKeyCode: Int = -1
+
+    private fun setKeyMonitorListening(listen: Boolean) {
+        isKeyMonitorListening = listen
+        val svTestKeyEventsLog = findViewById<android.widget.ScrollView>(R.id.svTestKeyEventsLog)
+        val tvTestKeyEventsLog = findViewById<TextView>(R.id.tvTestKeyEventsLog)
+        val tvKeyMonitorStatus = findViewById<TextView>(R.id.tvKeyMonitorStatus)
+        val etTestKeyboardInput = findViewById<TestInputEditText>(R.id.etTestKeyboardInput)
+
+        etTestKeyboardInput?.isListening = listen
+
+        if (listen) {
+            svTestKeyEventsLog?.setBackgroundResource(R.drawable.bg_log_box_listening)
+            tvKeyMonitorStatus?.text = "● LISTENING"
+            tvKeyMonitorStatus?.setTextColor(android.graphics.Color.parseColor("#4ADE80"))
+            tvTestKeyEventsLog?.hint = "LISTENING (Green Border): Keyboard disconnected from UI. Press layout keys..."
+
+            etTestKeyboardInput?.requestFocus()
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+            imm?.showSoftInput(etTestKeyboardInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        } else {
+            svTestKeyEventsLog?.setBackgroundResource(R.drawable.bg_spinner_card)
+            tvKeyMonitorStatus?.text = "Tap box to listen"
+            tvKeyMonitorStatus?.setTextColor(android.graphics.Color.parseColor("#64748B"))
+            tvTestKeyEventsLog?.hint = "Tap here to start listening..."
+        }
+    }
+
+    override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean {
+        if (isKeyMonitorListening) {
+            if (event.keyCode == android.view.KeyEvent.KEYCODE_BACK) {
+                setKeyMonitorListening(false)
+                return super.dispatchKeyEvent(event)
+            }
+
+            if (event.action == android.view.KeyEvent.ACTION_DOWN) {
+                logKeyEvent(event)
+            }
+            return true
+        }
+
+        return super.dispatchKeyEvent(event)
+    }
+
+    private fun logTextCommit(text: String) {
+        if (text.isEmpty()) return
+        for (char in text) {
+            val friendlyName = char.toString()
+            appendFormattedLogLine("", friendlyName, char.code)
+        }
+    }
+
+    private fun logKeyEvent(event: android.view.KeyEvent) {
+        if (event.eventTime > 0 && event.eventTime == lastLoggedKeyTime && event.keyCode == lastLoggedKeyCode) {
+            return
+        }
+        lastLoggedKeyTime = event.eventTime
+        lastLoggedKeyCode = event.keyCode
+
+        val meta = event.metaState
+        val mods = mutableListOf<String>()
+        if ((meta and (android.view.KeyEvent.META_CTRL_ON or android.view.KeyEvent.META_CTRL_LEFT_ON)) != 0) mods.add("Ctrl")
+        if ((meta and (android.view.KeyEvent.META_ALT_ON or android.view.KeyEvent.META_ALT_LEFT_ON)) != 0) mods.add("Alt")
+        if ((meta and (android.view.KeyEvent.META_SHIFT_ON or android.view.KeyEvent.META_SHIFT_LEFT_ON)) != 0) mods.add("Shift")
+        if ((meta and (android.view.KeyEvent.META_META_ON or android.view.KeyEvent.META_META_LEFT_ON)) != 0) mods.add("Super")
+        val modPrefix = if (mods.isNotEmpty()) mods.joinToString("+") + "+" else ""
+
+        val rawCodeName = android.view.KeyEvent.keyCodeToString(event.keyCode).removePrefix("KEYCODE_")
+        val unicodeChar = event.unicodeChar
+        val printableChar = if (unicodeChar > 32 && unicodeChar < 127) unicodeChar.toChar().toString() else null
+
+        val friendlyName = when (event.keyCode) {
+            android.view.KeyEvent.KEYCODE_DPAD_UP -> "UP ARROW"
+            android.view.KeyEvent.KEYCODE_DPAD_DOWN -> "DOWN ARROW"
+            android.view.KeyEvent.KEYCODE_DPAD_LEFT -> "LEFT ARROW"
+            android.view.KeyEvent.KEYCODE_DPAD_RIGHT -> "RIGHT ARROW"
+            android.view.KeyEvent.KEYCODE_PAGE_UP -> "PAGE UP"
+            android.view.KeyEvent.KEYCODE_PAGE_DOWN -> "PAGE DOWN"
+            android.view.KeyEvent.KEYCODE_MOVE_HOME -> "HOME"
+            android.view.KeyEvent.KEYCODE_MOVE_END -> "END"
+            android.view.KeyEvent.KEYCODE_DEL -> "BACKSPACE"
+            android.view.KeyEvent.KEYCODE_ENTER -> "ENTER"
+            android.view.KeyEvent.KEYCODE_TAB -> "TAB"
+            android.view.KeyEvent.KEYCODE_ESCAPE -> "ESC"
+            android.view.KeyEvent.KEYCODE_SPACE -> "SPACE"
+            else -> printableChar ?: rawCodeName
+        }
+
+        appendFormattedLogLine(modPrefix, friendlyName, event.keyCode)
+    }
+
+    private fun appendFormattedLogLine(modPrefix: String, friendlyName: String, code: Int) {
+        val tvTestKeyEventsLog = findViewById<TextView>(R.id.tvTestKeyEventsLog) ?: return
+        val svTestKeyEventsLog = findViewById<android.widget.ScrollView>(R.id.svTestKeyEventsLog)
+
+        logEntryCount++
+        val isEven = logEntryCount % 2 == 0
+        val colorHex = if (isEven) "#4ADE80" else "#38BDF8"
+
+        val modHtml = if (modPrefix.isNotEmpty()) "<b>${modPrefix}</b>" else ""
+        val lineHtml = "<font color=\"${colorHex}\">&gt; ${modHtml}<b>${friendlyName}</b> (Code ${code})</font>"
+
+        logHtmlLines.add(lineHtml)
+        if (logHtmlLines.size > 40) {
+            logHtmlLines.removeAt(0)
+        }
+
+        val fullHtml = logHtmlLines.joinToString("<br/>")
+        tvTestKeyEventsLog.text = androidx.core.text.HtmlCompat.fromHtml(fullHtml, androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        svTestKeyEventsLog?.post {
+            svTestKeyEventsLog.fullScroll(View.FOCUS_DOWN)
+        }
     }
 }

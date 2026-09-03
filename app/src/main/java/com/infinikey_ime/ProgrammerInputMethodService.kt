@@ -550,12 +550,15 @@ class ProgrammerInputMethodService : InputMethodService() {
 
         when (action) {
             is KeyAction.SendText -> {
-                val metaState = keyboardState.getMetaState()
+                var metaState = keyboardState.getMetaState()
                 val isCtrlAltSuperActive = keyboardState.isCtrlActive || keyboardState.isAltActive || keyboardState.isSuperActive
                 val text = action.text
 
                 if (isCtrlAltSuperActive && text.length == 1) {
                     val char = text[0]
+                    if (isShiftRequiredForChar(char)) {
+                        metaState = metaState or KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON
+                    }
                     val keyCode = getKeyCodeForChar(char)
                     if (keyCode != KeyEvent.KEYCODE_UNKNOWN) {
                         val eventTime = System.currentTimeMillis()
@@ -594,36 +597,6 @@ class ProgrammerInputMethodService : InputMethodService() {
             is KeyAction.SendCode -> {
                 val code = action.code
                 val terminal = isTerminalApp(currentInputEditorInfo)
-
-                if (!terminal) {
-                    if (code == KeyEvent.KEYCODE_DPAD_LEFT) {
-                        val textBefore = inputConnection.getTextBeforeCursor(1, 0)
-                        if (textBefore.isNullOrEmpty()) {
-                            return
-                        }
-                    } else if (code == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                        val textAfter = inputConnection.getTextAfterCursor(1, 0)
-                        if (textAfter.isNullOrEmpty()) {
-                            return
-                        }
-                    } else if (code == KeyEvent.KEYCODE_DPAD_UP) {
-                        if (!isMultiLineTextField()) {
-                            return
-                        }
-                        val textBefore = inputConnection.getTextBeforeCursor(1000, 0)?.toString() ?: ""
-                        if (!textBefore.contains("\n")) {
-                            return
-                        }
-                    } else if (code == KeyEvent.KEYCODE_DPAD_DOWN) {
-                        if (!isMultiLineTextField()) {
-                            return
-                        }
-                        val textAfter = inputConnection.getTextAfterCursor(1000, 0)?.toString() ?: ""
-                        if (!textAfter.contains("\n")) {
-                            return
-                        }
-                    }
-                }
 
                 if (code == KeyEvent.KEYCODE_ENTER) {
                     val isCtrl = keyboardState.isCtrlActive
@@ -936,74 +909,110 @@ class ProgrammerInputMethodService : InputMethodService() {
         super.onDestroy()
     }
 
+    private fun sendModifierSignal(modifier: String) {
+        val inputConnection = currentInputConnection ?: return
+        val keyCode = when (modifier) {
+            "CTRL" -> KeyEvent.KEYCODE_CTRL_LEFT
+            "ALT" -> KeyEvent.KEYCODE_ALT_LEFT
+            "SHIFT" -> KeyEvent.KEYCODE_SHIFT_LEFT
+            "SUPER" -> KeyEvent.KEYCODE_META_LEFT
+            else -> KeyEvent.KEYCODE_UNKNOWN
+        }
+        if (keyCode != KeyEvent.KEYCODE_UNKNOWN) {
+            val metaState = keyboardState.getMetaState()
+            val eventTime = System.currentTimeMillis()
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, keyCode, 0, metaState)
+            )
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, keyCode, 0, metaState)
+            )
+        }
+    }
+
     private fun toggleModifierState(modifierName: String) {
-        val key = modifierName.uppercase()
-        when (key) {
-            "SHIFT" -> {
-                keyboardState.shiftState = when (keyboardState.shiftState) {
-                    ModifierState.OFF -> ModifierState.LATCHED
-                    ModifierState.LATCHED -> ModifierState.LOCKED
-                    ModifierState.LOCKED -> ModifierState.OFF
+        val mods = com.infinikey_ime.model.parseModifierComponents(modifierName)
+        if (mods.isEmpty()) return
+
+        for (mod in mods) {
+            when (mod) {
+                "SHIFT" -> {
+                    keyboardState.shiftState = when (keyboardState.shiftState) {
+                        ModifierState.OFF -> ModifierState.LATCHED
+                        ModifierState.LATCHED -> ModifierState.LOCKED
+                        ModifierState.LOCKED -> ModifierState.OFF
+                    }
+                }
+                "CTRL" -> {
+                    keyboardState.ctrlState = when (keyboardState.ctrlState) {
+                        ModifierState.OFF -> ModifierState.LATCHED
+                        ModifierState.LATCHED -> ModifierState.LOCKED
+                        ModifierState.LOCKED -> ModifierState.OFF
+                    }
+                }
+                "ALT" -> {
+                    keyboardState.altState = when (keyboardState.altState) {
+                        ModifierState.OFF -> ModifierState.LATCHED
+                        ModifierState.LATCHED -> ModifierState.LOCKED
+                        ModifierState.LOCKED -> ModifierState.OFF
+                    }
+                }
+                "SUPER" -> {
+                    keyboardState.superState = when (keyboardState.superState) {
+                        ModifierState.OFF -> ModifierState.LATCHED
+                        ModifierState.LATCHED -> ModifierState.LOCKED
+                        ModifierState.LOCKED -> ModifierState.OFF
+                    }
                 }
             }
-            "CTRL" -> {
-                keyboardState.ctrlState = when (keyboardState.ctrlState) {
-                    ModifierState.OFF -> ModifierState.LATCHED
-                    ModifierState.LATCHED -> ModifierState.LOCKED
-                    ModifierState.LOCKED -> ModifierState.OFF
-                }
-            }
-            "ALT" -> {
-                keyboardState.altState = when (keyboardState.altState) {
-                    ModifierState.OFF -> ModifierState.LATCHED
-                    ModifierState.LATCHED -> ModifierState.LOCKED
-                    ModifierState.LOCKED -> ModifierState.OFF
-                }
-            }
-            "SUPER" -> {
-                keyboardState.superState = when (keyboardState.superState) {
-                    ModifierState.OFF -> ModifierState.LATCHED
-                    ModifierState.LATCHED -> ModifierState.LOCKED
-                    ModifierState.LOCKED -> ModifierState.OFF
-                }
-            }
+            sendModifierSignal(mod)
         }
         keyboardView.invalidate()
     }
 
     private fun lockModifierState(modifierName: String) {
-        val key = modifierName.uppercase()
-        when (key) {
-            "SHIFT" -> {
-                keyboardState.shiftState = if (keyboardState.shiftState == ModifierState.LOCKED) {
-                    ModifierState.OFF
-                } else {
-                    ModifierState.LOCKED
+        val mods = com.infinikey_ime.model.parseModifierComponents(modifierName)
+        if (mods.isEmpty()) return
+
+        for (mod in mods) {
+            when (mod) {
+                "SHIFT" -> {
+                    keyboardState.shiftState = if (keyboardState.shiftState == ModifierState.LOCKED) {
+                        ModifierState.OFF
+                    } else {
+                        ModifierState.LOCKED
+                    }
+                }
+                "CTRL" -> {
+                    keyboardState.ctrlState = if (keyboardState.ctrlState == ModifierState.LOCKED) {
+                        ModifierState.OFF
+                    } else {
+                        ModifierState.LOCKED
+                    }
+                }
+                "ALT" -> {
+                    keyboardState.altState = if (keyboardState.altState == ModifierState.LOCKED) {
+                        ModifierState.OFF
+                    } else {
+                        ModifierState.LOCKED
+                    }
+                }
+                "SUPER" -> {
+                    keyboardState.superState = if (keyboardState.superState == ModifierState.LOCKED) {
+                        ModifierState.OFF
+                    } else {
+                        ModifierState.LOCKED
+                    }
                 }
             }
-            "CTRL" -> {
-                keyboardState.ctrlState = if (keyboardState.ctrlState == ModifierState.LOCKED) {
-                    ModifierState.OFF
-                } else {
-                    ModifierState.LOCKED
-                }
-            }
-            "ALT" -> {
-                keyboardState.altState = if (keyboardState.altState == ModifierState.LOCKED) {
-                    ModifierState.OFF
-                } else {
-                    ModifierState.LOCKED
-                }
-            }
-            "SUPER" -> {
-                keyboardState.superState = if (keyboardState.superState == ModifierState.LOCKED) {
-                    ModifierState.OFF
-                } else {
-                    ModifierState.LOCKED
-                }
-            }
+            sendModifierSignal(mod)
         }
         keyboardView.invalidate()
+    }
+
+    private fun isShiftRequiredForChar(c: Char): Boolean {
+        if (c.isUpperCase()) return true
+        return c in listOf('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '~', '_', '+', '{', '}', '|', ':', '"', '<', '>', '?')
     }
 
     private fun getKeyCodeForChar(c: Char): Int {
@@ -1015,6 +1024,15 @@ class ProgrammerInputMethodService : InputMethodService() {
             return KeyEvent.KEYCODE_0 + (c - '0')
         }
         return when (c) {
+            '!', ')' -> if (c == '!') KeyEvent.KEYCODE_1 else KeyEvent.KEYCODE_0
+            '@' -> KeyEvent.KEYCODE_2
+            '#' -> KeyEvent.KEYCODE_3
+            '$' -> KeyEvent.KEYCODE_4
+            '%' -> KeyEvent.KEYCODE_5
+            '^' -> KeyEvent.KEYCODE_6
+            '&' -> KeyEvent.KEYCODE_7
+            '*' -> KeyEvent.KEYCODE_8
+            '(' -> KeyEvent.KEYCODE_9
             '`', '~' -> KeyEvent.KEYCODE_GRAVE
             '-', '_' -> KeyEvent.KEYCODE_MINUS
             '=', '+' -> KeyEvent.KEYCODE_EQUALS
@@ -1028,6 +1046,7 @@ class ProgrammerInputMethodService : InputMethodService() {
             '/', '?' -> KeyEvent.KEYCODE_SLASH
             ' ' -> KeyEvent.KEYCODE_SPACE
             '\n' -> KeyEvent.KEYCODE_ENTER
+            '\t' -> KeyEvent.KEYCODE_TAB
             else -> KeyEvent.KEYCODE_UNKNOWN
         }
     }
