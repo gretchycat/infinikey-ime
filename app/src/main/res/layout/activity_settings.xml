@@ -53,6 +53,11 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="ℹ️" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="🎨" />
 
         <com.google.android.material.tabs.TabItem
@@ -96,7 +101,7 @@
         android:paddingEnd="20dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:text="🎨 Geometry"
+        android:text="ℹ️ About"
         android:textColor="@color/key_text_accent"
         android:textSize="14sp"
         android:textStyle="bold" />
@@ -519,15 +524,15 @@
             </LinearLayout>
 
 
-            <!-- TAB 0: GEOMETRY & SCALE -->
+            <!-- TAB 0: ABOUT & OVERVIEW -->
             <LinearLayout
-                android:id="@+id/panelLayout"
+                android:id="@+id/panelAbout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <!-- Section: App Info & Version Card -->
+                <!-- Section 1: App Info & Version Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -538,8 +543,8 @@
                     android:layout_marginBottom="16dp">
 
                     <ImageView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:src="@mipmap/ic_launcher"
                         android:layout_marginEnd="14dp" />
 
@@ -554,7 +559,7 @@
                             android:layout_height="wrap_content"
                             android:text="Infinikey IME"
                             android:textColor="@color/settings_text_header"
-                            android:textSize="16sp"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -562,28 +567,40 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="Version 0.0.2 • Build 72"
+                            android:text="Version 0.2.32 • Build 183"
                             android:textColor="#38BDF8"
                             android:textSize="13sp"
                             android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Declarative Layouts • Customization &amp; Power Tools"
+                            android:textColor="@color/settings_text_sub"
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Section 0: Required Permissions & System Setup Card -->
+                <!-- Section 2: Required Permissions & System Setup Card (Moved under Version!) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_settings_card"
                     android:orientation="vertical"
-                    android:padding="16dp"
                     android:layout_marginBottom="16dp">
 
+                    <!-- Collapsible Header -->
                     <LinearLayout
+                        android:id="@+id/headerPermissions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="12dp">
+                        android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
 
                         <View
                             android:layout_width="4dp"
@@ -591,210 +608,575 @@
                             android:background="@drawable/bg_vertical_rule" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:layout_marginStart="8dp"
                             android:text="🔑 Required Permissions &amp; Setup"
                             android:textColor="#38BDF8"
                             android:textSize="15sp"
                             android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvArrowPermissions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▲"
+                            android:textColor="#94A3B8"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Enable Infinikey IME as an input method and grant optional features access below:"
-                        android:textColor="@color/settings_text_sub"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="14dp" />
-
-                    <!-- Item 1: Enable IME in System Settings -->
+                    <!-- Collapsible Content -->
                     <LinearLayout
+                        android:id="@+id/layoutPermissionsContent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp">
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"
+                        android:visibility="visible">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:text="Enable Infinikey IME as an input method and grant optional features access below:"
+                            android:textColor="@color/settings_text_sub"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="14dp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="1. Enable Keyboard in Settings"
-                                android:textColor="@color/settings_text_header"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
+                        <!-- Item 1: Enable IME in System Settings -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="10dp">
 
-                            <TextView
-                                android:id="@+id/tvStatusEnableIme"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="⚠️ Disabled in System Settings"
-                                android:textColor="#F59E0B"
-                                android:textSize="11sp" />
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1. Enable Keyboard in Settings"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvStatusEnableIme"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="⚠️ Disabled in System Settings"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnEnableIme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="44dp"
+                                android:minHeight="44dp"
+                                android:backgroundTint="#0F766E"
+                                android:text="⚙️ Enable"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:paddingStart="14dp"
+                                android:paddingEnd="14dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp" />
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/btnEnableIme"
-                            android:layout_width="wrap_content"
-                            android:layout_height="44dp"
-                            android:minHeight="44dp"
-                            android:backgroundTint="#0F766E"
-                            android:text="⚙️ Enable"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:paddingStart="14dp"
-                            android:paddingEnd="14dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp" />
-                    </LinearLayout>
-
-                    <!-- Item 2: Select IME as Active Input Method -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp">
-
+                        <!-- Item 2: Select IME as Active Input Method -->
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="10dp">
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="2. Select Active Keyboard"
-                                android:textColor="@color/settings_text_header"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/tvStatusSelectIme"
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2. Select Active Keyboard"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvStatusSelectIme"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="⚠️ Not Selected as Current Keyboard"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnSelectIme"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="⚠️ Not Selected as Current Keyboard"
-                                android:textColor="#F59E0B"
-                                android:textSize="11sp" />
+                                android:layout_height="44dp"
+                                android:minHeight="44dp"
+                                android:backgroundTint="#1E3A5F"
+                                android:text="⌨️ Select"
+                                android:textColor="#38BDF8"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:paddingStart="14dp"
+                                android:paddingEnd="14dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp" />
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/btnSelectIme"
-                            android:layout_width="wrap_content"
-                            android:layout_height="44dp"
-                            android:minHeight="44dp"
-                            android:backgroundTint="#1E3A5F"
-                            android:text="⌨️ Select"
-                            android:textColor="#38BDF8"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:paddingStart="14dp"
-                            android:paddingEnd="14dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp" />
-                    </LinearLayout>
-
-                    <!-- Item 3: Microphone Permission for Speech-to-Text -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="10dp">
-
+                        <!-- Item 3: Microphone Permission for Speech-to-Text -->
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="10dp">
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="3. Microphone (Speech-to-Text)"
-                                android:textColor="@color/settings_text_header"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/tvStatusMicPermission"
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="3. Microphone (Speech-to-Text)"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvStatusMicPermission"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="⚠️ Permission Not Granted"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnGrantMicPermission"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="⚠️ Permission Not Granted"
-                                android:textColor="#F59E0B"
-                                android:textSize="11sp" />
+                                android:layout_height="44dp"
+                                android:minHeight="44dp"
+                                android:backgroundTint="#0F766E"
+                                android:text="🎙️ Grant"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:paddingStart="14dp"
+                                android:paddingEnd="14dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp" />
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/btnGrantMicPermission"
-                            android:layout_width="wrap_content"
-                            android:layout_height="44dp"
-                            android:minHeight="44dp"
-                            android:backgroundTint="#0F766E"
-                            android:text="🎙️ Grant"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:paddingStart="14dp"
-                            android:paddingEnd="14dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp" />
-                    </LinearLayout>
-
-                    <!-- Item 4: Overlay Window Permission -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
+                        <!-- Item 4: Overlay Window Permission -->
                         <LinearLayout
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="4. Display Over Apps (Show Text Over Other Apps)"
-                                android:textColor="@color/settings_text_header"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/tvStatusOverlayPermission"
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="4. Display Over Apps (Show Text Over Other Apps)"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvStatusOverlayPermission"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="⚠️ Permission Not Granted"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnGrantOverlayPermission"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="⚠️ Permission Not Granted"
-                                android:textColor="#F59E0B"
-                                android:textSize="11sp" />
+                                android:layout_height="44dp"
+                                android:minHeight="44dp"
+                                android:backgroundTint="#1E3A5F"
+                                android:text="🪟 Grant"
+                                android:textColor="#38BDF8"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:paddingStart="14dp"
+                                android:paddingEnd="14dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp" />
                         </LinearLayout>
-
-                        <Button
-                            android:id="@+id/btnGrantOverlayPermission"
-                            android:layout_width="wrap_content"
-                            android:layout_height="44dp"
-                            android:minHeight="44dp"
-                            android:backgroundTint="#1E3A5F"
-                            android:text="🪟 Grant"
-                            android:textColor="#38BDF8"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:paddingStart="14dp"
-                            android:paddingEnd="14dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <!-- Section 3: Keyboard Overview & Documentation Markdown -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Collapsible Header -->
+                    <LinearLayout
+                        android:id="@+id/headerAboutMarkdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:text="📜 Documentation &amp; Overview (ABOUT.md)"
+                            android:textColor="#38BDF8"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvArrowAboutMarkdown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▲"
+                            android:textColor="#94A3B8"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Collapsible Content -->
+                    <LinearLayout
+                        android:id="@+id/layoutAboutMarkdownContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/tvAboutMarkdownText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/settings_text_sub"
+                            android:textColorLink="#38BDF8"
+                            android:textSize="13sp"
+                            android:lineSpacingExtra="3dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Section 4: Support Development & Donation Links -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_settings_card"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Collapsible Header -->
+                    <LinearLayout
+                        android:id="@+id/headerDonations"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
+
+                        <View
+                            android:layout_width="4dp"
+                            android:layout_height="18dp"
+                            android:background="@drawable/bg_vertical_rule" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:text="☕ Support Development &amp; Donations"
+                            android:textColor="#38BDF8"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvArrowDonations"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▲"
+                            android:textColor="#94A3B8"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Collapsible Content -->
+                    <LinearLayout
+                        android:id="@+id/layoutDonationsContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="If you enjoy using Infinikey IME and would like to support ongoing open-source development, consider donating or buying a coffee below:"
+                            android:textColor="@color/settings_text_sub"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="14dp" />
+
+                        <!-- 1. Ko-fi -->
+                        <LinearLayout
+                            android:id="@+id/btnDonateKofi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_spinner_card"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="12dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_marginBottom="10dp">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_kofi"
+                                android:layout_marginEnd="12dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Support on Ko-fi"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ko-fi.com/hopefaithless"
+                                    android:textColor="#FF5E5B"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="☕ Donate ↗"
+                                android:textColor="#FF5E5B"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- 2. PayPal -->
+                        <LinearLayout
+                            android:id="@+id/btnDonatePaypal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_spinner_card"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="12dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_marginBottom="10dp">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_paypal"
+                                android:layout_marginEnd="12dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="PayPal"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="paypal.me/GretchenMaculo"
+                                    android:textColor="#0079C1"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="💳 Donate ↗"
+                                android:textColor="#0079C1"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- 3. Venmo -->
+                        <LinearLayout
+                            android:id="@+id/btnDonateVenmo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_spinner_card"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="12dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_marginBottom="10dp">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_venmo"
+                                android:layout_marginEnd="12dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Venmo"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="venmo.com (GretchenMaculo)"
+                                    android:textColor="#008CFF"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="💸 Venmo ↗"
+                                android:textColor="#008CFF"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- 4. GitHub Profile -->
+                        <LinearLayout
+                            android:id="@+id/btnDonateGithub"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_spinner_card"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="12dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_github"
+                                android:layout_marginEnd="12dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="GitHub Profile"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="github.com/gretchycat"
+                                    android:textColor="#38BDF8"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🐙 GitHub ↗"
+                                android:textColor="#38BDF8"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- TAB 1: GEOMETRY & SCALE -->
+            <LinearLayout
+                android:id="@+id/panelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"

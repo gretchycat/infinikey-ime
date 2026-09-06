@@ -429,7 +429,7 @@ class KeyboardView @JvmOverloads constructor(
         if (isEditorPreviewMode) return true
         val layoutId = layoutDefinition?.id ?: ""
         val qualifiedKey = "$layoutId:${row.id}"
-        val override = rowVisibilityMap[qualifiedKey]
+        val override = rowVisibilityMap[qualifiedKey] ?: rowVisibilityMap[row.id.toString()]
         if (override != null) return override
         if (layoutId == "main" || layoutId == "function") {
             return !row.hidden || keyboardState.isFnActive

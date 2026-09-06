@@ -342,6 +342,11 @@ class ProgrammerInputMethodService : InputMethodService() {
                 val layoutId = keyboardView.layoutDefinition?.id ?: "main"
                 profile.rowVisibility["$layoutId:$rowId"] = isVisible
                 profile.rowVisibility[rowId] = isVisible
+                com.infinikey_ime.util.AppPreferencesManager.saveRowVisibilityForApp(
+                    this@ProgrammerInputMethodService,
+                    currentPackageName,
+                    profile.rowVisibility
+                )
             }
             onScreenModeChangeListener = { mode ->
                 if (mode == "FLOATING") {
@@ -460,6 +465,11 @@ class ProgrammerInputMethodService : InputMethodService() {
 
         val isNewProfile = !appProfiles.containsKey(pkgName)
         val profile = appProfiles.getOrPut(pkgName) { AppProfile() }
+
+        val savedRowVis = com.infinikey_ime.util.AppPreferencesManager.getRowVisibilityForApp(this, pkgName)
+        if (savedRowVis.isNotEmpty()) {
+            profile.rowVisibility.putAll(savedRowVis)
+        }
 
         val inputType = info?.inputType ?: 0
         val inputClass = inputType and android.text.InputType.TYPE_MASK_CLASS

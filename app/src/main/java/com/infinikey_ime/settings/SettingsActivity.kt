@@ -74,18 +74,19 @@ class SettingsActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
 
         val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tabLayout)
-        val panelEditor = findViewById<View>(R.id.panelEditor)
+        val panelAbout = findViewById<View>(R.id.panelAbout)
         val panelLayout = findViewById<View>(R.id.panelLayout)
         val panelBehavior = findViewById<View>(R.id.panelBehavior)
         val panelHaptics = findViewById<View>(R.id.panelHaptics)
         val panelAudio = findViewById<View>(R.id.panelAudio)
         val panelThemes = findViewById<View>(R.id.panelThemes)
+        val panelEditor = findViewById<View>(R.id.panelEditor)
         val panelStt = findViewById<View>(R.id.panelStt)
 
         val btnGrantOverlayPermission = findViewById<Button>(R.id.btnGrantOverlayPermission)
 
         if (!com.infinikey_ime.BuildConfig.DEBUG) {
-            tabLayout?.getTabAt(6)?.let { tab ->
+            tabLayout?.getTabAt(7)?.let { tab ->
                 tabLayout.removeTab(tab)
             }
         }
@@ -97,21 +98,44 @@ class SettingsActivity : AppCompatActivity() {
             override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
                 val position = tab?.position ?: 0
                 updateTabDisplay(position)
-                panelLayout?.visibility = if (position == 0) View.VISIBLE else View.GONE
-                panelBehavior?.visibility = if (position == 1) View.VISIBLE else View.GONE
-                panelHaptics?.visibility = if (position == 2) View.VISIBLE else View.GONE
-                panelAudio?.visibility = if (position == 3) View.VISIBLE else View.GONE
-                panelThemes?.visibility = if (position == 4) View.VISIBLE else View.GONE
-                panelEditor?.visibility = if (position == 5) View.VISIBLE else View.GONE
-                panelStt?.visibility = if (com.infinikey_ime.BuildConfig.DEBUG && position == 6) View.VISIBLE else View.GONE
+                panelAbout?.visibility = if (position == 0) View.VISIBLE else View.GONE
+                panelLayout?.visibility = if (position == 1) View.VISIBLE else View.GONE
+                panelBehavior?.visibility = if (position == 2) View.VISIBLE else View.GONE
+                panelHaptics?.visibility = if (position == 3) View.VISIBLE else View.GONE
+                panelAudio?.visibility = if (position == 4) View.VISIBLE else View.GONE
+                panelThemes?.visibility = if (position == 5) View.VISIBLE else View.GONE
+                panelEditor?.visibility = if (position == 6) View.VISIBLE else View.GONE
+                panelStt?.visibility = if (com.infinikey_ime.BuildConfig.DEBUG && position == 7) View.VISIBLE else View.GONE
             }
             override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
             override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
         })
 
-        // Display Version & Build Info on Tab 1 (Geometry)
+        // Setup Donation Link Click Listeners
+        val openUrl: (String) -> Unit = { url ->
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Could not open link: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        findViewById<View>(R.id.btnDonateKofi)?.setOnClickListener { openUrl("https://ko-fi.com/hopefaithless") }
+        findViewById<View>(R.id.btnDonatePaypal)?.setOnClickListener { openUrl("https://www.paypal.me/GretchenMaculo") }
+        findViewById<View>(R.id.btnDonateVenmo)?.setOnClickListener { openUrl("https://venmo.com/code?user_id=3241824093208576459&created=1788724476") }
+        findViewById<View>(R.id.btnDonateGithub)?.setOnClickListener { openUrl("https://github.com/gretchycat") }
+
+        // Display Version & Build Info on Tab 0 (About)
         val tvSettingsVersionInfo = findViewById<TextView>(R.id.tvSettingsVersionInfo)
         tvSettingsVersionInfo?.text = "Version ${com.infinikey_ime.BuildConfig.VERSION_NAME} • Build ${com.infinikey_ime.BuildConfig.VERSION_CODE}"
+
+        loadAboutMarkdown()
+
+        // Setup Collapsible Cards for About Tab
+        setupCollapsibleBlock(R.id.headerPermissions, R.id.layoutPermissionsContent, R.id.tvArrowPermissions)
+        setupCollapsibleBlock(R.id.headerAboutMarkdown, R.id.layoutAboutMarkdownContent, R.id.tvArrowAboutMarkdown)
+        setupCollapsibleBlock(R.id.headerDonations, R.id.layoutDonationsContent, R.id.tvArrowDonations)
 
         // Required Permissions & Setup Buttons
         val btnEnableIme = findViewById<Button>(R.id.btnEnableIme)
@@ -3414,6 +3438,7 @@ class SettingsActivity : AppCompatActivity() {
     private val tabsInfo: List<Pair<String, String>>
         get() = if (com.infinikey_ime.BuildConfig.DEBUG) {
             listOf(
+                Pair("ℹ️", "About"),
                 Pair("🎨", "Geometry"),
                 Pair("⚡", "Behavior"),
                 Pair("📳", "Haptics"),
@@ -3424,6 +3449,7 @@ class SettingsActivity : AppCompatActivity() {
             )
         } else {
             listOf(
+                Pair("ℹ️", "About"),
                 Pair("🎨", "Geometry"),
                 Pair("⚡", "Behavior"),
                 Pair("📳", "Haptics"),
@@ -3523,6 +3549,34 @@ class SettingsActivity : AppCompatActivity() {
         } else {
             tvStatusOverlayPermission.text = "⚠️ Permission Not Granted"
             tvStatusOverlayPermission.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
+        }
+
+        // Auto-close permissions block if all 4 permissions/setup conditions are granted
+        val allGranted = isEnabled && isSelected && hasMic && hasOverlay
+        val layoutPermissionsContent = findViewById<View>(R.id.layoutPermissionsContent)
+        val tvArrowPermissions = findViewById<TextView>(R.id.tvArrowPermissions)
+        if (allGranted) {
+            layoutPermissionsContent?.visibility = View.GONE
+            tvArrowPermissions?.text = "▼"
+        } else {
+            layoutPermissionsContent?.visibility = View.VISIBLE
+            tvArrowPermissions?.text = "▲"
+        }
+    }
+
+    private fun setupCollapsibleBlock(headerId: Int, contentId: Int, arrowId: Int) {
+        val header = findViewById<View>(headerId) ?: return
+        val content = findViewById<View>(contentId) ?: return
+        val arrow = findViewById<TextView>(arrowId)
+
+        header.setOnClickListener {
+            if (content.visibility == View.VISIBLE) {
+                content.visibility = View.GONE
+                arrow?.text = "▼"
+            } else {
+                content.visibility = View.VISIBLE
+                arrow?.text = "▲"
+            }
         }
     }
 
@@ -3981,6 +4035,39 @@ class SettingsActivity : AppCompatActivity() {
 
         svTestKeyEventsLog?.post {
             svTestKeyEventsLog.fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
+    private fun loadAboutMarkdown() {
+        val tvAboutMarkdownText = findViewById<TextView>(R.id.tvAboutMarkdownText) ?: return
+        try {
+            val markdown = assets.open("ABOUT.md").bufferedReader().use { it.readText() }
+            val formattedText = parseSimpleMarkdown(markdown)
+            tvAboutMarkdownText.text = formattedText
+            tvAboutMarkdownText.movementMethod = android.text.method.LinkMovementMethod.getInstance()
+        } catch (e: Exception) {
+            tvAboutMarkdownText.text = "Could not load ABOUT.md: ${e.message}"
+        }
+    }
+
+    private fun parseSimpleMarkdown(markdown: String): CharSequence {
+        val html = markdown
+            .replace(Regex("(?m)^# (.*)$"), "<font color=\"#38BDF8\"><h2>$1</h2></font>")
+            .replace(Regex("(?m)^## (.*)$"), "<font color=\"#38BDF8\"><h3>$1</h3></font>")
+            .replace(Regex("(?m)^### (.*)$"), "<font color=\"#38BDF8\"><b>$1</b></font>")
+            .replace(Regex("(?m)^---$"), "<hr/>")
+            .replace(Regex("(?m)^- (.*)$"), "• $1<br/>")
+            .replace(Regex("`([^`]+)`"), "<font color=\"#4ADE80\"><code>$1</code></font>")
+            .replace(Regex("\\*\\*([^*]+)\\*\\*"), "<b>$1</b>")
+            .replace(Regex("\\*([^*]+)\\*"), "<i>$1</i>")
+            .replace(Regex("\\[([^\\]]+)\\]\\(([^\\)]+)\\)"), "<a href=\"$2\">$1</a>")
+            .replace("\n\n", "<br/><br/>")
+
+        return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            android.text.Html.fromHtml(html, android.text.Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            @Suppress("DEPRECATION")
+            android.text.Html.fromHtml(html)
         }
     }
 }

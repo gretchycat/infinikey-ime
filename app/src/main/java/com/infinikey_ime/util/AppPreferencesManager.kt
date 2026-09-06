@@ -7,7 +7,7 @@ import com.google.gson.JsonParser
 import java.io.File
 
 /**
- * Manager for saving and loading app-specific layout preferences.
+ * Manager for saving and loading app-specific layout & row visibility preferences.
  * Preferences are stored in a directory called "app preferences" in the user accessible private directory:
  * <User Accessible Private Directory>/app preferences/<packageName>.json
  */
@@ -79,21 +79,90 @@ object AppPreferencesManager {
     }
 
     /**
-     * Saves the last layout used for a given package name into app preferences directory.
+     * Reads the saved row visibility map for a given package name if present in app preferences.
      */
-    fun saveLastLayoutForApp(context: Context, packageName: String, layoutId: String) {
-        if (packageName.isBlank() || layoutId.isBlank()) return
-        val cleanLayoutId = layoutId.removeSuffix(".json")
+    fun getRowVisibilityForApp(context: Context, packageName: String): Map<String, Boolean> {
+        if (packageName.isBlank()) return emptyMap()
+        val dir = getAppPreferencesDir(context)
+        val candidates = listOf(
+            File(dir, "$packageName.json"),
+            File(dir, "$packageName.txt"),
+            File(dir, packageName)
+        )
+        val file = candidates.firstOrNull { it.exists() && it.isFile && it.length() > 0 } ?: return emptyMap()
+
+        return try {
+            val content = file.readText().trim()
+            if (content.isEmpty() || !content.startsWith("{")) return emptyMap()
+
+            val json = JsonParser.parseString(content).asJsonObject
+            val rowVisObj = json.getAsJsonObject("rowVisibility") ?: return emptyMap()
+            val result = mutableMapOf<String, Boolean>()
+            for ((key, value) in rowVisObj.entrySet()) {
+                if (value.isJsonPrimitive && value.asJsonPrimitive.isBoolean) {
+                    result[key] = value.asBoolean
+                }
+            }
+            result
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyMap()
+        }
+    }
+
+    /**
+     * Saves app preferences (layout target and/or row visibility) for a given package name.
+     */
+    fun saveAppPreferences(
+        context: Context,
+        packageName: String,
+        layoutId: String? = null,
+        rowVisibility: Map<String, Boolean>? = null
+    ) {
+        if (packageName.isBlank()) return
         try {
             val dir = getAppPreferencesDir(context)
             val file = File(dir, "$packageName.json")
-            val jsonObject = JsonObject().apply {
-                addProperty("layoutTarget", cleanLayoutId)
-                addProperty("lastUpdated", System.currentTimeMillis())
+            val existingObj = if (file.exists() && file.length() > 0) {
+                try {
+                    val content = file.readText().trim()
+                    if (content.startsWith("{")) JsonParser.parseString(content).asJsonObject else JsonObject()
+                } catch (_: Exception) { JsonObject() }
+            } else {
+                JsonObject()
             }
-            file.writeText(gson.toJson(jsonObject))
+
+            if (!layoutId.isNullOrBlank()) {
+                val cleanLayoutId = layoutId.removeSuffix(".json")
+                existingObj.addProperty("layoutTarget", cleanLayoutId)
+            }
+
+            if (rowVisibility != null) {
+                val rowVisJson = JsonObject()
+                rowVisibility.forEach { (k, v) ->
+                    rowVisJson.addProperty(k, v)
+                }
+                existingObj.add("rowVisibility", rowVisJson)
+            }
+
+            existingObj.addProperty("lastUpdated", System.currentTimeMillis())
+            file.writeText(gson.toJson(existingObj))
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    /**
+     * Saves the last layout used for a given package name into app preferences directory.
+     */
+    fun saveLastLayoutForApp(context: Context, packageName: String, layoutId: String) {
+        saveAppPreferences(context, packageName, layoutId = layoutId)
+    }
+
+    /**
+     * Saves the row visibility map for a given package name into app preferences directory.
+     */
+    fun saveRowVisibilityForApp(context: Context, packageName: String, rowVisibility: Map<String, Boolean>) {
+        saveAppPreferences(context, packageName, rowVisibility = rowVisibility)
     }
 }
