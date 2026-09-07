@@ -1,7 +1,7 @@
 {
   "id": "phone",
   "name": "Phone Dialer Layout",
-  "version": "0.2.35",
+  "version": "0.3.0",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Traditional 3x4 phone dialpad for telephone and PIN input.",
@@ -12,7 +12,8 @@
     "defaultHeightPercentage": 32,
     "showKeyPreview": false,
     "allowSplit": true,
-    "maxFontSize": 18
+    "maxFontSize": 18,
+    "accessoryLayout": "none"
   },
   "theme": {},
   "styles": {

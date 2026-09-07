@@ -466,6 +466,10 @@ object LayoutParser {
             ?: metadataObj?.get("scrollRows")?.asInt
         val maxCols = metadataObj?.get("maxVisibleColumns")?.asInt
             ?: metadataObj?.get("scrollColumns")?.asInt
+        val accessoryLayout = metadataObj?.get("accessoryLayout")?.asString
+            ?: metadataObj?.get("accessory_layout")?.asString
+            ?: metadataObj?.get("deadspaceLayout")?.asString
+            ?: metadataObj?.get("deadspace_layout")?.asString
 
         val metadata = LayoutMetadata(
             horizontalSpacing = hSpacing,
@@ -479,7 +483,9 @@ object LayoutParser {
             maxFontSize = maxFontSize,
             scrollDirection = scrollDir,
             maxVisibleRows = maxRows,
-            maxVisibleColumns = maxCols
+            maxVisibleColumns = maxCols,
+            accessoryLayout = accessoryLayout,
+            deadspaceLayout = accessoryLayout
         )
 
         // Theme

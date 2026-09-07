@@ -72,6 +72,8 @@ class ProgrammerInputMethodService : InputMethodService() {
             key == "pref_form_factor" ||
             key == "pref_form_factor_mode" ||
             key == "pref_keyboard_layout_target" ||
+            key == "pref_accessory_layout_target" ||
+            key == "pref_deadspace_layout_target" ||
             key?.startsWith("pref_row_vis_") == true) {
             reloadKeyboardLayoutAndTheme()
         }
@@ -120,6 +122,13 @@ class ProgrammerInputMethodService : InputMethodService() {
             val targetFile = if (currentLayoutId.endsWith(".json")) currentLayoutId else "$currentLayoutId.json"
             val freshLayout = com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
             keyboardView.setLayout(freshLayout)
+
+            val savedPrefTarget = prefs.getString("pref_accessory_layout_target", null)
+                ?: prefs.getString("pref_deadspace_layout_target", null)
+            val preferredAccessory = savedPrefTarget
+                ?: freshLayout.metadata.effectiveAccessoryLayout
+                ?: "none"
+            keyboardView.loadAccessoryLayout(preferredAccessory)
         }
     }
 

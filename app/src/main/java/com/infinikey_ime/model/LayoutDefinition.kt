@@ -15,8 +15,12 @@ data class LayoutMetadata(
     val maxFontSize: DimensionValue? = null,
     val scrollDirection: String? = null,
     val maxVisibleRows: Int? = null,
-    val maxVisibleColumns: Int? = null
-)
+    val maxVisibleColumns: Int? = null,
+    val accessoryLayout: String? = null,
+    val deadspaceLayout: String? = null
+) {
+    val effectiveAccessoryLayout: String? get() = accessoryLayout?.takeIf { it.isNotBlank() } ?: deadspaceLayout?.takeIf { it.isNotBlank() }
+}
 
 /**
  * Global theme configuration for a layout.

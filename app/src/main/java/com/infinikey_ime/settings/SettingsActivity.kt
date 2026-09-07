@@ -497,6 +497,32 @@ class SettingsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+        // Accessory Space Layout Spinner
+        val spAccessoryLayout = findViewById<Spinner>(R.id.spAccessoryLayout)
+        val accessoryOptions = getAvailableAccessoryOptions()
+        val accessoryAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accessoryOptions.map { it.first })
+        spAccessoryLayout?.adapter = accessoryAdapter
+
+        val currentAccessoryTarget = prefs.getString("pref_accessory_layout_target", null)
+            ?: prefs.getString("pref_deadspace_layout_target", "none")
+            ?: "none"
+        val initialAccessoryIdx = accessoryOptions.indexOfFirst { it.second == currentAccessoryTarget }.coerceAtLeast(0)
+        spAccessoryLayout?.setSelection(initialAccessoryIdx)
+
+        spAccessoryLayout?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val opts = getAvailableAccessoryOptions()
+                if (position in opts.indices) {
+                    val targetId = opts[position].second
+                    prefs.edit()
+                        .putString("pref_accessory_layout_target", targetId)
+                        .putString("pref_deadspace_layout_target", targetId)
+                        .apply()
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
         // 5. Shift Double-Tap Lock Mode Spinner
         val spShiftLock = findViewById<Spinner>(R.id.spShiftLock)
         val shiftLockOptions = listOf(
@@ -1935,6 +1961,35 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         var lastSelectedPos = initialPosition
+        val spEditorAccessoryLayout = findViewById<Spinner>(R.id.spEditorAccessoryLayout)
+        val editorAccessoryOptions = getAvailableAccessoryOptions()
+        val editorAccessoryAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, editorAccessoryOptions.map { it.first })
+        spEditorAccessoryLayout?.adapter = editorAccessoryAdapter
+
+        val initialEditorAccessoryTarget = prefs.getString("pref_accessory_layout_target", null)
+            ?: prefs.getString("pref_deadspace_layout_target", "none")
+            ?: "none"
+        val initialEditorAccessoryIdx = editorAccessoryOptions.indexOfFirst { it.second == initialEditorAccessoryTarget }.coerceAtLeast(0)
+        spEditorAccessoryLayout?.setSelection(initialEditorAccessoryIdx)
+
+        spEditorAccessoryLayout?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val currentOpts = getAvailableAccessoryOptions()
+                if (position in currentOpts.indices) {
+                    val targetId = currentOpts[position].second
+                    prefs.edit()
+                        .putString("pref_accessory_layout_target", targetId)
+                        .putString("pref_deadspace_layout_target", targetId)
+                        .apply()
+                    editingLayout?.let { curr ->
+                        editingLayout = curr.copy(metadata = curr.metadata.copy(accessoryLayout = targetId, deadspaceLayout = targetId))
+                    }
+                    editorKeyboardView.loadAccessoryLayout(targetId)
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
         spEditorLayoutSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position !in layoutEntries.indices) return
@@ -1973,6 +2028,15 @@ class SettingsActivity : AppCompatActivity() {
                     com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, targetFile ?: "${targetId}.json")
                 }
                 editingLayout = com.infinikey_ime.engine.LayoutParser.applyThemeOverrides(this@SettingsActivity, rawLayout)
+
+                val accTarget = editingLayout?.metadata?.effectiveAccessoryLayout
+                    ?: prefs.getString("pref_accessory_layout_target", null)
+                    ?: prefs.getString("pref_deadspace_layout_target", "none")
+                    ?: "none"
+                val currentOpts = getAvailableAccessoryOptions()
+                val accIdx = currentOpts.indexOfFirst { it.second == accTarget }.coerceAtLeast(0)
+                spEditorAccessoryLayout?.setSelection(accIdx)
+                editorKeyboardView.loadAccessoryLayout(accTarget)
 
                 undoStack.clear()
                 redoStack.clear()
@@ -2272,7 +2336,7 @@ class SettingsActivity : AppCompatActivity() {
                         } catch (_: Exception) {}
 
                         editingLayout = com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
-                        editorKeyboardView.setLayout(editingLayout!!)
+                        editingLayout?.let { editorKeyboardView.setLayout(it) }
                         hasUnsavedChanges = true
                         updateUndoRedoButtons()
                         val newPos = spEditorLayoutSelector.selectedItemPosition
@@ -3396,6 +3460,70 @@ class SettingsActivity : AppCompatActivity() {
         return obj
     }
 
+    private fun getAvailableAccessoryOptions(): List<Pair<String, String>> {
+        val options = mutableListOf<Pair<String, String>>()
+        options.add(Pair("None (Disabled)", "none"))
+
+        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json")
+        val generatedAssetFiles = listOf("emoji.json", "emoji_animals.json", "emoji_body.json", "emoji_flags.json", "emoji_food.json", "emoji_objects.json", "emoji_sports.json", "emoji_symbols.json", "emoji_travel.json")
+
+        // 1. Default Asset Layouts
+        for (file in defaultAssetFiles) {
+            val targetId = file.removeSuffix(".json")
+            val label = when (targetId) {
+                "main" -> "⌨️ Main / Terminal Layout"
+                "mobile" -> "📱 Mobile Layout"
+                "mobile_number" -> "🔢 Mobile Numbers"
+                "mobile_symbol" -> "🔣 Mobile Symbols"
+                "function" -> "⚡ Function / Fn Layer"
+                "phone" -> "📞 Phone Dialpad"
+                else -> targetId
+            }
+            options.add(Pair(label, targetId))
+        }
+
+        // 2. User-Created Custom Layouts in layouts/ folder
+        try {
+            val layoutsDir = java.io.File(getExternalFilesDir(null), "layouts")
+            if (layoutsDir.exists()) {
+                val userFiles = layoutsDir.listFiles { _, name ->
+                    name.endsWith(".json") && name !in defaultAssetFiles && name !in generatedAssetFiles
+                }?.sortedBy { it.name } ?: emptyList()
+
+                for (userFile in userFiles) {
+                    val targetId = userFile.name.removeSuffix(".json")
+                    val displayName = try {
+                        val json = com.infinikey_ime.engine.LayoutParser.parseJsonLayoutDescriptor(userFile.readText())
+                        if (json.name.isNotEmpty()) "👤 ${json.name}" else "📄 $targetId"
+                    } catch (_: Exception) {
+                        "📄 $targetId"
+                    }
+                    options.add(Pair(displayName, targetId))
+                }
+            }
+        } catch (_: Exception) {}
+
+        // 3. Specialty / Emoji Layouts
+        for (file in generatedAssetFiles) {
+            val targetId = file.removeSuffix(".json")
+            val label = when (file) {
+                "emoji.json" -> "😃 Emojis"
+                "emoji_animals.json" -> "🐾 Emoji Animals"
+                "emoji_body.json" -> "🙋 Emoji Body & People"
+                "emoji_flags.json" -> "🚩 Emoji Flags"
+                "emoji_food.json" -> "🍔 Emoji Food"
+                "emoji_objects.json" -> "💡 Emoji Objects"
+                "emoji_sports.json" -> "⚽ Emoji Sports"
+                "emoji_symbols.json" -> "🔣 Emoji Symbols"
+                "emoji_travel.json" -> "✈️ Emoji Travel"
+                else -> targetId
+            }
+            options.add(Pair(label, targetId))
+        }
+
+        return options
+    }
+
     private fun serializeLayoutToJson(layout: LayoutDefinition): String {
         val root = com.google.gson.JsonObject()
         root.addProperty("id", layout.id)
@@ -3407,6 +3535,10 @@ class SettingsActivity : AppCompatActivity() {
         metaObj.addProperty("defaultScreenMode", layout.metadata.defaultScreenMode)
         metaObj.addProperty("defaultHeightPercentage", layout.metadata.defaultHeightPercentage)
         metaObj.addProperty("showKeyPreview", layout.metadata.showKeyPreview)
+        layout.metadata.effectiveAccessoryLayout?.let {
+            metaObj.addProperty("accessoryLayout", it)
+            metaObj.addProperty("deadspaceLayout", it)
+        }
         root.add("metadata", metaObj)
 
         // Theme
