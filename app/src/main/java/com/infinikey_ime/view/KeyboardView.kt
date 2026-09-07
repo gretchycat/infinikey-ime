@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
@@ -448,6 +449,33 @@ class KeyboardView @JvmOverloads constructor(
                 showZoomPreview(key.primaryLabel, bounds.rect)
                 return@Runnable
             }
+
+            val macroAction = (key.onPressAction as? KeyAction.Macro)
+                ?: (key.onLongPressAction as? KeyAction.Macro)
+                ?: if (key.primaryLabel.matches(Regex("M\\d+"))) KeyAction.Macro(key.primaryLabel) else null
+
+            if (macroAction != null) {
+                isLongPressTriggered = true
+                performKeypressHapticFeedback()
+                val macroId = macroAction.id
+                if (com.infinikey_ime.util.MacroManager.isRecording(macroId)) {
+                    val result = com.infinikey_ime.util.MacroManager.stopRecording(context)
+                    if (result != null) {
+                        android.widget.Toast.makeText(context, "💾 Macro ${result.first} saved (${result.second} steps)", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    val savedPrev = com.infinikey_ime.util.MacroManager.startRecording(context, macroId)
+                    val msg = if (savedPrev != null) {
+                        "💾 Saved previous Macro ${savedPrev.first} (${savedPrev.second} steps)\n🔴 Recording Macro $macroId...\nPress $macroId again to stop."
+                    } else {
+                        "🔴 Recording Macro $macroId...\nPress $macroId again to stop."
+                    }
+                    android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
+                }
+                invalidate()
+                return@Runnable
+            }
+
             if (key.onLongPressAction is KeyAction.None) {
                 return@Runnable
             }
@@ -828,7 +856,9 @@ class KeyboardView @JvmOverloads constructor(
         }
 
         val dsDef = accessoryLayoutDefinition
-        if (dsDef != null && (formFactor == com.infinikey_ime.model.FormFactorMode.SPLIT ||
+        val hasAccessoryText = !layoutDefinition?.metadata?.accessoryText.isNullOrBlank()
+
+        if ((dsDef != null || hasAccessoryText) && (formFactor == com.infinikey_ime.model.FormFactorMode.SPLIT ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.LEFT_DOCKED ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.SIDE_DOCKED ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.RIGHT_DOCKED)) {
@@ -856,32 +886,36 @@ class KeyboardView @JvmOverloads constructor(
             }
 
             if (deadSpaceRect != null) {
-                val deadspaceWidth = deadSpaceRect.width()
-                val idealLayoutWidth = computeIdealLayoutWidth(dsDef, deadSpaceRect.height(), hSpacingPx, vSpacingPx, density)
+                if (dsDef != null) {
+                    val deadspaceWidth = deadSpaceRect.width()
+                    val idealLayoutWidth = computeIdealLayoutWidth(dsDef, deadSpaceRect.height(), hSpacingPx, vSpacingPx, density)
 
-                if (idealLayoutWidth > 0f && deadspaceWidth >= idealLayoutWidth) {
-                    val leftPos = when (formFactor) {
-                        com.infinikey_ime.model.FormFactorMode.SPLIT -> {
-                            deadSpaceRect.left + (deadspaceWidth - idealLayoutWidth) / 2f
+                    if (idealLayoutWidth > 0f && deadspaceWidth >= idealLayoutWidth) {
+                        val leftPos = when (formFactor) {
+                            com.infinikey_ime.model.FormFactorMode.SPLIT -> {
+                                deadSpaceRect.left + (deadspaceWidth - idealLayoutWidth) / 2f
+                            }
+                            com.infinikey_ime.model.FormFactorMode.LEFT_DOCKED,
+                            com.infinikey_ime.model.FormFactorMode.SIDE_DOCKED -> {
+                                deadSpaceRect.right - idealLayoutWidth
+                            }
+                            com.infinikey_ime.model.FormFactorMode.RIGHT_DOCKED -> {
+                                deadSpaceRect.left
+                            }
+                            else -> deadSpaceRect.left + (deadspaceWidth - idealLayoutWidth) / 2f
                         }
-                        com.infinikey_ime.model.FormFactorMode.LEFT_DOCKED,
-                        com.infinikey_ime.model.FormFactorMode.SIDE_DOCKED -> {
-                            deadSpaceRect.right - idealLayoutWidth
-                        }
-                        com.infinikey_ime.model.FormFactorMode.RIGHT_DOCKED -> {
-                            deadSpaceRect.left
-                        }
-                        else -> deadSpaceRect.left + (deadspaceWidth - idealLayoutWidth) / 2f
+
+                        val idealAccessoryRect = RectF(
+                            leftPos,
+                            deadSpaceRect.top,
+                            leftPos + idealLayoutWidth,
+                            deadSpaceRect.bottom
+                        )
+                        activeAccessoryRect = idealAccessoryRect
+                        layoutDeadspaceKeys(dsDef, idealAccessoryRect, hSpacingPx, vSpacingPx, density)
                     }
-
-                    val idealAccessoryRect = RectF(
-                        leftPos,
-                        deadSpaceRect.top,
-                        leftPos + idealLayoutWidth,
-                        deadSpaceRect.bottom
-                    )
-                    activeAccessoryRect = idealAccessoryRect
-                    layoutDeadspaceKeys(dsDef, idealAccessoryRect, hSpacingPx, vSpacingPx, density)
+                } else if (hasAccessoryText) {
+                    activeAccessoryRect = deadSpaceRect
                 }
             }
         }
@@ -1053,6 +1087,35 @@ class KeyboardView @JvmOverloads constructor(
             val dsCorner = 12f * density
             canvas.drawRoundRect(dsRect, dsCorner, dsCorner, accessoryCardPaint)
             canvas.drawRoundRect(dsRect, dsCorner, dsCorner, accessoryBorderPaint)
+
+            val accText = layoutDefinition?.metadata?.accessoryText
+                ?: accessoryLayoutDefinition?.metadata?.accessoryText
+            if (!accText.isNullOrBlank()) {
+                val textColor = layoutDefinition?.metadata?.accessoryTextColor
+                    ?: accessoryLayoutDefinition?.metadata?.accessoryTextColor
+                    ?: android.graphics.Color.parseColor("#94A3B8")
+                val textSizePx = layoutDefinition?.metadata?.accessoryTextSize?.let { resolveDimension(it, dsRect.height(), density, 13f) }
+                    ?: accessoryLayoutDefinition?.metadata?.accessoryTextSize?.let { resolveDimension(it, dsRect.height(), density, 13f) }
+                    ?: (13f * density)
+
+                val accPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = textColor
+                    textSize = textSizePx
+                    textAlign = Paint.Align.CENTER
+                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+
+                val lines = accText.split("\n")
+                val fontMetrics = accPaint.fontMetrics
+                val lineHeight = (fontMetrics.descent - fontMetrics.ascent) * 1.15f
+                val totalTextHeight = lineHeight * lines.size
+                var startY = dsRect.centerY() - (totalTextHeight / 2f) - fontMetrics.ascent
+
+                lines.forEach { line ->
+                    canvas.drawText(line, dsRect.centerX(), startY, accPaint)
+                    startY += lineHeight
+                }
+            }
         }
 
         val themeBg = layoutDefinition?.theme?.backgroundColor
@@ -1119,8 +1182,8 @@ class KeyboardView @JvmOverloads constructor(
         keyBoundsList.forEach { keyBounds ->
             val key = keyBounds.key
             if (key.isSpacer) {
+                val rect = keyBounds.rect
                 if (isEditorPreviewMode) {
-                    val rect = keyBounds.rect
                     val dashPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                         style = Paint.Style.STROKE
                         color = android.graphics.Color.parseColor("#334155")
@@ -1128,6 +1191,27 @@ class KeyboardView @JvmOverloads constructor(
                         strokeWidth = 2f
                     }
                     canvas.drawRoundRect(rect, 8f, 8f, dashPaint)
+                }
+                val labelText = key.primaryLabel.ifEmpty { key.secondaryLabel ?: "" }
+                if (labelText.isNotEmpty()) {
+                    val textColor = key.fgColor ?: android.graphics.Color.parseColor("#64748B")
+                    val textSizePx = resolveDimension(key.fontSize, rect.height(), density, 13f)
+                    val spacerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = textColor
+                        textSize = textSizePx
+                        textAlign = Paint.Align.CENTER
+                        typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+                    }
+                    val lines = labelText.split("\n")
+                    val fontMetrics = spacerPaint.fontMetrics
+                    val lineHeight = (fontMetrics.descent - fontMetrics.ascent) * 1.1f
+                    val totalTextHeight = lineHeight * lines.size
+                    var startY = rect.centerY() - (totalTextHeight / 2f) - fontMetrics.ascent
+
+                    lines.forEach { line ->
+                        canvas.drawText(line, rect.centerX(), startY, spacerPaint)
+                        startY += lineHeight
+                    }
                 }
                 return@forEach
             }
@@ -1202,6 +1286,60 @@ class KeyboardView @JvmOverloads constructor(
                     strokeWidth = 1f * density
                 }
                 canvas.drawCircle(dotCenterX, dotCenterY, dotRadius, dotBorderPaint)
+            }
+
+            // Macro Key Indicator Light (Blinking red when recording, green when macro sequence saved)
+            val macroAction = (key.onPressAction as? KeyAction.Macro)
+                ?: (key.onLongPressAction as? KeyAction.Macro)
+                ?: if (key.primaryLabel.matches(Regex("M\\d+"))) KeyAction.Macro(key.primaryLabel) else null
+
+            if (macroAction != null) {
+                val macroId = macroAction.id
+                val isRec = com.infinikey_ime.util.MacroManager.isRecording(macroId)
+                val hasSaved = com.infinikey_ime.util.MacroManager.hasMacro(context, macroId)
+
+                val dotMargin = 6f * density
+                val dotCenterX = rect.right - dotMargin
+                val dotCenterY = rect.top + dotMargin
+
+                if (isRec) {
+                    val blinkOn = (System.currentTimeMillis() / 350) % 2 == 0L
+                    val dotRadius = 4f * density
+                    if (blinkOn) {
+                        val outerGlowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = android.graphics.Color.parseColor("#EF4444")
+                            style = Paint.Style.FILL
+                        }
+                        canvas.drawCircle(dotCenterX, dotCenterY, dotRadius + (2f * density), outerGlowPaint)
+
+                        val innerDotPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = android.graphics.Color.parseColor("#FFFFFF")
+                            style = Paint.Style.FILL
+                        }
+                        canvas.drawCircle(dotCenterX, dotCenterY, dotRadius / 1.8f, innerDotPaint)
+                    } else {
+                        val dimDotPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = android.graphics.Color.parseColor("#7F1D1D")
+                            style = Paint.Style.FILL
+                        }
+                        canvas.drawCircle(dotCenterX, dotCenterY, dotRadius, dimDotPaint)
+                    }
+                    postInvalidateDelayed(250)
+                } else if (hasSaved) {
+                    val dotRadius = 3.5f * density
+                    val greenPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.parseColor("#10B981")
+                        style = Paint.Style.FILL
+                    }
+                    canvas.drawCircle(dotCenterX, dotCenterY, dotRadius, greenPaint)
+
+                    val dotBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        color = android.graphics.Color.argb(128, 255, 255, 255)
+                        style = Paint.Style.STROKE
+                        strokeWidth = 1f * density
+                    }
+                    canvas.drawCircle(dotCenterX, dotCenterY, dotRadius, dotBorderPaint)
+                }
             }
 
             // Key Labels & Icons
@@ -1932,7 +2070,38 @@ class KeyboardView @JvmOverloads constructor(
             action
         }
 
+        if (com.infinikey_ime.util.MacroManager.isRecordingAny()) {
+            val isMacroKey = (actionToExecute is KeyAction.Macro) || (sourceKey?.primaryLabel?.matches(Regex("M\\d+")) == true)
+            if (isMacroKey) {
+                val result = com.infinikey_ime.util.MacroManager.stopRecording(context)
+                if (result != null) {
+                    android.widget.Toast.makeText(context, "💾 Macro ${result.first} saved (${result.second} steps)", android.widget.Toast.LENGTH_SHORT).show()
+                }
+                invalidate()
+                return
+            } else {
+                com.infinikey_ime.util.MacroManager.recordAction(actionToExecute)
+                if (actionToExecute is KeyAction.ToggleModifier || actionToExecute is KeyAction.LockModifier) {
+                    onKeyActionListener?.invoke(actionToExecute)
+                }
+                playKeyClickSound(isKeyDown = true)
+                performKeypressHapticFeedback()
+                invalidate()
+                return
+            }
+        }
+
         when (actionToExecute) {
+            is KeyAction.Macro -> {
+                val steps = com.infinikey_ime.util.MacroManager.getMacro(context, actionToExecute.id)
+                if (!steps.isNullOrEmpty()) {
+                    steps.forEach { stepAction ->
+                        executeAction(stepAction, sourceKey)
+                    }
+                } else {
+                    executeAction(KeyAction.SendText(actionToExecute.id), sourceKey)
+                }
+            }
             is KeyAction.SendText -> onKeyActionListener?.invoke(actionToExecute)
             is KeyAction.SendCode -> onKeyActionListener?.invoke(actionToExecute)
             is KeyAction.SwitchLayout -> {

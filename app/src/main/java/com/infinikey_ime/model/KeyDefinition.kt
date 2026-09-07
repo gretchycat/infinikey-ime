@@ -52,6 +52,7 @@ enum class KeyActionType {
     @SerializedName("PASTE_ECHO") PASTE_ECHO,
     @SerializedName("SWITCH_IME") SWITCH_IME,
     @SerializedName("LAUNCH_APP") LAUNCH_APP,
+    @SerializedName("MACRO") MACRO,
     @SerializedName("NONE") NONE
 }
 
@@ -78,6 +79,7 @@ sealed class KeyAction {
     object SwitchIme : KeyAction()
     data class LaunchApp(val packageName: String) : KeyAction()
     data class ShowZoomPreview(val text: String? = null) : KeyAction()
+    data class Macro(val id: String) : KeyAction()
     object None : KeyAction()
 }
 

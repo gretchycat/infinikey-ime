@@ -42,6 +42,7 @@ Each key descriptor can define multiple touch event actions:
 | :--- | :--- |
 | `"SEND_TEXT"` | Sends raw text strings or single characters directly to the input connection. |
 | `"SEND_CODE"` | Sends specific Android `KeyEvent` keycodes (e.g. `67` for Backspace, `66` for Enter, `131` for F1). |
+| `"MACRO"` | Replays or records custom multi-step keystroke macro sequences (e.g. `"M1"` through `"M10"`). Tap to replay/stop, long-press to record. |
 | `"SWITCH_LAYOUT"` | Swaps active layout layer dynamically (e.g. `"function"`, `"mobile"`, `"main"`). |
 | `"SET_SCREEN_MODE"` | Changes screen docking form factor (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`). |
 | `"ADJUST_HEIGHT"` | Dynamically resizes keyboard display height percentage (15% to 60%). |
@@ -55,6 +56,19 @@ Each key descriptor can define multiple touch event actions:
 | `"PASTE_ECHO"` | Echo-pastes primary clip to text input or raw terminal stream. |
 | `"SWITCH_IME"` | Opens system Input Method Manager picker dialog. |
 | `"LAUNCH_APP"` | Launches target Android application package directly from a key tap. |
+
+#### Accessory Layout System & Accessory Text
+When the keyboard is docked in `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, or `SIDE_DOCKED` mode, an **Accessory Area** is created next to or between key clusters.
+- **`accessoryLayout`**: Embeds a secondary keyboard layout inside this open space. Built-in options include `navigation` (arrow pad & navigation cluster), `mobile_number` (numeric keypad), `function` (F1–F12 function row), `macro` (Macro pad), `mobile_symbol` (symbol matrix), or `none`.
+- **`accessoryText`**: Renders custom multi-line text or headers (with custom `accessoryTextColor` and `accessoryTextSize`) centered within the accessory area card container.
+
+#### Macro Keys System (`MACRO` Action)
+- **Macro Recording & Replay**: Bind keycaps to `{"type": "MACRO", "id": "M1"}`. Long-pressing initiates keystroke recording; tapping stops recording and saves the step sequence (`pref_macro_<id>`). Single-tapping a recorded macro replays all steps.
+- **Macro Pad Layout (`macro.json`)**: Includes a dedicated 2x5 grid layout featuring `M1` through `M10` macro keys with `macroKey` styling.
+
+#### Text Placement in Spacing & Accessory Areas
+- **Spacer Text (Spacing Between Keys)**: Keys configured as spacers (`"spacer": true` or `"style": "spacer"`) omit keycaps and touch hit-testing. Specifying `label` (or `secondaryLabel`) renders custom single- or multi-line text (`\n`) centered within key gaps with configurable `fgColor` and `fontSize`.
+- **Accessory Area Text**: `metadata.accessoryText` renders centered watermark or informational text inside the side/center accessory area when split or docked.
 
 ---
 

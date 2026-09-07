@@ -1668,9 +1668,18 @@ class SettingsActivity : AppCompatActivity() {
             updateSaveButtonState()
         }
 
+        fun pushUndoState() {
+            editingLayout?.let { curr ->
+                undoStack.push(curr)
+                redoStack.clear()
+                hasUnsavedChanges = true
+                updateUndoRedoButtons()
+            }
+        }
+
         val spEditorLayoutSelector = findViewById<Spinner>(R.id.spEditorLayoutSelector)
         
-        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json")
+        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "navigation.json", "macro.json")
         val generatedAssetFiles = listOf("emoji.json", "emoji_animals.json", "emoji_body.json", "emoji_flags.json", "emoji_food.json", "emoji_objects.json", "emoji_sports.json", "emoji_symbols.json", "emoji_travel.json")
 
         data class LayoutSelectorEntry(
@@ -1703,6 +1712,8 @@ class SettingsActivity : AppCompatActivity() {
                 "mobile_symbol.json" -> "🔣 Mobile Symbols"
                 "function.json" -> "⚡ Function / Fn Layer"
                 "phone.json" -> "📞 Phone Dialpad"
+                "navigation.json" -> "🧭 Navigation & Editing Cluster"
+                "macro.json" -> "🤖 Macro Pad (M1-M10)"
                 "emoji.json" -> "😃 Emojis"
                 "emoji_animals.json" -> "🐾 Emoji Animals"
                 "emoji_body.json" -> "🙋 Emoji Body & People"
@@ -1962,6 +1973,9 @@ class SettingsActivity : AppCompatActivity() {
 
         var lastSelectedPos = initialPosition
         val spEditorAccessoryLayout = findViewById<Spinner>(R.id.spEditorAccessoryLayout)
+        val etEditorAccessoryText = findViewById<EditText>(R.id.etEditorAccessoryText)
+        var isUpdatingAccessoryTextUi = false
+
         val editorAccessoryOptions = getAvailableAccessoryOptions()
         val editorAccessoryAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, editorAccessoryOptions.map { it.first })
         spEditorAccessoryLayout?.adapter = editorAccessoryAdapter
@@ -1982,13 +1996,37 @@ class SettingsActivity : AppCompatActivity() {
                         .putString("pref_deadspace_layout_target", targetId)
                         .apply()
                     editingLayout?.let { curr ->
-                        editingLayout = curr.copy(metadata = curr.metadata.copy(accessoryLayout = targetId, deadspaceLayout = targetId))
+                        val currentAcc = curr.metadata.effectiveAccessoryLayout ?: "none"
+                        if (!currentAcc.equals(targetId, ignoreCase = true)) {
+                            pushUndoState()
+                            editingLayout = curr.copy(metadata = curr.metadata.copy(accessoryLayout = targetId, deadspaceLayout = targetId))
+                            hasUnsavedChanges = true
+                            updateUndoRedoButtons()
+                        }
                     }
                     editorKeyboardView.loadAccessoryLayout(targetId)
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+        etEditorAccessoryText?.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (isUpdatingAccessoryTextUi) return
+                val newText = s?.toString()?.takeIf { it.isNotBlank() }
+                editingLayout?.let { curr ->
+                    if (curr.metadata.accessoryText != newText) {
+                        pushUndoState()
+                        editingLayout = curr.copy(metadata = curr.metadata.copy(accessoryText = newText))
+                        hasUnsavedChanges = true
+                        updateUndoRedoButtons()
+                        editorKeyboardView.setLayout(editingLayout!!)
+                    }
+                }
+            }
+        })
 
         spEditorLayoutSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -2038,6 +2076,10 @@ class SettingsActivity : AppCompatActivity() {
                 spEditorAccessoryLayout?.setSelection(accIdx)
                 editorKeyboardView.loadAccessoryLayout(accTarget)
 
+                isUpdatingAccessoryTextUi = true
+                etEditorAccessoryText?.setText(editingLayout?.metadata?.accessoryText ?: "")
+                isUpdatingAccessoryTextUi = false
+
                 undoStack.clear()
                 redoStack.clear()
                 hasUnsavedChanges = false
@@ -2069,15 +2111,6 @@ class SettingsActivity : AppCompatActivity() {
 
         editorKeyboardView.onFormFactorModeChangeListener = { mode ->
             updateFormFactorButtons(mode)
-        }
-
-        fun pushUndoState() {
-            editingLayout?.let { curr ->
-                undoStack.push(curr)
-                redoStack.clear()
-                hasUnsavedChanges = true
-                updateUndoRedoButtons()
-            }
         }
 
         val btnEditRowProperties = findViewById<Button>(R.id.btnEditRowProperties)
@@ -2942,7 +2975,8 @@ class SettingsActivity : AppCompatActivity() {
             .setView(view)
             .setPositiveButton("Save Key Properties") { _, _ ->
                 pushUndoState()
-                val newPrimary = etPrimary.text.toString().ifEmpty { "Key" }
+                val newIsSpacer = cbIsSpacer.isChecked
+                val newPrimary = if (newIsSpacer) etPrimary.text.toString() else etPrimary.text.toString().ifEmpty { "Key" }
                 val newSecondary = etSecondary.text.toString().ifEmpty { null }
                 val newTopLeft = etTopLeft.text.toString().ifEmpty { null }
                 val newAlternatesRaw = etAlternates.text.toString().trim()
@@ -2954,7 +2988,6 @@ class SettingsActivity : AppCompatActivity() {
                 val newCat = availableStyles[spCategory.selectedItemPosition.coerceIn(0, availableStyles.size - 1)]
                 val newWeightVal = etWeight.text.toString().toFloatOrNull() ?: 1.0f
                 val newIconName = currentIconName?.ifEmpty { null }
-                val newIsSpacer = cbIsSpacer.isChecked
 
                 val newOnPress = parseKeyActionFromInputs(spActionType.selectedItemPosition, etActionParam.text.toString(), newPrimary)
                 val parsedLongPress = parseKeyActionFromInputs(spLongPressType.selectedItemPosition, etLongPressParam.text.toString(), "")
@@ -3151,11 +3184,13 @@ class SettingsActivity : AppCompatActivity() {
     ) {
         val view = layoutInflater.inflate(R.layout.dialog_edit_phantom_spacer, null)
         val etWidth = view.findViewById<EditText>(R.id.etPhantomWidthWeight)
+        val etText = view.findViewById<EditText>(R.id.etPhantomText)
         val btnConvert = view.findViewById<Button>(R.id.btnConvertToRegularKey)
         val btnDelete = view.findViewById<Button>(R.id.btnDeletePhantomSpacer)
 
         val currentWeight = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 0.5f
         etWidth.setText("$currentWeight")
+        etText.setText(key.primaryLabel)
 
         var dialogRef: AlertDialog? = null
 
@@ -3198,16 +3233,18 @@ class SettingsActivity : AppCompatActivity() {
 
         val createdDialog = AlertDialog.Builder(this)
             .setView(view)
-            .setPositiveButton("Save Width") { _, _ ->
+            .setPositiveButton("Save Spacer Properties") { _, _ ->
                 pushUndoState()
                 val newWeight = etWidth.text.toString().toFloatOrNull() ?: currentWeight
+                val newText = etText.text.toString().trim()
                 editingLayout?.let { layout ->
                     if (rowIdx in layout.rows.indices) {
                         val newRows = layout.rows.toMutableList()
                         val targetKeys = newRows[rowIdx].keys.toMutableList()
                         if (keyIdx in targetKeys.indices) {
                             targetKeys[keyIdx] = targetKeys[keyIdx].copy(
-                                widthWeight = DimensionValue.Ratio(newWeight)
+                                widthWeight = DimensionValue.Ratio(newWeight),
+                                primaryLabel = newText
                             )
                             newRows[rowIdx] = newRows[rowIdx].copy(keys = targetKeys)
                             onUpdate(layout.copy(rows = newRows))
@@ -3464,7 +3501,7 @@ class SettingsActivity : AppCompatActivity() {
         val options = mutableListOf<Pair<String, String>>()
         options.add(Pair("None (Disabled)", "none"))
 
-        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json")
+        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "navigation.json", "macro.json")
         val generatedAssetFiles = listOf("emoji.json", "emoji_animals.json", "emoji_body.json", "emoji_flags.json", "emoji_food.json", "emoji_objects.json", "emoji_sports.json", "emoji_symbols.json", "emoji_travel.json")
 
         // 1. Default Asset Layouts
@@ -3477,6 +3514,8 @@ class SettingsActivity : AppCompatActivity() {
                 "mobile_symbol" -> "🔣 Mobile Symbols"
                 "function" -> "⚡ Function / Fn Layer"
                 "phone" -> "📞 Phone Dialpad"
+                "navigation" -> "🧭 Navigation & Editing Cluster"
+                "macro" -> "🤖 Macro Pad (M1-M10)"
                 else -> targetId
             }
             options.add(Pair(label, targetId))
@@ -3538,6 +3577,10 @@ class SettingsActivity : AppCompatActivity() {
         layout.metadata.effectiveAccessoryLayout?.let {
             metaObj.addProperty("accessoryLayout", it)
             metaObj.addProperty("deadspaceLayout", it)
+        }
+        layout.metadata.accessoryText?.let {
+            metaObj.addProperty("accessoryText", it)
+            metaObj.addProperty("deadspaceText", it)
         }
         root.add("metadata", metaObj)
 

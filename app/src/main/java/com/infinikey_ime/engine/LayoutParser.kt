@@ -58,7 +58,7 @@ object LayoutParser {
             val assetFiles = try {
                 context.assets.list("layouts")?.filter { it.endsWith(".json") } ?: emptyList()
             } catch (_: Exception) {
-                listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "emoji.json")
+                listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "navigation.json", "emoji.json")
             }
 
             for (file in assetFiles) {
@@ -256,7 +256,7 @@ object LayoutParser {
         val layoutFiles = try {
             (assetManager.list("layouts") ?: emptyArray()).filter { it.endsWith(".json") }
         } catch (e: Exception) {
-            listOf("main.json", "mobile.json", "function.json", "mobile_number.json", "mobile_symbol.json", "phone.json")
+            listOf("main.json", "mobile.json", "function.json", "mobile_number.json", "mobile_symbol.json", "phone.json", "navigation.json")
         }
 
         val layoutMap = mutableMapOf<String, LayoutDefinition>()
@@ -470,6 +470,21 @@ object LayoutParser {
             ?: metadataObj?.get("accessory_layout")?.asString
             ?: metadataObj?.get("deadspaceLayout")?.asString
             ?: metadataObj?.get("deadspace_layout")?.asString
+        val accessoryText = metadataObj?.get("accessoryText")?.asString
+            ?: metadataObj?.get("accessory_text")?.asString
+            ?: metadataObj?.get("deadspaceText")?.asString
+            ?: metadataObj?.get("deadspace_text")?.asString
+        val accessoryTextColorStr = metadataObj?.get("accessoryTextColor")?.asString
+            ?: metadataObj?.get("accessory_text_color")?.asString
+            ?: metadataObj?.get("deadspaceTextColor")?.asString
+            ?: metadataObj?.get("deadspace_text_color")?.asString
+        val accessoryTextColor = parseColorHex(accessoryTextColorStr)
+        val accessoryTextSize = parseDimensionValue(
+            metadataObj?.get("accessoryTextSize")
+                ?: metadataObj?.get("accessory_text_size")
+                ?: metadataObj?.get("deadspaceTextSize")
+                ?: metadataObj?.get("deadspace_text_size")
+        )
 
         val metadata = LayoutMetadata(
             horizontalSpacing = hSpacing,
@@ -485,7 +500,10 @@ object LayoutParser {
             maxVisibleRows = maxRows,
             maxVisibleColumns = maxCols,
             accessoryLayout = accessoryLayout,
-            deadspaceLayout = accessoryLayout
+            deadspaceLayout = accessoryLayout,
+            accessoryText = accessoryText,
+            accessoryTextColor = accessoryTextColor,
+            accessoryTextSize = accessoryTextSize
         )
 
         // Theme
@@ -771,6 +789,13 @@ object LayoutParser {
             }
             "SHOW_WIDGET" -> KeyAction.ShowWidget(obj.get("widget")?.asString ?: "JOYSTICK")
             "SHOW_ZOOM_PREVIEW", "ZOOM_PREVIEW" -> KeyAction.ShowZoomPreview(obj.get("text")?.asString)
+            "MACRO" -> {
+                val macroId = obj.get("id")?.asString
+                    ?: obj.get("macroId")?.asString
+                    ?: obj.get("macro_id")?.asString
+                    ?: "M1"
+                KeyAction.Macro(macroId)
+            }
             "AUTO_REPEAT" -> KeyAction.AutoRepeat(
                 code = obj.get("code")?.asInt ?: KeyEvent.KEYCODE_DEL,
                 intervalMs = obj.get("intervalMs")?.asLong ?: 50L

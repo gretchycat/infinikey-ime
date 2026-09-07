@@ -104,6 +104,10 @@ The `metadata` block specifies keyboard constraints, dimensions, scaling, and sc
 * **`scrollDirection`** (`string`, optional): Set to `"VERTICAL"` or `"HORIZONTAL"` to enable scrolling of rows (e.g. for emojis).
 * **`maxVisibleRows`** (`int`, optional): When vertical scrolling is enabled, specifies how many middle rows are rendered concurrently within the scrolling viewport between the top pinned row (row index 0) and the bottom pinned row (last row).
 * **`maxVisibleColumns`** (`int`, optional): Specifies max columns when horizontal scrolling is enabled.
+* **`accessoryLayout`** / **`deadspaceLayout`** (`string`, optional): Target ID of the layout rendered in the accessory space during side-docked or split modes (`"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"mobile_symbol"`, `"none"`).
+* **`accessoryText`** / **`deadspaceText`** (`string`, optional): Custom label or multi-line text rendered centered in the accessory region. Supports newlines (`\n`).
+* **`accessoryTextColor`** / **`deadspaceTextColor`** (`hex string`, optional): Color of the accessory text string (default `"#94A3B8"`).
+* **`accessoryTextSize`** (`DimensionValue`, optional): Font size for accessory text (`int` for fixed dp/sp, `float` for container height ratio).
 
 ---
 
@@ -143,7 +147,8 @@ Each style object can define any combination of visual properties:
 * **`isSplitKey`** (`boolean`, optional): Identifies if the key spans across the split line in split screen mode.
 * **`splitLeftWeight`** / **`splitRightWeight`**: Width weights for left and right portions of a split key.
 * **`flexible`** (`boolean`, optional): Allows key to dynamically stretch to fill remaining row space (e.g. Spacebar).
-* **`spacer`** (`boolean`, optional): Renders key as an invisible structural spacing gap.
+* **`spacer`** (`boolean`, optional): Renders key as an invisible structural spacing gap without keycap backgrounds or touch hit-testing.
+* **`label` / `secondaryLabel` on Spacers**: When specified on a spacer key (`"spacer": true` or `"style": "spacer"`), renders custom text centered inside the spacing gap. Supports multi-line strings (`\n`), custom text color (`fgColor`, default `#64748B`), and font sizing (`fontSize`).
 * **`showPreview`** / **`showKeyPreview`** (`boolean`, optional): Overrides popup preview magnification bubble for this specific key.
 * **`alternates`** / **`alternateKeys`** (`array<string>`, optional): List of alternate characters/symbols displayed in long-press popup menus.
 * **`icon`** (`string`, optional): Vector SVG or drawable icon resource identifier (e.g. `"mic"`, `"paperclip"`, `"clipboard"`, `"copy"`, `"cut"`, `"paste"`, `"select_all"`, `"keyboard"`).
@@ -171,6 +176,7 @@ Actions are strongly-typed JSON objects with a `type` field:
 | :--- | :--- | :--- |
 | `"SEND_TEXT"` | `"text"` (`string`) | Sends raw string macro or single character to the input connection. |
 | `"SEND_CODE"` | `"code"` (`int`) | Sends Android `KeyEvent` keycode (e.g. `67` for Backspace, `66` for Enter). |
+| `"MACRO"` | `"id"` (`string`) | Replays or records macro step sequence (e.g. `"M1"`). Tap to replay/stop, long-press to record. |
 | `"SWITCH_LAYOUT"` | `"target"` (`string`) | Swaps active layout file to target layout ID (e.g. `"function"`, `"mobile"`, `"main"`). |
 | `"SET_SCREEN_MODE"` | `"mode"` (`string`) | Geometry Action: Changes layout docking mode (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`). |
 | `"ADJUST_HEIGHT"` | `"delta"` (`int`) \| `"percentage"` (`int`) | Geometry Action: Dynamically increases/decreases keyboard display height percentage (15% to 60%). |
@@ -308,5 +314,84 @@ Actions are strongly-typed JSON objects with a `type` field:
       ]
     }
   ]
+}
+```
+
+---
+
+## 7. Accessory Layout System & Accessory Text
+
+When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, `SIDE_DOCKED`), the primary key layout occupies only part of the screen width. The remaining screen region is designated as the **Accessory Area**.
+
+### Configurable Metadata Parameters
+
+```json
+"metadata": {
+  "accessoryLayout": "navigation",
+  "accessoryText": "INFINIKEY IME\nSplit Mode",
+  "accessoryTextColor": "#94A3B8",
+  "accessoryTextSize": 12
+}
+```
+
+* **`accessoryLayout`**: Specifies a secondary layout file ID (e.g., `"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"mobile_symbol"`, or `"none"`). When active, this secondary keyboard renders inside the open accessory space.
+* **`accessoryText`**: Custom string displayed inside the accessory card container. Multi-line strings can be specified using `\n`.
+* **`accessoryTextColor`**: Color formatting for the accessory text label (hex string).
+* **`accessoryTextSize`**: Font size dimension for the accessory text (`int` dp/sp or `float` relative ratio).
+* **Settings Override**: Users can globally override layout-defined accessory layouts via **Settings -> Keyboard Layout -> Accessory Layout**.
+
+---
+
+## 8. Macro Key System (`MACRO` Action)
+
+Macro keys allow users to record multi-step keystroke sequences on the fly and replay them with a single tap.
+
+### Macro Action JSON Schema
+
+```json
+{
+  "label": "M1",
+  "style": "macroKey",
+  "onPress": { "type": "MACRO", "id": "M1" },
+  "onLongPress": { "type": "MACRO", "id": "M1" }
+}
+```
+
+### Recording & Replay Logic
+1. **Replay (Tap)**: Single-tapping a macro key with an existing recorded sequence executes all saved keystrokes in order.
+2. **Record Mode (Long-Press)**: Long-pressing a macro key puts the keyboard into recording mode for that specific macro `id` (`M1` through `M10`). Keystrokes typed while recording are captured.
+3. **Stop & Save (Tap while recording)**: Tapping the recording macro key again stops recording, saves the sequence to `SharedPreferences` (`pref_macro_<id>`), and displays a toast summary (e.g. `💾 Macro M1 saved (8 steps)`).
+4. **Baseline Layout (`macro.json`)**: Built-in 2x5 grid layout featuring `M1` through `M10` macro keys, designed to be used either as a standalone layout layer or embedded as an **accessory layout**.
+
+---
+
+## 9. Placing Text in Key Spacing (Spacer Text) & Accessory Areas
+
+Infinikey IME allows rendering text directly inside structural spacing gaps between keys as well as within the accessory area.
+
+### A. Spacer Key Text (Spacing Between Keys)
+Key objects marked as spacers (`"spacer": true` or `"style": "spacer"`) omit keycap background drawing and touch registration. If a `label` or `secondaryLabel` is provided on a spacer key, text is rendered centered within the open gap space.
+
+```json
+{
+  "spacer": true,
+  "label": "NAV PAD\nCluster",
+  "fgColor": "#64748B",
+  "fontSize": 11,
+  "weight": 1.0
+}
+```
+
+* **Multi-Line Text**: Supports newline breaks (`\n`) for section headers or cluster labels.
+* **Color & Font Size**: Customize label color via `fgColor` (default `#64748B`) and size via `fontSize`.
+
+### B. Accessory Area Text
+Text specified in `metadata.accessoryText` is drawn centered inside the background card of the accessory space when form factor is set to `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, or `SIDE_DOCKED`.
+
+```json
+"metadata": {
+  "accessoryText": "CUSTOM WORKSPACE\nMode Active",
+  "accessoryTextColor": "#38BDF8",
+  "accessoryTextSize": 14
 }
 ```

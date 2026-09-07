@@ -42,6 +42,28 @@
         android:paddingEnd="12dp"
         android:textColor="@color/settings_text_header"
         android:textSize="14sp"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Spacer Display Text / Label (Optional)"
+        android:textColor="#38BDF8"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="6dp" />
+
+    <EditText
+        android:id="@+id/etPhantomText"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@drawable/bg_spinner_card"
+        android:hint="Text inside empty space (e.g. Logo, Blank)"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textColor="@color/settings_text_header"
+        android:textSize="14sp"
         android:layout_marginBottom="16dp" />
 
     <Button

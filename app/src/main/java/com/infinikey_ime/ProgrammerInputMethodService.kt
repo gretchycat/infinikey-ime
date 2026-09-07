@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.infinikey_ime.engine.LayoutParser
 import com.infinikey_ime.model.KeyAction
 import com.infinikey_ime.model.KeyboardState
@@ -833,6 +834,27 @@ class ProgrammerInputMethodService : InputMethodService() {
                     }
                     "CLIPBOARD_HISTORY", "CLIPBOARD_MANAGER", "CLIPBOARD_LIST", "CLIPBOARD" -> {
                         showClipboardHistoryOverlay()
+                    }
+                }
+            }
+            is KeyAction.Macro -> {
+                if (com.infinikey_ime.util.MacroManager.isRecordingAny()) {
+                    val recId = com.infinikey_ime.util.MacroManager.recordingMacroId
+                    if (action.id == recId) {
+                        val result = com.infinikey_ime.util.MacroManager.stopRecording(this)
+                        if (result != null) {
+                            Toast.makeText(this, "💾 Macro ${result.first} saved (${result.second} steps)", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    keyboardView.invalidate()
+                } else {
+                    val steps = com.infinikey_ime.util.MacroManager.getMacro(this, action.id)
+                    if (!steps.isNullOrEmpty()) {
+                        steps.forEach { step ->
+                            handleKeyAction(step)
+                        }
+                    } else {
+                        handleKeyAction(KeyAction.SendText(action.id))
                     }
                 }
             }

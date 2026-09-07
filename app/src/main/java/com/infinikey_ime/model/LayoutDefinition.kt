@@ -17,7 +17,10 @@ data class LayoutMetadata(
     val maxVisibleRows: Int? = null,
     val maxVisibleColumns: Int? = null,
     val accessoryLayout: String? = null,
-    val deadspaceLayout: String? = null
+    val deadspaceLayout: String? = null,
+    val accessoryText: String? = null,
+    val accessoryTextColor: Int? = null,
+    val accessoryTextSize: DimensionValue? = null
 ) {
     val effectiveAccessoryLayout: String? get() = accessoryLayout?.takeIf { it.isNotBlank() } ?: deadspaceLayout?.takeIf { it.isNotBlank() }
 }
