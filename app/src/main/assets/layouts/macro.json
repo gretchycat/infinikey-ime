@@ -1,0 +1,127 @@
+{
+  "id": "macro",
+  "name": "Macro Pad (M1-M10)",
+  "version": "1.0.0",
+  "author": "Infinikey IME",
+  "description": "2 columns by 5 rows of customizable macro keys M1 through M10 with long-press recording.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30,
+    "accessoryLayout": "none"
+  },
+  "theme": {
+    "fontFamily": "Monospace"
+  },
+  "styles": {
+    "macroKey": {
+      "cornerRadius": 6,
+      "bgColor": "#1E293B",
+      "fgColor": "#38BDF8",
+      "pressedBgColor": "#0284C7"
+    },
+    "actionKey": {
+      "cornerRadius": 6,
+      "bgColor": "#0F172A",
+      "fgColor": "#F8FAFC"
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "keys": [
+        {
+          "label": "M1",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M1" },
+          "onLongPress": { "type": "MACRO", "id": "M1" }
+        },
+        {
+          "label": "M2",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M2" },
+          "onLongPress": { "type": "MACRO", "id": "M2" }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "keys": [
+        {
+          "label": "M3",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M3" },
+          "onLongPress": { "type": "MACRO", "id": "M3" }
+        },
+        {
+          "label": "M4",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M4" },
+          "onLongPress": { "type": "MACRO", "id": "M4" }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
+        {
+          "label": "M5",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M5" },
+          "onLongPress": { "type": "MACRO", "id": "M5" }
+        },
+        {
+          "label": "M6",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M6" },
+          "onLongPress": { "type": "MACRO", "id": "M6" }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
+        {
+          "label": "M7",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M7" },
+          "onLongPress": { "type": "MACRO", "id": "M7" }
+        },
+        {
+          "label": "M8",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M8" },
+          "onLongPress": { "type": "MACRO", "id": "M8" }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
+        {
+          "label": "M9",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M9" },
+          "onLongPress": { "type": "MACRO", "id": "M9" }
+        },
+        {
+          "label": "M10",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M10" },
+          "onLongPress": { "type": "MACRO", "id": "M10" }
+        }
+      ]
+    }
+  ]
+}

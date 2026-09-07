@@ -1,4 +1,5 @@
+• Added Accessory Layout System supporting embedded secondary layouts (Navigation pad, Numpad, Function keys, Macro pad, Symbol matrix) and custom multi-line text in split/docked modes.
+• Added Macro Key System with `MACRO` action bindings, long-press keystroke recording (M1–M10), single-tap replay, step persistence, and dedicated Macro Pad layout.
+• Added Text Placement support in key spacing gaps (`spacer` keys with `label`, `fgColor`, `fontSize`) and accessory region cards (`accessoryText`).
 • Fixed left-modifier bitmask flags (META_CTRL_LEFT_ON, META_ALT_LEFT_ON, etc.) and hardware modifier signal dispatch.
-• Added full support for multi-modifier key combinations (Ctrl+Alt, Ctrl+Shift, Alt+Shift, etc.).
 • Interactive Literal Key Monitor with tap-to-listen toggle, bright green border, and full UI disconnection.
-• Zebra-striped log display for raw KeyEvents, character codes, and navigation keys.

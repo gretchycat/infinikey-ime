@@ -1,0 +1,132 @@
+{
+  "id": "navigation",
+  "name": "Navigation & Editing Cluster",
+  "version": "0.3.5",
+  "_comment": "Middle section keyboard accessory layout featuring navigation arrows, Ins, Del, Home, End, PgUp, PgDn.",
+  "author": "Gretchen Maculo",
+  "description": "Desktop middle-cluster layout with navigation keys, Insert, Delete, Home, End, Page Up, Page Down, Backspace, and Enter.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 30,
+    "accessoryLayout": "none"
+  },
+  "theme": {
+    "fontFamily": "Monospace"
+  },
+  "styles": {
+    "alphaKey": {
+      "cornerRadius": 6
+    },
+    "actionKey": {
+      "cornerRadius": 6,
+      "bgColor": "#1E293B",
+      "fgColor": "#38BDF8"
+    },
+    "navigationKey": {
+      "cornerRadius": 6,
+      "bgColor": "#0F172A",
+      "fgColor": "#F8FAFC"
+    },
+    "editingKey": {
+      "cornerRadius": 6,
+      "bgColor": "#1E293B",
+      "fgColor": "#F59E0B"
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "keys": [
+        {
+          "label": "Ins",
+          "style": "editingKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 124 }
+        },
+        {
+          "label": "Home",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 122 }
+        },
+        {
+          "label": "PgUp",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 92 }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "keys": [
+        {
+          "label": "Del",
+          "style": "editingKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 112 }
+        },
+        {
+          "label": "End",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 123 }
+        },
+        {
+          "label": "PgDn",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 93 }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
+        {
+          "label": "⌫",
+          "style": "actionKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 67 }
+        },
+        {
+          "label": "▲",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 19 }
+        },
+        {
+          "label": "↵",
+          "style": "actionKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 66 }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
+        {
+          "label": "◄",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 21 }
+        },
+        {
+          "label": "▼",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 20 }
+        },
+        {
+          "label": "►",
+          "style": "navigationKey",
+          "weight": 1.0,
+          "onPress": { "type": "sendCode", "code": 22 }
+        }
+      ]
+    }
+  ]
+}
