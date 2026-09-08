@@ -1,5 +1,5 @@
-• Added 5x5 App Launcher Grid layout (`launcher.json`) with `LAUNCH` action bindings, slot persistence, dynamic app icon keycap rendering, and 9-category Application Selector (`AppPickerActivity`).
-• Added Multimedia & Control Pad layout (`media.json`) with pure Unicode glyphs, direct OS volume HUD integration (`AudioManager`), and auto-repeating volume, seek, and screen brightness keys.
-• Added Write System Settings (`WRITE_SETTINGS`) permission check & grant toggle in Configuration App for screen brightness controls.
-• Added Accessory Layout System supporting embedded secondary layouts (Navigation pad, Numpad, Function keys, Macro pad, Multimedia pad, 5x5 App Launcher grid, Symbol matrix) and custom multi-line text in split/docked modes.
-• Added Macro Key System with `MACRO` action bindings, long-press keystroke recording (M1–M10), single-tap replay, step persistence, and dedicated Macro Pad layout.
+• Declarative JSON layout engine with Fn layer toggles, custom key ratios, and row visibility.
+• 5 Screen docking modes (Full, Split, Left/Right, Floating) & Accessory area panels (Nav, Numpad, Media, Launcher, Macros).
+• Keystroke macro recording (M1–M10), 30-item persistent clipboard overlay, and 5x5 app launcher grid.
+• Visual WYSIWYG editor for real-time layout creation and drag-and-drop key reordering.
+• Mechvibes mechanical switch audio engine and 100% offline privacy architecture.

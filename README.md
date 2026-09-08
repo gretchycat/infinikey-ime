@@ -84,9 +84,10 @@ For detailed information, specifications, and guides, refer to the project docum
 
 ---
 
-## Building the Project
+## Building & Deployment
 
-Assemble debug or release APKs using Gradle:
+### Building with Gradle
+Assemble debug or release APKs:
 
 ```bash
 ./gradlew assembleDebug
@@ -94,8 +95,17 @@ Assemble debug or release APKs using Gradle:
 ```
 
 Generated APK output locations:
-- **Debug**: `app/build/outputs/apk/debug/infinikey-ime-v0.2.32-b183-debug.apk`
-- **Release**: `app/build/outputs/apk/release/infinikey-ime-v0.2.32-b183-release.apk`
+- **Debug**: `app/build/outputs/apk/debug/infinikey-ime-v0.3.0-b206-debug.apk`
+- **Release**: `app/build/outputs/apk/release/infinikey-ime-v0.3.0-b206-release.apk`
+
+### Deployment with Fastlane
+Manage store metadata and release deployments:
+
+```bash
+fastlane validate_metadata  # Validate Play Store metadata
+fastlane upload_metadata    # Upload metadata only
+fastlane deploy             # Build release APK & deploy to production
+```
 
 ---
 

@@ -1,19 +1,17 @@
-Infinikey IME is an open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
+Infinikey IME is an open-source, programmable soft keyboard and input environment for Android, designed for software developers, terminal operators, power users, and touch typists.
 
-Features:
-• Declarative Layout Engine: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
-• 5x5 App Launcher Grid & Categorized App Selector: `launcher.json` layout grid with `LAUNCH` actions, slot persistence, dynamic application icon rendering on keycaps, and a 9-category Application Selector (`AppPickerActivity`) discovering 100% of installed system and user apps.
-• Multimedia & Control Pad Layout: `media.json` accessory layout featuring pure monochrome Unicode text glyphs, direct OS volume HUD integration (`AudioManager`), auto-repeating volume, seek, and screen brightness controls, and single-tap track navigation.
-• System Settings Permission: Integrated Write System Settings (`WRITE_SETTINGS`) permission management in Configuration App for direct screen brightness control.
-• Accessory Layout System: Configurable secondary layout targets (Navigation pad, Numpad, Function row, Macro pad, Multimedia pad, 5x5 App Launcher grid, Symbol matrix) and custom multi-line text rendering in split and side-docked accessory areas.
-• Powerful Macro System: Bind custom multi-step keystroke macros (`MACRO` action), long-press recording for M1–M10 slots, single-tap replay, multi-touch gestures, swipe actions, long-press popups, and app launchers.
-• Text Placement in Spacing & Accessory Areas: Embed custom static text, section labels, and headers directly inside key spacing gaps (spacer keys) and within accessory region cards.
-• Decoupled Theme Engine: 9 built-in presets (System Auto, System Light, System Dark, Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate) plus custom HSL/RGB palette generation.
-• Multiple Form Factors & Split Mode: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
-• Clipboard History Overlay: Persistent overlay saving up to 30 copied items with index badges, character lengths, individual item deletion (🗑), clear-all, and direct echo-paste connection to text fields and raw terminal streams.
-• Native Canvas Vector SVG Icon Rendering: Crisp native canvas rendering for vector icons (Paperclip, Clipboard, Copy, Cut, Paste, Select All, Microphone, TTS, Keyboard) and user custom graphics scaling cleanly across all screen densities.
-• Trackpad Cursor Navigation: Independent spacebar trackpad and arrow key trackpad modes for fluid desktop-class cursor control.
-• Authentic Mechanical Switch Audio Engine: Integrated Mechvibes switch sound packs (Cherry MX Blue/Brown/Red/Black ABS/PBT, NovelKeys Cream, EG Oreo, Everglide Crystal Purple, Topre Silent Purple, IBM Model M Buckling Spring) and 5 synthesized click audio modes with volume control.
-• Speech-to-Text Integration: Floating voice recognition modal with customizable speech-to-text engine selection.
-• Visual WYSIWYG Layout Editor: Built-in Settings Activity with real-time drag-and-drop key reordering, row properties, accessory layout dropdown, accessory text inputs, undo/redo state stack, and layout customization.
-• 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
+WHAT IS INFINIKEY?
+Infinikey transforms the mobile keyboard from a static typing surface into a fully configurable, stateful input environment. It combines declarative layouts, multi-step macros, accessory panels, interactive overlays, and visual themes into a desktop-grade mobile input system.
+
+WHY USE INFINIKEY?
+• Desktop-Class Precision: Access dedicated Function keys (F1–F12), multi-modifier states (Shift, Ctrl, Alt, Super, Meta), and unbuffered shell keycode output for Termux, SSH, VNC, and RDP sessions.
+• Maximize Screen Geometry: Docked and split screen modes repurpose unused screen deadspace into dynamic accessory control panels.
+• Privacy-First & Offline: 100% offline with zero network permissions, zero telemetry, zero analytics, and zero ads.
+
+HOW IT WORKS & KEY FEATURES:
+• Declarative JSON Engine: Layout geometry, key ratios, and touch actions (press, long-press, directional swipes) are defined in clean, human-readable JSON files.
+• Visual WYSIWYG Editor: Real-time visual layout editor with drag-and-drop key reordering, action type assignment, and instant property tweaking.
+• 5 Screen Docking Modes: Full-width docked, Split thumb-cluster, Left-docked, Right-docked, and Floating window with persistent position memory.
+• Accessory Area System: Embed secondary control surfaces (Navigation pads, Numpads, Macro grids, Media controls, App launchers) or custom text into screen margins.
+• Keystroke Macro System: Record and replay multi-step keystroke sequences (M1–M10) with touch-and-hold recording.
+• Power-User Tools & Audio: 30-item persistent clipboard history, 5x5 app launcher grid with keycap icon rendering, spacebar trackpad cursor navigation, and Mechvibes mechanical switch audio packs.
