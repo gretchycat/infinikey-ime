@@ -339,6 +339,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/containerEditorAccessoryLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -393,6 +394,17 @@
                             android:textSize="13sp"
                             android:singleLine="true" />
                     </LinearLayout>
+
+                    <CheckBox
+                        android:id="@+id/cbEditorShowPartial"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="✂️ Show Partial Layout (draw keys that fit when tight)"
+                        android:textColor="@color/key_text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:layout_width="match_parent"

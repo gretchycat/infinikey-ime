@@ -1,15 +1,16 @@
 {
   "id": "macro",
-  "name": "Macro Pad (M1-M10)",
-  "version": "1.0.0",
+  "name": "Macro Pad (M1-M25)",
+  "version": "1.3.0",
   "author": "Infinikey IME",
-  "description": "2 columns by 5 rows of customizable macro keys M1 through M10 with long-press recording.",
+  "description": "5 columns by 5 rows of customizable macro keys M1 through M5 (column 1), M6 through M10 (column 2), M11 through M15 (column 3), M16 through M20 (column 4), and M21 through M25 (column 5) with long-press recording.",
   "metadata": {
     "horizontalSpacing": 4,
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
-    "accessoryLayout": "none"
+    "accessoryLayout": "none",
+    "showPartial": true
   },
   "theme": {
     "fontFamily": "Monospace"
@@ -39,16 +40,77 @@
           "onLongPress": { "type": "MACRO", "id": "M1" }
         },
         {
-          "label": "M2",
+          "label": "M6",
           "style": "macroKey",
           "weight": 1.0,
-          "onPress": { "type": "MACRO", "id": "M2" },
-          "onLongPress": { "type": "MACRO", "id": "M2" }
+          "onPress": { "type": "MACRO", "id": "M6" },
+          "onLongPress": { "type": "MACRO", "id": "M6" }
+        },
+        {
+          "label": "M11",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M11" },
+          "onLongPress": { "type": "MACRO", "id": "M11" }
+        },
+        {
+          "label": "M16",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M16" },
+          "onLongPress": { "type": "MACRO", "id": "M16" }
+        },
+        {
+          "label": "M21",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M21" },
+          "onLongPress": { "type": "MACRO", "id": "M21" }
         }
       ]
     },
     {
       "id": 2,
+      "keys": [
+        {
+          "label": "M2",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M2" },
+          "onLongPress": { "type": "MACRO", "id": "M2" }
+        },
+        {
+          "label": "M7",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M7" },
+          "onLongPress": { "type": "MACRO", "id": "M7" }
+        },
+        {
+          "label": "M12",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M12" },
+          "onLongPress": { "type": "MACRO", "id": "M12" }
+        },
+        {
+          "label": "M17",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M17" },
+          "onLongPress": { "type": "MACRO", "id": "M17" }
+        },
+        {
+          "label": "M22",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M22" },
+          "onLongPress": { "type": "MACRO", "id": "M22" }
+        }
+      ]
+    },
+    {
+      "id": 3,
       "keys": [
         {
           "label": "M3",
@@ -58,16 +120,77 @@
           "onLongPress": { "type": "MACRO", "id": "M3" }
         },
         {
+          "label": "M8",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M8" },
+          "onLongPress": { "type": "MACRO", "id": "M8" }
+        },
+        {
+          "label": "M13",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M13" },
+          "onLongPress": { "type": "MACRO", "id": "M13" }
+        },
+        {
+          "label": "M18",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M18" },
+          "onLongPress": { "type": "MACRO", "id": "M18" }
+        },
+        {
+          "label": "M23",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M23" },
+          "onLongPress": { "type": "MACRO", "id": "M23" }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
+        {
           "label": "M4",
           "style": "macroKey",
           "weight": 1.0,
           "onPress": { "type": "MACRO", "id": "M4" },
           "onLongPress": { "type": "MACRO", "id": "M4" }
+        },
+        {
+          "label": "M9",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M9" },
+          "onLongPress": { "type": "MACRO", "id": "M9" }
+        },
+        {
+          "label": "M14",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M14" },
+          "onLongPress": { "type": "MACRO", "id": "M14" }
+        },
+        {
+          "label": "M19",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M19" },
+          "onLongPress": { "type": "MACRO", "id": "M19" }
+        },
+        {
+          "label": "M24",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M24" },
+          "onLongPress": { "type": "MACRO", "id": "M24" }
         }
       ]
     },
     {
-      "id": 3,
+      "id": 5,
       "keys": [
         {
           "label": "M5",
@@ -77,49 +200,32 @@
           "onLongPress": { "type": "MACRO", "id": "M5" }
         },
         {
-          "label": "M6",
-          "style": "macroKey",
-          "weight": 1.0,
-          "onPress": { "type": "MACRO", "id": "M6" },
-          "onLongPress": { "type": "MACRO", "id": "M6" }
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "keys": [
-        {
-          "label": "M7",
-          "style": "macroKey",
-          "weight": 1.0,
-          "onPress": { "type": "MACRO", "id": "M7" },
-          "onLongPress": { "type": "MACRO", "id": "M7" }
-        },
-        {
-          "label": "M8",
-          "style": "macroKey",
-          "weight": 1.0,
-          "onPress": { "type": "MACRO", "id": "M8" },
-          "onLongPress": { "type": "MACRO", "id": "M8" }
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "keys": [
-        {
-          "label": "M9",
-          "style": "macroKey",
-          "weight": 1.0,
-          "onPress": { "type": "MACRO", "id": "M9" },
-          "onLongPress": { "type": "MACRO", "id": "M9" }
-        },
-        {
           "label": "M10",
           "style": "macroKey",
           "weight": 1.0,
           "onPress": { "type": "MACRO", "id": "M10" },
           "onLongPress": { "type": "MACRO", "id": "M10" }
+        },
+        {
+          "label": "M15",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M15" },
+          "onLongPress": { "type": "MACRO", "id": "M15" }
+        },
+        {
+          "label": "M20",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M20" },
+          "onLongPress": { "type": "MACRO", "id": "M20" }
+        },
+        {
+          "label": "M25",
+          "style": "macroKey",
+          "weight": 1.0,
+          "onPress": { "type": "MACRO", "id": "M25" },
+          "onLongPress": { "type": "MACRO", "id": "M25" }
         }
       ]
     }

@@ -1699,6 +1699,8 @@ class SettingsActivity : AppCompatActivity() {
                 "phone.json" -> "📞 Phone Dialpad"
                 "navigation.json" -> "🧭 Navigation & Editing Cluster"
                 "macro.json" -> "🤖 Macro Pad (M1-M10)"
+                "media.json" -> "🎵 Multimedia & Control Pad"
+                "launcher.json" -> "🚀 App Launcher Grid (5x5)"
                 "emoji.json" -> "😃 Emojis"
                 "emoji_animals.json" -> "🐾 Emoji Animals"
                 "emoji_body.json" -> "🙋 Emoji Body & People"
@@ -1758,7 +1760,7 @@ class SettingsActivity : AppCompatActivity() {
                 } catch (_: Exception) {
                     com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
-                if (loaded.isGeneratedLayout || loaded.isAccessoryOnly) continue
+                if (loaded.isGeneratedLayout) continue
                 val baseName = getDisplayNameForAsset(file)
                 entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited, categoryType = 1))
             }
@@ -1788,7 +1790,7 @@ class SettingsActivity : AppCompatActivity() {
                 } catch (_: Exception) {
                     com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
-                if (loaded.isGeneratedLayout || loaded.isAccessoryOnly) continue
+                if (loaded.isGeneratedLayout) continue
                 val baseName = if (loaded.name.isNotEmpty()) loaded.name else file.removeSuffix(".json").replace('_', ' ')
                 entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited = isEdited, categoryType = 2))
             }
@@ -1813,7 +1815,7 @@ class SettingsActivity : AppCompatActivity() {
                 } catch (_: Exception) {
                     com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
-                if (loaded.isGeneratedLayout || loaded.isAccessoryOnly) continue
+                if (loaded.isGeneratedLayout) continue
                 val baseName = getDisplayNameForAsset(file)
                 entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited, categoryType = 3))
             }
@@ -1962,7 +1964,33 @@ class SettingsActivity : AppCompatActivity() {
         var lastSelectedPos = initialPosition
         val spEditorAccessoryLayout = findViewById<Spinner>(R.id.spEditorAccessoryLayout)
         val etEditorAccessoryText = findViewById<EditText>(R.id.etEditorAccessoryText)
+        val cbEditorShowPartial = findViewById<CheckBox>(R.id.cbEditorShowPartial)
+        val containerEditorAccessoryLayout = findViewById<View>(R.id.containerEditorAccessoryLayout)
         var isUpdatingAccessoryTextUi = false
+        var isUpdatingShowPartialUi = false
+
+        fun updateShowPartialUi() {
+            isUpdatingShowPartialUi = true
+            val isAccessory = editingLayout?.isAccessoryOnly == true
+            cbEditorShowPartial?.isChecked = editingLayout?.metadata?.showPartial == true
+            cbEditorShowPartial?.visibility = if (isAccessory) View.VISIBLE else View.GONE
+            containerEditorAccessoryLayout?.visibility = if (isAccessory) View.GONE else View.VISIBLE
+            isUpdatingShowPartialUi = false
+        }
+
+        cbEditorShowPartial?.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingShowPartialUi) return@setOnCheckedChangeListener
+            editingLayout?.let { curr ->
+                if (curr.metadata.showPartial != isChecked) {
+                    pushUndoState()
+                    editingLayout = curr.copy(metadata = curr.metadata.copy(showPartial = isChecked))
+                    hasUnsavedChanges = true
+                    updateUndoRedoButtons()
+                    updateSaveButtonState()
+                    editorKeyboardView.setLayout(editingLayout!!)
+                }
+            }
+        }
 
         val editorAccessoryOptions = getAvailableAccessoryOptions()
         val editorAccessoryAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, editorAccessoryOptions.map { it.first })
@@ -2030,10 +2058,6 @@ class SettingsActivity : AppCompatActivity() {
                 val targetId = entry.targetId
                 val targetFile = entry.assetFileName
 
-                if (targetId != "custom") {
-                    prefs.edit().putString("pref_keyboard_layout_target", targetId).apply()
-                }
-
                 val customFile = java.io.File(getUserLayoutsDir(), targetFile ?: "${targetId}.json")
                 val customJsonPref = if (targetId != "custom") {
                     prefs.getString("pref_custom_layout_json_$targetId", null)
@@ -2055,6 +2079,10 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 editingLayout = com.infinikey_ime.engine.LayoutParser.applyThemeOverrides(this@SettingsActivity, rawLayout)
 
+                if (editingLayout != null && !editingLayout!!.isAccessoryOnly && targetId != "custom") {
+                    prefs.edit().putString("pref_keyboard_layout_target", targetId).apply()
+                }
+
                 val accTarget = editingLayout?.metadata?.effectiveAccessoryLayout
                     ?: prefs.getString("pref_accessory_layout_target", null)
                     ?: prefs.getString("pref_deadspace_layout_target", "none")
@@ -2067,6 +2095,8 @@ class SettingsActivity : AppCompatActivity() {
                 isUpdatingAccessoryTextUi = true
                 etEditorAccessoryText?.setText(editingLayout?.metadata?.accessoryText ?: "")
                 isUpdatingAccessoryTextUi = false
+
+                updateShowPartialUi()
 
                 undoStack.clear()
                 redoStack.clear()
@@ -2122,6 +2152,7 @@ class SettingsActivity : AppCompatActivity() {
 
         editingLayout?.let { editorKeyboardView.setLayout(it) }
         updateUndoRedoButtons()
+        updateShowPartialUi()
 
         btnEditorUndo.setOnClickListener {
             if (undoStack.isNotEmpty()) {
@@ -2131,6 +2162,7 @@ class SettingsActivity : AppCompatActivity() {
                 editingLayout = undoStack.pop()
                 editingLayout?.let { editorKeyboardView.setLayout(it) }
                 updateUndoRedoButtons()
+                updateShowPartialUi()
             }
         }
 
@@ -2142,6 +2174,7 @@ class SettingsActivity : AppCompatActivity() {
                 editingLayout = redoStack.pop()
                 editingLayout?.let { editorKeyboardView.setLayout(it) }
                 updateUndoRedoButtons()
+                updateShowPartialUi()
             }
         }
 
@@ -2360,6 +2393,7 @@ class SettingsActivity : AppCompatActivity() {
                         editingLayout?.let { editorKeyboardView.setLayout(it) }
                         hasUnsavedChanges = true
                         updateUndoRedoButtons()
+                        updateShowPartialUi()
                         val newPos = spEditorLayoutSelector.selectedItemPosition
                         if (newPos in layoutEntries.indices) {
                             layoutEntries[newPos].isEdited = false
@@ -3559,6 +3593,7 @@ class SettingsActivity : AppCompatActivity() {
             metaObj.addProperty("accessoryImage", it)
             metaObj.addProperty("deadspaceImage", it)
         }
+        metaObj.addProperty("showPartial", layout.metadata.showPartial)
         root.add("metadata", metaObj)
 
         // Theme

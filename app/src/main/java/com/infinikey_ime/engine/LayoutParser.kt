@@ -493,6 +493,10 @@ object LayoutParser {
             ?: metadataObj?.get("deadspaceImage")?.asString
             ?: metadataObj?.get("deadspace_image")?.asString
 
+        val showPartial = metadataObj?.get("showPartial")?.asBoolean
+            ?: metadataObj?.get("show_partial")?.asBoolean
+            ?: false
+
         val isGeneratedRoot = root.get("isGenerated")?.asBoolean
             ?: root.get("is_generated")?.asBoolean
             ?: root.get("generated")?.asBoolean
@@ -521,6 +525,7 @@ object LayoutParser {
             accessoryTextSize = accessoryTextSize,
             accessoryImage = accessoryImage,
             deadspaceImage = accessoryImage,
+            showPartial = showPartial,
             isGenerated = isGenerated
         )
 

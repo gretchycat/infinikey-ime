@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.infinikey_ime.R
 import com.infinikey_ime.model.DimensionValue
 import com.infinikey_ime.model.KeyAction
+import com.infinikey_ime.model.KeyAction.*
 import com.infinikey_ime.model.KeyDefinition
 import com.infinikey_ime.model.KeyRow
 import com.infinikey_ime.model.KeyboardState
@@ -267,6 +268,11 @@ class KeyboardView @JvmOverloads constructor(
     fun loadAccessoryLayout(targetId: String?) {
         val cleanTarget = targetId?.removeSuffix(".json")?.trim() ?: "none"
         accessoryLayoutTarget = cleanTarget
+        accessoryLayoutDefinition = null
+        updateAccessoryLayoutFromTarget()
+        recalculateKeyBounds()
+        requestLayout()
+        invalidate()
     }
     fun loadDeadspaceLayout(targetId: String?) = loadAccessoryLayout(targetId)
 
@@ -278,10 +284,6 @@ class KeyboardView @JvmOverloads constructor(
 
         if (cleanTarget.equals("none", ignoreCase = true) || cleanTarget.isEmpty()) {
             accessoryLayoutDefinition = null
-            return
-        }
-
-        if (accessoryLayoutDefinition?.id?.removeSuffix(".json") == cleanTarget) {
             return
         }
 
@@ -436,6 +438,7 @@ class KeyboardView @JvmOverloads constructor(
 
     fun setLayout(layout: LayoutDefinition) {
         layoutDefinition = layout
+        accessoryLayoutDefinition = null
         recalculateKeyBounds()
         requestLayout()
         invalidate()
@@ -617,13 +620,30 @@ class KeyboardView @JvmOverloads constructor(
         keyBoundsList.clear()
         rowGearBoundsList.clear()
 
+        val dsDef = if (isEditorPreviewMode) null else {
+            val effectiveTarget = layoutDefinition?.metadata?.effectiveAccessoryLayout
+                ?: accessoryLayoutTarget
+                ?: "none"
+
+            val cleanTarget = effectiveTarget.removeSuffix(".json").trim()
+
+            if (!cleanTarget.equals("none", ignoreCase = true) && cleanTarget.isNotEmpty()) {
+                if (accessoryLayoutDefinition == null || accessoryLayoutDefinition?.id?.removeSuffix(".json") != cleanTarget) {
+                    updateAccessoryLayoutFromTarget()
+                }
+            } else {
+                accessoryLayoutDefinition = null
+            }
+            accessoryLayoutDefinition
+        }
+
         val formFactor = keyboardState.formFactorMode
         val widthRatio = getKeyboardAspectRatio()
-        val ratioWidth = (widthRatio * h).coerceIn(120f * density, w)
+        val defaultRatioWidth = (widthRatio * h).coerceIn(120f * density, w)
 
         val targetWidth = when (formFactor) {
             com.infinikey_ime.model.FormFactorMode.FULL_WIDTH_DOCKED -> w
-            else -> ratioWidth
+            else -> defaultRatioWidth
         }
         val activeWidth = targetWidth
 
@@ -858,25 +878,10 @@ class KeyboardView @JvmOverloads constructor(
 
         // Accessory Space Layout calculation
         activeAccessoryRect = null
-        val effectiveTarget = layoutDefinition?.metadata?.effectiveAccessoryLayout
-            ?: accessoryLayoutTarget
-            ?: "none"
-
-        val cleanTarget = effectiveTarget.removeSuffix(".json").trim()
-
-        if (!cleanTarget.equals("none", ignoreCase = true) && cleanTarget.isNotEmpty()) {
-            if (accessoryLayoutDefinition == null || accessoryLayoutDefinition?.id?.removeSuffix(".json") != cleanTarget) {
-                updateAccessoryLayoutFromTarget()
-            }
-        } else {
-            accessoryLayoutDefinition = null
-        }
-
-        val dsDef = accessoryLayoutDefinition
         val hasAccessoryText = !layoutDefinition?.metadata?.accessoryText.isNullOrBlank()
         val hasAccessoryImage = !layoutDefinition?.metadata?.effectiveAccessoryImage.isNullOrBlank()
 
-        if ((dsDef != null || hasAccessoryText || hasAccessoryImage) && (formFactor == com.infinikey_ime.model.FormFactorMode.SPLIT ||
+        if (!isEditorPreviewMode && (dsDef != null || hasAccessoryText || hasAccessoryImage) && (formFactor == com.infinikey_ime.model.FormFactorMode.SPLIT ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.LEFT_DOCKED ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.SIDE_DOCKED ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.RIGHT_DOCKED)) {
@@ -908,19 +913,11 @@ class KeyboardView @JvmOverloads constructor(
                     val deadspaceWidth = deadSpaceRect.width()
                     val idealLayoutWidth = computeIdealLayoutWidth(dsDef, deadSpaceRect.height(), hSpacingPx, vSpacingPx, density)
 
-                    if (idealLayoutWidth > 0f && deadspaceWidth >= idealLayoutWidth) {
-                        val leftPos = when (formFactor) {
-                            com.infinikey_ime.model.FormFactorMode.SPLIT -> {
-                                deadSpaceRect.left + (deadspaceWidth - idealLayoutWidth) / 2f
-                            }
-                            com.infinikey_ime.model.FormFactorMode.LEFT_DOCKED,
-                            com.infinikey_ime.model.FormFactorMode.SIDE_DOCKED -> {
-                                deadSpaceRect.right - idealLayoutWidth
-                            }
-                            com.infinikey_ime.model.FormFactorMode.RIGHT_DOCKED -> {
-                                deadSpaceRect.left
-                            }
-                            else -> deadSpaceRect.left + (deadspaceWidth - idealLayoutWidth) / 2f
+                    if (doesAccessoryLayoutFit(dsDef, deadspaceWidth, idealLayoutWidth)) {
+                        val leftPos = if (deadspaceWidth >= idealLayoutWidth) {
+                            deadSpaceRect.left + (deadspaceWidth - idealLayoutWidth) / 2f
+                        } else {
+                            deadSpaceRect.left
                         }
 
                         val idealAccessoryRect = RectF(
@@ -929,8 +926,9 @@ class KeyboardView @JvmOverloads constructor(
                             leftPos + idealLayoutWidth,
                             deadSpaceRect.bottom
                         )
-                        activeAccessoryRect = idealAccessoryRect
-                        layoutDeadspaceKeys(dsDef, idealAccessoryRect, hSpacingPx, vSpacingPx, density)
+
+                        activeAccessoryRect = deadSpaceRect
+                        layoutDeadspaceKeys(dsDef, idealAccessoryRect, deadSpaceRect, hSpacingPx, vSpacingPx, density)
                     }
                 } else if (hasAccessoryText || hasAccessoryImage) {
                     activeAccessoryRect = deadSpaceRect
@@ -1003,29 +1001,37 @@ class KeyboardView @JvmOverloads constructor(
         vSpacingPx: Float,
         density: Float
     ): Float {
-        val dsRows = deadspaceDef.rows.filter { isRowVisible(it) }
+        val dsRows = deadspaceDef.rows
         if (dsRows.isEmpty()) return 0f
 
         val maxRowRatioWeight = dsRows.maxOfOrNull { row ->
             row.keys.sumOf { (it.widthWeight as? DimensionValue.Ratio)?.value?.toDouble() ?: 1.0 }.toFloat()
         } ?: 1.0f
 
-        val mainUnitWidth = computeMainKeyUnitWidth(density)
-        return (maxRowRatioWeight * mainUnitWidth) + (hSpacingPx * (maxRowRatioWeight + 1))
+        val availableDsHeight = availableHeight - (vSpacingPx * (dsRows.size + 1))
+        val dsRowHeight = maxOf(20f * density, availableDsHeight / dsRows.size)
+        return (maxRowRatioWeight * dsRowHeight) + (hSpacingPx * (maxRowRatioWeight + 1))
     }
+
+    fun doesAccessoryLayoutFit(
+        deadspaceDef: LayoutDefinition,
+        availableWidth: Float,
+        idealLayoutWidth: Float
+    ): Boolean = deadspaceDef.fitsInAccessorySpace(availableWidth, idealLayoutWidth)
 
     private fun layoutDeadspaceKeys(
         deadspaceDef: LayoutDefinition,
-        deadSpaceRect: RectF,
+        idealAccessoryRect: RectF,
+        availableBounds: RectF,
         hSpacingPx: Float,
         vSpacingPx: Float,
         density: Float
     ) {
-        val dsRows = deadspaceDef.rows.filter { isRowVisible(it) }
+        val dsRows = deadspaceDef.rows
         if (dsRows.isEmpty()) return
 
-        val dsWidth = deadSpaceRect.width()
-        val dsHeight = deadSpaceRect.height()
+        val dsWidth = idealAccessoryRect.width()
+        val dsHeight = idealAccessoryRect.height()
 
         val availableDsHeight = dsHeight - (vSpacingPx * (dsRows.size + 1))
         val dsRowHeight = maxOf(20f * density, availableDsHeight / dsRows.size)
@@ -1043,8 +1049,8 @@ class KeyboardView @JvmOverloads constructor(
             val flexCount = row.keys.count { it.isFlexible }
             val flexBonus = if (flexCount > 0 && deficit > 0f) deficit / flexCount else 0f
 
-            val rowY = deadSpaceRect.top + vSpacingPx + rIdx * (dsRowHeight + vSpacingPx)
-            var currentX = deadSpaceRect.left + hSpacingPx
+            val rowY = idealAccessoryRect.top + vSpacingPx + rIdx * (dsRowHeight + vSpacingPx)
+            var currentX = idealAccessoryRect.left + hSpacingPx
 
             row.keys.forEach { key ->
                 val baseW = (key.widthWeight as? DimensionValue.Ratio)?.value ?: 1.0f
@@ -1057,7 +1063,14 @@ class KeyboardView @JvmOverloads constructor(
                 }
 
                 val rect = RectF(currentX, rowY, currentX + kw, rowY + dsRowHeight)
-                keyBoundsList.add(KeyBounds(key = key, rect = rect, rowIndex = rIdx, isFixedRow = false))
+
+                if (rect.left >= availableBounds.left - 0.5f &&
+                    rect.right <= availableBounds.right + 0.5f &&
+                    rect.top >= availableBounds.top - 0.5f &&
+                    rect.bottom <= availableBounds.bottom + 0.5f) {
+                    keyBoundsList.add(KeyBounds(key = key, rect = rect, rowIndex = rIdx, isFixedRow = false))
+                }
+
                 currentX += kw + hSpacingPx
             }
         }

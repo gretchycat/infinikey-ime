@@ -99,4 +99,43 @@ class AccessorySpaceLayoutTest {
         assertEquals("function", symbolDef.metadata.effectiveAccessoryLayout)
         assertEquals("none", phoneDef.metadata.effectiveAccessoryLayout)
     }
+
+    @Test
+    fun testShowPartialMetadataParsing() {
+        val json = """
+            {
+                "id": "launcher",
+                "name": "Launcher Layout",
+                "version": "1.0",
+                "metadata": {
+                    "showPartial": true
+                },
+                "rows": []
+            }
+        """.trimIndent()
+
+        val parsed = LayoutParser.parseJsonLayoutDescriptor(json)
+        assertTrue(parsed.metadata.showPartial)
+
+        val defaultMetadata = LayoutMetadata()
+        assertFalse(defaultMetadata.showPartial)
+    }
+
+    @Test
+    fun testFitCheckerWithShowPartial() {
+        val standardLayout = LayoutDefinition(id = "numpad", name = "Numpad", metadata = LayoutMetadata(showPartial = false))
+        val partialLayout = LayoutDefinition(id = "launcher", name = "Launcher", metadata = LayoutMetadata(showPartial = true))
+
+        val idealWidth = 200f
+        val narrowSpace = 150f
+        val wideSpace = 300f
+
+        // Standard layout without showPartial: narrow space does not fit
+        assertFalse(standardLayout.fitsInAccessorySpace(narrowSpace, idealWidth))
+        assertTrue(standardLayout.fitsInAccessorySpace(wideSpace, idealWidth))
+
+        // Layout with showPartial: narrow space DOES fit (allows partial truncation)
+        assertTrue(partialLayout.fitsInAccessorySpace(narrowSpace, idealWidth))
+        assertTrue(partialLayout.fitsInAccessorySpace(wideSpace, idealWidth))
+    }
 }

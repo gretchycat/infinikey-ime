@@ -23,6 +23,7 @@ data class LayoutMetadata(
     val accessoryTextSize: DimensionValue? = null,
     val accessoryImage: String? = null,
     val deadspaceImage: String? = null,
+    val showPartial: Boolean = false,
     val isGenerated: Boolean = false
 ) {
     val effectiveAccessoryLayout: String? get() = accessoryLayout?.takeIf { it.isNotBlank() } ?: deadspaceLayout?.takeIf { it.isNotBlank() }
@@ -97,4 +98,13 @@ data class LayoutDefinition(
 
     val isAccessoryOnly: Boolean
         get() = !hasLinkBackToOtherLayout()
+
+    /**
+     * Checks if this accessory layout fits in the available width.
+     * When showPartial is true, narrow spaces fit by allowing line/key truncation.
+     */
+    fun fitsInAccessorySpace(availableWidth: Float, idealWidth: Float): Boolean {
+        if (idealWidth <= 0f) return false
+        return availableWidth >= idealWidth || metadata.showPartial
+    }
 }

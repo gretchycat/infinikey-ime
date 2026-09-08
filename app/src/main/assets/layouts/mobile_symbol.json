@@ -1,7 +1,7 @@
 {
   "id": "mobile_symbol",
   "name": "Mobile Secondary Symbols",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Dedicated Gboard-style mobile secondary symbols page.",
@@ -11,7 +11,7 @@
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
     "showKeyPreview": false,
-    "accessoryLayout": "none"
+    "accessoryLayout": "media"
   },
   "theme": {
     "fontFamily": "Monospace"

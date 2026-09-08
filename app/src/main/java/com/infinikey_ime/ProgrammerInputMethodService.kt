@@ -119,9 +119,22 @@ class ProgrammerInputMethodService : InputMethodService() {
             }
             keyboardState.formFactorMode = targetFormFactor
 
+            LayoutParser.syncAndUpgradeDefaultLayouts(this)
             val currentLayoutId = keyboardView.layoutDefinition?.id?.removeSuffix(".json") ?: prefs.getString("pref_keyboard_layout_target", "main") ?: "main"
             val targetFile = if (currentLayoutId.endsWith(".json")) currentLayoutId else "$currentLayoutId.json"
-            val freshLayout = com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
+
+            val dir = getExternalFilesDir(null)?.let { java.io.File(it, "layouts") }
+            val customFile = dir?.let { java.io.File(it, targetFile) }
+            val isEdited = prefs.getBoolean("pref_layout_is_edited_$currentLayoutId", false)
+            val customJsonPref = if (isEdited) prefs.getString("pref_custom_layout_json_$currentLayoutId", null) else null
+
+            val rawLayout = when {
+                customFile != null && customFile.exists() -> com.infinikey_ime.engine.LayoutParser.parseJsonLayoutDescriptor(customFile.readText())
+                !customJsonPref.isNullOrEmpty() -> com.infinikey_ime.engine.LayoutParser.parseJsonLayoutDescriptor(customJsonPref)
+                else -> com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this, targetFile)
+            }
+            val freshLayout = com.infinikey_ime.engine.LayoutParser.applyThemeOverrides(this, rawLayout)
+
             keyboardView.setLayout(freshLayout)
 
             val savedPrefTarget = prefs.getString("pref_accessory_layout_target", null)
