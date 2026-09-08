@@ -1,3 +1,3 @@
 * added the accessory area and accessories layouts. 
-* how did macro, launcher, multimedia, navigation accessory layouts 
+* added macro, launcher, multimedia, navigation accessory layouts 
 
