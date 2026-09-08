@@ -41,95 +41,51 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, gap
 
 ## 3. Complete Root Layout Schema
 
-The root layout descriptor is a declarative JSON object defining top-level identity attributes, global metadata rules, theme styling overrides, category style classes, surface gestures, and row/key geometry definitions.
+The root layout descriptor is a declarative JSON object defining top-level identity attributes, layout metadata, typography preferences, category style classes, surface gestures, and key row geometry definitions. In accordance with Infinikey's architecture, layout descriptors contain structural and behavioral rules without hardcoded visual color definitions (which are decoupled into theme descriptors; see `THEMING_SPEC.md`).
 
-### A. Comprehensive Root Layout Example
+### A. Abbreviated Root Layout Example
 
 ```json
 {
   "id": "main",
-  "name": "Main Base Layout",
-  "version": "2.0",
+  "name": "Full Programmer Baseline Layout",
+  "version": "0.4.0",
   "author": "Infinikey IME Team",
-  "description": "Primary 5-row desktop-style layout with key style classes, surface gestures, and accessory region defaults.",
-  "isGenerated": false,
+  "description": "Comprehensive 5-row desktop-style layout with function row, modifier toggles, and gesture definitions.",
   "metadata": {
     "horizontalSpacing": 4,
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
-    "longPressTimeoutMs": 350,
-    "autoRepeatIntervalMs": 50,
-    "splitClusterRatio": 0.2,
-    "showKeyPreview": true,
-    "maxFontSize": 18,
-    "scrollDirection": "NONE",
-    "maxVisibleRows": 5,
-    "maxVisibleColumns": 14,
-    "accessoryLayout": "macro",
-    "accessoryText": "INFINIKEY IME\nSplit Mode",
-    "accessoryTextColor": "#94A3B8",
-    "accessoryTextSize": 12,
-    "accessoryImage": "images/logo.png",
-    "showPartial": false
+    "accessoryLayout": "macro"
   },
   "theme": {
-    "backgroundColor": "#0F172A",
-    "fontFamily": "Monospace",
-    "modifierOffDotColor": "#475569",
-    "modifierLatchedDotColor": "#38BDF8",
-    "modifierLockedDotColor": "#F59E0B"
+    "fontFamily": "Monospace"
   },
   "styles": {
     "alphaKey": {
-      "bgColor": "#1E2230",
-      "fgColor": "#F8FAFC",
-      "pressedBgColor": "#334155",
-      "activeBgColor": "#1E2230",
       "cornerRadius": 8
     },
     "numberKey": {
-      "bgColor": "#1E293B",
-      "fgColor": "#38BDF8",
-      "pressedBgColor": "#334155",
       "cornerRadius": 8
     },
     "modifierKey": {
-      "bgColor": "#334155",
-      "fgColor": "#38BDF8",
-      "activeBgColor": "#0284C7",
-      "activeFgColor": "#FFFFFF",
       "cornerRadius": 8
     },
     "functionKey": {
-      "bgColor": "#0F172A",
-      "fgColor": "#F59E0B",
-      "pressedBgColor": "#1E293B",
       "cornerRadius": 6
     },
     "actionKey": {
-      "bgColor": "#0284C7",
-      "fgColor": "#FFFFFF",
-      "pressedBgColor": "#0369A1",
       "cornerRadius": 8
     },
     "navigationKey": {
-      "bgColor": "#1E293B",
-      "fgColor": "#38BDF8",
-      "pressedBgColor": "#334155",
-      "cornerRadius": 8
-    },
-    "editingKey": {
-      "bgColor": "#0F172A",
-      "fgColor": "#10B981",
-      "pressedBgColor": "#1E293B",
       "cornerRadius": 8
     }
   },
   "gestures": {
-    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "LEFT_DOCKED" },
-    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "RIGHT_DOCKED" },
-    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOATING" },
+    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "DOCK_LEFT" },
+    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "DOCK_RIGHT" },
+    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOAT" },
     "onTwoFingerSwipeDown": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" },
     "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" },
     "onTwoFingerPinchIn": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" }
@@ -138,36 +94,29 @@ The root layout descriptor is a declarative JSON object defining top-level ident
     {
       "id": 1,
       "hidden": true,
-      "splitIndex": 2,
+      "splitIndex": 8,
       "keys": [
+        {
+          "label": "Esc",
+          "style": "functionKey",
+          "onPress": { "type": "SEND_CODE", "code": 111 }
+        },
         {
           "label": "F1",
           "style": "functionKey",
           "onPress": { "type": "SEND_CODE", "code": 131 }
-        },
-        {
-          "label": "F2",
-          "style": "functionKey",
-          "onPress": { "type": "SEND_CODE", "code": 132 }
         }
       ]
     },
     {
       "id": 2,
-      "hidden": false,
       "keys": [
         {
-          "label": "1",
-          "secondaryLabel": "!",
-          "style": "numberKey"
-        },
-        {
-          "label": "a",
-          "secondaryLabel": "á",
+          "label": "q",
+          "secondaryLabel": "1",
           "style": "alphaKey",
-          "onPress": { "type": "SEND_TEXT", "text": "a" },
-          "onLongPress": { "type": "SHOW_POPUP", "options": ["á", "à", "ä", "â", "å"] },
-          "onSwipeUp": { "type": "SEND_TEXT", "text": "A" }
+          "alternates": ["θ", "я"],
+          "onPress": { "type": "SEND_TEXT", "text": "q" }
         },
         {
           "label": "Shift",
@@ -201,17 +150,18 @@ The root layout descriptor is a declarative JSON object defining top-level ident
 
 | Property | Type | Requirement | Default | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **`id`** | `string` | **Required** | `"custom_layout"` | Unique identifier string used for layout layer switching and persistence (e.g. `"main"`, `"mobile"`, `"function"`, `"navigation"`). |
-| **`name`** | `string` | **Required** | `"Custom Layout"` | Human-readable title displayed in layout selection menus, meta picker UI, and settings. |
+| **`id`** | `string` | **Required** | `"custom_layout"` | Unique layout identifier used for layout layer switching and configuration storage (e.g. `"main"`, `"mobile"`, `"function"`, `"navigation"`). |
+| **`name`** | `string` | **Required** | `"Custom Layout"` | Human-readable title displayed in layout selection UI, meta picker, and settings. |
 | **`version`** | `string` | Optional | `"1.0"` | Schema version string used for engine compatibility checks and automatic user upgrades. |
-| **`author`** | `string` | Optional | `"Unknown"` | Creator name, organization, or maintainer attribution string. |
-| **`description`** | `string` | Optional | `""` | Detailed description explaining the key arrangement, target use-case, or feature set. |
-| **`isGenerated`** | `boolean` | Optional | `false` | Indicates whether the layout is dynamically generated by the engine at runtime (e.g. emoji pickers, meta layer). Supported aliases: `is_generated`, `generated`. |
-| **`metadata`** | `object` | Optional | `{}` | Key gap dimensions, docking mode defaults, scroll rules, touch timeouts, and accessory region configuration (see Section 4). |
-| **`theme`** | `object` | Optional | `{}` | Global layout theme overrides including background color, font family, and modifier state indicator colors. |
-| **`styles`** | `object` | Optional | `{}` | Dictionary of category style class definitions (`alphaKey`, `numberKey`, `modifierKey`, `functionKey`, `actionKey`, `navigationKey`, `editingKey`, etc.) (see Section 5). |
+| **`author`** | `string` | Optional | `"Unknown"` | Creator name or maintainer attribution string. |
+| **`description`** | `string` | Optional | `""` | Description explaining key arrangement, target use-case, or feature set. |
+| **`isGenerated`** | `boolean` | Optional | `false` | Indicates whether the layout is dynamically generated by the engine at runtime (e.g. emoji pickers, meta layer). Aliases: `is_generated`, `generated`. |
+| **`metadata`** | `object` | Optional | `{}` | Layout constraints, gap dimensions, screen docking defaults, and accessory layout options (see Section 4). |
+| **`theme`** | `object` | Optional | `{}` | Layout structural typography preferences (such as `fontFamily`). Color tokens belong in Theme preset files (`THEMING_SPEC.md`). |
+| **`styles`** | `object` | Optional | `{}` | Map of category style class definitions (`alphaKey`, `numberKey`, `modifierKey`, `functionKey`, `actionKey`, `navigationKey`, etc.) specifying structural attributes like `cornerRadius` (see Section 5). |
 | **`gestures`** | `object` | Optional | `{}` | Map of surface-wide multi-touch gesture handlers (`onTwoFingerSwipeLeft`, `onTwoFingerPinchOut`, etc.) mapped to key action objects. |
 | **`rows`** | `array<KeyRow>` | **Required** | `[]` | Ordered list of horizontal key row objects defining key layout geometry, split positions, and key descriptors (see Section 6). |
+
 
 
 ---
@@ -382,10 +332,10 @@ When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIG
 ```json
 {
   "id": "main",
-  "name": "Main Base Layout",
-  "version": "2.0",
-  "author": "Infinikey IME Team",
-  "description": "5-row QWERTY base layout with key style classes, hidden Fn row, and gesture actions",
+  "name": "Full Programmer Baseline Layout",
+  "version": "0.4.0",
+  "author": "Gretchen Maculo",
+  "description": "Comprehensive 5-row desktop Infinikey IME layout with function row, modifier toggles, long-press popups, and multi-touch geometry gestures.",
   "metadata": {
     "horizontalSpacing": 4,
     "verticalSpacing": 4,
@@ -394,63 +344,54 @@ When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIG
     "accessoryLayout": "macro"
   },
   "theme": {
-    "backgroundColor": "#0F172A",
     "fontFamily": "Monospace"
   },
   "styles": {
     "alphaKey": {
-      "bgColor": "#1E2230",
-      "fgColor": "#F8FAFC",
-      "pressedBgColor": "#334155",
       "cornerRadius": 8
     },
     "numberKey": {
-      "bgColor": "#1E293B",
-      "fgColor": "#38BDF8",
-      "pressedBgColor": "#334155",
       "cornerRadius": 8
     },
     "modifierKey": {
-      "bgColor": "#334155",
-      "fgColor": "#38BDF8",
-      "activeBgColor": "#0284C7",
-      "activeFgColor": "#FFFFFF",
       "cornerRadius": 8
     },
     "functionKey": {
-      "bgColor": "#0F172A",
-      "fgColor": "#F59E0B",
-      "pressedBgColor": "#1E293B",
       "cornerRadius": 6
     },
     "actionKey": {
-      "bgColor": "#0284C7",
-      "fgColor": "#FFFFFF",
-      "pressedBgColor": "#0369A1",
+      "cornerRadius": 8
+    },
+    "arrowKey": {
+      "cornerRadius": 8
+    },
+    "navigationKey": {
       "cornerRadius": 8
     }
   },
   "gestures": {
-    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "LEFT_DOCKED" },
-    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "RIGHT_DOCKED" },
-    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOATING" },
+    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "DOCK_LEFT" },
+    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "DOCK_RIGHT" },
+    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOAT" },
     "onTwoFingerSwipeDown": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" },
-    "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" }
+    "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" },
+    "onTwoFingerPinchIn": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" }
   },
   "rows": [
     {
       "id": 1,
       "hidden": true,
+      "splitIndex": 8,
       "keys": [
+        {
+          "label": "Esc",
+          "style": "functionKey",
+          "onPress": { "type": "SEND_CODE", "code": 111 }
+        },
         {
           "label": "F1",
           "style": "functionKey",
           "onPress": { "type": "SEND_CODE", "code": 131 }
-        },
-        {
-          "label": "F2",
-          "style": "functionKey",
-          "onPress": { "type": "SEND_CODE", "code": 132 }
         }
       ]
     },
@@ -488,7 +429,6 @@ When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIG
           "label": "Fn",
           "style": "modifierKey",
           "weight": 1.2,
-          "fgColor": "#F59E0B",
           "onPress": { "type": "SWITCH_LAYOUT", "target": "function" },
           "onLongPress": { "type": "TOGGLE_ROW", "rowId": 1 }
         }
