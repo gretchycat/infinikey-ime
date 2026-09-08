@@ -8,11 +8,9 @@ An open-source, layout-driven, programmable soft keyboard for Android designed f
 
 ## Why Infinikey?
 
-Infinikey is a programmable Android keyboard for power users.
+Infinikey is a programmable Android input environment whose primary surface is a soft keyboard.
 
-Rather than treating a keyboard as a fixed arrangement of keys, Infinikey treats it as a configurable input environment. Layouts, actions, gestures, macros, themes, widgets, and screen geometry can be independently configured.
-
-A mobile keyboard can be a programmable human-interface device rather than merely a simplified desktop keyboard.
+Rather than treating a keyboard as a fixed arrangement of keys, Infinikey treats it as a configurable input environment. The core power of Infinikey comes from its composability: layout geometry, touch actions, surface gestures, function layers, modifier states, keystroke macros, accessory panels, interactive widgets, screen docking modes, and visual color themes can be independently combined into tailored interfaces for different workflows.
 
 Infinikey is particularly useful for:
 - Software developers
@@ -27,13 +25,14 @@ Infinikey is particularly useful for:
 
 ## What Makes Infinikey Different?
 
-- **Declarative Layout Engine**: Keyboard layouts defined entirely in human-readable JSON files separating geometry, key definitions, and touch actions from visual styling.
-- **Programmable Actions & Multi-Step Macros**: Bind custom keystrokes, gestures, keycode auto-repeats, app launchers, and multi-step macro sequences (`M1`–`M10`).
-- **Multiple Screen Docking Form Factors**: Full-width docked, split thumb clusters, left-docked, right-docked, and floating window modes with persistent offset memory.
-- **Accessory Layout System**: Repurposes unused screen space in split or docked modes as an interactive control panel for navigation, media, macros, or numeric keypads.
+- **Declarative Layout Engine**: Keyboard layouts defined entirely in human-readable JSON files, separating geometry, key definitions, and touch actions from visual styling.
+- **Composable Component Architecture**: Combine layouts, modifier states, surface gestures, macro pads, accessory panels, interactive widgets, screen modes, and color themes.
+- **Programmable Actions & Keystroke Macros**: Bind custom keystrokes, touch gestures, keycode auto-repeats, app launchers, and multi-step macro sequences (`M1`–`M10`).
+- **5 Screen Docking Modes**: Full-width docked, split thumb clusters, left-docked, right-docked, and floating window modes with persistent position memory.
+- **Accessory Area Panel System**: Repurposes unused screen space in split or docked modes as a programmable control surface for navigation, media, macros, numeric keypads, or custom asset graphics.
 - **Power-User & Terminal Controls**: Dedicated Function row (`F1`–`F12`), multi-modifier states (`Shift`, `Ctrl`, `Alt`, `Super`, `Meta`), unbuffered shell keycode dispatches, and persistent clipboard history.
-- **Decoupled Theme System**: 9 built-in theme presets plus custom HSL/RGB palette generation and theme JSON override loading.
-- **Extensible Widgets & Overlays**: Built-in 5x5 application launcher grid, floating clipboard history overlay, trackpad cursor navigation, and speech-to-text integration.
+- **Decoupled Theme Engine**: 9 built-in theme presets plus custom HSL/RGB palette generation and theme JSON file loading.
+- **Extensible Overlays & Widgets**: Built-in 5x5 application launcher grid, floating clipboard history overlay, trackpad cursor navigation, and speech-to-text integration.
 
 ---
 
@@ -43,7 +42,7 @@ Infinikey is particularly useful for:
 - **Desktop & Mobile Layouts**: Full 5-row QWERTY base layout ([`main.json`](app/src/main/assets/layouts/main.json)), compact mobile layout ([`mobile.json`](app/src/main/assets/layouts/mobile.json)), numeric keypad ([`mobile_number.json`](app/src/main/assets/layouts/mobile_number.json)), symbols & math ([`mobile_symbol.json`](app/src/main/assets/layouts/mobile_symbol.json)), and phone dialer ([`phone.json`](app/src/main/assets/layouts/phone.json)).
 - **Function Layers & Visibility Toggling**: Instant Fn layer switching ([`function.json`](app/src/main/assets/layouts/function.json)) and dynamic per-row visibility toggling (`TOGGLE_ROW`).
 - **Emoji Layout Engine**: Dynamic recent emojis tracking layout (`emoji_recents`) and category layouts ([`emoji.json`](app/src/main/assets/layouts/emoji.json), [`emoji_animals.json`](app/src/main/assets/layouts/emoji_animals.json), etc.) with skin tone alternate popups.
-- **Docking Form Factors**: Full-width docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes.
+- **Docking Form Factors**: Full-Width Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes.
 - **Dynamic Layout Switching**: Swap active layout layers instantly on key press or open the dynamic Meta Layout Picker.
 
 ### Programmability
@@ -54,15 +53,16 @@ Infinikey is particularly useful for:
 
 ### Power User Tools
 - **Clipboard History Overlay**: Persistent overlay saving up to 30 copied items with index badges, character lengths, individual item deletion (`🗑`), clear-all, and direct echo-paste connection to terminal streams.
-- **Trackpad & Cursor Navigation**: Spacebar trackpad mode and arrow key joystick trackpad overlay (`JOYSTICK`).
-- **App Launcher Grid & App Selector**: Built-in 5x5 launcher grid ([`launcher.json`](app/src/main/assets/layouts/launcher.json)) with slot persistence (`slot_0`–`slot_24`), app icon bitmap rendering on keycaps, and a 9-category Application Selector discovering launchable system and user apps.
+- **Trackpad & Cursor Navigation**: Spacebar trackpad mode and arrow key joystick trackpad overlay.
+- **App Launcher Grid & App Selector**: Built-in 5x5 launcher grid ([`launcher.json`](app/src/main/assets/layouts/launcher.json)) with 25 customizable app shortcut slots, app icon bitmap rendering on keycaps, and a 9-category Application Selector discovering launchable system and user apps.
 - **Multimedia Controls**: Built-in [`media.json`](app/src/main/assets/layouts/media.json) layout with Unicode glyph controls (`⊘`, `−`, `+`, `|◄`, `▶/❚❚`, `►|`, `◄◄`, `■`, `►►`, `🖩`, `⌖`, `♫`, `✉`, `☼`, `☀`), OS volume slider HUD integration, and direct OS screen brightness controls (requires `WRITE_SETTINGS` permission).
 
-### Customization
+### Customization & Storage Access
 - **Declarative Layout JSON Specs**: Fully customizable JSON descriptors defining geometry, spacing, rows, keys, actions, and styles.
 - **Visual Layout Editor (WYSIWYG)**: Interactive canvas with drag-and-drop key reordering, row properties, key style classes, action type pickers, and undo/redo state history stack.
 - **Decoupled Themes**: 9 built-in presets (System Auto, System Light, System Dark, Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate) plus HSL/RGB custom color palette picker.
 - **Accessory Area Panels**: Embed secondary layouts (`navigation`, `mobile_number`, `function`, `macro`, `media`, `launcher`, `mobile_symbol`) or custom multi-line text and asset graphics in side/center accessory space.
+- **External Storage Access Framework**: Exposes custom layout and theme JSON files to external file managers and text editors via Android's Documents Provider (`InfinikeyDocumentsProvider`).
 
 ### Feedback
 - **Mechanical Switch Audio Engine**: Integrated Mechvibes switch sound packs (Cherry MX Blue/Brown/Red/Black, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre Silent Purple, IBM Model M Buckling Spring) with key-down/up split audio pipeline and 5 synthesized click modes.

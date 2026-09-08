@@ -16,6 +16,7 @@ Welcome to the **Infinikey IME User Guide**. This guide explains how to install,
 8. [Multimedia & System Controls](#8-multimedia--system-controls)
 9. [Themes, Audio & Haptics Customization](#9-themes-audio--haptics-customization)
 10. [Visual Layout Editor (WYSIWYG)](#10-visual-layout-editor-wysiwyg)
+11. [External File Access & Storage Access Framework](#11-external-file-access--storage-access-framework)
 
 ---
 
@@ -44,7 +45,7 @@ Infinikey IME supports multiple built-in layouts tailored for different input ta
 | `function` | Function & Navigation Layer | Dedicated `F1`–`F12` and navigation block layer. |
 | `phone` | Phone Dialer | Telephone keypad layout. |
 | `media` | Multimedia Control Pad | Volume, playback, track seek, calculator, and brightness controls. |
-| `launcher` | 5x5 App Launcher Grid | 25 customizable app shortcut slots. |
+| `launcher` | 5x5 App Launcher Grid | 25 customizable app shortcut slots (`slot_0`–`slot_24`). |
 | `macro` | Macro Pad Layout | 2x5 grid featuring `M1` through `M10` macro keys. |
 
 ### Switching Layouts at Runtime
@@ -55,24 +56,24 @@ Infinikey IME supports multiple built-in layouts tailored for different input ta
 
 ## 3. Form Factors & Screen Docking Modes
 
-Infinikey IME supports 5 screen docking modes:
+Infinikey IME supports 5 canonical screen docking modes:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      FULL_WIDTH_DOCKED                      │
-└─────────────────────────────────────────────────────────────┘
-
-┌──────────────────────┬──────────────────────┬───────────────┐
-│     LEFT_DOCKED      │     RIGHT_DOCKED     │     SPLIT     │
-└──────────────────────┴──────────────────────┴───────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                      FLOATING WINDOW                        │
-└─────────────────────────────────────────────────────────────┘
+62: │                      FULL_WIDTH_DOCKED                      │
+63: └─────────────────────────────────────────────────────────────┘
+64: 
+65: ┌──────────────────────┬──────────────────────┬───────────────┐
+66: │     LEFT_DOCKED      │     RIGHT_DOCKED     │     SPLIT     │
+67: └──────────────────────┴──────────────────────┴───────────────┘
+68: 
+69: ┌─────────────────────────────────────────────────────────────┐
+70: │                      FLOATING WINDOW                        │
+71: └─────────────────────────────────────────────────────────────┘
 ```
 
 1. **Full Width Docked (`FULL_WIDTH_DOCKED`)**: Standard full-width keyboard docked at the bottom of the screen.
-2. **Left Docked (`LEFT_DOCKED`)**: Aligned to the left border of the screen, creating an accessory panel on the right for single-handed typing.
+2. **Left Docked (`LEFT_DOCKED`)**: Aligned to the left border of the screen, creating an accessory panel on the right for single-handed typing. (*Note: `SIDE_DOCKED` is supported as an internal configuration alias for Left Docked.*)
 3. **Right Docked (`RIGHT_DOCKED`)**: Aligned to the right border of the screen, creating an accessory panel on the left for single-handed typing.
 4. **Split Mode (`SPLIT`)**: Divides keys into left and right thumb clusters separated by a central accessory region (ideal for tablets and foldables).
 5. **Floating Window (`FLOATING`)**: Renders a draggable floating window overlay with top handle bar and persistent window position memory.
@@ -90,15 +91,15 @@ Infinikey IME supports 5 screen docking modes:
 
 ## 4. Using the Macro System
 
-The macro engine allows you to record and replay multi-step keystroke sequences on keys configured with the `"MACRO"` action (`M1`–`M10`).
+The macro system allows you to record and replay multi-step keystroke sequences on macro keys (`M1`–`M10`).
 
 ### Replaying a Macro
 - **Single Tap**: Tap any recorded macro key (e.g., `M1`) to execute all saved keystrokes in order.
 
 ### Recording a New Macro
 1. **Long-press** any macro key (`M1`–`M10`). The keyboard enters macro recording mode for that slot (a recording indicator appears).
-2. Type the desired keystrokes, characters, or key sequences.
-3. **Tap** the recording macro key again to stop recording and save the macro. A toast summary confirms the step count.
+2. Type the desired keystrokes, text characters, or modifier sequences.
+3. **Tap** the recording macro key again to stop recording and save the macro. A toast summary confirms the number of recorded steps.
 
 ---
 
@@ -106,21 +107,21 @@ The macro engine allows you to record and replay multi-step keystroke sequences 
 
 Infinikey IME automatically monitors copied text and maintains a persistent history overlay saving up to 30 items.
 
-- **Opening Clipboard History**: Tap the clipboard icon `📋` or trigger the `CLIPBOARD_HISTORY` widget action.
-- **Pasting an Item**: Tap any history entry in the floating list to insert text directly into your target input field or raw terminal shell.
-- **Echo Paste**: Uses `PASTE_ECHO` to feed clipboard contents line-by-line into shell environments (e.g., Termux or SSH).
+- **Opening Clipboard History**: Tap the clipboard icon `📋` or trigger the clipboard history overlay.
+- **Pasting an Item**: Tap any history entry in the floating list to insert text directly into your active text input field or terminal prompt.
+- **Echo Paste**: Feeds clipboard contents line-by-line into terminal environments (such as Termux or SSH) without triggering input method buffering.
 - **Managing Items**: Tap `🗑` to delete an individual item, or tap **Clear All** to reset clipboard history.
 
 ---
 
 ## 6. App Launcher Grid & App Selector
 
-The built-in `launcher.json` layout provides a 5x5 grid with 25 app launcher slots (`slot_0` through `slot_24`).
+The built-in launcher layout provides a 5x5 grid with 25 app launcher slots (`slot_0` through `slot_24`).
 
 - **Launching an App**: Tap any assigned key slot to launch the application. App icon graphics render directly on keycaps.
 - **Assigning / Changing Apps**:
-  - Tap an unassigned slot or **long-press** any slot to launch the **Application Selector** (`AppPickerActivity`).
-  - Search or browse through 9 thematic categories:
+  - Tap an unassigned slot or **long-press** any slot to launch the **Application Selector**.
+  - Search or browse through 9 categories:
     - 🌐 **Internet & Browsers**
     - 💬 **Social & Communication**
     - 🎵 **Audio & Music**
@@ -139,7 +140,7 @@ The built-in `launcher.json` layout provides a 5x5 grid with 25 app launcher slo
 Infinikey IME includes dual trackpad cursor emulation modes for precise text navigation:
 
 1. **Spacebar Trackpad**: Long-press or drag your finger along the spacebar (`␣`) to transform the spacebar into an analog trackpad for precise cursor placement.
-2. **Arrow Key Trackpad / Joystick**: Drag across the arrow key cluster or trigger the `JOYSTICK` widget to activate an analog cursor trackpad with visual feedback.
+2. **Arrow Key Trackpad / Joystick**: Drag across the arrow key cluster or trigger the joystick overlay to activate an analog cursor trackpad with visual feedback.
 
 ---
 
@@ -158,7 +159,7 @@ The built-in `media.json` layout provides system media and utility controls usin
 
 ### Preset Color Themes
 Select from 9 built-in theme presets or create your own:
-- **System Dynamic (`system_auto`)**: Automatically follows device OS Light / Dark mode.
+- **System Dynamic (`system_auto`)**: Automatically follows OS Light Mode (`system_light`) and Dark Mode (`system_dark`).
 - **System Light (`system_light`)**: Clean light mode theme.
 - **System Dark (`system_dark`)**: Deep dark mode theme.
 - **Slate Dark (`slate`)**: Default dark slate blue `#0F172A` theme with cyan `#38BDF8` accents.
@@ -191,12 +192,24 @@ Build and customize keyboard layouts visually using the built-in layout editor i
 
 ---
 
+## 11. External File Access & Storage Access Framework
+
+Infinikey IME integrates directly with Android's Storage Access Framework (SAF) via its built-in `InfinikeyDocumentsProvider`.
+
+This exposes Infinikey's internal storage directory (`Android/data/com.infinikey_ime/files/`) as a first-class storage root in the Android System Files app and third-party file managers:
+- **Direct File Management**: Browse, edit, backup, and restore layout JSON files (`layouts/`), theme descriptors (`themes/`), and offline speech models (`stt_models/`).
+- **External Text Editors**: Open and edit keyboard layout descriptors directly in text editors or IDEs (such as QuickEdit, Acode, or Termux).
+- **Version Control & Sharing**: Export custom layout definitions or import community layouts using standard Android file managers.
+
+---
+
 ## Visual Reference
 
 Refer to the included screenshot captures for visual examples:
-- Layout canvas: [`Screenshot_20260825-192241.png`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/screenshots/Screenshot_20260825-192241.png)
-- Settings & theme configuration: [`Screenshot_20260825-192254.png`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/screenshots/Screenshot_20260825-192254.png)
-- Layout variations & editing: [`Screenshot_20260825-192450.png`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/screenshots/Screenshot_20260825-192450.png), [`Screenshot_20260825-192553.png`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/screenshots/Screenshot_20260825-192553.png), [`Screenshot_20260825-192659.png`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/screenshots/Screenshot_20260825-192659.png), [`Screenshot_20260825-192836.png`](file:///data/data/com.termux/files/home/Projects/infinikey-ime/screenshots/Screenshot_20260825-192836.png).
+- Layout canvas: [`Screenshot_20260825-192241.png`](../screenshots/Screenshot_20260825-192241.png)
+- Settings & theme configuration: [`Screenshot_20260825-192254.png`](../screenshots/Screenshot_20260825-192254.png)
+- Layout variations & editing: [`Screenshot_20260825-192450.png`](../screenshots/Screenshot_20260825-192450.png), [`Screenshot_20260825-192553.png`](../screenshots/Screenshot_20260825-192553.png), [`Screenshot_20260825-192659.png`](../screenshots/Screenshot_20260825-192659.png), [`Screenshot_20260825-192836.png`](../screenshots/Screenshot_20260825-192836.png).
 
 > [!NOTE]
 > Additional visual walkthroughs for Split Mode and App Launcher Grid are planned for future documentation releases.
+

@@ -293,7 +293,7 @@ Actions are declared as strongly-typed JSON objects with a `type` discriminator.
 
 ## 8. Accessory Area Architecture
 
-When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, `SIDE_DOCKED`), the keyboard uses unused screen width as an **Accessory Area**.
+When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`), the keyboard uses unused screen width as a programmable **Accessory Area**. (*Note: `SIDE_DOCKED` is supported as a legacy configuration alias for `LEFT_DOCKED`.*)
 
 ```
 ┌──────────────────────────────────────────────┐

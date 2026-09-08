@@ -51,7 +51,7 @@ This document provides a technical specification of the internal architecture, e
 - **Key Responsibilities**:
   - **Layout Geometry Calculation**: Translates `DimensionValue.Ratio` and `DimensionValue.Absolute` units into exact pixel coordinates based on container width, height, and active form factor.
   - **Keycap & Label Rendering**: Draws staggered and ortholinear keycaps, primary text labels, secondary badges, spacer text, accessory cards, and native vector SVG icon paths (`drawSvgCopyIcon`, `drawSvgCutIcon`, `drawSvgPasteIcon`, `drawSvgSelectAllIcon`, `drawSvgPaperclipIcon`, `drawSvgClipboardIcon`, `drawSvgMicIcon`, `drawSvgTtsIcon`, `drawSvgKeyboardIcon`).
-  - **Accessory Area Computation**: Calculates remaining screen width in `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, and `SIDE_DOCKED` modes, embedding secondary accessory layouts (`navigation`, `mobile_number`, `function`, `macro`, `media`, `launcher`, `mobile_symbol`).
+  - **Accessory Area Computation**: Calculates remaining screen width in `SPLIT`, `LEFT_DOCKED`, and `RIGHT_DOCKED` modes (with `SIDE_DOCKED` supported as a legacy alias for `LEFT_DOCKED`), embedding secondary accessory layouts (`navigation`, `mobile_number`, `function`, `macro`, `media`, `launcher`, `mobile_symbol`).
   - **Multi-Touch & Gesture Processing**: Processes surface touch gestures (two-finger swipes, pinch-out), directional key swipes (`onSwipeUp`, `onSwipeDown`, etc.), spacebar trackpad mode, and long-press popups.
   - **Audio & Haptic Triggers**: Emits sound pool key-down/up triggers and vibration haptic pulses.
 
