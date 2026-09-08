@@ -1,0 +1,78 @@
+{
+  "id": "launcher",
+  "name": "App Launcher Grid",
+  "version": "1.0",
+  "_comment": "5x5 Grid App Launcher accessory layout for quick access to installed applications.",
+  "author": "Infinikey IME Team",
+  "description": "5x5 grid launcher pad featuring application shortcuts with custom app assignment and dynamic application icon rendering.",
+  "metadata": {
+    "horizontalSpacing": 4,
+    "verticalSpacing": 4,
+    "defaultScreenMode": "FULL_WIDTH_DOCKED",
+    "defaultHeightPercentage": 35,
+    "accessoryLayout": "none"
+  },
+  "theme": {
+    "fontFamily": "SansSerif"
+  },
+  "styles": {
+    "launcherKey": {
+      "bgColor": "#1E293B",
+      "fgColor": "#38BDF8",
+      "pressedBgColor": "#334155",
+      "cornerRadius": 6
+    }
+  },
+  "rows": [
+    {
+      "id": 1,
+      "keys": [
+        { "label": "Slot 1", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_0", "packageName": "com.android.chrome" } },
+        { "label": "Slot 2", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_1", "packageName": "com.android.calculator2" } },
+        { "label": "Slot 3", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_2", "packageName": "com.google.android.youtube" } },
+        { "label": "Slot 4", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_3", "packageName": "com.android.settings" } },
+        { "label": "Slot 5", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_4", "packageName": "com.google.android.apps.maps" } }
+      ]
+    },
+    {
+      "id": 2,
+      "keys": [
+        { "label": "Slot 6", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_5", "packageName": "" } },
+        { "label": "Slot 7", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_6", "packageName": "" } },
+        { "label": "Slot 8", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_7", "packageName": "" } },
+        { "label": "Slot 9", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_8", "packageName": "" } },
+        { "label": "Slot 10", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_9", "packageName": "" } }
+      ]
+    },
+    {
+      "id": 3,
+      "keys": [
+        { "label": "Slot 11", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_10", "packageName": "" } },
+        { "label": "Slot 12", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_11", "packageName": "" } },
+        { "label": "Slot 13", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_12", "packageName": "" } },
+        { "label": "Slot 14", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_13", "packageName": "" } },
+        { "label": "Slot 15", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_14", "packageName": "" } }
+      ]
+    },
+    {
+      "id": 4,
+      "keys": [
+        { "label": "Slot 16", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_15", "packageName": "" } },
+        { "label": "Slot 17", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_16", "packageName": "" } },
+        { "label": "Slot 18", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_17", "packageName": "" } },
+        { "label": "Slot 19", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_18", "packageName": "" } },
+        { "label": "Slot 20", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_19", "packageName": "" } }
+      ]
+    },
+    {
+      "id": 5,
+      "keys": [
+        { "label": "Slot 21", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_20", "packageName": "" } },
+        { "label": "Slot 22", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_21", "packageName": "" } },
+        { "label": "Slot 23", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_22", "packageName": "" } },
+        { "label": "Slot 24", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_23", "packageName": "" } },
+        { "label": "Slot 25", "style": "launcherKey", "weight": 1.0, "onPress": { "type": "LAUNCH", "slot": "slot_24", "packageName": "" } }
+      ]
+    }
+  ]
+}

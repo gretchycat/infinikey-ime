@@ -20,9 +20,12 @@ data class LayoutMetadata(
     val deadspaceLayout: String? = null,
     val accessoryText: String? = null,
     val accessoryTextColor: Int? = null,
-    val accessoryTextSize: DimensionValue? = null
+    val accessoryTextSize: DimensionValue? = null,
+    val accessoryImage: String? = null,
+    val deadspaceImage: String? = null
 ) {
     val effectiveAccessoryLayout: String? get() = accessoryLayout?.takeIf { it.isNotBlank() } ?: deadspaceLayout?.takeIf { it.isNotBlank() }
+    val effectiveAccessoryImage: String? get() = accessoryImage?.takeIf { it.isNotBlank() } ?: deadspaceImage?.takeIf { it.isNotBlank() }
 }
 
 /**

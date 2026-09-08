@@ -77,7 +77,7 @@ sealed class KeyAction {
     object Paste : KeyAction()
     object PasteEcho : KeyAction()
     object SwitchIme : KeyAction()
-    data class LaunchApp(val packageName: String) : KeyAction()
+    data class LaunchApp(val packageName: String, val slotId: String = "") : KeyAction()
     data class ShowZoomPreview(val text: String? = null) : KeyAction()
     data class Macro(val id: String) : KeyAction()
     object None : KeyAction()

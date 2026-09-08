@@ -57,10 +57,11 @@ Each key descriptor can define multiple touch event actions:
 | `"SWITCH_IME"` | Opens system Input Method Manager picker dialog. |
 | `"LAUNCH_APP"` | Launches target Android application package directly from a key tap. |
 
-#### Accessory Layout System & Accessory Text
+#### Accessory Layout System, Accessory Text & Accessory Image
 When the keyboard is docked in `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, or `SIDE_DOCKED` mode, an **Accessory Area** is created next to or between key clusters.
-- **`accessoryLayout`**: Embeds a secondary keyboard layout inside this open space. Built-in options include `navigation` (arrow pad & navigation cluster), `mobile_number` (numeric keypad), `function` (F1–F12 function row), `macro` (Macro pad), `mobile_symbol` (symbol matrix), or `none`.
-- **`accessoryText`**: Renders custom multi-line text or headers (with custom `accessoryTextColor` and `accessoryTextSize`) centered within the accessory area card container.
+- **`accessoryLayout`**: Embeds a secondary keyboard layout inside this open space. Built-in options include `navigation` (arrow pad & navigation cluster), `mobile_number` (numeric keypad), `function` (F1–F12 function row), `macro` (Macro pad), `media` (multimedia control pad), `mobile_symbol` (symbol matrix), or `none`.
+- **`accessoryImage`**: Embeds an asset image, custom graphic, file URI, or vector icon inside the accessory area. Proportional scaling ensures image height + text height fit cleanly inside container bounds.
+- **`accessoryText`**: Renders custom multi-line text or headers (with custom `accessoryTextColor` and `accessoryTextSize`) centered directly beneath the image (if present) or centered in the accessory container when standalone.
 
 #### Macro Keys System (`MACRO` Action)
 - **Macro Recording & Replay**: Bind keycaps to `{"type": "MACRO", "id": "M1"}`. Long-pressing initiates keystroke recording; tapping stops recording and saves the step sequence (`pref_macro_<id>`). Single-tapping a recorded macro replays all steps.

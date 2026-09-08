@@ -159,11 +159,20 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        val btnGrantWriteSettingsPermission = findViewById<Button>(R.id.btnGrantWriteSettingsPermission)
+
         btnGrantOverlayPermission?.setOnClickListener {
             if (com.infinikey_ime.util.OverlayPermissionUtil.hasOverlayPermission(this)) {
                 Toast.makeText(this, "Display over apps permission is already granted!", Toast.LENGTH_SHORT).show()
             }
             com.infinikey_ime.util.OverlayPermissionUtil.requestOverlayPermission(this)
+        }
+
+        btnGrantWriteSettingsPermission?.setOnClickListener {
+            if (com.infinikey_ime.util.WriteSettingsPermissionUtil.hasWriteSettingsPermission(this)) {
+                Toast.makeText(this, "Modify system settings permission is already granted!", Toast.LENGTH_SHORT).show()
+            }
+            com.infinikey_ime.util.WriteSettingsPermissionUtil.requestWriteSettingsPermission(this)
         }
 
         val etTestKeyboardInput = findViewById<TestInputEditText>(R.id.etTestKeyboardInput)
@@ -3501,7 +3510,7 @@ class SettingsActivity : AppCompatActivity() {
         val options = mutableListOf<Pair<String, String>>()
         options.add(Pair("None (Disabled)", "none"))
 
-        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "navigation.json", "macro.json")
+        val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "navigation.json", "macro.json", "media.json", "launcher.json")
         val generatedAssetFiles = listOf("emoji.json", "emoji_animals.json", "emoji_body.json", "emoji_flags.json", "emoji_food.json", "emoji_objects.json", "emoji_sports.json", "emoji_symbols.json", "emoji_travel.json")
 
         // 1. Default Asset Layouts
@@ -3516,6 +3525,8 @@ class SettingsActivity : AppCompatActivity() {
                 "phone" -> "📞 Phone Dialpad"
                 "navigation" -> "🧭 Navigation & Editing Cluster"
                 "macro" -> "🤖 Macro Pad (M1-M10)"
+                "media" -> "🎵 Multimedia & Control Pad"
+                "launcher" -> "🚀 App Launcher Grid (5x5)"
                 else -> targetId
             }
             options.add(Pair(label, targetId))
@@ -3581,6 +3592,10 @@ class SettingsActivity : AppCompatActivity() {
         layout.metadata.accessoryText?.let {
             metaObj.addProperty("accessoryText", it)
             metaObj.addProperty("deadspaceText", it)
+        }
+        layout.metadata.effectiveAccessoryImage?.let {
+            metaObj.addProperty("accessoryImage", it)
+            metaObj.addProperty("deadspaceImage", it)
         }
         root.add("metadata", metaObj)
 
@@ -3681,6 +3696,7 @@ class SettingsActivity : AppCompatActivity() {
         val tvStatusSelectIme = findViewById<TextView>(R.id.tvStatusSelectIme) ?: return
         val tvStatusMicPermission = findViewById<TextView>(R.id.tvStatusMicPermission) ?: return
         val tvStatusOverlayPermission = findViewById<TextView>(R.id.tvStatusOverlayPermission) ?: return
+        val tvStatusWriteSettingsPermission = findViewById<TextView>(R.id.tvStatusWriteSettingsPermission) ?: return
 
         // 1. IME Enabled Check
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
@@ -3726,8 +3742,18 @@ class SettingsActivity : AppCompatActivity() {
             tvStatusOverlayPermission.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
         }
 
-        // Auto-close permissions block if all 4 permissions/setup conditions are granted
-        val allGranted = isEnabled && isSelected && hasMic && hasOverlay
+        // 5. Write System Settings Permission Check
+        val hasWriteSettings = com.infinikey_ime.util.WriteSettingsPermissionUtil.hasWriteSettingsPermission(this)
+        if (hasWriteSettings) {
+            tvStatusWriteSettingsPermission.text = "✅ Granted (Brightness Keys Enabled)"
+            tvStatusWriteSettingsPermission.setTextColor(android.graphics.Color.parseColor("#10B981"))
+        } else {
+            tvStatusWriteSettingsPermission.text = "⚠️ Permission Not Granted"
+            tvStatusWriteSettingsPermission.setTextColor(android.graphics.Color.parseColor("#F59E0B"))
+        }
+
+        // Auto-close permissions block if all permissions/setup conditions are granted
+        val allGranted = isEnabled && isSelected && hasMic && hasOverlay && hasWriteSettings
         val layoutPermissionsContent = findViewById<View>(R.id.layoutPermissionsContent)
         val tvArrowPermissions = findViewById<TextView>(R.id.tvArrowPermissions)
         if (allGranted) {

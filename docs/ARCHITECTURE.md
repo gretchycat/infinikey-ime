@@ -58,7 +58,7 @@ Infinikey IME is a high-performance, layout-driven, customizable Android Input M
 * **Role**: Declarative JSON layout parser and theme engine.
 * **Responsibilities**:
   - Parses JSON layout descriptors (`main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`, `phone.json`, `macro.json`, `emoji*.json`).
-  - Parses metadata attributes including `accessoryLayout`, `accessoryText`, `accessoryTextColor`, `accessoryTextSize`.
+  - Parses metadata attributes including `accessoryLayout`, `accessoryText`, `accessoryTextColor`, `accessoryTextSize`, `accessoryImage`.
   - Merges styles, row offsets, split keys, spacer keys with text labels, and preset color themes (`themes.json`, `themes/*.json`).
   - Implements System Dynamic Day/Night theme resolution and custom HSL/RGB user palette generator across 9 built-in theme presets (`system_auto`, `system_light`, `system_dark`, `slate`, `cyberpunk`, `oled`, `matrix`, `retro`, `muted_slate`).
 
@@ -67,7 +67,7 @@ Infinikey IME is a high-performance, layout-driven, customizable Android Input M
 * **Responsibilities**:
   - Provides a multi-tab configuration UI (Geometry, Behavior, Haptics, Audio, Themes, Layout Editor, Speech-to-Text).
   - Features real-time drag-and-drop key reordering and undo/redo history stack (`ArrayDeque<LayoutDefinition>`).
-  - Allows editing key labels, weights, styles, action types, parameters, accessory layout targets, accessory text, and spacer toggles.
+  - Allows editing key labels, weights, styles, action types, parameters, accessory layout targets, accessory text, accessory images, and spacer toggles.
 
 ---
 
@@ -93,9 +93,9 @@ Infinikey IME is a high-performance, layout-driven, customizable Android Input M
 1. **Dynamic Ratio Calculation**: Translates `Float` weight ratios and `Int` absolute DP values into responsive pixel geometry based on screen dimensions and form factor mode.
 2. **Row Visibility Engine**: Controls dynamic visibility per row ID (`TOGGLE_ROW`). Allows Fn row layers or optional symbol rows to be toggled on demand without reloading the whole layout.
 3. **Layer Switching**: Enables instant layer transitions (`SWITCH_LAYOUT`) between QWERTY, Function layer, Numeric, Symbolic, Macro Pad, and Emoji layouts.
-4. **Accessory Layout Engine**: Automatically calculates deadspace geometry in docked/split modes to render secondary accessory layouts (`navigation`, `mobile_number`, `function`, `macro`, `mobile_symbol`, `none`).
+4. **Accessory Layout Engine**: Automatically calculates deadspace geometry in docked/split modes to render secondary accessory layouts (`navigation`, `mobile_number`, `function`, `macro`, `media`, `mobile_symbol`, `none`).
 5. **Macro Engine**: Manages `MACRO` actions bound to keycaps. Integrates with `MacroManager` for recording keystroke streams into slot IDs (`M1`–`M10`) on long-press and replaying saved sequences on single tap.
-6. **Text Placement in Spacers & Accessory Area**: Supports rendering multi-line custom text labels inside key spacing gaps (`spacer` keys with `label`) and centered inside accessory card regions (`accessoryText`).
+6. **Text & Image Placement in Accessory Area & Spacers**: Supports rendering multi-line custom text labels inside key spacing gaps (`spacer` keys with `label`) and accessory region cards (`accessoryText`), as well as rendering graphics/images (`accessoryImage`) above text scaled to fit available container bounds.
 
 ---
 

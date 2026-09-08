@@ -104,10 +104,11 @@ The `metadata` block specifies keyboard constraints, dimensions, scaling, and sc
 * **`scrollDirection`** (`string`, optional): Set to `"VERTICAL"` or `"HORIZONTAL"` to enable scrolling of rows (e.g. for emojis).
 * **`maxVisibleRows`** (`int`, optional): When vertical scrolling is enabled, specifies how many middle rows are rendered concurrently within the scrolling viewport between the top pinned row (row index 0) and the bottom pinned row (last row).
 * **`maxVisibleColumns`** (`int`, optional): Specifies max columns when horizontal scrolling is enabled.
-* **`accessoryLayout`** / **`deadspaceLayout`** (`string`, optional): Target ID of the layout rendered in the accessory space during side-docked or split modes (`"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"mobile_symbol"`, `"none"`).
+* **`accessoryLayout`** / **`deadspaceLayout`** (`string`, optional): Target ID of the layout rendered in the accessory space during side-docked or split modes (`"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"media"`, `"mobile_symbol"`, `"none"`).
 * **`accessoryText`** / **`deadspaceText`** (`string`, optional): Custom label or multi-line text rendered centered in the accessory region. Supports newlines (`\n`).
 * **`accessoryTextColor`** / **`deadspaceTextColor`** (`hex string`, optional): Color of the accessory text string (default `"#94A3B8"`).
 * **`accessoryTextSize`** (`DimensionValue`, optional): Font size for accessory text (`int` for fixed dp/sp, `float` for container height ratio).
+* **`accessoryImage`** / **`deadspaceImage`** (`string`, optional): Path to an asset image, file URI, icon identifier, or custom graphics path rendered inside the accessory region.
 
 ---
 
@@ -319,7 +320,7 @@ Actions are strongly-typed JSON objects with a `type` field:
 
 ---
 
-## 7. Accessory Layout System & Accessory Text
+## 7. Accessory Layout System, Accessory Text & Accessory Image
 
 When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, `SIDE_DOCKED`), the primary key layout occupies only part of the screen width. The remaining screen region is designated as the **Accessory Area**.
 
@@ -328,17 +329,24 @@ When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIG
 ```json
 "metadata": {
   "accessoryLayout": "navigation",
+  "accessoryImage": "images/logo.png",
   "accessoryText": "INFINIKEY IME\nSplit Mode",
   "accessoryTextColor": "#94A3B8",
   "accessoryTextSize": 12
 }
 ```
 
-* **`accessoryLayout`**: Specifies a secondary layout file ID (e.g., `"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"mobile_symbol"`, or `"none"`). When active, this secondary keyboard renders inside the open accessory space.
+* **`accessoryLayout`**: Specifies a secondary layout file ID (e.g., `"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"media"`, `"mobile_symbol"`, or `"none"`). When active, this secondary keyboard renders inside the open accessory space.
+* **`accessoryImage`**: Path to an asset image, file URI, icon identifier, or custom graphics file rendered inside the accessory region.
 * **`accessoryText`**: Custom string displayed inside the accessory card container. Multi-line strings can be specified using `\n`.
 * **`accessoryTextColor`**: Color formatting for the accessory text label (hex string).
 * **`accessoryTextSize`**: Font size dimension for the accessory text (`int` dp/sp or `float` relative ratio).
 * **Settings Override**: Users can globally override layout-defined accessory layouts via **Settings -> Keyboard Layout -> Accessory Layout**.
+
+### Accessory Layout Rendering Rules
+1. **Image + Text**: If both `accessoryImage` and `accessoryText` are specified, the image is rendered at the top of the accessory card, proportionally scaled so that the image height plus text height fit comfortably inside the container, with the text displayed directly beneath the image.
+2. **Image Only**: If only `accessoryImage` is specified, the image is centered vertically and horizontally inside the accessory area, scaled to fill available container bounds.
+3. **Text Only**: If only `accessoryText` is specified, the text is centered vertically and horizontally inside the accessory area.
 
 ---
 

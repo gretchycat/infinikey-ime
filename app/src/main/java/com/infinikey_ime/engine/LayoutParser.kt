@@ -485,6 +485,10 @@ object LayoutParser {
                 ?: metadataObj?.get("deadspaceTextSize")
                 ?: metadataObj?.get("deadspace_text_size")
         )
+        val accessoryImage = metadataObj?.get("accessoryImage")?.asString
+            ?: metadataObj?.get("accessory_image")?.asString
+            ?: metadataObj?.get("deadspaceImage")?.asString
+            ?: metadataObj?.get("deadspace_image")?.asString
 
         val metadata = LayoutMetadata(
             horizontalSpacing = hSpacing,
@@ -503,7 +507,9 @@ object LayoutParser {
             deadspaceLayout = accessoryLayout,
             accessoryText = accessoryText,
             accessoryTextColor = accessoryTextColor,
-            accessoryTextSize = accessoryTextSize
+            accessoryTextSize = accessoryTextSize,
+            accessoryImage = accessoryImage,
+            deadspaceImage = accessoryImage
         )
 
         // Theme
@@ -829,7 +835,11 @@ object LayoutParser {
             "PASTE" -> KeyAction.Paste
             "PASTE_ECHO", "ECHO_CLIPBOARD", "PASTE_TEXT" -> KeyAction.PasteEcho
             "SWITCH_IME" -> KeyAction.SwitchIme
-            "LAUNCH_APP", "LAUNCH" -> KeyAction.LaunchApp(obj.get("packageName")?.asString ?: obj.get("package")?.asString ?: obj.get("target")?.asString ?: "")
+            "LAUNCH_APP", "LAUNCH" -> {
+                val pkg = obj.get("packageName")?.asString ?: obj.get("package")?.asString ?: obj.get("target")?.asString ?: ""
+                val slot = obj.get("slotId")?.asString ?: obj.get("slot")?.asString ?: ""
+                KeyAction.LaunchApp(pkg, slot)
+            }
             else -> KeyAction.None
         }
     }

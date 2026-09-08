@@ -634,13 +634,15 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
 
                 val metaState = keyboardState.getMetaState()
-                val eventTime = System.currentTimeMillis()
-                inputConnection.sendKeyEvent(
-                    KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, metaState)
-                )
-                inputConnection.sendKeyEvent(
-                    KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, code, 0, metaState)
-                )
+                if (!handleSpecialMultimediaKey(code)) {
+                    val eventTime = System.currentTimeMillis()
+                    inputConnection.sendKeyEvent(
+                        KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, metaState)
+                    )
+                    inputConnection.sendKeyEvent(
+                        KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, code, 0, metaState)
+                    )
+                }
 
                 if (keyboardState.consumeOneShotModifiers()) {
                     keyboardView.invalidate()
@@ -786,8 +788,17 @@ class ProgrammerInputMethodService : InputMethodService() {
                 imm?.showInputMethodPicker()
             }
             is KeyAction.LaunchApp -> {
-                val target = action.packageName.trim()
-                if (target.isNotEmpty()) {
+                val slotId = action.slotId
+                val savedPkg = if (slotId.isNotBlank()) com.infinikey_ime.util.LauncherPreferencesManager.getAppForSlot(this, slotId) else null
+                val target = savedPkg ?: action.packageName.trim()
+
+                if (target.isEmpty()) {
+                    val intent = Intent(this, AppPickerActivity::class.java).apply {
+                        putExtra(AppPickerActivity.EXTRA_SLOT_ID, slotId)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    startActivity(intent)
+                } else {
                     try {
                         val intent = if (target.startsWith("intent:") || target.startsWith("http://") || target.startsWith("https://")) {
                             Intent.parseUri(target, Intent.URI_INTENT_SCHEME).apply {
@@ -801,11 +812,20 @@ class ProgrammerInputMethodService : InputMethodService() {
                         if (intent != null) {
                             startActivity(intent)
                         } else {
-                            android.widget.Toast.makeText(this, "App / Target '$target' is not available", android.widget.Toast.LENGTH_SHORT).show()
+                            android.widget.Toast.makeText(this, "App '$target' not available. Select another app.", android.widget.Toast.LENGTH_SHORT).show()
+                            val pickerIntent = Intent(this, AppPickerActivity::class.java).apply {
+                                putExtra(AppPickerActivity.EXTRA_SLOT_ID, slotId)
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                            startActivity(pickerIntent)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        android.widget.Toast.makeText(this, "Could not launch '$target': ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                        val pickerIntent = Intent(this, AppPickerActivity::class.java).apply {
+                            putExtra(AppPickerActivity.EXTRA_SLOT_ID, slotId)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        startActivity(pickerIntent)
                     }
                 }
             }
@@ -1240,5 +1260,95 @@ class ProgrammerInputMethodService : InputMethodService() {
             }
         })
         textToSpeech?.speak(text, android.speech.tts.TextToSpeech.QUEUE_FLUSH, params, utteranceId)
+    }
+
+    private fun handleSpecialMultimediaKey(code: Int): Boolean {
+        return when (code) {
+            KeyEvent.KEYCODE_VOLUME_UP -> {
+                val audioManager = getSystemService(Context.AUDIO_SERVICE) as? android.media.AudioManager
+                audioManager?.adjustSuggestedStreamVolume(
+                    android.media.AudioManager.ADJUST_RAISE,
+                    android.media.AudioManager.USE_DEFAULT_STREAM_TYPE,
+                    android.media.AudioManager.FLAG_SHOW_UI
+                )
+                true
+            }
+            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                val audioManager = getSystemService(Context.AUDIO_SERVICE) as? android.media.AudioManager
+                audioManager?.adjustSuggestedStreamVolume(
+                    android.media.AudioManager.ADJUST_LOWER,
+                    android.media.AudioManager.USE_DEFAULT_STREAM_TYPE,
+                    android.media.AudioManager.FLAG_SHOW_UI
+                )
+                true
+            }
+            KeyEvent.KEYCODE_VOLUME_MUTE, KeyEvent.KEYCODE_MUTE -> {
+                val audioManager = getSystemService(Context.AUDIO_SERVICE) as? android.media.AudioManager
+                audioManager?.adjustSuggestedStreamVolume(
+                    android.media.AudioManager.ADJUST_TOGGLE_MUTE,
+                    android.media.AudioManager.USE_DEFAULT_STREAM_TYPE,
+                    android.media.AudioManager.FLAG_SHOW_UI
+                )
+                true
+            }
+            KeyEvent.KEYCODE_CALCULATOR -> {
+                val intent = Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_APP_CALCULATOR)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                try {
+                    startActivity(intent)
+                    true
+                } catch (_: Exception) { false }
+            }
+            KeyEvent.KEYCODE_EXPLORER -> {
+                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://")).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                try {
+                    startActivity(intent)
+                    true
+                } catch (_: Exception) { false }
+            }
+            KeyEvent.KEYCODE_ENVELOPE -> {
+                val intent = Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_APP_EMAIL)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                try {
+                    startActivity(intent)
+                    true
+                } catch (_: Exception) { false }
+            }
+            KeyEvent.KEYCODE_MUSIC -> {
+                val intent = Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_APP_MUSIC)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                try {
+                    startActivity(intent)
+                    true
+                } catch (_: Exception) { false }
+            }
+            KeyEvent.KEYCODE_BRIGHTNESS_UP, KeyEvent.KEYCODE_BRIGHTNESS_DOWN -> {
+                if (com.infinikey_ime.util.WriteSettingsPermissionUtil.hasWriteSettingsPermission(this)) {
+                    val resolver = contentResolver
+                    val currentBrightness = try {
+                        android.provider.Settings.System.getInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS)
+                    } catch (e: Exception) { 128 }
+                    val delta = if (code == KeyEvent.KEYCODE_BRIGHTNESS_UP) 25 else -25
+                    val newBrightness = (currentBrightness + delta).coerceIn(10, 255)
+                    try {
+                        android.provider.Settings.System.putInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE, android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
+                        android.provider.Settings.System.putInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, newBrightness)
+                        true
+                    } catch (e: Exception) { false }
+                } else {
+                    com.infinikey_ime.util.WriteSettingsPermissionUtil.requestWriteSettingsPermission(this)
+                    false
+                }
+            }
+            else -> false
+        }
     }
 }

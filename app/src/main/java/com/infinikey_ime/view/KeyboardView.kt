@@ -1,6 +1,8 @@
 package com.infinikey_ime.view
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
@@ -476,6 +478,20 @@ class KeyboardView @JvmOverloads constructor(
                 return@Runnable
             }
 
+            if (key.onPressAction is KeyAction.LaunchApp || key.onLongPressAction is KeyAction.LaunchApp) {
+                isLongPressTriggered = true
+                performKeypressHapticFeedback()
+                val launchAction = (key.onLongPressAction as? KeyAction.LaunchApp)
+                    ?: (key.onPressAction as? KeyAction.LaunchApp)
+                val slotId = launchAction?.slotId ?: ""
+                val intent = Intent(context, com.infinikey_ime.AppPickerActivity::class.java).apply {
+                    putExtra(com.infinikey_ime.AppPickerActivity.EXTRA_SLOT_ID, slotId)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(intent)
+                return@Runnable
+            }
+
             if (key.onLongPressAction is KeyAction.None) {
                 return@Runnable
             }
@@ -857,8 +873,9 @@ class KeyboardView @JvmOverloads constructor(
 
         val dsDef = accessoryLayoutDefinition
         val hasAccessoryText = !layoutDefinition?.metadata?.accessoryText.isNullOrBlank()
+        val hasAccessoryImage = !layoutDefinition?.metadata?.effectiveAccessoryImage.isNullOrBlank()
 
-        if ((dsDef != null || hasAccessoryText) && (formFactor == com.infinikey_ime.model.FormFactorMode.SPLIT ||
+        if ((dsDef != null || hasAccessoryText || hasAccessoryImage) && (formFactor == com.infinikey_ime.model.FormFactorMode.SPLIT ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.LEFT_DOCKED ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.SIDE_DOCKED ||
                 formFactor == com.infinikey_ime.model.FormFactorMode.RIGHT_DOCKED)) {
@@ -914,11 +931,38 @@ class KeyboardView @JvmOverloads constructor(
                         activeAccessoryRect = idealAccessoryRect
                         layoutDeadspaceKeys(dsDef, idealAccessoryRect, hSpacingPx, vSpacingPx, density)
                     }
-                } else if (hasAccessoryText) {
+                } else if (hasAccessoryText || hasAccessoryImage) {
                     activeAccessoryRect = deadSpaceRect
                 }
             }
         }
+    }
+
+    private fun loadAccessoryBitmap(context: Context, imagePath: String?, textColor: Int): Bitmap? {
+        if (imagePath.isNullOrEmpty()) return null
+
+        val iconBm = com.infinikey_ime.util.IconRenderer.renderIconToBitmap(
+            context, imagePath, fgColor = textColor, width = 256, height = 256
+        )
+        if (iconBm != null) return iconBm
+
+        try {
+            val cleanAssetPath = imagePath.removePrefix("assets/").removePrefix("/")
+            context.assets.open(cleanAssetPath).use { stream ->
+                val bm = android.graphics.BitmapFactory.decodeStream(stream)
+                if (bm != null) return bm
+            }
+        } catch (_: Exception) {}
+
+        try {
+            val file = java.io.File(imagePath)
+            if (file.exists() && file.isFile) {
+                val bm = android.graphics.BitmapFactory.decodeFile(file.absolutePath)
+                if (bm != null) return bm
+            }
+        } catch (_: Exception) {}
+
+        return null
     }
 
     fun computeMainKeyUnitWidth(density: Float): Float {
@@ -1090,10 +1134,18 @@ class KeyboardView @JvmOverloads constructor(
 
             val accText = layoutDefinition?.metadata?.accessoryText
                 ?: accessoryLayoutDefinition?.metadata?.accessoryText
-            if (!accText.isNullOrBlank()) {
-                val textColor = layoutDefinition?.metadata?.accessoryTextColor
-                    ?: accessoryLayoutDefinition?.metadata?.accessoryTextColor
-                    ?: android.graphics.Color.parseColor("#94A3B8")
+            val accImage = layoutDefinition?.metadata?.effectiveAccessoryImage
+                ?: accessoryLayoutDefinition?.metadata?.effectiveAccessoryImage
+
+            val textColor = layoutDefinition?.metadata?.accessoryTextColor
+                ?: accessoryLayoutDefinition?.metadata?.accessoryTextColor
+                ?: android.graphics.Color.parseColor("#94A3B8")
+
+            val hasText = !accText.isNullOrBlank()
+            val hasImage = !accImage.isNullOrBlank()
+            val bitmap = if (hasImage) loadAccessoryBitmap(context, accImage, textColor) else null
+
+            if (bitmap != null || hasText) {
                 val textSizePx = layoutDefinition?.metadata?.accessoryTextSize?.let { resolveDimension(it, dsRect.height(), density, 13f) }
                     ?: accessoryLayoutDefinition?.metadata?.accessoryTextSize?.let { resolveDimension(it, dsRect.height(), density, 13f) }
                     ?: (13f * density)
@@ -1105,15 +1157,46 @@ class KeyboardView @JvmOverloads constructor(
                     typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
 
-                val lines = accText.split("\n")
+                val paddingVert = 12f * density
+                val paddingHoriz = 12f * density
+                val maxContentWidth = (dsRect.width() - paddingHoriz * 2f).coerceAtLeast(10f)
+                val maxContentHeight = (dsRect.height() - paddingVert * 2f).coerceAtLeast(10f)
+
+                val lines = if (hasText) accText!!.split("\n") else emptyList()
                 val fontMetrics = accPaint.fontMetrics
                 val lineHeight = (fontMetrics.descent - fontMetrics.ascent) * 1.15f
-                val totalTextHeight = lineHeight * lines.size
-                var startY = dsRect.centerY() - (totalTextHeight / 2f) - fontMetrics.ascent
+                val totalTextHeight = if (hasText) lineHeight * lines.size else 0f
+                val gap = if (bitmap != null && hasText) 8f * density else 0f
 
-                lines.forEach { line ->
-                    canvas.drawText(line, dsRect.centerX(), startY, accPaint)
-                    startY += lineHeight
+                if (bitmap != null) {
+                    val bmp = bitmap
+                    val maxImageHeight = (maxContentHeight - totalTextHeight - gap).coerceAtLeast(10f)
+                    val bmpW = bmp.width.toFloat()
+                    val bmpH = bmp.height.toFloat()
+                    val scale = minOf(maxContentWidth / bmpW, maxImageHeight / bmpH)
+                    val imgW = bmpW * scale
+                    val imgH = bmpH * scale
+                    val totalBlockHeight = imgH + gap + totalTextHeight
+
+                    val blockTop = dsRect.centerY() - (totalBlockHeight / 2f)
+                    val imgLeft = dsRect.centerX() - (imgW / 2f)
+                    val imgTop = blockTop
+                    val imgRect = RectF(imgLeft, imgTop, imgLeft + imgW, imgTop + imgH)
+                    canvas.drawBitmap(bmp, null, imgRect, Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG))
+
+                    if (hasText) {
+                        var startY = imgTop + imgH + gap - fontMetrics.ascent
+                        lines.forEach { line ->
+                            canvas.drawText(line, dsRect.centerX(), startY, accPaint)
+                            startY += lineHeight
+                        }
+                    }
+                } else if (hasText) {
+                    var startY = dsRect.centerY() - (totalTextHeight / 2f) - fontMetrics.ascent
+                    lines.forEach { line ->
+                        canvas.drawText(line, dsRect.centerX(), startY, accPaint)
+                        startY += lineHeight
+                    }
                 }
             }
         }
@@ -1923,6 +2006,34 @@ class KeyboardView @JvmOverloads constructor(
     }
 
     private fun drawKeyIconOrLabel(canvas: Canvas, key: KeyDefinition, displayLabel: String, rect: RectF, paint: Paint) {
+        val launchAction = (key.onPressAction as? KeyAction.LaunchApp) ?: (key.onLongPressAction as? KeyAction.LaunchApp)
+        if (launchAction != null) {
+            val slotId = launchAction.slotId
+            val pkgFromSlot = if (slotId.isNotBlank()) com.infinikey_ime.util.LauncherPreferencesManager.getAppForSlot(context, slotId) else null
+            val effectivePkg = pkgFromSlot ?: launchAction.packageName.takeIf { it.isNotBlank() }
+
+            if (!effectivePkg.isNullOrBlank()) {
+                val appBitmap = com.infinikey_ime.util.LauncherPreferencesManager.getAppIconBitmap(context, effectivePkg)
+                if (appBitmap != null && !appBitmap.isRecycled) {
+                    val iconSize = minOf(rect.width(), rect.height()) * 0.52f
+                    val half = iconSize / 2f
+                    val dstRect = RectF(rect.centerX() - half, rect.centerY() - half, rect.centerX() + half, rect.centerY() + half)
+                    canvas.drawBitmap(appBitmap, null, dstRect, paint)
+                    return
+                }
+            } else {
+                val placeholderText = "➕"
+                com.infinikey_ime.util.FontFallbackManager.applyToPaint(paint, placeholderText)
+                val originalTextSize = paint.textSize
+                paint.textSize = originalTextSize * 0.7f
+                val fontMetrics = paint.fontMetrics
+                val baseline = rect.centerY() - (fontMetrics.ascent + fontMetrics.descent) / 2
+                canvas.drawText(placeholderText, rect.centerX(), baseline, paint)
+                paint.textSize = originalTextSize
+                return
+            }
+        }
+
         val iconType = key.iconName
         if (!iconType.isNullOrEmpty()) {
             val isVector = com.infinikey_ime.util.IconRenderer.drawVectorIcon(canvas, iconType, rect, paint)

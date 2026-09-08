@@ -26,9 +26,9 @@ The WYSIWYG Layout Editor allows users to visually build, edit, reorder, and sav
    - Action Parameter (`EditText`): Specifies macro ID (e.g. `M1`), character string, or keycode.
    - 🗑️ Delete Key (`Button`)
 
-4. **Accessory Layout & Accessory Text Controls**:
-   - **Accessory Space Layout Dropdown**: (`Spinner`): Selects default accessory layout (`navigation`, `mobile_number`, `function`, `macro`, `mobile_symbol`, `none`).
-   - **Accessory Area Text Input**: (`EditText`): Edits custom text string rendered in the center/side accessory card during split or docked modes.
+4. **Accessory Layout, Accessory Text & Image Controls**:
+   - **Accessory Space Layout Dropdown**: (`Spinner`): Selects default accessory layout (`navigation`, `mobile_number`, `function`, `macro`, `media`, `mobile_symbol`, `none`).
+   - **Accessory Area Text & Image Inputs**: (`EditText`): Edits custom text string and asset/file image path rendered in the center/side accessory card during split or docked modes. Renders image above text with dynamic proportional height scaling.
 
 5. **Undo / Redo History Stack Engine**:
    - Full state snapshotting using JSON serialization (`ArrayDeque<LayoutDefinition>`).

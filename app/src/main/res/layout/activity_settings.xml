@@ -848,7 +848,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:gravity="center_vertical">
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="10dp">
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -880,6 +881,52 @@
                                 android:minHeight="44dp"
                                 android:backgroundTint="#1E3A5F"
                                 android:text="🪟 Grant"
+                                android:textColor="#38BDF8"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:paddingStart="14dp"
+                                android:paddingEnd="14dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp" />
+                        </LinearLayout>
+
+                        <!-- Item 5: Write System Settings Permission -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="5. Modify System Settings (Screen Brightness Keys)"
+                                    android:textColor="@color/settings_text_header"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvStatusWriteSettingsPermission"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="⚠️ Permission Not Granted"
+                                    android:textColor="#F59E0B"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnGrantWriteSettingsPermission"
+                                android:layout_width="wrap_content"
+                                android:layout_height="44dp"
+                                android:minHeight="44dp"
+                                android:backgroundTint="#1E3A5F"
+                                android:text="⚙️ Grant"
                                 android:textColor="#38BDF8"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
