@@ -67,4 +67,29 @@ data class LayoutDefinition(
     val styles: Map<String, KeyStyle> = emptyMap(),
     val gestures: Map<String, KeyAction> = emptyMap(),
     val rows: List<KeyRow> = emptyList()
-)
+) {
+    /**
+     * Checks if this layout contains any link back (SWITCH_LAYOUT action) to another layout layer.
+     * If a layout contains NO SWITCH_LAYOUT key actions, it has no way to switch back to a typing layer
+     * and must be restricted to accessory-only usage.
+     */
+    fun hasLinkBackToOtherLayout(): Boolean {
+        for (row in rows) {
+            for (key in row.keys) {
+                if (key.onPressAction is KeyAction.SwitchLayout) return true
+                if (key.onLongPressAction is KeyAction.SwitchLayout) return true
+                if (key.onSwipeUpAction is KeyAction.SwitchLayout) return true
+                if (key.onSwipeDownAction is KeyAction.SwitchLayout) return true
+                if (key.onSwipeLeftAction is KeyAction.SwitchLayout) return true
+                if (key.onSwipeRightAction is KeyAction.SwitchLayout) return true
+            }
+        }
+        for ((_, action) in gestures) {
+            if (action is KeyAction.SwitchLayout) return true
+        }
+        return false
+    }
+
+    val isAccessoryOnly: Boolean
+        get() = !hasLinkBackToOtherLayout()
+}

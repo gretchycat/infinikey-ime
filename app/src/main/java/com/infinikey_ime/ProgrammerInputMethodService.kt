@@ -486,7 +486,7 @@ class ProgrammerInputMethodService : InputMethodService() {
 
         val savedAppPrefLayout = com.infinikey_ime.util.AppPreferencesManager.getLastLayoutForApp(this, pkgName)
 
-        val targetLayout = if (savedAppPrefLayout != null) {
+        val rawTargetLayout = if (savedAppPrefLayout != null) {
             savedAppPrefLayout
         } else {
             if (isNewProfile) {
@@ -523,6 +523,7 @@ class ProgrammerInputMethodService : InputMethodService() {
             }
         }
 
+        val targetLayout = resolveValidPrimaryLayout(rawTargetLayout, pkgName)
         profile.layoutTarget = targetLayout
 
         if (!isGeneratedLayoutId(targetLayout)) {
@@ -671,27 +672,28 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
 
                 val isNextGenerated = isGeneratedLayoutId(target)
+                val validTarget = if (isNextGenerated) target else resolveValidPrimaryLayout(target, currentPackageName)
 
                 if (isNextGenerated) {
                     pushCurrentLayoutToStack()
                 } else {
                     layoutStack.clear()
                     prefs.edit()
-                        .putString("pref_last_actual_layout", target)
-                        .putString("pref_keyboard_layout_target", target)
+                        .putString("pref_last_actual_layout", validTarget)
+                        .putString("pref_keyboard_layout_target", validTarget)
                         .apply()
                     val profile = appProfiles.getOrPut(currentPackageName) { AppProfile() }
-                    profile.layoutTarget = target
-                    com.infinikey_ime.util.AppPreferencesManager.saveLastLayoutForApp(this, currentPackageName, target)
+                    profile.layoutTarget = validTarget
+                    com.infinikey_ime.util.AppPreferencesManager.saveLastLayoutForApp(this, currentPackageName, validTarget)
                 }
 
-                val layoutFile = if (target.endsWith(".json")) target else "${target}.json"
-                val customLayoutJson = prefs.getString("pref_custom_layout_json_$target", null)
-                    ?: if (target == "main") prefs.getString("pref_custom_layout_json", null) else null
+                val layoutFile = if (validTarget.endsWith(".json")) validTarget else "${validTarget}.json"
+                val customLayoutJson = prefs.getString("pref_custom_layout_json_$validTarget", null)
+                    ?: if (validTarget == "main") prefs.getString("pref_custom_layout_json", null) else null
 
                 val lastLayoutForHeader = if (layoutStack.isNotEmpty()) layoutStack.peek() else (prefs.getString("pref_last_actual_layout", "main") ?: "main")
 
-                val rawLayout = if (target == "meta") {
+                val rawLayout = if (validTarget == "meta") {
                     LayoutParser.createMetaLayout(this, lastLayoutForHeader)
                 } else if (!customLayoutJson.isNullOrEmpty()) {
                     try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile, lastLayoutForHeader) }
@@ -1350,5 +1352,51 @@ class ProgrammerInputMethodService : InputMethodService() {
             }
             else -> false
         }
+    }
+
+    private fun resolveValidPrimaryLayout(targetLayout: String, pkgName: String): String {
+        if (isGeneratedLayoutId(targetLayout)) return targetLayout
+        val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
+        val customLayoutJson = prefs.getString("pref_custom_layout_json_$targetLayout", null)
+            ?: if (targetLayout == "main") prefs.getString("pref_custom_layout_json", null) else null
+
+        val rawLayout = try {
+            if (!customLayoutJson.isNullOrEmpty()) {
+                LayoutParser.parseJsonLayoutDescriptor(customLayoutJson)
+            } else {
+                LayoutParser.loadLayoutFromAsset(this, layoutFile)
+            }
+        } catch (_: Exception) {
+            try { LayoutParser.loadLayoutFromAsset(this, layoutFile) } catch (_: Exception) { null }
+        }
+
+        if (rawLayout != null && rawLayout.isAccessoryOnly) {
+            val defaultLayout = getDefaultPrimaryLayoutForApp(pkgName)
+            android.widget.Toast.makeText(
+                this,
+                "Layout '${rawLayout.name}' is an accessory layout and has no return keys. Resetting main layout to default ('$defaultLayout').",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+            return defaultLayout
+        }
+        return targetLayout
+    }
+
+    private fun getDefaultPrimaryLayoutForApp(pkgName: String): String {
+        val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
+        val lowerPkg = pkgName.lowercase()
+        val candidate = if (lowerPkg.contains("termux") || lowerPkg.contains("terminal") || lowerPkg.contains("ide") || lowerPkg.contains("code")) {
+            "main"
+        } else {
+            prefs.getString("pref_default_unseen_layout", "mobile") ?: "mobile"
+        }
+
+        val candidateFile = if (candidate.endsWith(".json")) candidate else "$candidate.json"
+        val rawCandidate = try { LayoutParser.loadLayoutFromAsset(this, candidateFile) } catch (_: Exception) { null }
+        if (rawCandidate == null || rawCandidate.isAccessoryOnly) {
+            return "main"
+        }
+        return candidate
     }
 }
