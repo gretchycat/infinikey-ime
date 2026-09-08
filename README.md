@@ -1,198 +1,86 @@
 # Infinikey IME
 
-An open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
+An open-source, layout-driven, programmable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, SSH, X11, VNC, RDP), and modern mobile typing.
 
 ![Infinikey IME Banner](app/src/main/res/mipmap-hdpi/ic_launcher.png)
 
 ---
 
-## Key Highlights
+## Why Infinikey?
 
-- **Declarative Layout Engine**: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
-- **5x5 App Launcher Grid & Categorized App Selector**: Bind keys to `LAUNCH` / `LAUNCH_APP` actions with slot persistence (`launcher.json`), dynamic app icon bitmap rendering directly on keycaps, and a 9-category Application Selector (`AppPickerActivity`) discovering 100% of installed apps.
-- **Multimedia & Control Pad Layout**: Built-in `media.json` layout with pure monochrome text Unicode glyphs (volume `⊘`, `−`, `+`, playback `|◄`, `▶/❚❚`, `►|`, seek `◄◄`, `■`, `►►`, shortcuts `🖩`, `⌖`, `♫`, `✉`, and brightness `☼`, `☀`), OS volume slider HUD integration (`AudioManager`), and auto-repeating volume, seek, and brightness keys.
-- **System Settings Permission (`WRITE_SETTINGS`)**: Integrated Write System Settings permission management in the Configuration App for direct OS screen brightness controls.
-- **Powerful Macro System**: Bind complex macros, multi-touch gestures, swipe actions (`onSwipeUp`, `onSwipeDown`, `onSwipeLeft`, `onSwipeRight`), long-press popups, keycode auto-repeats, and app launchers directly to keys.
-- **Decoupled Theme & Color Palette Engine**: 9 built-in presets (System Auto, System Light, System Dark, Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate) plus custom HSL/RGB palette generation and theme JSON override loading.
-- **Multiple Form Factors & Split Mode**: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
-- **Clipboard History Overlay**: Persistent overlay saving up to 30 copied items with index badges, character lengths, individual item deletion (`🗑`), clear-all, and direct echo-paste connection to both standard text fields and raw terminal shells.
-- **Vector SVG Icon Engine**: Crisp native canvas rendering for vector icons (`mic`, `tts`, `paperclip`, `clipboard`, `copy`, `cut`, `paste`, `select_all`, `keyboard`) and user custom graphics scaling cleanly across all screen densities.
-- **Trackpad Cursor Navigation**: Independent spacebar trackpad and arrow key trackpad modes for fluid desktop-class mouse and cursor control.
-- **Authentic Mechanical Switch Audio Engine**: Integrated Mechvibes switch packs (Cherry MX Blue ABS/PBT, Brown ABS/PBT, Red ABS/PBT, Black ABS/PBT, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre Silent Purple, IBM Model M Buckling Spring) and 5 synthesized click audio modes with volume control.
-- **Visual WYSIWYG Layout Editor**: Built-in Settings Activity with real-time drag-and-drop key reordering, row properties, undo/redo state stack, and layout customization.
+Infinikey is a programmable Android keyboard for power users.
 
----
+Rather than treating a keyboard as a fixed arrangement of keys, Infinikey treats it as a configurable input environment. Layouts, actions, gestures, macros, themes, widgets, and screen geometry can be independently configured.
 
-## Architecture & Feature Breakdown
+A mobile keyboard can be a programmable human-interface device rather than merely a simplified desktop keyboard.
 
-### 1. Declarative Layout & Macro System
-
-Infinikey IME uses a flexible JSON layout descriptor specification (`docs/LAYOUT_DESCRIPTOR_SPEC.md`). Layouts are stored as standalone JSON files in `assets/layouts/` (e.g., `main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`, `phone.json`, `media.json`, `launcher.json`).
-
-#### Geometry & Dimensioning Rules
-All key widths, heights, spacing gaps, font sizes, and corner radiuses use a strict dual-unit system:
-- **Ratios (`Float`)**: Values like `1.0`, `1.5`, `0.02` represent ratios relative to the parent container (e.g. key width weight within a row, height ratio, or font size ratio).
-- **Absolute DP (`Int`)**: Values like `4`, `8`, `16` represent fixed units in density-independent pixels.
-
-#### Key Actions & Macro Triggers
-Each key descriptor can define multiple touch event actions:
-- **`onPress`**: Action executed on single tap.
-- **`onLongPress`**: Action executed on touch and hold (with configurable timeout).
-- **`onSwipeUp` / `onSwipeDown` / `onSwipeLeft` / `onSwipeRight`**: Directional swipe macros on individual keycaps.
-
-#### Supported Macro Action Types
-| Action `type` | Description |
-| :--- | :--- |
-| `"SEND_TEXT"` | Sends raw text strings or single characters directly to the input connection. |
-| `"SEND_CODE"` | Sends specific Android `KeyEvent` keycodes (e.g. `67` for Backspace, `66` for Enter, `131` for F1). |
-| `"MACRO"` | Replays or records custom multi-step keystroke macro sequences (e.g. `"M1"` through `"M10"`). Tap to replay/stop, long-press to record. |
-| `"SWITCH_LAYOUT"` | Swaps active layout layer dynamically (e.g. `"function"`, `"mobile"`, `"main"`, `"launcher"`, `"media"`). |
-| `"SET_SCREEN_MODE"` | Changes screen docking form factor (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`). |
-| `"ADJUST_HEIGHT"` | Dynamically resizes keyboard display height percentage (15% to 60%). |
-| `"SHOW_POPUP"` | Displays modern 3D tactile character/action selection popup menus. |
-| `"SHOW_WIDGET"` | Spawns interactive sub-widget overlays (`"JOYSTICK"`, `"EMOJI_PICKER"`, `"CLIPBOARD_HISTORY"`, `"VOICE_INPUT"`). |
-| `"AUTO_REPEAT"` | Continuously auto-repeats keycode execution while key is held down. |
-| `"TOGGLE_ROW"` | Dynamically shows/hides individual row IDs (e.g. Fn row) or toggles layer visibility (`"all_hidden"`). |
-| `"TOGGLE_MODIFIER"` | Toggles modifier state (`SHIFT`, `CTRL`, `ALT`, `SUPER`, `META`). |
-| `"LOCK_MODIFIER"` | Locks modifier state (`SHIFT`, `CTRL`, `ALT`, `SUPER`, `META`). |
-| `"SELECT_ALL"`, `"COPY"`, `"CUT"`, `"PASTE"` | Direct text editing and clipboard controls with fallback context support. |
-| `"PASTE_ECHO"` | Echo-pastes primary clip to text input or raw terminal stream. |
-| `"SWITCH_IME"` | Opens system Input Method Manager picker dialog. |
-| `"LAUNCH_APP"`, `"LAUNCH"` | Launches target application package (with `slotId` persistence), rendering the app icon on keycaps. Single-tap unassigned slots or long-press any slot to trigger the 9-category Application Selector. |
-
-#### 5x5 App Launcher Grid & Categorized Application Selector
-- **App Launcher Layout (`launcher.json`)**: Built-in 5x5 key grid supporting 25 launcher slots (`slot_0` through `slot_24`).
-- **Dynamic Icon Canvas Rendering**: Reads installed app icons from `PackageManager` and renders application graphics directly on keycaps (`LruCache` bitmap caching).
-- **Categorized Application Selector (`AppPickerActivity`)**: Discovers 100% of installed system & user apps (`QUERY_ALL_PACKAGES`), grouped into 9 thematic categories:
-  - 🌐 **Internet & Browsers**
-  - 💬 **Social & Communication**
-  - 🎵 **Audio & Music**
-  - 🎥 **Video & Movies**
-  - 📷 **Photos & Graphics**
-  - 🛠️ **Productivity & Utilities**
-  - 🎮 **Games**
-  - ⚙️ **System & Settings**
-  - 📱 **Other Applications**
-- **Slot Persistence**: User assignments persist across restarts via `LauncherPreferencesManager`.
-
-#### Multimedia & Control Pad (`media.json`)
-- **Pure Unicode Glyph Labels**: Monochrome technical and geometric text symbols (`⊘`, `−`, `+`, `|◄`, `▶/❚❚`, `►|`, `◄◄`, `■`, `►►`, `🖩`, `⌖`, `♫`, `✉`, `☼`, `☀`).
-- **OS Volume Slider HUD**: Uses `AudioManager.adjustSuggestedStreamVolume()` with `FLAG_SHOW_UI` for volume stream adjustments.
-- **Auto-Repeat Controls**: Volume Up/Down (`24`/`25`), Seek Rewind/Fast Forward (`89`/`90`), and Screen Brightness (`220`/`221`) feature `AUTO_REPEAT` on long-press. Previous (`88`) and Next track (`87`) use single-press execution.
-
-#### Accessory Layout System, Accessory Text & Accessory Image
-When the keyboard is docked in `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, or `SIDE_DOCKED` mode, an **Accessory Area** is created next to or between key clusters.
-- **`accessoryLayout`**: Embeds a secondary keyboard layout inside this open space. Built-in options include `navigation` (arrow pad & navigation cluster), `mobile_number` (numeric keypad), `function` (F1–F12 function row), `macro` (Macro pad), `media` (multimedia control pad), `launcher` (5x5 App launcher grid), `mobile_symbol` (symbol matrix), or `none`.
-- **`accessoryImage`**: Embeds an asset image, custom graphic, file URI, or vector icon inside the accessory area. Proportional scaling ensures image height + text height fit cleanly inside container bounds.
-- **`accessoryText`**: Renders custom multi-line text or headers (with custom `accessoryTextColor` and `accessoryTextSize`) centered directly beneath the image (if present) or centered in the accessory container when standalone.
-
-#### Macro Keys System (`MACRO` Action)
-- **Macro Recording & Replay**: Bind keycaps to `{"type": "MACRO", "id": "M1"}`. Long-pressing initiates keystroke recording; tapping stops recording and saves the step sequence (`pref_macro_<id>`). Single-tapping a recorded macro replays all steps.
-- **Macro Pad Layout (`macro.json`)**: Includes a dedicated 2x5 grid layout featuring `M1` through `M10` macro keys with `macroKey` styling.
-
-#### Text Placement in Spacing & Accessory Areas
-- **Spacer Text (Spacing Between Keys)**: Keys configured as spacers (`"spacer": true` or `"style": "spacer"`) omit keycaps and touch hit-testing. Specifying `label` (or `secondaryLabel`) renders custom single- or multi-line text (`\n`) centered within key gaps with configurable `fgColor` and `fontSize`.
-- **Accessory Area Text**: `metadata.accessoryText` renders centered watermark or informational text inside the side/center accessory area when split or docked.
+Infinikey is particularly useful for:
+- Software developers
+- Termux users
+- SSH & terminal environment operators
+- Remote desktop (VNC/RDP) users
+- Tablets, foldables, and large-screen devices
+- Users who want desktop-style controls on Android
+- Users who want a fully programmable and customizable keyboard surface
 
 ---
 
-### 2. Theme & Color Palette Engine
+## What Makes Infinikey Different?
 
-The color system is completely decoupled from layout descriptors (`docs/THEMING_SPEC.md`). Themes can be loaded from preset asset files (`themes.json`, `themes/cyberpunk.json`, etc.) or generated on the fly via the built-in custom palette picker.
-
-#### Preset Color Themes
-1. **System Dynamic (`system_auto`)**: Follows device OS Light Mode (`system_light`) and Dark Mode (`system_dark`) by default (customizable).
-2. **System Light (`system_light`)**: Clean light mode theme with light slate background and crisp keycaps.
-3. **System Dark (`system_dark`)**: Dark mode theme optimized for low-light environments.
-4. **Slate Dark (`slate`)**: Default dark slate blue `#0F172A` theme with cyan and amber accents.
-5. **Cyberpunk Neon (`cyberpunk`)**: High-contrast neon purple, yellow, magenta, and cyan palette.
-6. **OLED True Black (`oled`)**: `#000000` pitch black background optimized for OLED display power saving.
-7. **Matrix Terminal (`matrix`)**: Hacker green monochrome text on deep black.
-8. **Retro Vintage (`retro`)**: Classic beige and taupe mechanical keyboard aesthetic.
-9. **Muted Slate (`muted_slate`)**: Monochromatic low-saturation slate for distraction-free typing.
-10. **Custom Palette (`custom`)**: User-configured theme defined via HSL/RGB palette generator or custom theme JSON files.
-
-#### Category Style Mapping & Style Inheritance
-Keys inherit visual attributes from style classes (`styles`), which can be overridden per key:
-- **`alphaKey`**: Standard letter and punctuation keys.
-- **`numberKey`**: Number row and numeric keypad keys.
-- **`modifierKey`**: `Shift`, `Ctrl`, `Alt`, `Super`, `Fn` modifier keys.
-- **`functionKey`**: `F1` through `F12` function keys.
-- **`actionKey`**: Primary action keys (`Enter`, `Backspace`, `Space`, `Tab`, `Escape`).
-- **`navigationKey`**: Navigation cluster keys (`PageUp`, `PageDown`, `Home`, `End`, `Arrows`).
-- **`editingKey`**: Clipboard and text editing keys (`SelectAll`, `Copy`, `Cut`, `Paste`).
+- **Declarative Layout Engine**: Keyboard layouts defined entirely in human-readable JSON files separating geometry, key definitions, and touch actions from visual styling.
+- **Programmable Actions & Multi-Step Macros**: Bind custom keystrokes, gestures, keycode auto-repeats, app launchers, and multi-step macro sequences (`M1`–`M10`).
+- **Multiple Screen Docking Form Factors**: Full-width docked, split thumb clusters, left-docked, right-docked, and floating window modes with persistent offset memory.
+- **Accessory Layout System**: Repurposes unused screen space in split or docked modes as an interactive control panel for navigation, media, macros, or numeric keypads.
+- **Power-User & Terminal Controls**: Dedicated Function row (`F1`–`F12`), multi-modifier states (`Shift`, `Ctrl`, `Alt`, `Super`, `Meta`), unbuffered shell keycode dispatches, and persistent clipboard history.
+- **Decoupled Theme System**: 9 built-in theme presets plus custom HSL/RGB palette generation and theme JSON override loading.
+- **Extensible Widgets & Overlays**: Built-in 5x5 application launcher grid, floating clipboard history overlay, trackpad cursor navigation, and speech-to-text integration.
 
 ---
 
-### 3. Form Factors & Floating Window Geometry
+## Features
 
-Infinikey IME supports 5 screen docking modes:
-- **Full Width Docked**: Standard full-width anchored keyboard.
-- **Left Docked**: Comfortably aligned to the left side for single-handed use.
-- **Right Docked**: Comfortably aligned to the right side for single-handed use.
-- **Split Mode**: Divides keys into left and right thumb clusters for large screens and tablets.
-- **Floating Window Mode**: Renders a floating window with top handle bar for drag repositioning and persistent offset memory.
+### Keyboard & Layouts
+- **Desktop & Mobile Layouts**: Full 5-row QWERTY base layout ([`main.json`](app/src/main/assets/layouts/main.json)), compact mobile layout ([`mobile.json`](app/src/main/assets/layouts/mobile.json)), numeric keypad ([`mobile_number.json`](app/src/main/assets/layouts/mobile_number.json)), symbols & math ([`mobile_symbol.json`](app/src/main/assets/layouts/mobile_symbol.json)), and phone dialer ([`phone.json`](app/src/main/assets/layouts/phone.json)).
+- **Function Layers & Visibility Toggling**: Instant Fn layer switching ([`function.json`](app/src/main/assets/layouts/function.json)) and dynamic per-row visibility toggling (`TOGGLE_ROW`).
+- **Emoji Layout Engine**: Dynamic recent emojis tracking layout (`emoji_recents`) and category layouts ([`emoji.json`](app/src/main/assets/layouts/emoji.json), [`emoji_animals.json`](app/src/main/assets/layouts/emoji_animals.json), etc.) with skin tone alternate popups.
+- **Docking Form Factors**: Full-width docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes.
+- **Dynamic Layout Switching**: Swap active layout layers instantly on key press or open the dynamic Meta Layout Picker.
+
+### Programmability
+- **Keystroke Macro System**: Touch-and-hold recording and single-tap replay for slots `M1` through `M10` ([`macro.json`](app/src/main/assets/layouts/macro.json)).
+- **Multi-Touch & Surface Gestures**: Two-finger swipe gestures for screen mode docking and directional keycap swipes (`onSwipeUp`, `onSwipeDown`, etc.).
+- **Modifier Handling**: Latched (one-shot) and locked states for `Shift`, `Ctrl`, `Alt`, `Super`, and `Meta` modifiers.
+- **Auto-Repeat Controls**: Continuous auto-repeats for Backspace, Delete, Arrow keys, volume, seek, and brightness keys.
+
+### Power User Tools
+- **Clipboard History Overlay**: Persistent overlay saving up to 30 copied items with index badges, character lengths, individual item deletion (`🗑`), clear-all, and direct echo-paste connection to terminal streams.
+- **Trackpad & Cursor Navigation**: Spacebar trackpad mode and arrow key joystick trackpad overlay (`JOYSTICK`).
+- **App Launcher Grid & App Selector**: Built-in 5x5 launcher grid ([`launcher.json`](app/src/main/assets/layouts/launcher.json)) with slot persistence (`slot_0`–`slot_24`), app icon bitmap rendering on keycaps, and a 9-category Application Selector discovering launchable system and user apps.
+- **Multimedia Controls**: Built-in [`media.json`](app/src/main/assets/layouts/media.json) layout with Unicode glyph controls (`⊘`, `−`, `+`, `|◄`, `▶/❚❚`, `►|`, `◄◄`, `■`, `►►`, `🖩`, `⌖`, `♫`, `✉`, `☼`, `☀`), OS volume slider HUD integration, and direct OS screen brightness controls (requires `WRITE_SETTINGS` permission).
+
+### Customization
+- **Declarative Layout JSON Specs**: Fully customizable JSON descriptors defining geometry, spacing, rows, keys, actions, and styles.
+- **Visual Layout Editor (WYSIWYG)**: Interactive canvas with drag-and-drop key reordering, row properties, key style classes, action type pickers, and undo/redo state history stack.
+- **Decoupled Themes**: 9 built-in presets (System Auto, System Light, System Dark, Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate) plus HSL/RGB custom color palette picker.
+- **Accessory Area Panels**: Embed secondary layouts (`navigation`, `mobile_number`, `function`, `macro`, `media`, `launcher`, `mobile_symbol`) or custom multi-line text and asset graphics in side/center accessory space.
+
+### Feedback
+- **Mechanical Switch Audio Engine**: Integrated Mechvibes switch sound packs (Cherry MX Blue/Brown/Red/Black, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre Silent Purple, IBM Model M Buckling Spring) with key-down/up split audio pipeline and 5 synthesized click modes.
+- **Haptic Engine**: Android `Vibrator` and `HapticFeedbackConstants` with customizable vibration intensity and pulse styles (`SHARP_CLICK`, `CRISP_TICK`, `HEAVY_CLICK`, `DOUBLE_CLICK`, `CUSTOM_PULSE`).
+- **Key Previews**: Magnified key pop-up preview bubbles on touch down.
 
 ---
 
-### 4. Trackpad & Cursor Navigation
+## Documentation
 
-Infinikey IME includes dual trackpad cursor emulation modes:
-- **Spacebar Trackpad**: Long-pressing or sliding along the spacebar (`␣`) transforms the key into a precision cursor trackpad.
-- **Arrow Key Trackpad / Joystick**: Sliding over arrow keys activates analog trackpad navigation with visual cursor feedback.
+For detailed information, specifications, and guides, refer to the project documentation:
 
----
-
-### 5. Mechanical Switch Audio & Haptic Feedback
-
-- **Sound Engine**: Powered by `SoundPool` with recorded switch sound packs (Cherry MX Blue ABS/PBT, Brown ABS/PBT, Red ABS/PBT, Black ABS/PBT, NovelKeys Cream, EG Oreo, EG Crystal Purple, Topre Silent Purple, IBM Model M Buckling Spring) and 5 synthesized audio modes.
-- **Build-Time Key Click Splitting Pipeline**: Automated Python pipeline (`scripts/split_key_clicks.py`) runs as part of the normal build process (`splitKeyClicks` Gradle task). It analyzes key press recordings, detects key-down (press) vs. key-up (release) transients using energy envelope and zero-crossing alignment, and outputs split sound sets to `app/src/main/assets/audio_split/`. Gradle automatically checks for missing or out-of-date split assets during `preBuild`.
-- **Haptic Engine**: Supports System Haptics (`HapticFeedbackConstants`) and Android `Vibrator` with custom vibration styles (`SHARP_CLICK`, `CRISP_TICK`, `HEAVY_CLICK`, `DOUBLE_CLICK`, `CUSTOM_PULSE`), duration, and amplitude controls.
-
----
-
-### 6. Dynamic Emoji Layout Generation
-
-- **Build-Time Generation**: Python pipeline (`generate_emoji_layouts.py`) fetches Unicode emoji datasets, groups skin tones under base emojis in `alternates` arrays, and generates category asset layouts.
-- **Runtime Recents Tracker**: Logs recently used emojis to `SharedPreferences` (up to 24) and dynamically generates the `"emoji_recents"` layout when tapping `😀`.
-
----
-
-## Project Structure
-
-- **`app/src/main/java/com/infinikey_ime/`**:
-  - `ProgrammerInputMethodService.kt`: Core `InputMethodService` managing keyboard state, target terminal detection, clipboard listening, layout switching, and action dispatching.
-  - **`view/`**:
-    - `KeyboardView.kt`: High-performance custom canvas View rendering key rows, SVG vector icon paths, touch gestures, trackpad modes, and haptics.
-    - `InteractiveLayoutEditorView.kt`: WYSIWYG canvas for real-time drag-and-drop key layout editing.
-    - `KeyPopupOverlay.kt`: 3D tactile action popups with SVG icon caps and dismissal tracking.
-    - `ClipboardHistoryOverlay.kt`: Floating scrollable clipboard history view with single-item deletion and quick paste.
-    - `EmojiPickerOverlay.kt`: Grid emoji picker overlay window.
-    - `VoiceInputOverlay.kt`: Floating voice recognition dialog.
-    - `JoystickPopupWidget.kt`: Floating arrow trackpad widget.
-    - `KeyPreviewOverlay.kt`: Magnified key pop-up preview bubble.
-    - `TrackpadView.kt`: Precision trackpad navigation view.
-  - **`model/`**:
-    - `KeyDefinition.kt`: Strongly-typed `KeyAction`, `KeyDefinition`, `KeyStyle`, and `DimensionValue` data models.
-    - `LayoutDefinition.kt`: Schema models for layout metadata, rows, keys, and themes.
-    - `KeyboardMode.kt`: Screen mode and modifier state enums.
-  - **`engine/`**:
-    - `LayoutParser.kt`: JSON layout engine parsing layout descriptors and applying theme overrides.
-    - `KeyRepeatEngine.kt`: Handles long-press timeouts and key auto-repeats.
-    - `AlternatePriorityManager.kt`: Long-press alternate key prioritization engine.
-  - **`settings/`**:
-    - `SettingsActivity.kt`: Multi-tab preference and configuration activity.
-  - **`util/`**:
-    - `ThemeManager.kt`: Theme copying, versioning, upgrade protection, and management.
-    - `AppPreferencesManager.kt`: Per-app layout assignment and persistence.
-    - `IconRenderer.kt`: Native vector SVG rendering and custom icon loading.
-    - `FontFallbackManager.kt`: Custom symbols font loading and fallback management.
-    - `FileManagerLauncher.kt`: System document provider and file manager integration.
-    - `InfinikeyDocumentsProvider.kt`: Storage Access Framework documents provider for live file editing.
-    - `OverlayPermissionUtil.kt`: System overlay window permission utilities.
-    - `SttArchiveUnpacker.kt`: On-device STT speech recognition model asset extractor.
-  - **`stt/`**:
-    - `SttEngine.kt`, `SherpaOnnxSttEngine.kt`, `AndroidSystemSttEngine.kt`, `WhisperSttEngine.kt`, `CloudApiSttEngine.kt`, `SttEngineFactory.kt`: Offline and online Speech-to-Text engines.
+- 📖 **[User Guide](docs/USER_GUIDE.md)**: Installation, layout switching, form factors, macros, clipboard, launcher, trackpad, and customization walkthroughs.
+- 📐 **[Layout Descriptor Specification](docs/LAYOUT_DESCRIPTOR_SPEC.md)**: Formal specification of JSON layout descriptors, schema properties, dimensioning rules, categorized actions, and accessory area configuration.
+- 🎨 **[Theme Specification](docs/THEMING_SPEC.md)**: Specifications for color themes, preset palettes, category style tokens, and theme versioning.
+- ✏️ **[WYSIWYG Editor Specification](docs/WYSIWYG_EDITOR_SPEC.md)**: Interactive canvas features, drag-and-drop key reordering, and property editor modal specifications.
+- 🏗️ **[Developer Architecture](docs/ARCHITECTURE.md)**: Internal application architecture, `InputMethodService` dispatches, rendering engine, asset pipelines, STT integration, and storage providers.
+- 💡 **[Design Philosophy](docs/DESIGN_PHILOSOPHY.md)**: The core design principles behind treating mobile keyboards as programmable input environments.
 
 ---
 
@@ -211,11 +99,7 @@ Generated APK output locations:
 
 ---
 
-## License
+## License & Attributions
 
-This project is open-source under the [MIT License](LICENSE).
-
-## Attributions & Credits
-
-Mechanical keyboard switch audio samples are sourced from **[Mechvibes](https://mechvibes.com/)**. See [ATTRIBUTION.md](ATTRIBUTION.md) for full credits.
-
+- **License**: Open-source under the [MIT License](LICENSE).
+- **Attributions**: Mechanical switch audio samples are sourced from **[Mechvibes](https://mechvibes.com/)**. See [ATTRIBUTION.md](ATTRIBUTION.md) for full credits.

@@ -1,19 +1,45 @@
 # Layout Descriptor Format Specification
 
-The **Infinikey IME** uses a declarative JSON layout descriptor format to define standalone keyboard layouts, physical rows, key actions, visual styling, multi-touch gestures, and dynamic geometry. Each layout is stored in its own JSON file (e.g. `main.json`, `function.json`, `emoji.json`).
+Infinikey IME uses a declarative JSON layout descriptor format to define standalone keyboard layouts, key rows, key actions, visual styles, multi-touch surface gestures, and dynamic screen geometry. Each layout is stored in its own JSON file (e.g. `main.json`, `function.json`, `mobile.json`).
 
 ---
 
-## 1. Dimensioning Value Rule
+## 1. Architectural Philosophy
 
-All numeric dimensioning parameters (such as key `weight`/`width`, `height`, spacing gaps `horizontalSpacing`/`verticalSpacing`, font sizes, and corner radiuses) follow a strict type convention:
+The Infinikey layout engine enforces a strict separation of concerns across three system layers:
 
-* **Floating Point Numbers** (e.g., `1.0`, `1.5`, `2.5`, `0.02`, `0.15`): Represent **ratios** relative to the parent container's total size (e.g. relative key width proportion within a row, ratio of container height, or font size ratio relative to key height).
-* **Integers** (e.g., `4`, `12`, `14`, `48`): Represent **fixed absolute units in pixels/points (dp / sp)**.
+```
+Layout
+  ├── Geometry (rows, key weights, spacing)
+  ├── Keys & Labels
+  ├── Action Definitions
+  └── Touch & Surface Gestures
+
+Theme
+  └── Visual Styling (color palettes, borders, corner radiuses)
+
+Runtime
+  └── Display State (docking form factor, screen mode, modifiers, active widgets)
+```
+
+- **Layouts** describe *what* exists and *how* it behaves.
+- **Themes** describe *how* it looks visually.
+- **Runtime** governs *where* and *how* it is displayed on screen.
+
+Because layout structure and visual themes are decoupled, any layout descriptor can be rendered with any theme preset or custom color palette without altering key definitions or action handlers.
 
 ---
 
-## 2. Complete Root Schema
+## 2. Dimensioning Value Rule
+
+All numeric dimensioning parameters (such as key `weight`/`width`, `height`, gap spacing `horizontalSpacing`/`verticalSpacing`, font sizes, and corner radiuses) follow a strict type convention:
+
+- **Floating Point Numbers** (e.g., `1.0`, `1.5`, `2.5`, `0.02`, `0.15`): Represent **ratios** relative to the parent container's size (e.g., relative key width proportion within a row, ratio of container height, or font size ratio relative to key height).
+- **Integers** (e.g., `4`, `8`, `12`, `14`, `48`): Represent **fixed absolute units in density-independent pixels / scale-independent pixels (dp / sp)**.
+
+---
+
+## 3. Complete Root Layout Schema
 
 ```json
 {
@@ -26,7 +52,8 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, spa
     "horizontalSpacing": 4,
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
-    "defaultHeightPercentage": 30
+    "defaultHeightPercentage": 30,
+    "accessoryLayout": "macro"
   },
   "theme": {
     "backgroundColor": "#0F172A",
@@ -66,9 +93,9 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, spa
     }
   },
   "gestures": {
-    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "DOCK_LEFT" },
-    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "DOCK_RIGHT" },
-    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOAT" },
+    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "LEFT_DOCKED" },
+    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "RIGHT_DOCKED" },
+    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOATING" },
     "onTwoFingerSwipeDown": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" },
     "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" }
   },
@@ -88,117 +115,168 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, spa
 
 ---
 
-## 2b. Layout Metadata Parameters (`metadata`)
+## 4. Metadata Parameters (`metadata`)
 
-The `metadata` block specifies keyboard constraints, dimensions, scaling, and scrolling features:
+The `metadata` block specifies layout constraints, gap spacing, initial screen mode, and accessory area defaults:
 
 * **`horizontalSpacing`**: Gap space between adjacent keys in a row (`int` for dp, `float` for ratio).
 * **`verticalSpacing`**: Gap space between adjacent rows (`int` for dp, `float` for ratio).
-* **`defaultScreenMode`** (`string`): Initial screen dock mode (`"FULL_WIDTH_DOCKED"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`, `"SPLIT"`).
-* **`defaultHeightPercentage`** (`int`): Default vertical height percentage of the screen space (from `15` to `60`).
+* **`defaultScreenMode`** (`string`): Initial screen dock mode (`"FULL_WIDTH_DOCKED"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`, `"SPLIT"`). Aliases supported: `"SIDE_DOCKED"` / `"DOCK_LEFT"`, `"DOCK_RIGHT"`, `"FLOAT"`.
+* **`defaultHeightPercentage`** (`int`): Default vertical height percentage of the screen space (`15` to `60`).
 * **`longPressTimeoutMs`** (`long`, optional): Timeout in milliseconds before a touch-and-hold triggers long press action (default `350`).
 * **`autoRepeatIntervalMs`** (`long`, optional): Auto-repeat trigger interval in milliseconds for held keycodes (default `50`).
 * **`splitClusterRatio`** (`float`, optional): Center gap ratio proportion when rendered in split mode.
 * **`showKeyPreview`** (`boolean`): Whether to display pop-up key magnification bubbles on tap.
 * **`maxFontSize`**: Maximum font size ceiling for text labels (`int` for dp/sp, `float` for ratio).
-* **`scrollDirection`** (`string`, optional): Set to `"VERTICAL"` or `"HORIZONTAL"` to enable scrolling of rows (e.g. for emojis).
-* **`maxVisibleRows`** (`int`, optional): When vertical scrolling is enabled, specifies how many middle rows are rendered concurrently within the scrolling viewport between the top pinned row (row index 0) and the bottom pinned row (last row).
-* **`maxVisibleColumns`** (`int`, optional): Specifies max columns when horizontal scrolling is enabled.
-* **`accessoryLayout`** / **`deadspaceLayout`** (`string`, optional): Target ID of the layout rendered in the accessory space during side-docked or split modes (`"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"media"`, `"mobile_symbol"`, `"none"`).
-* **`accessoryText`** / **`deadspaceText`** (`string`, optional): Custom label or multi-line text rendered centered in the accessory region. Supports newlines (`\n`).
-* **`accessoryTextColor`** / **`deadspaceTextColor`** (`hex string`, optional): Color of the accessory text string (default `"#94A3B8"`).
-* **`accessoryTextSize`** (`DimensionValue`, optional): Font size for accessory text (`int` for fixed dp/sp, `float` for container height ratio).
-* **`accessoryImage`** / **`deadspaceImage`** (`string`, optional): Path to an asset image, file URI, icon identifier, or custom graphics path rendered inside the accessory region.
+* **`scrollDirection`** (`string`, optional): Set to `"VERTICAL"` or `"HORIZONTAL"` to enable row scrolling (e.g. for emojis).
+* **`maxVisibleRows`** (`int`, optional): Specifies maximum concurrent visible rows when vertical scrolling is enabled.
+* **`accessoryLayout`** (`string`, optional): Secondary layout ID rendered inside the open accessory region during docked or split modes (`"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"media"`, `"launcher"`, `"mobile_symbol"`, `"none"`). *Legacy alias: `deadspaceLayout`.*
+* **`accessoryText`** (`string`, optional): Custom label or multi-line text rendered centered in the accessory region. Supports newlines (`\n`). *Legacy alias: `deadspaceText`.*
+* **`accessoryTextColor`** (`hex string`, optional): Text color for the accessory text string.
+* **`accessoryTextSize`**: Font size for accessory text (`int` dp/sp, `float` ratio).
+* **`accessoryImage`** (`string`, optional): Path to an asset image, file URI, icon identifier, or graphic file rendered inside the accessory region. *Legacy alias: `deadspaceImage`.*
 
 ---
 
-## 3. Key Style Classes (`styles`)
+## 5. Key Style Classes (`styles`)
 
-The root `styles` dictionary defines named style classes. Each key object can specify a `"style": "styleName"` property to inherit visual attributes, while still retaining the ability to provide custom property overrides.
+The root `styles` dictionary defines named category style classes. Keys reference a style class via `"style": "styleName"` to inherit visual attributes.
 
-### Style Class Definition (`StyleObject`)
-Each style object can define any combination of visual properties:
-
-* **`bgColor`** (`hex string`): Default idle fill color.
+### Category Style Attributes (`StyleObject`)
+* **`bgColor`** (`hex string`): Default idle keycap background color.
 * **`pressedBgColor`** (`hex string`): Fill color when touched/pressed.
-* **`activeBgColor`** (`hex string`): Fill color when key/modifier is active or locked.
-* **`fgColor`** (`hex string`): Main text label and icon color.
+* **`activeBgColor`** (`hex string`): Fill color when key or modifier is active/locked.
+* **`fgColor`** (`hex string`): Primary text label and icon color.
 * **`secondaryFgColor`** (`hex string`): Secondary badge label color.
 * **`activeFgColor`** (`hex string`): Text color when key is active/locked.
-* **`borderColor`** (`hex string`): Outline border stroke color.
-* **`borderWidth`**: Border thickness (`int` for dp, `float` for ratio).
-* **`cornerRadius`**: Corner rounding radius (`int` for dp, `float` for ratio).
-* **`fontSize`**: Primary label font size (`int` for sp/pt, `float` for ratio).
-* **`secondaryFontSize`**: Secondary badge font size (`int` for sp/pt, `float` for ratio).
-* **`backgroundImage`** (`string`, optional): Asset texture image path.
+* **`borderColor`** (`hex string`): Keycap border stroke color.
+* **`borderWidth`**: Border thickness (`int` dp, `float` ratio).
+* **`cornerRadius`**: Corner rounding radius (`int` dp, `float` ratio).
+* **`fontSize`**: Primary label font size (`int` sp/pt, `float` ratio).
+* **`secondaryFontSize`**: Secondary badge font size (`int` sp/pt, `float` ratio).
+* **`backgroundImage`** (`string`, optional): Custom asset texture image path.
 
 ---
 
-## 4. Key Object Properties
+## 6. Key Object Properties
 
-### Style & Layout
-* **`style`** (`string`, optional): Name of the key style class to inherit from (e.g. `"modifierKey"`, `"numberKey"`).
-* **`label`** (`string`, required): Main text label rendered on key face.
-* **`secondaryLabel`** (`string`, optional): Small secondary text badge (e.g. top-right corner character).
+### Structure & Layout
+* **`style`** (`string`, optional): Style class to inherit from (e.g. `"alphaKey"`, `"modifierKey"`, `"actionKey"`).
+* **`label`** (`string`, required): Main text label rendered on key cap.
+* **`secondaryLabel`** (`string`, optional): Small secondary badge text (e.g., top-right corner character).
 * **`topLeftLabel`** (`string`, optional): Small top-left corner badge label.
 * **`topRightLabel`** (`string`, optional): Small top-right corner badge label.
-* **`weight`** / **`width`**: Key width multiplier (`float` ratio relative to row weight sum, or `int` fixed dp).
-* **`height`**: Custom key height multiplier (`float` ratio relative to default row height, or `int` fixed dp).
-* **`startOffset`**: Horizontal starting offset preceding the key (`float` ratio or `int` dp).
+* **`weight`**: Key width weight multiplier (`float` ratio relative to row weight sum, or `int` fixed dp). *Alias: `width`.*
+* **`height`**: Custom key height multiplier (`float` ratio relative to row height, or `int` fixed dp).
+* **`startOffset`**: Horizontal offset preceding the key (`float` ratio or `int` dp).
 * **`isSplitKey`** (`boolean`, optional): Identifies if the key spans across the split line in split screen mode.
 * **`splitLeftWeight`** / **`splitRightWeight`**: Width weights for left and right portions of a split key.
-* **`flexible`** (`boolean`, optional): Allows key to dynamically stretch to fill remaining row space (e.g. Spacebar).
+* **`flexible`** (`boolean`, optional): Allows key to dynamically stretch to fill available row space (e.g., Spacebar).
 * **`spacer`** (`boolean`, optional): Renders key as an invisible structural spacing gap without keycap backgrounds or touch hit-testing.
-* **`label` / `secondaryLabel` on Spacers**: When specified on a spacer key (`"spacer": true` or `"style": "spacer"`), renders custom text centered inside the spacing gap. Supports multi-line strings (`\n`), custom text color (`fgColor`, default `#64748B`), and font sizing (`fontSize`).
+* **`label` / `secondaryLabel` on Spacers**: When specified on a spacer key (`"spacer": true` or `"style": "spacer"`), renders custom text centered inside the spacing gap. Supports multi-line strings (`\n`), custom text color (`fgColor`), and font sizing (`fontSize`).
 * **`showPreview`** / **`showKeyPreview`** (`boolean`, optional): Overrides popup preview magnification bubble for this specific key.
-* **`alternates`** / **`alternateKeys`** (`array<string>`, optional): List of alternate characters/symbols displayed in long-press popup menus.
-* **`icon`** (`string`, optional): Vector SVG or drawable icon resource identifier (e.g. `"mic"`, `"paperclip"`, `"clipboard"`, `"copy"`, `"cut"`, `"paste"`, `"select_all"`, `"keyboard"`).
+* **`alternates`** (`array<string>`, optional): List of alternate characters/symbols displayed in long-press popup menus. *Legacy alias: `alternateKeys`.*
+* **`icon`** (`string`, optional): Vector SVG or icon identifier (e.g. `"mic"`, `"paperclip"`, `"clipboard"`, `"copy"`, `"cut"`, `"paste"`, `"select_all"`, `"keyboard"`).
 * **`backgroundImage`** (`string`, optional): Custom key texture image path.
 
-### Visual Overrides Per Key
-A key can override any visual attribute inherited from its `style` class:
-* `fgColor`, `secondaryFgColor`, `bgColor`, `pressedBgColor`, `activeBgColor`, `borderColor`, `borderWidth`, `cornerRadius`, `fontSize`, `maxFontSize`, `secondaryFontSize`.
-
-### Event Action Handlers
+### Event Handlers
 * **`onPress`** (`Action object`, optional): Action performed on single tap.
 * **`onLongPress`** (`Action object`, optional): Action performed on touch and hold.
-* **`onSwipeUp`** (`Action object`, optional): Action performed on upward swipe.
-* **`onSwipeDown`** (`Action object`, optional): Action performed on downward swipe.
-* **`onSwipeLeft`** (`Action object`, optional): Action performed on leftward swipe.
-* **`onSwipeRight`** (`Action object`, optional): Action performed on rightward swipe.
+* **`onSwipeUp`** / **`onSwipeDown`** / **`onSwipeLeft`** / **`onSwipeRight`** (`Action object`, optional): Directional swipe actions.
 
 ---
 
-## 5. Action Schema (`Action`)
+## 7. Categorized Action System
 
-Actions are strongly-typed JSON objects with a `type` field:
+Actions are declared as strongly-typed JSON objects with a `type` discriminator.
 
+### A. Input Actions
 | Action `type` | Parameters | Description |
 | :--- | :--- | :--- |
-| `"SEND_TEXT"` | `"text"` (`string`) | Sends raw string macro or single character to the input connection. |
-| `"SEND_CODE"` | `"code"` (`int`) | Sends Android `KeyEvent` keycode (e.g. `67` for Backspace, `66` for Enter). |
-| `"MACRO"` | `"id"` (`string`) | Replays or records macro step sequence (e.g. `"M1"`). Tap to replay/stop, long-press to record. |
-| `"SWITCH_LAYOUT"` | `"target"` (`string`) | Swaps active layout file to target layout ID (e.g. `"function"`, `"mobile"`, `"main"`). |
-| `"SET_SCREEN_MODE"` | `"mode"` (`string`) | Geometry Action: Changes layout docking mode (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`). |
-| `"ADJUST_HEIGHT"` | `"delta"` (`int`) \| `"percentage"` (`int`) | Geometry Action: Dynamically increases/decreases keyboard display height percentage (15% to 60%). |
+| `"SEND_TEXT"` | `"text"` (`string`) | Sends raw string text or single character directly to the input connection. |
+| `"SEND_CODE"` | `"code"` (`int`) | Sends Android `KeyEvent` keycode (e.g. `67` Backspace, `66` Enter, `131` F1). |
+| `"AUTO_REPEAT"` | `"code"` (`int`), `"intervalMs"` (`int`) | Auto-repeats keycode action continuously while key is held down. |
+
+### B. State Actions
+| Action `type` | Parameters | Description |
+| :--- | :--- | :--- |
+| `"SWITCH_LAYOUT"` | `"target"` (`string`) | Swaps active layout layer to target layout ID (e.g. `"function"`, `"mobile"`, `"main"`). |
+| `"TOGGLE_MODIFIER"`| `"modifier"` (`string`) | Toggles modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`, `"META"`). |
+| `"LOCK_MODIFIER"`  | `"modifier"` (`string`) | Locks modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`, `"META"`). |
+| `"TOGGLE_ROW"`     | `"rowId"` (`int` \| `string`)| Dynamically shows or hides individual row IDs (or `"all_hidden"` for layer toggle). |
+
+### C. Macro Actions
+| Action `type` | Parameters | Description |
+| :--- | :--- | :--- |
+| `"MACRO"` | `"id"` (`string`) | Replays or records macro step sequence (e.g. `"M1"` through `"M10"`). Tap to replay/stop, long-press to record. |
+
+### D. UI Actions
+| Action `type` | Parameters | Description |
+| :--- | :--- | :--- |
 | `"SHOW_POPUP"` | `"options"` (`array<string>`) | Displays 3D tactile character/action popup selection menu. |
-| `"SHOW_WIDGET"` | `"widget"` (`string`) | Displays sub-widget overlay (`"JOYSTICK"`, `"EMOJI_PICKER"`, `"CLIPBOARD_HISTORY"`, `"VOICE_INPUT"`). |
-| `"AUTO_REPEAT"` | `"code"` (`int`), `"intervalMs"` (`int`) | Auto-repeats keycode action continuously while key is held. |
-| `"TOGGLE_ROW"` | `"rowId"` (`int` \| `string`) | Toggles visibility state of row(s) dynamically (or `"all_hidden"` for layer toggle). |
-| `"TOGGLE_MODIFIER"` | `"modifier"` (`string`) | Toggles modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`, `"META"`). |
-| `"LOCK_MODIFIER"` | `"modifier"` (`string`) | Locks modifier state (`"SHIFT"`, `"CTRL"`, `"ALT"`, `"SUPER"`, `"META"`). Automatically set for long-press on modifier keys. |
-| `"SELECT_ALL"` | None | Selects all text in target input control (`performContextMenuAction` with key fallback). |
+| `"SHOW_WIDGET"`| `"widget"` (`string`) | Spawns interactive overlay widget (`"JOYSTICK"`, `"EMOJI_PICKER"`, `"CLIPBOARD_HISTORY"`, `"VOICE_INPUT"`). |
+
+### E. Geometry Actions
+| Action `type` | Parameters | Description |
+| :--- | :--- | :--- |
+| `"SET_SCREEN_MODE"`| `"mode"` (`string`) | Changes screen docking form factor (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`). |
+| `"ADJUST_HEIGHT"`  | `"delta"` (`int`) \| `"percentage"` (`int`) | Dynamically resizes keyboard height percentage (15% to 60%). |
+
+### F. Editing Actions
+| Action `type` | Parameters | Description |
+| :--- | :--- | :--- |
+| `"SELECT_ALL"` | None | Selects all text in target input field. |
 | `"COPY"` | None | Copies current selection to system clipboard. |
 | `"CUT"` | None | Cuts current selection to system clipboard. |
-| `"PASTE"` | None | Directly reads primary clip from ClipboardManager and commits text to input connection. |
+| `"PASTE"` | None | Direct paste from system clipboard. |
 | `"PASTE_ECHO"` | None | Echo-pastes primary clip to text input or raw terminal stream. |
+
+### G. System Actions
+| Action `type` | Parameters | Description |
+| :--- | :--- | :--- |
 | `"SWITCH_IME"` | None | Opens Android system Input Method picker dialog. |
-| `"LAUNCH_APP"`, `"LAUNCH"` | `"packageName"` (`string`), `"slotId"` (`string`) | Launches target application package. Supports slot persistence (`slotId`), dynamic app icon bitmap rendering on keycaps, and Application Selector popup on long-press or unassigned tap. |
+| `"LAUNCH_APP"`, `"LAUNCH"` | `"packageName"` (`string`), `"slotId"` (`string`) | Launches target app package. Supports slot persistence (`slotId`), rendering app icon on keycaps, and Application Selector popup on long-press. |
 | `"NONE"` | None | No operation. |
 
 ---
 
-## 6. Complete Baseline Layout Example (`main.json`)
+## 8. Accessory Area Architecture
+
+When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, `SIDE_DOCKED`), the keyboard uses unused screen width as an **Accessory Area**.
+
+```
+┌──────────────────────────────────────────────┐
+│                                              │
+│                Main Keyboard                 │
+│                                              │
+├──────────────────────────────┬───────────────┤
+│                              │ Navigation /  │
+│                              │  Media /      │
+│                              │  Macro Pad    │
+└──────────────────────────────┴───────────────┘
+```
+
+### Configurable Metadata Parameters
+
+```json
+"metadata": {
+  "accessoryLayout": "navigation",
+  "accessoryImage": "images/logo.png",
+  "accessoryText": "INFINIKEY IME\nSplit Mode",
+  "accessoryTextColor": "#94A3B8",
+  "accessoryTextSize": 12
+}
+```
+
+- **`accessoryLayout`**: Specifies a secondary layout ID (e.g. `"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"media"`, `"launcher"`, `"mobile_symbol"`, `"none"`).
+- **`accessoryImage`**: Path to an asset image, file URI, icon identifier, or graphic file.
+- **`accessoryText`**: Custom multi-line text displayed inside the accessory container (`\n` supported).
+- **`accessoryTextColor`**: Color formatting for accessory text string (hex string).
+- **`accessoryTextSize`**: Font size dimension (`int` dp/sp or `float` relative ratio).
+
+---
+
+## 9. Baseline Layout Example (`main.json`)
 
 ```json
 {
@@ -211,7 +289,8 @@ Actions are strongly-typed JSON objects with a `type` field:
     "horizontalSpacing": 4,
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
-    "defaultHeightPercentage": 30
+    "defaultHeightPercentage": 30,
+    "accessoryLayout": "macro"
   },
   "theme": {
     "backgroundColor": "#0F172A",
@@ -251,9 +330,9 @@ Actions are strongly-typed JSON objects with a `type` field:
     }
   },
   "gestures": {
-    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "DOCK_LEFT" },
-    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "DOCK_RIGHT" },
-    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOAT" },
+    "onTwoFingerSwipeLeft": { "type": "SET_SCREEN_MODE", "mode": "LEFT_DOCKED" },
+    "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "RIGHT_DOCKED" },
+    "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOATING" },
     "onTwoFingerSwipeDown": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" },
     "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" }
   },
@@ -317,110 +396,3 @@ Actions are strongly-typed JSON objects with a `type` field:
   ]
 }
 ```
-
----
-
-## 7. Accessory Layout System, Accessory Text & Accessory Image
-
-When Infinikey IME operates in docked form factors (`SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, `SIDE_DOCKED`), the primary key layout occupies only part of the screen width. The remaining screen region is designated as the **Accessory Area**.
-
-### Configurable Metadata Parameters
-
-```json
-"metadata": {
-  "accessoryLayout": "navigation",
-  "accessoryImage": "images/logo.png",
-  "accessoryText": "INFINIKEY IME\nSplit Mode",
-  "accessoryTextColor": "#94A3B8",
-  "accessoryTextSize": 12
-}
-```
-
-* **`accessoryLayout`**: Specifies a secondary layout file ID (e.g., `"navigation"`, `"mobile_number"`, `"function"`, `"macro"`, `"media"`, `"mobile_symbol"`, or `"none"`). When active, this secondary keyboard renders inside the open accessory space.
-* **`accessoryImage`**: Path to an asset image, file URI, icon identifier, or custom graphics file rendered inside the accessory region.
-* **`accessoryText`**: Custom string displayed inside the accessory card container. Multi-line strings can be specified using `\n`.
-* **`accessoryTextColor`**: Color formatting for the accessory text label (hex string).
-* **`accessoryTextSize`**: Font size dimension for the accessory text (`int` dp/sp or `float` relative ratio).
-* **Settings Override**: Users can globally override layout-defined accessory layouts via **Settings -> Keyboard Layout -> Accessory Layout**.
-
-### Accessory Layout Rendering Rules
-1. **Image + Text**: If both `accessoryImage` and `accessoryText` are specified, the image is rendered at the top of the accessory card, proportionally scaled so that the image height plus text height fit comfortably inside the container, with the text displayed directly beneath the image.
-2. **Image Only**: If only `accessoryImage` is specified, the image is centered vertically and horizontally inside the accessory area, scaled to fill available container bounds.
-3. **Text Only**: If only `accessoryText` is specified, the text is centered vertically and horizontally inside the accessory area.
-
----
-
-## 8. Macro Key System (`MACRO` Action)
-
-Macro keys allow users to record multi-step keystroke sequences on the fly and replay them with a single tap.
-
-### Macro Action JSON Schema
-
-```json
-{
-  "label": "M1",
-  "style": "macroKey",
-  "onPress": { "type": "MACRO", "id": "M1" },
-  "onLongPress": { "type": "MACRO", "id": "M1" }
-}
-```
-
-### Recording & Replay Logic
-1. **Replay (Tap)**: Single-tapping a macro key with an existing recorded sequence executes all saved keystrokes in order.
-2. **Record Mode (Long-Press)**: Long-pressing a macro key puts the keyboard into recording mode for that specific macro `id` (`M1` through `M10`). Keystrokes typed while recording are captured.
-3. **Stop & Save (Tap while recording)**: Tapping the recording macro key again stops recording, saves the sequence to `SharedPreferences` (`pref_macro_<id>`), and displays a toast summary (e.g. `💾 Macro M1 saved (8 steps)`).
-4. **Baseline Layout (`macro.json`)**: Built-in 2x5 grid layout featuring `M1` through `M10` macro keys, designed to be used either as a standalone layout layer or embedded as an **accessory layout**.
-
----
-
-## 9. Placing Text in Key Spacing (Spacer Text) & Accessory Areas
-
-Infinikey IME allows rendering text directly inside structural spacing gaps between keys as well as within the accessory area.
-
-### A. Spacer Key Text (Spacing Between Keys)
-Key objects marked as spacers (`"spacer": true` or `"style": "spacer"`) omit keycap background drawing and touch registration. If a `label` or `secondaryLabel` is provided on a spacer key, text is rendered centered within the open gap space.
-
-```json
-{
-  "spacer": true,
-  "label": "NAV PAD\nCluster",
-  "fgColor": "#64748B",
-  "fontSize": 11,
-  "weight": 1.0
-}
-```
-
-* **Multi-Line Text**: Supports newline breaks (`\n`) for section headers or cluster labels.
-* **Color & Font Size**: Customize label color via `fgColor` (default `#64748B`) and size via `fontSize`.
-
-### B. Accessory Area Text
-Text specified in `metadata.accessoryText` is drawn centered inside the background card of the accessory space when form factor is set to `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, or `SIDE_DOCKED`.
-
-```json
-"metadata": {
-  "accessoryText": "CUSTOM WORKSPACE\nMode Active",
-  "accessoryTextColor": "#38BDF8",
-  "accessoryTextSize": 14
-}
-```
-
----
-
-## 10. 5x5 App Launcher Grid Layout (`launcher.json`) & Application Selector
-
-Infinikey IME provides a built-in 5x5 application launcher pad (`launcher.json`) with 25 customizable app launcher slots (`slot_0` through `slot_24`).
-
-### Launcher Key Descriptor Schema
-```json
-{
-  "label": "Slot 1",
-  "style": "launcherKey",
-  "weight": 1.0,
-  "onPress": { "type": "LAUNCH", "slot": "slot_0", "packageName": "com.android.chrome" }
-}
-```
-
-### Key Highlights
-1. **Dynamic Icon Rendering**: Renders application icons directly onto keycaps using high-performance `LruCache` bitmap caching.
-2. **Categorized Application Selector (`AppPickerActivity`)**: Tapping an unassigned slot or long-pressing any slot opens an interactive selector showing 100% of installed applications categorized into 9 groups (Browsers, Social, Music, Movies, Photos, Utilities, Games, System, Other).
-3. **Slot Persistence**: User app selections persist across keyboard restarts (`LauncherPreferencesManager`).
