@@ -1,0 +1,5 @@
+• Declarative JSON layout engine with Fn layer toggles, custom key ratios, and row visibility.
+• 5 Screen docking modes (Full, Split, Left/Right, Floating) & Accessory area panels (Nav, Numpad, Media, Launcher, Macros).
+• Keystroke macro recording (M1–M10), 30-item persistent clipboard overlay, and 5x5 app launcher grid.
+• Visual WYSIWYG editor for real-time layout creation and drag-and-drop key reordering.
+• Mechvibes mechanical switch audio engine and 100% offline privacy architecture.

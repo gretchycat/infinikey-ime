@@ -1,7 +1,7 @@
 {
   "id": "navigation",
   "name": "Navigation & Editing Cluster",
-  "version": "0.3.5",
+  "version": "0.3.1",
   "_comment": "Middle section keyboard accessory layout featuring navigation arrows, Ins, Del, Home, End, PgUp, PgDn.",
   "author": "Gretchen Maculo",
   "description": "Desktop middle-cluster layout with navigation keys, Insert, Delete, Home, End, Page Up, Page Down, Backspace, and Enter.",

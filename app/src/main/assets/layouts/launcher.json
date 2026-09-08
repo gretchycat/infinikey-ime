@@ -1,7 +1,7 @@
 {
   "id": "launcher",
   "name": "App Launcher Grid",
-  "version": "1.2",
+  "version": "0.3.1",
   "_comment": "5x5 Grid App Launcher accessory layout for quick access to installed applications.",
   "author": "Infinikey IME Team",
   "description": "5x5 grid launcher pad featuring application shortcuts with custom app assignment and dynamic application icon rendering.",
