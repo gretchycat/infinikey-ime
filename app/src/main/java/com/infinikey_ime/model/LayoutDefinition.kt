@@ -22,7 +22,8 @@ data class LayoutMetadata(
     val accessoryTextColor: Int? = null,
     val accessoryTextSize: DimensionValue? = null,
     val accessoryImage: String? = null,
-    val deadspaceImage: String? = null
+    val deadspaceImage: String? = null,
+    val isGenerated: Boolean = false
 ) {
     val effectiveAccessoryLayout: String? get() = accessoryLayout?.takeIf { it.isNotBlank() } ?: deadspaceLayout?.takeIf { it.isNotBlank() }
     val effectiveAccessoryImage: String? get() = accessoryImage?.takeIf { it.isNotBlank() } ?: deadspaceImage?.takeIf { it.isNotBlank() }
@@ -66,8 +67,12 @@ data class LayoutDefinition(
     val theme: LayoutTheme = LayoutTheme(),
     val styles: Map<String, KeyStyle> = emptyMap(),
     val gestures: Map<String, KeyAction> = emptyMap(),
-    val rows: List<KeyRow> = emptyList()
+    val rows: List<KeyRow> = emptyList(),
+    val isGenerated: Boolean = false
 ) {
+    val isGeneratedLayout: Boolean
+        get() = isGenerated || metadata.isGenerated || id.startsWith("emoji", ignoreCase = true) || id.equals("meta", ignoreCase = true)
+
     /**
      * Checks if this layout contains any link back (SWITCH_LAYOUT action) to another layout layer.
      * If a layout contains NO SWITCH_LAYOUT key actions, it has no way to switch back to a typing layer

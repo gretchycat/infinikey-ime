@@ -354,6 +354,7 @@ object LayoutParser {
 
         val layoutItems = sortedKeys.mapNotNull { id ->
             val def = layoutMap[id] ?: return@mapNotNull null
+            if (def.isGeneratedLayout || def.isAccessoryOnly) return@mapNotNull null
             val icon = when (id) {
                 "main" -> "⌨ "
                 "mobile" -> "📱 "
@@ -429,11 +430,13 @@ object LayoutParser {
                 defaultScreenMode = "FULL_WIDTH_DOCKED",
                 defaultHeightPercentage = 30,
                 showKeyPreview = false,
-                maxFontSize = DimensionValue.Absolute(15)
+                maxFontSize = DimensionValue.Absolute(15),
+                isGenerated = true
             ),
             theme = LayoutTheme(backgroundColor = parseColorHex("#0F172A")),
             styles = stylesMap,
-            rows = rowList
+            rows = rowList,
+            isGenerated = true
         )
     }
 
@@ -490,6 +493,14 @@ object LayoutParser {
             ?: metadataObj?.get("deadspaceImage")?.asString
             ?: metadataObj?.get("deadspace_image")?.asString
 
+        val isGeneratedRoot = root.get("isGenerated")?.asBoolean
+            ?: root.get("is_generated")?.asBoolean
+            ?: root.get("generated")?.asBoolean
+        val isGeneratedMetadata = metadataObj?.get("isGenerated")?.asBoolean
+            ?: metadataObj?.get("is_generated")?.asBoolean
+            ?: metadataObj?.get("generated")?.asBoolean
+        val isGenerated = isGeneratedRoot == true || isGeneratedMetadata == true || id.startsWith("emoji", ignoreCase = true) || id.equals("meta", ignoreCase = true)
+
         val metadata = LayoutMetadata(
             horizontalSpacing = hSpacing,
             verticalSpacing = vSpacing,
@@ -509,7 +520,8 @@ object LayoutParser {
             accessoryTextColor = accessoryTextColor,
             accessoryTextSize = accessoryTextSize,
             accessoryImage = accessoryImage,
-            deadspaceImage = accessoryImage
+            deadspaceImage = accessoryImage,
+            isGenerated = isGenerated
         )
 
         // Theme
@@ -560,7 +572,8 @@ object LayoutParser {
             theme = theme,
             styles = stylesMap,
             gestures = gesturesMap,
-            rows = rows
+            rows = rows,
+            isGenerated = isGenerated
         )
     }
 
@@ -1087,9 +1100,11 @@ object LayoutParser {
             description = "Dynamically loaded recently used emojis.",
             metadata = LayoutMetadata(
                 scrollDirection = "VERTICAL",
-                maxVisibleRows = 4
+                maxVisibleRows = 4,
+                isGenerated = true
             ),
-            rows = rowsList
+            rows = rowsList,
+            isGenerated = true
         )
     }
 }

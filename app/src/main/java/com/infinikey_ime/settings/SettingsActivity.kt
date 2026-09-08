@@ -1782,6 +1782,7 @@ class SettingsActivity : AppCompatActivity() {
                 } catch (_: Exception) {
                     com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
+                if (loaded.isGeneratedLayout || loaded.isAccessoryOnly) continue
                 val baseName = getDisplayNameForAsset(file)
                 entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited, categoryType = 1))
             }
@@ -1811,11 +1812,12 @@ class SettingsActivity : AppCompatActivity() {
                 } catch (_: Exception) {
                     com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
+                if (loaded.isGeneratedLayout || loaded.isAccessoryOnly) continue
                 val baseName = if (loaded.name.isNotEmpty()) loaded.name else file.removeSuffix(".json").replace('_', ' ')
                 entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited = isEdited, categoryType = 2))
             }
 
-            // 3. Generated Layouts
+            // 3. Generated Layouts (Skipped as generated layouts are hidden from selector)
             for (file in generatedAssetFiles) {
                 val targetId = file.removeSuffix(".json")
                 val customFile = java.io.File(layoutsDir, file)
@@ -1835,6 +1837,7 @@ class SettingsActivity : AppCompatActivity() {
                 } catch (_: Exception) {
                     com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this@SettingsActivity, file)
                 }
+                if (loaded.isGeneratedLayout || loaded.isAccessoryOnly) continue
                 val baseName = getDisplayNameForAsset(file)
                 entries.add(LayoutSelectorEntry(baseName, targetId, file, loaded.version, isEdited, categoryType = 3))
             }
