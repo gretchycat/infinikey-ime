@@ -11,7 +11,7 @@
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
     "showKeyPreview": false,
-    "accessoryLayout": "mobile_symbol"
+    "accessoryLayout": "none"
   },
   "theme": {
     "fontFamily": "Monospace"

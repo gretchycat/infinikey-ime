@@ -533,8 +533,11 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
 
         val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
-        val customLayoutJson = prefs.getString("pref_custom_layout_json_$targetLayout", null)
-            ?: if (targetLayout == "main") prefs.getString("pref_custom_layout_json", null) else null
+        val isTargetEdited = prefs.getBoolean("pref_layout_is_edited_$targetLayout", false)
+        val customLayoutJson = if (isTargetEdited) {
+            prefs.getString("pref_custom_layout_json_$targetLayout", null)
+                ?: if (targetLayout == "main") prefs.getString("pref_custom_layout_json", null) else null
+        } else null
 
         val rawLayout = if (!customLayoutJson.isNullOrEmpty()) {
             try { LayoutParser.parseJsonLayoutDescriptor(customLayoutJson) } catch (_: Exception) { LayoutParser.loadLayoutFromAsset(this, layoutFile) }
@@ -688,8 +691,11 @@ class ProgrammerInputMethodService : InputMethodService() {
                 }
 
                 val layoutFile = if (validTarget.endsWith(".json")) validTarget else "${validTarget}.json"
-                val customLayoutJson = prefs.getString("pref_custom_layout_json_$validTarget", null)
-                    ?: if (validTarget == "main") prefs.getString("pref_custom_layout_json", null) else null
+                val isValidTargetEdited = prefs.getBoolean("pref_layout_is_edited_$validTarget", false)
+                val customLayoutJson = if (isValidTargetEdited) {
+                    prefs.getString("pref_custom_layout_json_$validTarget", null)
+                        ?: if (validTarget == "main") prefs.getString("pref_custom_layout_json", null) else null
+                } else null
 
                 val lastLayoutForHeader = if (layoutStack.isNotEmpty()) layoutStack.peek() else (prefs.getString("pref_last_actual_layout", "main") ?: "main")
 
@@ -974,11 +980,19 @@ class ProgrammerInputMethodService : InputMethodService() {
 
     private fun sendModifierSignal(modifier: String) {
         val inputConnection = currentInputConnection ?: return
-        val keyCode = when (modifier) {
-            "CTRL" -> KeyEvent.KEYCODE_CTRL_LEFT
-            "ALT" -> KeyEvent.KEYCODE_ALT_LEFT
-            "SHIFT" -> KeyEvent.KEYCODE_SHIFT_LEFT
-            "SUPER" -> KeyEvent.KEYCODE_META_LEFT
+        val isRightShift = (modifier == "SHIFT_RIGHT" || modifier == "RIGHT_SHIFT")
+        if (modifier == "SHIFT" || modifier == "SHIFT_LEFT") {
+            keyboardState.isRightShift = false
+        } else if (isRightShift) {
+            keyboardState.isRightShift = true
+        }
+
+        val keyCode = when {
+            modifier == "CTRL" -> KeyEvent.KEYCODE_CTRL_LEFT
+            modifier == "ALT" -> KeyEvent.KEYCODE_ALT_LEFT
+            modifier == "SHIFT" -> KeyEvent.KEYCODE_SHIFT_LEFT
+            isRightShift -> KeyEvent.KEYCODE_SHIFT_RIGHT
+            modifier == "SUPER" -> KeyEvent.KEYCODE_META_LEFT
             else -> KeyEvent.KEYCODE_UNKNOWN
         }
         if (keyCode != KeyEvent.KEYCODE_UNKNOWN) {
@@ -1000,6 +1014,15 @@ class ProgrammerInputMethodService : InputMethodService() {
         for (mod in mods) {
             when (mod) {
                 "SHIFT" -> {
+                    keyboardState.isRightShift = false
+                    keyboardState.shiftState = when (keyboardState.shiftState) {
+                        ModifierState.OFF -> ModifierState.LATCHED
+                        ModifierState.LATCHED -> ModifierState.LOCKED
+                        ModifierState.LOCKED -> ModifierState.OFF
+                    }
+                }
+                "SHIFT_RIGHT", "RIGHT_SHIFT" -> {
+                    keyboardState.isRightShift = true
                     keyboardState.shiftState = when (keyboardState.shiftState) {
                         ModifierState.OFF -> ModifierState.LATCHED
                         ModifierState.LATCHED -> ModifierState.LOCKED
@@ -1040,6 +1063,15 @@ class ProgrammerInputMethodService : InputMethodService() {
         for (mod in mods) {
             when (mod) {
                 "SHIFT" -> {
+                    keyboardState.isRightShift = false
+                    keyboardState.shiftState = if (keyboardState.shiftState == ModifierState.LOCKED) {
+                        ModifierState.OFF
+                    } else {
+                        ModifierState.LOCKED
+                    }
+                }
+                "SHIFT_RIGHT", "RIGHT_SHIFT" -> {
+                    keyboardState.isRightShift = true
                     keyboardState.shiftState = if (keyboardState.shiftState == ModifierState.LOCKED) {
                         ModifierState.OFF
                     } else {
@@ -1358,8 +1390,11 @@ class ProgrammerInputMethodService : InputMethodService() {
         if (isGeneratedLayoutId(targetLayout)) return targetLayout
         val prefs = getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
         val layoutFile = if (targetLayout.endsWith(".json")) targetLayout else "$targetLayout.json"
-        val customLayoutJson = prefs.getString("pref_custom_layout_json_$targetLayout", null)
-            ?: if (targetLayout == "main") prefs.getString("pref_custom_layout_json", null) else null
+        val isTargetEdited = prefs.getBoolean("pref_layout_is_edited_$targetLayout", false)
+        val customLayoutJson = if (isTargetEdited) {
+            prefs.getString("pref_custom_layout_json_$targetLayout", null)
+                ?: if (targetLayout == "main") prefs.getString("pref_custom_layout_json", null) else null
+        } else null
 
         val rawLayout = try {
             if (!customLayoutJson.isNullOrEmpty()) {

@@ -1331,38 +1331,7 @@
                         android:paddingEnd="12dp"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Accessory Space Layout Dropdown -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🌌 Accessory Space Layout (Split / Docked):"
-                        android:textColor="@color/key_text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="4dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Fills empty space between split halves or beside docked keyboard when available space fits layout ideal width."
-                        android:textColor="@color/settings_text_sub"
-                        android:textSize="11sp"
-                        android:layout_marginBottom="8dp" />
-
-                    <Spinner
-                        android:id="@+id/spAccessoryLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_spinner_card"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:layout_marginBottom="16dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/settings_divider"
-                        android:layout_marginBottom="16dp" />
 
                     <!-- PORTRAIT Keyboard Height Percentage Setting -->
                     <LinearLayout

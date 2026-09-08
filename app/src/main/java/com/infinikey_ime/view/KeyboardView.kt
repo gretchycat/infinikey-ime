@@ -271,8 +271,8 @@ class KeyboardView @JvmOverloads constructor(
     fun loadDeadspaceLayout(targetId: String?) = loadAccessoryLayout(targetId)
 
     private fun updateAccessoryLayoutFromTarget() {
-        val target = accessoryLayoutTarget
-            ?: layoutDefinition?.metadata?.effectiveAccessoryLayout
+        val target = layoutDefinition?.metadata?.effectiveAccessoryLayout
+            ?: accessoryLayoutTarget
             ?: "none"
         val cleanTarget = target.removeSuffix(".json").trim()
 
@@ -290,7 +290,8 @@ class KeyboardView @JvmOverloads constructor(
             val layoutsDir = java.io.File(context.getExternalFilesDir(null), "layouts")
             val customFile = java.io.File(layoutsDir, fileName)
             val prefs = context.getSharedPreferences("programmer_keyboard_prefs", Context.MODE_PRIVATE)
-            val customJson = prefs.getString("pref_custom_layout_json_$cleanTarget", null)
+            val isEdited = prefs.getBoolean("pref_layout_is_edited_$cleanTarget", false)
+            val customJson = if (isEdited) prefs.getString("pref_custom_layout_json_$cleanTarget", null) else null
 
             val parsed = when {
                 customFile.exists() -> com.infinikey_ime.engine.LayoutParser.parseJsonLayoutDescriptor(customFile.readText())
@@ -857,8 +858,8 @@ class KeyboardView @JvmOverloads constructor(
 
         // Accessory Space Layout calculation
         activeAccessoryRect = null
-        val effectiveTarget = accessoryLayoutTarget
-            ?: layoutDefinition?.metadata?.effectiveAccessoryLayout
+        val effectiveTarget = layoutDefinition?.metadata?.effectiveAccessoryLayout
+            ?: accessoryLayoutTarget
             ?: "none"
 
         val cleanTarget = effectiveTarget.removeSuffix(".json").trim()
@@ -3160,7 +3161,7 @@ class KeyboardView @JvmOverloads constructor(
 
         val states = mods.map { mod ->
             when (mod) {
-                "SHIFT" -> keyboardState.shiftState
+                "SHIFT", "SHIFT_RIGHT" -> keyboardState.shiftState
                 "CTRL" -> keyboardState.ctrlState
                 "ALT" -> keyboardState.altState
                 "SUPER" -> keyboardState.superState

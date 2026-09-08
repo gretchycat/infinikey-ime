@@ -41,6 +41,7 @@ data class KeyboardState(
     var alignmentMode: AlignmentMode = AlignmentMode.STAGGERED,
     var formFactorMode: FormFactorMode = FormFactorMode.FULL_WIDTH_DOCKED,
     var shiftState: ModifierState = ModifierState.OFF,
+    var isRightShift: Boolean = false,
     var ctrlState: ModifierState = ModifierState.OFF,
     var altState: ModifierState = ModifierState.OFF,
     var superState: ModifierState = ModifierState.OFF,
@@ -69,7 +70,8 @@ data class KeyboardState(
     fun getMetaState(): Int {
         var meta = 0
         if (shiftState == ModifierState.LATCHED || (shiftState == ModifierState.LOCKED && shiftLockMode == ShiftLockMode.SHIFT_LOCK)) {
-            meta = meta or android.view.KeyEvent.META_SHIFT_ON or android.view.KeyEvent.META_SHIFT_LEFT_ON
+            val shiftSideFlag = if (isRightShift) android.view.KeyEvent.META_SHIFT_RIGHT_ON else android.view.KeyEvent.META_SHIFT_LEFT_ON
+            meta = meta or android.view.KeyEvent.META_SHIFT_ON or shiftSideFlag
         } else if (shiftState == ModifierState.LOCKED && shiftLockMode == ShiftLockMode.CAPS_LOCK) {
             meta = meta or android.view.KeyEvent.META_CAPS_LOCK_ON
         }
@@ -87,6 +89,7 @@ data class KeyboardState(
         var changed = false
         if (shiftState == ModifierState.LATCHED) {
             shiftState = ModifierState.OFF
+            isRightShift = false
             changed = true
         }
         if (ctrlState == ModifierState.LATCHED) {
@@ -110,7 +113,15 @@ data class KeyboardState(
  */
 fun parseModifierComponents(modifierStr: String): List<String> {
     if (modifierStr.isBlank()) return emptyList()
-    return modifierStr.uppercase()
+    val normalized = modifierStr.uppercase()
+        .replace("SHIFT_RIGHT", "SHIFT-RIGHT")
+        .replace("RIGHT_SHIFT", "SHIFT-RIGHT")
+        .replace("RSHIFT", "SHIFT-RIGHT")
+        .replace("SHIFT_LEFT", "SHIFT-LEFT")
+        .replace("LEFT_SHIFT", "SHIFT-LEFT")
+        .replace("LSHIFT", "SHIFT-LEFT")
+
+    return normalized
         .split(Regex("[+_,; ]+"))
         .map { it.trim() }
         .filter { it.isNotEmpty() }
@@ -119,6 +130,8 @@ fun parseModifierComponents(modifierStr: String): List<String> {
                 "META", "WIN", "CMD" -> "SUPER"
                 "CONTROL" -> "CTRL"
                 "OPTION" -> "ALT"
+                "SHIFTRIGHT", "SHIFT-RIGHT" -> "SHIFT_RIGHT"
+                "SHIFTLEFT", "SHIFT-LEFT" -> "SHIFT"
                 else -> mod
             }
         }

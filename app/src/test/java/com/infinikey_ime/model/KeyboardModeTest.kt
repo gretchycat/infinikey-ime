@@ -82,6 +82,10 @@ class KeyboardModeTest {
         val expectedShift = android.view.KeyEvent.META_SHIFT_ON or android.view.KeyEvent.META_SHIFT_LEFT_ON
         assertEquals(expectedShift, shiftState.getMetaState())
 
+        val rightShiftState = KeyboardState(shiftState = ModifierState.LATCHED, isRightShift = true)
+        val expectedRightShift = android.view.KeyEvent.META_SHIFT_ON or android.view.KeyEvent.META_SHIFT_RIGHT_ON
+        assertEquals(expectedRightShift, rightShiftState.getMetaState())
+
         val superState = KeyboardState(superState = ModifierState.LATCHED)
         val expectedSuper = android.view.KeyEvent.META_META_ON or android.view.KeyEvent.META_META_LEFT_ON
         assertEquals(expectedSuper, superState.getMetaState())
@@ -102,5 +106,8 @@ class KeyboardModeTest {
         assertEquals(listOf("CTRL", "SHIFT"), parseModifierComponents("Control + Shift"))
         assertEquals(listOf("SUPER", "ALT"), parseModifierComponents("META+OPTION"))
         assertEquals(listOf("CTRL", "ALT", "SHIFT"), parseModifierComponents("CTRL+ALT+SHIFT"))
+        assertEquals(listOf("SHIFT_RIGHT"), parseModifierComponents("SHIFT_RIGHT"))
+        assertEquals(listOf("SHIFT_RIGHT"), parseModifierComponents("RIGHT_SHIFT"))
+        assertEquals(listOf("CTRL", "SHIFT_RIGHT"), parseModifierComponents("CTRL+SHIFT_RIGHT"))
     }
 }

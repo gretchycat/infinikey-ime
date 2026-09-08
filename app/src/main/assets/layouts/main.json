@@ -1,7 +1,7 @@
 {
   "id": "main",
   "name": "Full Programmer Baseline Layout",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "_comment": "REMINDER: Always update this version number to match the keyboard baseVersionName in app/build.gradle.kts whenever modifications are made to this layout.",
   "author": "Gretchen Maculo",
   "description": "Comprehensive 5-row desktop Infinikey IME layout with function row, modifier toggles, long-press popups, and multi-touch geometry gestures.",
@@ -10,7 +10,7 @@
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
-    "accessoryLayout": "navigation"
+    "accessoryLayout": "macro"
   },
   "theme": {
     "fontFamily": "Monospace"
@@ -1242,11 +1242,11 @@
           "weight": 1.0,
           "onPress": {
             "type": "TOGGLE_MODIFIER",
-            "modifier": "SHIFT"
+            "modifier": "SHIFT_RIGHT"
           },
           "onLongPress": {
             "type": "LOCK_MODIFIER",
-            "modifier": "SHIFT"
+            "modifier": "SHIFT_RIGHT"
           }
         }
       ]

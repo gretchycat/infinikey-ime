@@ -506,31 +506,7 @@ class SettingsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        // Accessory Space Layout Spinner
-        val spAccessoryLayout = findViewById<Spinner>(R.id.spAccessoryLayout)
-        val accessoryOptions = getAvailableAccessoryOptions()
-        val accessoryAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accessoryOptions.map { it.first })
-        spAccessoryLayout?.adapter = accessoryAdapter
 
-        val currentAccessoryTarget = prefs.getString("pref_accessory_layout_target", null)
-            ?: prefs.getString("pref_deadspace_layout_target", "none")
-            ?: "none"
-        val initialAccessoryIdx = accessoryOptions.indexOfFirst { it.second == currentAccessoryTarget }.coerceAtLeast(0)
-        spAccessoryLayout?.setSelection(initialAccessoryIdx)
-
-        spAccessoryLayout?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val opts = getAvailableAccessoryOptions()
-                if (position in opts.indices) {
-                    val targetId = opts[position].second
-                    prefs.edit()
-                        .putString("pref_accessory_layout_target", targetId)
-                        .putString("pref_deadspace_layout_target", targetId)
-                        .apply()
-                }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
 
         // 5. Shift Double-Tap Lock Mode Spinner
         val spShiftLock = findViewById<Spinner>(R.id.spShiftLock)
@@ -2596,7 +2572,8 @@ class SettingsActivity : AppCompatActivity() {
             )
 
             val modifierOptions = listOf(
-                Pair("Shift Modifier", "SHIFT"),
+                Pair("Left Shift / Default Shift Modifier", "SHIFT"),
+                Pair("Right Shift Modifier", "SHIFT_RIGHT"),
                 Pair("Control (Ctrl) Modifier", "CTRL"),
                 Pair("Alt Modifier", "ALT"),
                 Pair("Meta / Super / Windows Modifier", "SUPER"),
@@ -3514,65 +3491,47 @@ class SettingsActivity : AppCompatActivity() {
         options.add(Pair("None (Disabled)", "none"))
 
         val defaultAssetFiles = listOf("main.json", "mobile.json", "mobile_number.json", "mobile_symbol.json", "function.json", "phone.json", "navigation.json", "macro.json", "media.json", "launcher.json")
-        val generatedAssetFiles = listOf("emoji.json", "emoji_animals.json", "emoji_body.json", "emoji_flags.json", "emoji_food.json", "emoji_objects.json", "emoji_sports.json", "emoji_symbols.json", "emoji_travel.json")
 
-        // 1. Default Asset Layouts
+        // 1. Default Asset Accessory Layouts
         for (file in defaultAssetFiles) {
             val targetId = file.removeSuffix(".json")
-            val label = when (targetId) {
-                "main" -> "⌨️ Main / Terminal Layout"
-                "mobile" -> "📱 Mobile Layout"
-                "mobile_number" -> "🔢 Mobile Numbers"
-                "mobile_symbol" -> "🔣 Mobile Symbols"
-                "function" -> "⚡ Function / Fn Layer"
-                "phone" -> "📞 Phone Dialpad"
-                "navigation" -> "🧭 Navigation & Editing Cluster"
-                "macro" -> "🤖 Macro Pad (M1-M10)"
-                "media" -> "🎵 Multimedia & Control Pad"
-                "launcher" -> "🚀 App Launcher Grid (5x5)"
-                else -> targetId
+            val loaded = try {
+                com.infinikey_ime.engine.LayoutParser.loadLayoutFromAsset(this, file)
+            } catch (_: Exception) { null }
+
+            if (loaded != null && loaded.isAccessoryOnly && !loaded.isGeneratedLayout) {
+                val label = when (targetId) {
+                    "navigation" -> "🧭 Navigation & Editing Cluster"
+                    "macro" -> "🤖 Macro Pad (M1-M10)"
+                    "media" -> "🎵 Multimedia & Control Pad"
+                    "launcher" -> "🚀 App Launcher Grid (5x5)"
+                    else -> targetId
+                }
+                options.add(Pair(label, targetId))
             }
-            options.add(Pair(label, targetId))
         }
 
-        // 2. User-Created Custom Layouts in layouts/ folder
+        // 2. User-Created Custom Accessory Layouts in layouts/ folder
         try {
             val layoutsDir = java.io.File(getExternalFilesDir(null), "layouts")
             if (layoutsDir.exists()) {
                 val userFiles = layoutsDir.listFiles { _, name ->
-                    name.endsWith(".json") && name !in defaultAssetFiles && name !in generatedAssetFiles
+                    name.endsWith(".json") && name !in defaultAssetFiles
                 }?.sortedBy { it.name } ?: emptyList()
 
                 for (userFile in userFiles) {
                     val targetId = userFile.name.removeSuffix(".json")
-                    val displayName = try {
-                        val json = com.infinikey_ime.engine.LayoutParser.parseJsonLayoutDescriptor(userFile.readText())
-                        if (json.name.isNotEmpty()) "👤 ${json.name}" else "📄 $targetId"
-                    } catch (_: Exception) {
-                        "📄 $targetId"
+                    val loaded = try {
+                        com.infinikey_ime.engine.LayoutParser.parseJsonLayoutDescriptor(userFile.readText())
+                    } catch (_: Exception) { null }
+
+                    if (loaded != null && loaded.isAccessoryOnly && !loaded.isGeneratedLayout) {
+                        val displayName = if (loaded.name.isNotEmpty()) "👤 ${loaded.name}" else "📄 $targetId"
+                        options.add(Pair(displayName, targetId))
                     }
-                    options.add(Pair(displayName, targetId))
                 }
             }
         } catch (_: Exception) {}
-
-        // 3. Specialty / Emoji Layouts
-        for (file in generatedAssetFiles) {
-            val targetId = file.removeSuffix(".json")
-            val label = when (file) {
-                "emoji.json" -> "😃 Emojis"
-                "emoji_animals.json" -> "🐾 Emoji Animals"
-                "emoji_body.json" -> "🙋 Emoji Body & People"
-                "emoji_flags.json" -> "🚩 Emoji Flags"
-                "emoji_food.json" -> "🍔 Emoji Food"
-                "emoji_objects.json" -> "💡 Emoji Objects"
-                "emoji_sports.json" -> "⚽ Emoji Sports"
-                "emoji_symbols.json" -> "🔣 Emoji Symbols"
-                "emoji_travel.json" -> "✈️ Emoji Travel"
-                else -> targetId
-            }
-            options.add(Pair(label, targetId))
-        }
 
         return options
     }

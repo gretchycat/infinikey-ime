@@ -79,14 +79,14 @@ object LayoutParser {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                } else if (!isEdited) {
+                } else {
                     val fileJson = targetFile.readText().trim()
                     val needsUpgrade = try {
                         val assetObj = com.google.gson.JsonParser.parseString(assetJson).asJsonObject
                         val fileObj = com.google.gson.JsonParser.parseString(fileJson).asJsonObject
                         val assetVer = assetObj.get("version")?.asString ?: ""
                         val fileVer = fileObj.get("version")?.asString ?: ""
-                        fileVer != assetVer || fileJson != assetJson
+                        !isEdited && (fileVer != assetVer || fileJson != assetJson || (assetJson.contains("SHIFT_RIGHT") && !fileJson.contains("SHIFT_RIGHT")))
                     } catch (_: Exception) { true }
 
                     if (needsUpgrade) {
