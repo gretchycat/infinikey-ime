@@ -41,29 +41,51 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, gap
 
 ## 3. Complete Root Layout Schema
 
+The root layout descriptor is a declarative JSON object defining top-level identity attributes, global metadata rules, theme styling overrides, category style classes, surface gestures, and row/key geometry definitions.
+
+### A. Comprehensive Root Layout Example
+
 ```json
 {
   "id": "main",
   "name": "Main Base Layout",
   "version": "2.0",
   "author": "Infinikey IME Team",
-  "description": "Primary 5-row desktop-style layout with key style classes and gesture definitions.",
+  "description": "Primary 5-row desktop-style layout with key style classes, surface gestures, and accessory region defaults.",
+  "isGenerated": false,
   "metadata": {
     "horizontalSpacing": 4,
     "verticalSpacing": 4,
     "defaultScreenMode": "FULL_WIDTH_DOCKED",
     "defaultHeightPercentage": 30,
-    "accessoryLayout": "macro"
+    "longPressTimeoutMs": 350,
+    "autoRepeatIntervalMs": 50,
+    "splitClusterRatio": 0.2,
+    "showKeyPreview": true,
+    "maxFontSize": 18,
+    "scrollDirection": "NONE",
+    "maxVisibleRows": 5,
+    "maxVisibleColumns": 14,
+    "accessoryLayout": "macro",
+    "accessoryText": "INFINIKEY IME\nSplit Mode",
+    "accessoryTextColor": "#94A3B8",
+    "accessoryTextSize": 12,
+    "accessoryImage": "images/logo.png",
+    "showPartial": false
   },
   "theme": {
     "backgroundColor": "#0F172A",
-    "fontFamily": "Monospace"
+    "fontFamily": "Monospace",
+    "modifierOffDotColor": "#475569",
+    "modifierLatchedDotColor": "#38BDF8",
+    "modifierLockedDotColor": "#F59E0B"
   },
   "styles": {
     "alphaKey": {
       "bgColor": "#1E2230",
       "fgColor": "#F8FAFC",
       "pressedBgColor": "#334155",
+      "activeBgColor": "#1E2230",
       "cornerRadius": 8
     },
     "numberKey": {
@@ -90,6 +112,18 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, gap
       "fgColor": "#FFFFFF",
       "pressedBgColor": "#0369A1",
       "cornerRadius": 8
+    },
+    "navigationKey": {
+      "bgColor": "#1E293B",
+      "fgColor": "#38BDF8",
+      "pressedBgColor": "#334155",
+      "cornerRadius": 8
+    },
+    "editingKey": {
+      "bgColor": "#0F172A",
+      "fgColor": "#10B981",
+      "pressedBgColor": "#1E293B",
+      "cornerRadius": 8
     }
   },
   "gestures": {
@@ -97,21 +131,88 @@ All numeric dimensioning parameters (such as key `weight`/`width`, `height`, gap
     "onTwoFingerSwipeRight": { "type": "SET_SCREEN_MODE", "mode": "RIGHT_DOCKED" },
     "onTwoFingerSwipeUp": { "type": "SET_SCREEN_MODE", "mode": "FLOATING" },
     "onTwoFingerSwipeDown": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" },
-    "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" }
+    "onTwoFingerPinchOut": { "type": "SET_SCREEN_MODE", "mode": "SPLIT" },
+    "onTwoFingerPinchIn": { "type": "SET_SCREEN_MODE", "mode": "FULL_WIDTH_DOCKED" }
   },
   "rows": [
     {
       "id": 1,
       "hidden": true,
-      "keys": [ ... ]
+      "splitIndex": 2,
+      "keys": [
+        {
+          "label": "F1",
+          "style": "functionKey",
+          "onPress": { "type": "SEND_CODE", "code": 131 }
+        },
+        {
+          "label": "F2",
+          "style": "functionKey",
+          "onPress": { "type": "SEND_CODE", "code": 132 }
+        }
+      ]
     },
     {
       "id": 2,
-      "keys": [ ... ]
+      "hidden": false,
+      "keys": [
+        {
+          "label": "1",
+          "secondaryLabel": "!",
+          "style": "numberKey"
+        },
+        {
+          "label": "a",
+          "secondaryLabel": "á",
+          "style": "alphaKey",
+          "onPress": { "type": "SEND_TEXT", "text": "a" },
+          "onLongPress": { "type": "SHOW_POPUP", "options": ["á", "à", "ä", "â", "å"] },
+          "onSwipeUp": { "type": "SEND_TEXT", "text": "A" }
+        },
+        {
+          "label": "Shift",
+          "style": "modifierKey",
+          "weight": 1.4,
+          "onPress": { "type": "TOGGLE_MODIFIER", "modifier": "SHIFT" }
+        },
+        {
+          "label": "Space",
+          "style": "alphaKey",
+          "weight": 3.0,
+          "flexible": true,
+          "isSplitKey": true,
+          "onPress": { "type": "SEND_TEXT", "text": " " }
+        },
+        {
+          "label": "Backspace",
+          "style": "actionKey",
+          "weight": 1.5,
+          "icon": "ic_backspace",
+          "onPress": { "type": "SEND_CODE", "code": 67 },
+          "onLongPress": { "type": "AUTO_REPEAT", "code": 67, "intervalMs": 50 }
+        }
+      ]
     }
   ]
 }
 ```
+
+### B. Root-Level Property Reference
+
+| Property | Type | Requirement | Default | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **`id`** | `string` | **Required** | `"custom_layout"` | Unique identifier string used for layout layer switching and persistence (e.g. `"main"`, `"mobile"`, `"function"`, `"navigation"`). |
+| **`name`** | `string` | **Required** | `"Custom Layout"` | Human-readable title displayed in layout selection menus, meta picker UI, and settings. |
+| **`version`** | `string` | Optional | `"1.0"` | Schema version string used for engine compatibility checks and automatic user upgrades. |
+| **`author`** | `string` | Optional | `"Unknown"` | Creator name, organization, or maintainer attribution string. |
+| **`description`** | `string` | Optional | `""` | Detailed description explaining the key arrangement, target use-case, or feature set. |
+| **`isGenerated`** | `boolean` | Optional | `false` | Indicates whether the layout is dynamically generated by the engine at runtime (e.g. emoji pickers, meta layer). Supported aliases: `is_generated`, `generated`. |
+| **`metadata`** | `object` | Optional | `{}` | Key gap dimensions, docking mode defaults, scroll rules, touch timeouts, and accessory region configuration (see Section 4). |
+| **`theme`** | `object` | Optional | `{}` | Global layout theme overrides including background color, font family, and modifier state indicator colors. |
+| **`styles`** | `object` | Optional | `{}` | Dictionary of category style class definitions (`alphaKey`, `numberKey`, `modifierKey`, `functionKey`, `actionKey`, `navigationKey`, `editingKey`, etc.) (see Section 5). |
+| **`gestures`** | `object` | Optional | `{}` | Map of surface-wide multi-touch gesture handlers (`onTwoFingerSwipeLeft`, `onTwoFingerPinchOut`, etc.) mapped to key action objects. |
+| **`rows`** | `array<KeyRow>` | **Required** | `[]` | Ordered list of horizontal key row objects defining key layout geometry, split positions, and key descriptors (see Section 6). |
+
 
 ---
 
