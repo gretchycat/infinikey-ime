@@ -193,7 +193,7 @@ Actions are strongly-typed JSON objects with a `type` field:
 | `"PASTE"` | None | Directly reads primary clip from ClipboardManager and commits text to input connection. |
 | `"PASTE_ECHO"` | None | Echo-pastes primary clip to text input or raw terminal stream. |
 | `"SWITCH_IME"` | None | Opens Android system Input Method picker dialog. |
-| `"LAUNCH_APP"` | `"packageName"` (`string`) | Launches specified application package directly from keyboard key tap. |
+| `"LAUNCH_APP"`, `"LAUNCH"` | `"packageName"` (`string`), `"slotId"` (`string`) | Launches target application package. Supports slot persistence (`slotId`), dynamic app icon bitmap rendering on keycaps, and Application Selector popup on long-press or unassigned tap. |
 | `"NONE"` | None | No operation. |
 
 ---
@@ -403,3 +403,24 @@ Text specified in `metadata.accessoryText` is drawn centered inside the backgrou
   "accessoryTextSize": 14
 }
 ```
+
+---
+
+## 10. 5x5 App Launcher Grid Layout (`launcher.json`) & Application Selector
+
+Infinikey IME provides a built-in 5x5 application launcher pad (`launcher.json`) with 25 customizable app launcher slots (`slot_0` through `slot_24`).
+
+### Launcher Key Descriptor Schema
+```json
+{
+  "label": "Slot 1",
+  "style": "launcherKey",
+  "weight": 1.0,
+  "onPress": { "type": "LAUNCH", "slot": "slot_0", "packageName": "com.android.chrome" }
+}
+```
+
+### Key Highlights
+1. **Dynamic Icon Rendering**: Renders application icons directly onto keycaps using high-performance `LruCache` bitmap caching.
+2. **Categorized Application Selector (`AppPickerActivity`)**: Tapping an unassigned slot or long-pressing any slot opens an interactive selector showing 100% of installed applications categorized into 9 groups (Browsers, Social, Music, Movies, Photos, Utilities, Games, System, Other).
+3. **Slot Persistence**: User app selections persist across keyboard restarts (`LauncherPreferencesManager`).

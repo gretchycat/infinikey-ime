@@ -9,6 +9,9 @@ An open-source, layout-driven, highly customizable soft keyboard for Android des
 ## Key Highlights
 
 - **Declarative Layout Engine**: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
+- **5x5 App Launcher Grid & Categorized App Selector**: Bind keys to `LAUNCH` / `LAUNCH_APP` actions with slot persistence (`launcher.json`), dynamic app icon bitmap rendering directly on keycaps, and a 9-category Application Selector (`AppPickerActivity`) discovering 100% of installed apps.
+- **Multimedia & Control Pad Layout**: Built-in `media.json` layout with pure monochrome text Unicode glyphs (volume `⊘`, `−`, `+`, playback `|◄`, `▶/❚❚`, `►|`, seek `◄◄`, `■`, `►►`, shortcuts `🖩`, `⌖`, `♫`, `✉`, and brightness `☼`, `☀`), OS volume slider HUD integration (`AudioManager`), and auto-repeating volume, seek, and brightness keys.
+- **System Settings Permission (`WRITE_SETTINGS`)**: Integrated Write System Settings permission management in the Configuration App for direct OS screen brightness controls.
 - **Powerful Macro System**: Bind complex macros, multi-touch gestures, swipe actions (`onSwipeUp`, `onSwipeDown`, `onSwipeLeft`, `onSwipeRight`), long-press popups, keycode auto-repeats, and app launchers directly to keys.
 - **Decoupled Theme & Color Palette Engine**: 9 built-in presets (System Auto, System Light, System Dark, Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate) plus custom HSL/RGB palette generation and theme JSON override loading.
 - **Multiple Form Factors & Split Mode**: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
@@ -24,7 +27,7 @@ An open-source, layout-driven, highly customizable soft keyboard for Android des
 
 ### 1. Declarative Layout & Macro System
 
-Infinikey IME uses a flexible JSON layout descriptor specification (`docs/LAYOUT_DESCRIPTOR_SPEC.md`). Layouts are stored as standalone JSON files in `assets/layouts/` (e.g., `main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`, `phone.json`).
+Infinikey IME uses a flexible JSON layout descriptor specification (`docs/LAYOUT_DESCRIPTOR_SPEC.md`). Layouts are stored as standalone JSON files in `assets/layouts/` (e.g., `main.json`, `function.json`, `mobile.json`, `mobile_number.json`, `mobile_symbol.json`, `phone.json`, `media.json`, `launcher.json`).
 
 #### Geometry & Dimensioning Rules
 All key widths, heights, spacing gaps, font sizes, and corner radiuses use a strict dual-unit system:
@@ -43,7 +46,7 @@ Each key descriptor can define multiple touch event actions:
 | `"SEND_TEXT"` | Sends raw text strings or single characters directly to the input connection. |
 | `"SEND_CODE"` | Sends specific Android `KeyEvent` keycodes (e.g. `67` for Backspace, `66` for Enter, `131` for F1). |
 | `"MACRO"` | Replays or records custom multi-step keystroke macro sequences (e.g. `"M1"` through `"M10"`). Tap to replay/stop, long-press to record. |
-| `"SWITCH_LAYOUT"` | Swaps active layout layer dynamically (e.g. `"function"`, `"mobile"`, `"main"`). |
+| `"SWITCH_LAYOUT"` | Swaps active layout layer dynamically (e.g. `"function"`, `"mobile"`, `"main"`, `"launcher"`, `"media"`). |
 | `"SET_SCREEN_MODE"` | Changes screen docking form factor (`"FULL_WIDTH_DOCKED"`, `"SPLIT"`, `"LEFT_DOCKED"`, `"RIGHT_DOCKED"`, `"FLOATING"`). |
 | `"ADJUST_HEIGHT"` | Dynamically resizes keyboard display height percentage (15% to 60%). |
 | `"SHOW_POPUP"` | Displays modern 3D tactile character/action selection popup menus. |
@@ -55,11 +58,31 @@ Each key descriptor can define multiple touch event actions:
 | `"SELECT_ALL"`, `"COPY"`, `"CUT"`, `"PASTE"` | Direct text editing and clipboard controls with fallback context support. |
 | `"PASTE_ECHO"` | Echo-pastes primary clip to text input or raw terminal stream. |
 | `"SWITCH_IME"` | Opens system Input Method Manager picker dialog. |
-| `"LAUNCH_APP"` | Launches target Android application package directly from a key tap. |
+| `"LAUNCH_APP"`, `"LAUNCH"` | Launches target application package (with `slotId` persistence), rendering the app icon on keycaps. Single-tap unassigned slots or long-press any slot to trigger the 9-category Application Selector. |
+
+#### 5x5 App Launcher Grid & Categorized Application Selector
+- **App Launcher Layout (`launcher.json`)**: Built-in 5x5 key grid supporting 25 launcher slots (`slot_0` through `slot_24`).
+- **Dynamic Icon Canvas Rendering**: Reads installed app icons from `PackageManager` and renders application graphics directly on keycaps (`LruCache` bitmap caching).
+- **Categorized Application Selector (`AppPickerActivity`)**: Discovers 100% of installed system & user apps (`QUERY_ALL_PACKAGES`), grouped into 9 thematic categories:
+  - 🌐 **Internet & Browsers**
+  - 💬 **Social & Communication**
+  - 🎵 **Audio & Music**
+  - 🎥 **Video & Movies**
+  - 📷 **Photos & Graphics**
+  - 🛠️ **Productivity & Utilities**
+  - 🎮 **Games**
+  - ⚙️ **System & Settings**
+  - 📱 **Other Applications**
+- **Slot Persistence**: User assignments persist across restarts via `LauncherPreferencesManager`.
+
+#### Multimedia & Control Pad (`media.json`)
+- **Pure Unicode Glyph Labels**: Monochrome technical and geometric text symbols (`⊘`, `−`, `+`, `|◄`, `▶/❚❚`, `►|`, `◄◄`, `■`, `►►`, `🖩`, `⌖`, `♫`, `✉`, `☼`, `☀`).
+- **OS Volume Slider HUD**: Uses `AudioManager.adjustSuggestedStreamVolume()` with `FLAG_SHOW_UI` for volume stream adjustments.
+- **Auto-Repeat Controls**: Volume Up/Down (`24`/`25`), Seek Rewind/Fast Forward (`89`/`90`), and Screen Brightness (`220`/`221`) feature `AUTO_REPEAT` on long-press. Previous (`88`) and Next track (`87`) use single-press execution.
 
 #### Accessory Layout System, Accessory Text & Accessory Image
 When the keyboard is docked in `SPLIT`, `LEFT_DOCKED`, `RIGHT_DOCKED`, or `SIDE_DOCKED` mode, an **Accessory Area** is created next to or between key clusters.
-- **`accessoryLayout`**: Embeds a secondary keyboard layout inside this open space. Built-in options include `navigation` (arrow pad & navigation cluster), `mobile_number` (numeric keypad), `function` (F1–F12 function row), `macro` (Macro pad), `media` (multimedia control pad), `mobile_symbol` (symbol matrix), or `none`.
+- **`accessoryLayout`**: Embeds a secondary keyboard layout inside this open space. Built-in options include `navigation` (arrow pad & navigation cluster), `mobile_number` (numeric keypad), `function` (F1–F12 function row), `macro` (Macro pad), `media` (multimedia control pad), `launcher` (5x5 App launcher grid), `mobile_symbol` (symbol matrix), or `none`.
 - **`accessoryImage`**: Embeds an asset image, custom graphic, file URI, or vector icon inside the accessory area. Proportional scaling ensures image height + text height fit cleanly inside container bounds.
 - **`accessoryText`**: Renders custom multi-line text or headers (with custom `accessoryTextColor` and `accessoryTextSize`) centered directly beneath the image (if present) or centered in the accessory container when standalone.
 

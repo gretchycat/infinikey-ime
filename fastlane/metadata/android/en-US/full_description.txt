@@ -2,7 +2,10 @@ Infinikey IME is an open-source, layout-driven, highly customizable soft keyboar
 
 Features:
 • Declarative Layout Engine: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
-• Accessory Layout System: Configurable secondary layout targets (Navigation pad, Numpad, Function row, Macro pad, Symbol matrix) and custom multi-line text rendering in split and side-docked accessory areas.
+• 5x5 App Launcher Grid & Categorized App Selector: `launcher.json` layout grid with `LAUNCH` actions, slot persistence, dynamic application icon rendering on keycaps, and a 9-category Application Selector (`AppPickerActivity`) discovering 100% of installed system and user apps.
+• Multimedia & Control Pad Layout: `media.json` accessory layout featuring pure monochrome Unicode text glyphs, direct OS volume HUD integration (`AudioManager`), auto-repeating volume, seek, and screen brightness controls, and single-tap track navigation.
+• System Settings Permission: Integrated Write System Settings (`WRITE_SETTINGS`) permission management in Configuration App for direct screen brightness control.
+• Accessory Layout System: Configurable secondary layout targets (Navigation pad, Numpad, Function row, Macro pad, Multimedia pad, 5x5 App Launcher grid, Symbol matrix) and custom multi-line text rendering in split and side-docked accessory areas.
 • Powerful Macro System: Bind custom multi-step keystroke macros (`MACRO` action), long-press recording for M1–M10 slots, single-tap replay, multi-touch gestures, swipe actions, long-press popups, and app launchers.
 • Text Placement in Spacing & Accessory Areas: Embed custom static text, section labels, and headers directly inside key spacing gaps (spacer keys) and within accessory region cards.
 • Decoupled Theme Engine: 9 built-in presets (System Auto, System Light, System Dark, Slate Dark, Cyberpunk Neon, OLED True Black, Matrix Terminal, Retro Vintage, Muted Slate) plus custom HSL/RGB palette generation.
