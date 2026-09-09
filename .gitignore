@@ -10,3 +10,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+.fdroid.yml
+
