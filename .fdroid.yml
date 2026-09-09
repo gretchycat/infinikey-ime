@@ -9,8 +9,18 @@ Changelog: https://github.com/gretchycat/infinikey-ime/releases
 
 AutoUpdateMode: Version v%v
 UpdateCheckMode: Tags
-CurrentVersion: 0.2.32
-CurrentVersionCode: 183
+CurrentVersion: 0.3.1
+CurrentVersionCode: 207
+
+...
+
+Builds:
+  - versionName: 0.3.1
+    versionCode: 207
+    commit: v0.3.1
+    subdir: app
+    gradle:
+      - yes
 
 Name: Infinikey IME
 Summary: Highly customizable keyboard layout engine for programmers and power users
@@ -32,6 +42,21 @@ Description: |-
   - Visual WYSIWYG Layout Editor: Built-in Settings Activity with real-time drag-and-drop key reordering, row properties, accessory layout dropdown, accessory text inputs, undo/redo state stack, and layout customization.
   - 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
 
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+
+CurrentVersion: 0.3.1
+CurrentVersionCode: 207
+
+...
+
+Builds:
+  - versionName: 0.3.1
+    versionCode: 207
+    commit: v0.3.1
+    subdir: app
+    gradle:
+      - yes
 Builds:
   - versionName: 0.2.32
     versionCode: 183
