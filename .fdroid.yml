@@ -7,7 +7,7 @@ SourceCode: https://github.com/gretchycat/infinikey-ime
 IssueTracker: https://github.com/gretchycat/infinikey-ime/issues
 Changelog: https://github.com/gretchycat/infinikey-ime/releases
 
-AutoUpdateMode: Version v%v
+AutoUpdateMode: Version
 UpdateCheckMode: Tags
 CurrentVersion: 0.3.1
 CurrentVersionCode: 207
@@ -38,20 +38,6 @@ Builds:
   - versionName: 0.3.1
     versionCode: 207
     commit: v0.3.1
-    subdir: app
-    gradle:
-      - yes
-Builds:
-  - versionName: 0.3.1
-    versionCode: 207
-    commit: v0.3.1
-    subdir: app
-    gradle:
-      - yes
-Builds:
-  - versionName: 0.2.32
-    versionCode: 183
-    commit: v0.2.32
     subdir: app
     gradle:
       - yes
