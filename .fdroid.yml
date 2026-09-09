@@ -7,13 +7,16 @@ SourceCode: https://github.com/gretchycat/infinikey-ime
 IssueTracker: https://github.com/gretchycat/infinikey-ime/issues
 Changelog: https://github.com/gretchycat/infinikey-ime/releases
 
+RepoType: git
+Repo: https://github.com/gretchycat/infinikey-ime.git
+
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
 CurrentVersion: 0.3.1
 CurrentVersionCode: 207
 
 Name: Infinikey IME
-Summary: Highly customizable keyboard layout engine for programmers and power users
+Summary: Layout-driven customizable soft keyboard for power users
 Description: |-
   Infinikey IME is an open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
 
@@ -33,7 +36,7 @@ Description: |-
   - 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
 
 Builds:
-  - versionName: 0.3.1
+  - versionName: '0.3.1'
     versionCode: 207
     commit: v0.3.1
     subdir: app
