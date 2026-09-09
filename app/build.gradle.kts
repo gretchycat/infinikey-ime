@@ -13,7 +13,6 @@ val gitBuildNumber: Int = try {
 }
 
 val baseVersionName = "0.3.2"
-val fullVersionName = "$baseVersionName-b$gitBuildNumber"
 
 android {
     namespace = "com.infinikey_ime"
@@ -23,20 +22,23 @@ android {
         applicationId = "com.infinikey_ime"
         minSdk = 24
         targetSdk = 34
-        versionCode = maxOf(gitBuildNumber, 100)
-        versionName = "$baseVersionName-b${maxOf(gitBuildNumber, 100)}"
+        versionCode = 208
+        versionName = baseVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         create("release") {
-            storeFile = file("release.keystore")
-            storePassword = "programmer123"
-            keyAlias = "programmer_keyboard"
-            keyPassword = "programmer123"
-            enableV1Signing = true
-            enableV2Signing = true
+            val keystoreFile = file("release.keystore")
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+                storePassword = "programmer123"
+                keyAlias = "programmer_keyboard"
+                keyPassword = "programmer123"
+                enableV1Signing = true
+                enableV2Signing = true
+            }
         }
     }
 

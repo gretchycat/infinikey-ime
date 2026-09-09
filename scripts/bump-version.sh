@@ -55,8 +55,17 @@ NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
 
 echo "Bumping baseVersionName: $CURRENT_VERSION -> $NEW_VERSION (bump level: $BUMP_TYPE)"
 
+# Calculate next versionCode
+CURRENT_VC=$(grep -E 'versionCode =' "$GRADLE_KTS" | sed -E 's/.*versionCode = ([0-9]+).*/\1/')
+if [ -n "$CURRENT_VC" ]; then
+    NEW_VC=$((CURRENT_VC + 1))
+else
+    NEW_VC=208
+fi
+
 # Update app/build.gradle.kts
 sed -i -E "s/val baseVersionName = \"[^\"]+\"/val baseVersionName = \"$NEW_VERSION\"/" "$GRADLE_KTS"
+sed -i -E "s/versionCode = [0-9]+/versionCode = $NEW_VC/" "$GRADLE_KTS"
 
 # Update version in assets/layouts/*.json
 for layout_file in "$ROOT_DIR"/app/src/main/assets/layouts/*.json; do
@@ -65,4 +74,11 @@ for layout_file in "$ROOT_DIR"/app/src/main/assets/layouts/*.json; do
     fi
 done
 
-echo "Successfully updated version to $NEW_VERSION in app/build.gradle.kts and assets layout files."
+# Update .fdroid.yml if present
+FDROID_YML="$ROOT_DIR/.fdroid.yml"
+if [ -f "$FDROID_YML" ]; then
+    sed -i -E "s/CurrentVersion: '[^']+'/CurrentVersion: '$NEW_VERSION'/" "$FDROID_YML"
+    sed -i -E "s/CurrentVersionCode: [0-9]+/CurrentVersionCode: $NEW_VC/" "$FDROID_YML"
+fi
+
+echo "Successfully updated version to $NEW_VERSION (versionCode $NEW_VC) in app/build.gradle.kts, assets layout files, and .fdroid.yml."

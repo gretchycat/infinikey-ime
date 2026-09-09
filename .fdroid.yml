@@ -1,6 +1,7 @@
 Categories:
   - System
   - Development
+  - Keyboard & IME
 License: MIT
 AuthorName: Gretchen Maculo
 SourceCode: https://github.com/gretchycat/infinikey-ime
@@ -10,21 +11,20 @@ Changelog: https://github.com/gretchycat/infinikey-ime/releases
 RepoType: git
 Repo: https://github.com/gretchycat/infinikey-ime.git
 
-AutoUpdateMode: None
-UpdateCheckMode: None
-UpdateCheckData: None
-CurrentVersion: '0.3.1'
-CurrentVersionCode: 207
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: '0.3.2'
+CurrentVersionCode: 208
 
 Name: Infinikey IME
-Summary: Layout-driven customizable soft keyboard for power users
+Summary: Programmable soft keyboard and input environment for power users
 Description: |-
   Infinikey IME is an open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
 
   Key Features:
   - Declarative Layout Engine: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
   - Accessory Layout System: Configurable secondary layout targets (Navigation pad, Numpad, Function row, Macro pad) and custom multi-line text in split/docked accessory areas.
-  - Powerful Macro System: Bind custom multi-step keystroke macros (`MACRO` action), long-press recording for M1–M10 slots, single-tap replay, multi-touch gestures, swipe actions, and app launchers.
+  - Powerful Macro System: Bind custom multi-step keystroke macros (MACRO action), long-press recording for M1–M10 slots, single-tap replay, multi-touch gestures, swipe actions, and app launchers.
   - Text Placement in Spacing & Accessory Areas: Embed custom static text, section labels, and headers directly inside key spacing gaps (spacer keys) and accessory region cards.
   - Decoupled Theme Engine: 9 built-in presets plus custom HSL/RGB palette generation and theme JSON override loading.
   - Multiple Form Factors & Split Mode: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
@@ -46,4 +46,15 @@ Builds:
     prebuild:
       - sed -i '/aapt2/d' gradle.properties || true
       - sed -i '/aapt2/d' ../gradle.properties || true
+
+  - versionName: '0.3.2'
+    versionCode: 208
+    commit: v0.3.2
+    subdir: app
+    gradle:
+      - yes
+    prebuild:
+      - sed -i '/aapt2/d' gradle.properties || true
+      - sed -i '/aapt2/d' ../gradle.properties || true
+
 
