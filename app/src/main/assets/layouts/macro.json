@@ -1,7 +1,7 @@
 {
   "id": "macro",
   "name": "Macro Pad (M1-M25)",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Infinikey IME",
   "description": "5 columns by 5 rows of customizable macro keys M1 through M5 (column 1), M6 through M10 (column 2), M11 through M15 (column 3), M16 through M20 (column 4), and M21 through M25 (column 5) with long-press recording.",
   "metadata": {

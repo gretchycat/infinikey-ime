@@ -1,7 +1,7 @@
 {
   "id": "media",
   "name": "Multimedia & Control Pad",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "_comment": "Multimedia accessory layout featuring volume controls, media playback keys, calculator, web launcher, email, and screen brightness controls with auto-repeating volume, seek, and brightness keys.",
   "author": "Infinikey IME Team",
   "description": "Standalone and accessory multimedia control cluster with volume, playback, app shortcuts, and brightness controls.",
