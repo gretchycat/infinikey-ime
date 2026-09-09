@@ -9,7 +9,6 @@ IssueTracker: https://github.com/gretchycat/infinikey-ime/issues
 Changelog: https://github.com/gretchycat/infinikey-ime/releases
 
 Name: Infinikey IME
-Summary: Programmable soft keyboard and input environment for power users
 Description: |-
   Infinikey IME is an open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
 
