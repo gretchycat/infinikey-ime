@@ -11,4 +11,6 @@
 .cxx
 local.properties
 .fdroid.yml
+/com.infinikey_ime.yml
+
 

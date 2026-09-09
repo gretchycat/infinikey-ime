@@ -1,30 +1,21 @@
 Categories:
-  - System
   - Development
+  - Keyboard & IME
+  - System
 License: MIT
 AuthorName: Gretchen Maculo
 SourceCode: https://github.com/gretchycat/infinikey-ime
 IssueTracker: https://github.com/gretchycat/infinikey-ime/issues
 Changelog: https://github.com/gretchycat/infinikey-ime/releases
 
-RepoType: git
-Repo: https://github.com/gretchycat/infinikey-ime.git
-
-AutoUpdateMode: Version
-UpdateCheckMode: Tags/None
-UpdateCheckData: v.+
-CurrentVersion: '0.3.1'
-CurrentVersionCode: 207
-
 Name: Infinikey IME
-Summary: Layout-driven customizable soft keyboard for power users
 Description: |-
   Infinikey IME is an open-source, layout-driven, highly customizable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, X11, VNC, RDP, SSH), and modern mobile typing.
 
   Key Features:
   - Declarative Layout Engine: JSON-driven keyboard layouts with row visibility toggling, Fn layer switching, staggered vs ortholinear key arrangements, and dynamic ratio-based geometry.
   - Accessory Layout System: Configurable secondary layout targets (Navigation pad, Numpad, Function row, Macro pad) and custom multi-line text in split/docked accessory areas.
-  - Powerful Macro System: Bind custom multi-step keystroke macros (`MACRO` action), long-press recording for M1–M10 slots, single-tap replay, multi-touch gestures, swipe actions, and app launchers.
+  - Powerful Macro System: Bind custom multi-step keystroke macros (MACRO action), long-press recording for M1–M10 slots, single-tap replay, multi-touch gestures, swipe actions, and app launchers.
   - Text Placement in Spacing & Accessory Areas: Embed custom static text, section labels, and headers directly inside key spacing gaps (spacer keys) and accessory region cards.
   - Decoupled Theme Engine: 9 built-in presets plus custom HSL/RGB palette generation and theme JSON override loading.
   - Multiple Form Factors & Split Mode: Docked, Left-Docked, Right-Docked, Split Thumb-Cluster, and Floating Window modes with drag handles and persistent offset memory.
@@ -36,11 +27,21 @@ Description: |-
   - Visual WYSIWYG Layout Editor: Built-in Settings Activity with real-time drag-and-drop key reordering, row properties, accessory layout dropdown, accessory text inputs, undo/redo state stack, and layout customization.
   - 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
 
+RepoType: git
+Repo: https://github.com/gretchycat/infinikey-ime.git
+
 Builds:
-  - versionName: '0.3.1'
-    versionCode: 207
-    commit: v0.3.1
+  - versionName: 0.3.2
+    versionCode: 209
+    commit: v0.3.2
     subdir: app
     gradle:
       - yes
+    prebuild:
+      - sed -i '/aapt2/d' gradle.properties || true
+      - sed -i '/aapt2/d' ../gradle.properties || true
 
+AutoUpdateMode: None
+UpdateCheckMode: None
+CurrentVersion: 0.3.2
+CurrentVersionCode: 209
