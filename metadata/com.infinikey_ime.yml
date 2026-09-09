@@ -10,10 +10,7 @@ Changelog: https://github.com/gretchycat/infinikey-ime/releases
 RepoType: git
 Repo: https://github.com/gretchycat/infinikey-ime.git
 
-AutoUpdateMode: Version
-UpdateCheckMode: Tags
-UpdateCheckData: v(.+)
-CurrentVersion: 0.3.1
+CurrentVersion: '0.3.1'
 CurrentVersionCode: 207
 
 Name: Infinikey IME
@@ -43,4 +40,3 @@ Builds:
     subdir: app
     gradle:
       - yes
-
