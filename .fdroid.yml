@@ -11,8 +11,7 @@ Changelog: https://github.com/gretchycat/infinikey-ime/releases
 RepoType: git
 Repo: https://github.com/gretchycat/infinikey-ime.git
 
-AutoUpdateMode: Version
-UpdateCheckMode: Tags
+UpdateCheckMode: None
 CurrentVersion: '0.3.2'
 CurrentVersionCode: 208
 
