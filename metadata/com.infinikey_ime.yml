@@ -32,8 +32,6 @@ Description: |-
   - Visual WYSIWYG Layout Editor: Built-in Settings Activity with real-time drag-and-drop key reordering, row properties, accessory layout dropdown, accessory text inputs, undo/redo state stack, and layout customization.
   - 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
 
-...
-
 Builds:
   - versionName: 0.3.1
     versionCode: 207
@@ -41,3 +39,4 @@ Builds:
     subdir: app
     gradle:
       - yes
+
