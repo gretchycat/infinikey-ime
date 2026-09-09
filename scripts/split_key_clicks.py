@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+#!/bin/sh
+''':'
+exec python3 "$0" "$@"
+'''
 """
 split_key_clicks.py - Analyzes recorded key click WAV files and splits them into
 separate Key Down (press) and Key Up (release) WAV audio files based on acoustic

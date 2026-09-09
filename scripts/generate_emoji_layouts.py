@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+#!/bin/sh
+''':'
+exec python3 "$0" "$@"
+'''
 import json
 import os
 import sys
