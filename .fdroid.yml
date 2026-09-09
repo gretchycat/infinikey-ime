@@ -1,20 +1,12 @@
 Categories:
-  - System
   - Development
   - Keyboard & IME
+  - System
 License: MIT
 AuthorName: Gretchen Maculo
 SourceCode: https://github.com/gretchycat/infinikey-ime
 IssueTracker: https://github.com/gretchycat/infinikey-ime/issues
 Changelog: https://github.com/gretchycat/infinikey-ime/releases
-
-RepoType: git
-Repo: https://github.com/gretchycat/infinikey-ime.git
-
-AutoUpdateMode: None
-UpdateCheckMode: None
-CurrentVersion: '0.3.2'
-CurrentVersionCode: 208
 
 Name: Infinikey IME
 Summary: Programmable soft keyboard and input environment for power users
@@ -36,8 +28,11 @@ Description: |-
   - Visual WYSIWYG Layout Editor: Built-in Settings Activity with real-time drag-and-drop key reordering, row properties, accessory layout dropdown, accessory text inputs, undo/redo state stack, and layout customization.
   - 100% Offline & Privacy-First: Zero analytics, zero ads, no telemetry, and zero network calls.
 
+RepoType: git
+Repo: https://github.com/gretchycat/infinikey-ime.git
+
 Builds:
-  - versionName: '0.3.1'
+  - versionName: 0.3.1
     versionCode: 207
     commit: v0.3.1
     subdir: app
@@ -47,7 +42,7 @@ Builds:
       - sed -i '/aapt2/d' gradle.properties || true
       - sed -i '/aapt2/d' ../gradle.properties || true
 
-  - versionName: '0.3.2'
+  - versionName: 0.3.2
     versionCode: 208
     commit: v0.3.2
     subdir: app
@@ -57,4 +52,7 @@ Builds:
       - sed -i '/aapt2/d' gradle.properties || true
       - sed -i '/aapt2/d' ../gradle.properties || true
 
-
+AutoUpdateMode: None
+UpdateCheckMode: None
+CurrentVersion: 0.3.2
+CurrentVersionCode: 208
