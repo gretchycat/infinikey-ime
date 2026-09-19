@@ -74,11 +74,20 @@ for layout_file in "$ROOT_DIR"/app/src/main/assets/layouts/*.json; do
     fi
 done
 
-# Update .fdroid.yml if present
+# Update metadata/com.infinikey_ime.yml or .fdroid.yml if present
+METADATA_YML="$ROOT_DIR/metadata/com.infinikey_ime.yml"
+if [ -f "$METADATA_YML" ]; then
+    sed -i -E "s/versionName: .*/versionName: $NEW_VERSION/" "$METADATA_YML"
+    sed -i -E "s/versionCode: [0-9]+/versionCode: $NEW_VC/" "$METADATA_YML"
+    sed -i -E "s/commit: .*/commit: v$NEW_VERSION/" "$METADATA_YML"
+    sed -i -E "s/CurrentVersion: .*/CurrentVersion: $NEW_VERSION/" "$METADATA_YML"
+    sed -i -E "s/CurrentVersionCode: [0-9]+/CurrentVersionCode: $NEW_VC/" "$METADATA_YML"
+fi
+
 FDROID_YML="$ROOT_DIR/.fdroid.yml"
 if [ -f "$FDROID_YML" ]; then
     sed -i -E "s/CurrentVersion: '[^']+'/CurrentVersion: '$NEW_VERSION'/" "$FDROID_YML"
     sed -i -E "s/CurrentVersionCode: [0-9]+/CurrentVersionCode: $NEW_VC/" "$FDROID_YML"
 fi
 
-echo "Successfully updated version to $NEW_VERSION (versionCode $NEW_VC) in app/build.gradle.kts, assets layout files, and .fdroid.yml."
+echo "Successfully updated version to $NEW_VERSION (versionCode $NEW_VC) in app/build.gradle.kts, assets layout files, and metadata recipe."
