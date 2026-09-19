@@ -593,18 +593,12 @@ class ProgrammerInputMethodService : InputMethodService() {
 
                 if (isCtrlAltSuperActive && text.length == 1) {
                     val char = text[0]
-                    if (isShiftRequiredForChar(char)) {
-                        metaState = metaState or KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON
+                    if (isShiftRequiredForChar(char) || keyboardState.isShiftActive) {
+                        metaState = metaState or KeyEvent.META_SHIFT_ON or (if (keyboardState.isRightShift) KeyEvent.META_SHIFT_RIGHT_ON else KeyEvent.META_SHIFT_LEFT_ON)
                     }
                     val keyCode = getKeyCodeForChar(char)
                     if (keyCode != KeyEvent.KEYCODE_UNKNOWN) {
-                        val eventTime = System.currentTimeMillis()
-                        inputConnection.sendKeyEvent(
-                            KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, keyCode, 0, metaState)
-                        )
-                        inputConnection.sendKeyEvent(
-                            KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, keyCode, 0, metaState)
-                        )
+                        sendKeyEventWithModifiers(inputConnection, keyCode, metaState)
                     } else {
                         inputConnection.commitText(text, 1)
                     }
@@ -652,13 +646,7 @@ class ProgrammerInputMethodService : InputMethodService() {
 
                 val metaState = keyboardState.getMetaState()
                 if (!handleSpecialMultimediaKey(code)) {
-                    val eventTime = System.currentTimeMillis()
-                    inputConnection.sendKeyEvent(
-                        KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, metaState)
-                    )
-                    inputConnection.sendKeyEvent(
-                        KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, code, 0, metaState)
-                    )
+                    sendKeyEventWithModifiers(inputConnection, code, metaState)
                 }
 
                 if (keyboardState.consumeOneShotModifiers()) {
@@ -1159,15 +1147,73 @@ class ProgrammerInputMethodService : InputMethodService() {
         }
     }
 
-    private fun sendShortcutKey(inputConnection: android.view.inputmethod.InputConnection, keyCode: Int) {
+    private fun sendKeyEventWithModifiers(inputConnection: android.view.inputmethod.InputConnection, keyCode: Int, metaState: Int) {
         val eventTime = System.currentTimeMillis()
-        val metaState = KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON
+
+        val pressCtrl = (keyboardState.isCtrlActive || (metaState and (KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON or KeyEvent.META_CTRL_RIGHT_ON)) != 0) &&
+                keyCode != KeyEvent.KEYCODE_CTRL_LEFT && keyCode != KeyEvent.KEYCODE_CTRL_RIGHT
+        val pressAlt = (keyboardState.isAltActive || (metaState and (KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON or KeyEvent.META_ALT_RIGHT_ON)) != 0) &&
+                keyCode != KeyEvent.KEYCODE_ALT_LEFT && keyCode != KeyEvent.KEYCODE_ALT_RIGHT
+        val pressSuper = (keyboardState.isSuperActive || (metaState and (KeyEvent.META_META_ON or KeyEvent.META_META_LEFT_ON or KeyEvent.META_META_RIGHT_ON)) != 0) &&
+                keyCode != KeyEvent.KEYCODE_META_LEFT && keyCode != KeyEvent.KEYCODE_META_RIGHT
+        val pressShift = (keyboardState.isShiftActive || (metaState and (KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON or KeyEvent.META_SHIFT_RIGHT_ON)) != 0) &&
+                keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT
+
+        if (pressCtrl) {
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_CTRL_LEFT, 0, metaState)
+            )
+        }
+        if (pressAlt) {
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_LEFT, 0, metaState)
+            )
+        }
+        if (pressSuper) {
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_META_LEFT, 0, metaState)
+            )
+        }
+        if (pressShift) {
+            val shiftCode = if (keyboardState.isRightShift) KeyEvent.KEYCODE_SHIFT_RIGHT else KeyEvent.KEYCODE_SHIFT_LEFT
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, shiftCode, 0, metaState)
+            )
+        }
+
         inputConnection.sendKeyEvent(
             KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, keyCode, 0, metaState)
         )
         inputConnection.sendKeyEvent(
             KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, keyCode, 0, metaState)
         )
+
+        if (pressShift) {
+            val shiftCode = if (keyboardState.isRightShift) KeyEvent.KEYCODE_SHIFT_RIGHT else KeyEvent.KEYCODE_SHIFT_LEFT
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, shiftCode, 0, metaState)
+            )
+        }
+        if (pressSuper) {
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_META_LEFT, 0, metaState)
+            )
+        }
+        if (pressAlt) {
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ALT_LEFT, 0, metaState)
+            )
+        }
+        if (pressCtrl) {
+            inputConnection.sendKeyEvent(
+                KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_CTRL_LEFT, 0, metaState)
+            )
+        }
+    }
+
+    private fun sendShortcutKey(inputConnection: android.view.inputmethod.InputConnection, keyCode: Int) {
+        val metaState = KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON
+        sendKeyEventWithModifiers(inputConnection, keyCode, metaState)
     }
 
     private var textToSpeech: android.speech.tts.TextToSpeech? = null
