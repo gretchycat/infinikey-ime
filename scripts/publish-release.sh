@@ -39,11 +39,22 @@ fi
 
 echo "--> Built APK successfully: $APK_PATH"
 
-# 2. Check git status and commit pending version/layout changes if any
+# 2. Update metadata recipe with release commit SHA and commit changes
+METADATA_YML="$ROOT_DIR/metadata/com.infinikey_ime.yml"
+
 if [ -n "$(git status --porcelain)" ]; then
     echo "--> Committing version update..."
     git add -A
     git commit -m "Release $TAG_NAME"
+fi
+
+if [ -f "$METADATA_YML" ]; then
+    COMMIT_SHA=$(git rev-parse HEAD)
+    sed -i -E "s/commit: .*/commit: $COMMIT_SHA/" "$METADATA_YML"
+    if [ -n "$(git status --porcelain "$METADATA_YML")" ]; then
+        git add "$METADATA_YML"
+        git commit --amend --no-edit
+    fi
 fi
 
 # 3. Create tag if it doesn't exist
