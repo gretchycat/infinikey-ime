@@ -56,7 +56,7 @@ NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
 echo "Bumping baseVersionName: $CURRENT_VERSION -> $NEW_VERSION (bump level: $BUMP_TYPE)"
 
 # Calculate next versionCode
-CURRENT_VC=$(grep -E 'versionCode =' "$GRADLE_KTS" | sed -E 's/.*versionCode = ([0-9]+).*/\1/')
+CURRENT_VC=$(grep -E 'versionCode =' "$GRADLE_KTS" | head -n 1 | sed -nE 's/.*versionCode = [^0-9]*([0-9]+).*/\1/p')
 if [ -n "$CURRENT_VC" ]; then
     NEW_VC=$((CURRENT_VC + 1))
 else
@@ -65,7 +65,7 @@ fi
 
 # Update app/build.gradle.kts
 sed -i -E "s/val baseVersionName = \"[^\"]+\"/val baseVersionName = \"$NEW_VERSION\"/" "$GRADLE_KTS"
-sed -i -E "s/versionCode = [0-9]+/versionCode = $NEW_VC/" "$GRADLE_KTS"
+sed -i -E "s/(versionCode = [^0-9]*)[0-9]+/\1$NEW_VC/" "$GRADLE_KTS"
 
 # Update version in assets/layouts/*.json
 for layout_file in "$ROOT_DIR"/app/src/main/assets/layouts/*.json; do
