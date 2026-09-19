@@ -95,8 +95,8 @@ Assemble debug or release APKs:
 ```
 
 Generated APK output locations:
-- **Debug**: `app/build/outputs/apk/debug/infinikey-ime-v0.3.0-b206-debug.apk`
-- **Release**: `app/build/outputs/apk/release/infinikey-ime-v0.3.0-b206-release.apk`
+- **Debug**: `app/build/outputs/apk/debug/infinikey-ime-v0.3.3-debug.apk`
+- **Release**: `app/build/outputs/apk/release/infinikey-ime-v0.3.3-release.apk`
 
 ### Deployment with Fastlane
 Manage store metadata and release deployments:

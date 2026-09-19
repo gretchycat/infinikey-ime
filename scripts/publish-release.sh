@@ -30,10 +30,10 @@ echo "=========================================="
 echo "--> Building release APK with sh gradlew assembleRelease..."
 sh gradlew assembleRelease
 
-APK_PATH=$(ls app/build/outputs/apk/release/infinikey-ime-v${VERSION}-b*-release.apk 2>/dev/null | head -n 1)
+APK_PATH=$(ls app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk 2>/dev/null | head -n 1)
 
 if [ -z "$APK_PATH" ] || [ ! -f "$APK_PATH" ]; then
-    echo "Error: Could not find generated release APK at app/build/outputs/apk/release/infinikey-ime-v${VERSION}-b*-release.apk" >&2
+    echo "Error: Could not find generated release APK matching app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk" >&2
     exit 1
 fi
 
