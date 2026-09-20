@@ -23,6 +23,6 @@ Builds:
       - sed -i '/aapt2/d' ../gradle.properties || true
 
 AutoUpdateMode: Version
-UpdateCheckMode: Tags
+UpdateCheckMode: Tags v%v
 CurrentVersion: 0.3.4
 CurrentVersionCode: 242
