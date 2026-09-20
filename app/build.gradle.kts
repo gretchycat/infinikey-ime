@@ -22,7 +22,7 @@ android {
         applicationId = "com.infinikey_ime"
         minSdk = 24
         targetSdk = 34
-        versionCode = maxOf(242, gitBuildNumber)
+        versionCode = gitBuildNumber
         versionName = baseVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
