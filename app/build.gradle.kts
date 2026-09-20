@@ -12,7 +12,7 @@ val gitBuildNumber: Int = try {
     1
 }
 
-val baseVersionName = "0.3.3"
+val baseVersionName = "0.3.4"
 
 android {
     namespace = "com.infinikey_ime"
@@ -22,7 +22,7 @@ android {
         applicationId = "com.infinikey_ime"
         minSdk = 24
         targetSdk = 34
-        versionCode = maxOf(236, gitBuildNumber)
+        versionCode = maxOf(242, gitBuildNumber)
         versionName = baseVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -12,9 +12,9 @@ RepoType: git
 Repo: https://github.com/gretchycat/infinikey-ime.git
 
 Builds:
-  - versionName: 0.3.3
-    versionCode: 238
-    commit: b6a6fcecc34f68e6679dfc2b177c8000d8767570
+  - versionName: 0.3.4
+    versionCode: 242
+    commit: 746c2176355c7e7862ff1cdfaac0dce29b06890f
     subdir: app
     gradle:
       - yes
@@ -22,7 +22,7 @@ Builds:
       - sed -i '/aapt2/d' gradle.properties || true
       - sed -i '/aapt2/d' ../gradle.properties || true
 
-AutoUpdateMode: None
-UpdateCheckMode: None
-CurrentVersion: 0.3.3
-CurrentVersionCode: 238
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 0.3.4
+CurrentVersionCode: 242
