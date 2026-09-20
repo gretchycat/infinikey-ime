@@ -83,7 +83,7 @@ done
 # Update metadata/com.infinikey_ime.yml or .fdroid.yml if present
 METADATA_YML="$ROOT_DIR/metadata/com.infinikey_ime.yml"
 if [ -f "$METADATA_YML" ]; then
-    COMMIT_SHA=$(git rev-parse "v$NEW_VERSION" 2>/dev/null || git rev-parse HEAD 2>/dev/null || echo "HEAD")
+    COMMIT_SHA=$( (git rev-parse --verify "v$NEW_VERSION^{commit}" 2>/dev/null || git rev-parse HEAD 2>/dev/null || echo "HEAD") | tr -d '\r\n' )
     sed -i -E "s/versionName: .*/versionName: $NEW_VERSION/" "$METADATA_YML"
     sed -i -E "s/versionCode: [0-9]+/versionCode: $NEW_VC/" "$METADATA_YML"
     sed -i -E "s/commit: .*/commit: $COMMIT_SHA/" "$METADATA_YML"
