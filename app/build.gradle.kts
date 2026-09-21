@@ -12,7 +12,7 @@ val gitBuildNumber: Int = try {
     1
 }
 
-val baseVersionName = "0.3.5"
+val baseVersionName = "0.3.6"
 
 android {
     namespace = "com.infinikey_ime"
