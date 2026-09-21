@@ -15,8 +15,8 @@ GRADLE_KTS="$ROOT_DIR/app/build.gradle.kts"
 cd "$ROOT_DIR"
 
 if [ ! -f "$GRADLE_KTS" ]; then
-    echo "Error: Cannot find $GRADLE_KTS" >&2
-    exit 1
+  echo "Error: Cannot find $GRADLE_KTS" >&2
+  exit 1
 fi
 
 VERSION=$(grep -E 'val baseVersionName = "' "$GRADLE_KTS" | sed -E 's/.*"([^"]+)".*/\1/')
@@ -33,8 +33,8 @@ sh gradlew assembleRelease
 APK_PATH=$(ls app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk 2>/dev/null | head -n 1)
 
 if [ -z "$APK_PATH" ] || [ ! -f "$APK_PATH" ]; then
-    echo "Error: Could not find generated release APK matching app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk" >&2
-    exit 1
+  echo "Error: Could not find generated release APK matching app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk" >&2
+  exit 1
 fi
 
 echo "--> Built APK successfully: $APK_PATH"
@@ -43,26 +43,25 @@ echo "--> Built APK successfully: $APK_PATH"
 METADATA_YML="$ROOT_DIR/metadata/com.infinikey_ime.yml"
 
 if [ -n "$(git status --porcelain)" ]; then
-    echo "--> Committing version update..."
-    git add -A
-    git commit -m "Release $TAG_NAME"
+  echo "--> Committing version update..."
+  git add -A
+  git commit -m "Release $TAG_NAME"
 fi
 
 if [ -f "$METADATA_YML" ]; then
-    COMMIT_SHA=$(git rev-parse HEAD)
-    sed -i -E "s/commit: .*/commit: $COMMIT_SHA/" "$METADATA_YML"
-    if [ -n "$(git status --porcelain "$METADATA_YML")" ]; then
-        git add "$METADATA_YML"
-        git commit --amend --no-edit
-    fi
+  sed -i -E "s/commit: .*/commit: "$TAG_NAME "$METADATA_YML"
+  if [ -n "$(git status --porcelain "$METADATA_YML")" ]; then
+    git add "$METADATA_YML"
+    git commit --amend --no-edit
+  fi
 fi
 
 # 3. Create tag if it doesn't exist
 if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-    echo "--> Tag $TAG_NAME already exists locally."
+  echo "--> Tag $TAG_NAME already exists locally."
 else
-    echo "--> Tagging $TAG_NAME..."
-    git tag "$TAG_NAME"
+  echo "--> Tagging $TAG_NAME..."
+  git tag "$TAG_NAME"
 fi
 
 # 4. Push main & tag to GitHub
@@ -72,9 +71,9 @@ git push origin "$TAG_NAME"
 
 # 5. Prepare Release Notes
 if [ -n "$RELEASE_NOTES_INPUT" ]; then
-    NOTES="$RELEASE_NOTES_INPUT"
+  NOTES="$RELEASE_NOTES_INPUT"
 else
-    NOTES="Release $TAG_NAME for Infinikey IME."
+  NOTES="Release $TAG_NAME for Infinikey IME."
 fi
 
 # 6. Publish Release using GitHub CLI
