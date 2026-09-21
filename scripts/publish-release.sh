@@ -9,6 +9,7 @@ set -e
 RELEASE_NOTES_INPUT="$1"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 GRADLE_PROPS="$ROOT_DIR/gradle.properties"
 
 cd "$ROOT_DIR"
