@@ -14,9 +14,9 @@ RepoType: git
 Repo: https://github.com/gretchycat/infinikey-ime.git
 
 Builds:
-  - versionName: 0.3.6
-    versionCode: 255
-    commit: v0.3.6
+  - versionName: 0.3.7
+    versionCode: 257
+    commit: 7218870f63782f15f040733433eca0c2a727e816
     subdir: app
     gradle:
       - yes
@@ -26,5 +26,5 @@ Builds:
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 0.3.6
-CurrentVersionCode: 255
+CurrentVersion: 0.3.7
+CurrentVersionCode: 257

@@ -3,16 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-val gitBuildNumber: Int = try {
-    val process = ProcessBuilder("git", "rev-list", "--count", "HEAD")
-        .directory(project.rootDir)
-        .start()
-    process.inputStream.bufferedReader().readText().trim().toIntOrNull() ?: 1
-} catch (e: Exception) {
-    1
-}
-
-val baseVersionName = "0.3.6"
+val versionNameProp: String = providers.gradleProperty("versionName").getOrElse("0.3.6")
+val versionCodeProp: Int = providers.gradleProperty("versionCode").getOrElse("255").toInt()
 
 android {
     namespace = "com.infinikey_ime"
@@ -22,8 +14,8 @@ android {
         applicationId = "com.infinikey_ime"
         minSdk = 24
         targetSdk = 34
-        versionCode = maxOf(255, gitBuildNumber)
-        versionName = baseVersionName
+        versionCode = versionCodeProp
+        versionName = versionNameProp
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -87,7 +79,7 @@ dependencies {
 
 tasks.register<Exec>("generateEmojiLayouts") {
     workingDir = project.rootDir
-    commandLine = listOf("python3", "scripts/generate_emoji_layouts.py", "--version", baseVersionName)
+    commandLine = listOf("python3", "scripts/generate_emoji_layouts.py", "--version", versionNameProp)
 }
 
 tasks.register<Exec>("splitKeyClicks") {

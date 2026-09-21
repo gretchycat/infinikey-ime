@@ -9,17 +9,16 @@ set -e
 RELEASE_NOTES_INPUT="$1"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-GRADLE_KTS="$ROOT_DIR/app/build.gradle.kts"
+GRADLE_PROPS="$ROOT_DIR/gradle.properties"
 
 cd "$ROOT_DIR"
 
-if [ ! -f "$GRADLE_KTS" ]; then
-  echo "Error: Cannot find $GRADLE_KTS" >&2
+if [ ! -f "$GRADLE_PROPS" ]; then
+  echo "Error: Cannot find $GRADLE_PROPS" >&2
   exit 1
 fi
 
-VERSION=$(grep -E 'val baseVersionName = "' "$GRADLE_KTS" | sed -E 's/.*"([^"]+)".*/\1/')
+VERSION=$(grep -E '^versionName=' "$GRADLE_PROPS" | cut -d= -f2 | tr -d '\r')
 TAG_NAME="v${VERSION}"
 
 echo "=========================================="

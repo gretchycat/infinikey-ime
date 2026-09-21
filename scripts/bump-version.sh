@@ -11,18 +11,18 @@ BUMP_TYPE=$(echo "$BUMP_TYPE" | tr '[:upper:]' '[:lower:]')
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-GRADLE_KTS="$ROOT_DIR/app/build.gradle.kts"
+GRADLE_PROPS="$ROOT_DIR/gradle.properties"
 
-if [ ! -f "$GRADLE_KTS" ]; then
-    echo "Error: Cannot find $GRADLE_KTS" >&2
+if [ ! -f "$GRADLE_PROPS" ]; then
+    echo "Error: Cannot find $GRADLE_PROPS" >&2
     exit 1
 fi
 
-# Extract current baseVersionName
-CURRENT_VERSION=$(grep -E 'val baseVersionName = "' "$GRADLE_KTS" | sed -E 's/.*"([^"]+)".*/\1/')
+# Extract current versionName from gradle.properties
+CURRENT_VERSION=$(grep -E '^versionName=' "$GRADLE_PROPS" | cut -d= -f2 | tr -d '\r')
 
 if [ -z "$CURRENT_VERSION" ]; then
-    echo "Error: Could not extract baseVersionName from $GRADLE_KTS" >&2
+    echo "Error: Could not extract versionName from $GRADLE_PROPS" >&2
     exit 1
 fi
 
@@ -53,25 +53,21 @@ esac
 
 NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
 
-echo "Bumping baseVersionName: $CURRENT_VERSION -> $NEW_VERSION (bump level: $BUMP_TYPE)"
+echo "Bumping versionName: $CURRENT_VERSION -> $NEW_VERSION (bump level: $BUMP_TYPE)"
 
-# Calculate next versionCode based on git commit count and current metadata versionCode
+# Calculate next versionCode based on git commit count and current metadata/properties versionCode
 GIT_VC=$(git rev-list --count HEAD 2>/dev/null || echo 0)
-METADATA_YML="$ROOT_DIR/metadata/com.infinikey_ime.yml"
-PREV_VC=0
-if [ -f "$METADATA_YML" ]; then
-    PREV_VC=$(grep -E 'CurrentVersionCode:' "$METADATA_YML" | sed -nE 's/.*CurrentVersionCode: ([0-9]+)/\1/p')
-fi
-[ -z "$PREV_VC" ] && PREV_VC=238
+PREV_VC=$(grep -E '^versionCode=' "$GRADLE_PROPS" | cut -d= -f2 | tr -d '\r')
+[ -z "$PREV_VC" ] && PREV_VC=255
 
 NEW_VC=$((GIT_VC + 1))
 if [ "$NEW_VC" -le "$PREV_VC" ]; then
     NEW_VC=$((PREV_VC + 1))
 fi
 
-# Update app/build.gradle.kts
-sed -i -E "s/val baseVersionName = \"[^\"]+\"/val baseVersionName = \"$NEW_VERSION\"/" "$GRADLE_KTS"
-sed -i -E "s/(maxOf\()[0-9]+/\1$NEW_VC/" "$GRADLE_KTS"
+# Update gradle.properties
+sed -i -E "s/^versionName=.*/versionName=$NEW_VERSION/" "$GRADLE_PROPS"
+sed -i -E "s/^versionCode=.*/versionCode=$NEW_VC/" "$GRADLE_PROPS"
 
 # Update version in assets/layouts/*.json
 for layout_file in "$ROOT_DIR"/app/src/main/assets/layouts/*.json; do
@@ -97,4 +93,4 @@ if [ -f "$FDROID_YML" ]; then
     sed -i -E "s/CurrentVersionCode: [0-9]+/CurrentVersionCode: $NEW_VC/" "$FDROID_YML"
 fi
 
-echo "Successfully updated version to $NEW_VERSION (versionCode $NEW_VC) in app/build.gradle.kts, assets layout files, and metadata recipe."
+echo "Successfully updated version to $NEW_VERSION (versionCode $NEW_VC) in gradle.properties, assets layout files, and metadata recipe."

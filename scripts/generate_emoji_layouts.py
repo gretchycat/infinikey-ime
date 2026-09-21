@@ -16,13 +16,13 @@ def get_app_version():
             return sys.argv[i + 1]
     if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
         return sys.argv[1]
-    gradle_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "build.gradle.kts")
-    if os.path.exists(gradle_path):
-        with open(gradle_path, "r", encoding="utf-8") as f:
-            match = re.search(r'val\s+baseVersionName\s*=\s*"([^"]+)"', f.read())
-            if match:
-                return match.group(1)
-    return "0.1.28"
+    props_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "gradle.properties")
+    if os.path.exists(props_path):
+        with open(props_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("versionName="):
+                    return line.split("=", 1)[1].strip()
+    return "0.3.6"
 
 CATEGORY_MAPPING = {
     "Smileys & Emotion": {
