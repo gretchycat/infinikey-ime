@@ -26,24 +26,28 @@ echo "=========================================="
 echo " Publishing Release: $TAG_NAME"
 echo "=========================================="
 
-# 1. Sync with remote main first so push is never rejected
-echo "--> Syncing with origin/main..."
-git fetch origin main || true
-if git rev-parse --verify origin/main >/dev/null 2>&1; then
-  git rebase origin/main || git merge origin/main --no-edit || true
+# 1. Commit any uncommitted changes first (version bump, metadata, layout updates)
+if [ -n "$(git status --porcelain)" ]; then
+  echo "--> Committing release updates for $TAG_NAME..."
+  git add -A
+  git commit -m "Release $TAG_NAME"
 fi
 
 # 2. Ensure metadata commit reference is set to tag name
 METADATA_YML="$ROOT_DIR/metadata/com.infinikey_ime.yml"
 if [ -f "$METADATA_YML" ]; then
   sed -i -E "s/commit: .*/commit: $TAG_NAME/" "$METADATA_YML"
+  if [ -n "$(git status --porcelain "$METADATA_YML")" ]; then
+    git add "$METADATA_YML"
+    git commit --amend --no-edit
+  fi
 fi
 
-# 3. Commit any uncommitted changes (version bump, metadata, layout updates)
-if [ -n "$(git status --porcelain)" ]; then
-  echo "--> Committing release updates for $TAG_NAME..."
-  git add -A
-  git commit -m "Release $TAG_NAME"
+# 3. Sync with remote main first so push is never rejected
+echo "--> Syncing with origin/main..."
+git fetch origin main || true
+if git rev-parse --verify origin/main >/dev/null 2>&1; then
+  git rebase origin/main || git merge origin/main --no-edit || true
 fi
 
 # 4. Build signed release APK
