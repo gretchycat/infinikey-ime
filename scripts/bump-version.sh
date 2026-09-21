@@ -69,6 +69,13 @@ fi
 sed -i -E "s/^versionName=.*/versionName=$NEW_VERSION/" "$GRADLE_PROPS"
 sed -i -E "s/^versionCode=.*/versionCode=$NEW_VC/" "$GRADLE_PROPS"
 
+# Update app/build.gradle.kts (literal values for fdroidserver regex parser)
+GRADLE_KTS="$ROOT_DIR/app/build.gradle.kts"
+if [ -f "$GRADLE_KTS" ]; then
+    sed -i -E "s/versionName = \"[^\"]+\"/versionName = \"$NEW_VERSION\"/" "$GRADLE_KTS"
+    sed -i -E "s/versionCode = [0-9]+/versionCode = $NEW_VC/" "$GRADLE_KTS"
+fi
+
 # Update version in assets/layouts/*.json
 for layout_file in "$ROOT_DIR"/app/src/main/assets/layouts/*.json; do
     if [ -f "$layout_file" ]; then

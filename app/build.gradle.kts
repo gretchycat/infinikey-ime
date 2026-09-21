@@ -3,9 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-val versionNameProp: String = providers.gradleProperty("versionName").getOrElse("0.3.6")
-val versionCodeProp: Int = providers.gradleProperty("versionCode").getOrElse("255").toInt()
-
 android {
     namespace = "com.infinikey_ime"
     compileSdk = 34
@@ -14,8 +11,8 @@ android {
         applicationId = "com.infinikey_ime"
         minSdk = 24
         targetSdk = 34
-        versionCode = versionCodeProp
-        versionName = versionNameProp
+        versionCode = 257
+        versionName = "0.3.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -79,7 +76,7 @@ dependencies {
 
 tasks.register<Exec>("generateEmojiLayouts") {
     workingDir = project.rootDir
-    commandLine = listOf("python3", "scripts/generate_emoji_layouts.py", "--version", versionNameProp)
+    commandLine = listOf("python3", "scripts/generate_emoji_layouts.py", "--version", android.defaultConfig.versionName ?: "0.3.7")
 }
 
 tasks.register<Exec>("splitKeyClicks") {
