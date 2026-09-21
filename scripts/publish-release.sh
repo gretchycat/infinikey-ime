@@ -49,7 +49,7 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 if [ -f "$METADATA_YML" ]; then
-  sed -i -E "s/commit: .*/commit: $TAG_NAME" "$METADATA_YML"
+  sed -i -E "s/commit: .*/commit: $TAG_NAME/" "$METADATA_YML"
   if [ -n "$(git status --porcelain "$METADATA_YML")" ]; then
     git add "$METADATA_YML"
     git commit --amend --no-edit
