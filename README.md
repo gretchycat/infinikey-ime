@@ -1,5 +1,10 @@
 # Infinikey IME
 
+## Build script
+
+`./build.sh` builds the debug APK and runs the application's JVM unit tests.
+Additional Gradle arguments are forwarded unchanged, for example `--max-workers=1`.
+
 ## Standalone build
 
 Application ID `com.infinikey_ime`. This repository has no InfiniSuite library or
