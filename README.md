@@ -15,15 +15,15 @@ Set `ANDROID_HOME` or `sdk.dir` in this checkout's untracked `local.properties`.
 ```sh
 git clone https://github.com/gretchycat/infinikey-ime.git
 cd infinikey-ime
-./gradlew :app:assembleDebug :app:testDebugUnitTest
+./build.sh --max-workers=1 --console=plain
 ```
 
 Gradle 9.7.1 and its checksum are pinned by the wrapper. The APK is
 `app/build/outputs/apk/debug/infinikey-ime-v0.3.8-debug.apk`. Debug builds use
 Android's normal debug keystore. Release signing is supplied externally; no
 private signing configuration is required to clone and build this app.
-Termux users configure `android.aapt2FromMavenOverride` to their installed aapt2
-executable. Project build files contain no reference to a neighboring script.
+The build script supplies Termux native aapt2; direct Gradle calls need
+`android.aapt2FromMavenOverride` set to the installed executable. Project build files contain no reference to a neighboring script.
 The existing permissions support voice input, vibration, overlays, settings and
 application-launch keys; the IME service remains guarded by BIND_INPUT_METHOD.
 
@@ -151,3 +151,7 @@ transcription service or microphone behavior on a device.
 `./build.sh` honors `ANDROID_HOME`, `ANDROID_SDK_ROOT` or this checkout's `local.properties`. With none configured, it discovers an installed SDK in `~/android-sdk`, `~/Android/Sdk` or `~/Library/Android/sdk`, and reports a clear error if absent. It does not install an SDK or write local configuration. On Termux it passes the installed native `aapt2` explicitly and defaults arm64 packaging to `arm64-v8a`; explicit Gradle arguments can override that default. Direct `./gradlew` invocation still requires SDK/tool configuration.
 
 Run `python3 scripts/test-android-build-env.py` for the build entry point's isolated regression checks.
+
+## Android verification checkpoint
+
+On 2026-11-11, implementation commit `c844925` produced its debug APK and passed 23 unit tests in the user's independent Termux checkout. `./build.sh --max-workers=1 --console=plain` ran with SDK environment variables unset and no local.properties, plus a guard rejecting project/source roots outside that checkout. The 11 build-environment regression checks also passed. No suite library bootstrap or sibling application source was used. These checks do not establish device UI, grants or playback behavior. Ubuntu testing and other platform ports remain deferred.
