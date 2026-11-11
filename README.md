@@ -145,3 +145,9 @@ fastlane deploy             # Build release APK & deploy to production
 Cloud speech transcription requires a configured endpoint/key and the declared
 normal Android INTERNET permission. Build/manifest checks do not verify a remote
 transcription service or microphone behavior on a device.
+
+## Build environment discovery
+
+`./build.sh` honors `ANDROID_HOME`, `ANDROID_SDK_ROOT` or this checkout's `local.properties`. With none configured, it discovers an installed SDK in `~/android-sdk`, `~/Android/Sdk` or `~/Library/Android/sdk`, and reports a clear error if absent. It does not install an SDK or write local configuration. On Termux it passes the installed native `aapt2` explicitly and defaults arm64 packaging to `arm64-v8a`; explicit Gradle arguments can override that default. Direct `./gradlew` invocation still requires SDK/tool configuration.
+
+Run `python3 scripts/test-android-build-env.py` for the build entry point's isolated regression checks.
