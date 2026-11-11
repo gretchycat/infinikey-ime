@@ -1,5 +1,28 @@
 # Infinikey IME
 
+## Standalone build
+
+Application ID `com.infinikey_ime`. This repository has no InfiniSuite library or
+application dependencies. Install JDK 17 or 21, Python 3 with NumPy (CI pins
+Python 3.12/NumPy 2.2.6), Android SDK platform 34 and build tools 34.0.0.
+Set `ANDROID_HOME` or `sdk.dir` in this checkout's untracked `local.properties`.
+
+```sh
+git clone https://github.com/gretchycat/infinikey-ime.git
+cd infinikey-ime
+./gradlew :app:assembleDebug :app:testDebugUnitTest
+```
+
+Gradle 9.7.1 and its checksum are pinned by the wrapper. The APK is
+`app/build/outputs/apk/debug/infinikey-ime-v0.3.8-debug.apk`. Debug builds use
+Android's normal debug keystore. Release signing is supplied externally; no
+private signing configuration is required to clone and build this app.
+Termux users configure `android.aapt2FromMavenOverride` to their installed aapt2
+executable. Project build files contain no reference to a neighboring script.
+The existing permissions support voice input, vibration, overlays, settings and
+application-launch keys; the IME service remains guarded by BIND_INPUT_METHOD.
+
+
 An open-source, layout-driven, programmable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, SSH, X11, VNC, RDP), and modern mobile typing.
 
 ![Infinikey IME Banner](app/src/main/res/mipmap-hdpi/ic_launcher.png)
