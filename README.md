@@ -141,3 +141,7 @@ fastlane deploy             # Build release APK & deploy to production
 
 - **License**: Open-source under the [MIT License](LICENSE).
 - **Attributions**: Mechanical switch audio samples are sourced from **[Mechvibes](https://mechvibes.com/)**. See [ATTRIBUTION.md](ATTRIBUTION.md) for full credits.
+
+Cloud speech transcription requires a configured endpoint/key and the declared
+normal Android INTERNET permission. Build/manifest checks do not verify a remote
+transcription service or microphone behavior on a device.
