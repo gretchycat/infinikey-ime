@@ -8,7 +8,8 @@ import sys
 import re
 import urllib.request
 
-EMOJI_DATA_URL = "https://raw.githubusercontent.com/amio/emoji.json/master/emoji.json"
+EMOJI_DATA_REVISION = "bc4173ee243dd98b6d7c71b375899591dc0f7a43"
+EMOJI_DATA_URL = f"https://raw.githubusercontent.com/amio/emoji.json/{EMOJI_DATA_REVISION}/emoji.json"
 
 def get_app_version():
     for i, arg in enumerate(sys.argv):
@@ -94,7 +95,7 @@ def main():
     output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "src", "main", "assets", "layouts")
     os.makedirs(output_dir, exist_ok=True)
 
-    print("Fetching fresh emoji dataset from amio/emoji.json...")
+    print(f"Fetching pinned emoji dataset from amio/emoji.json@{EMOJI_DATA_REVISION}...")
     try:
         with urllib.request.urlopen(EMOJI_DATA_URL, timeout=10) as response:
             emoji_list = json.loads(response.read().decode("utf-8"))

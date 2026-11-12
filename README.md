@@ -22,6 +22,9 @@ Gradle 9.7.1 and its checksum are pinned by the wrapper. The APK is
 `app/build/outputs/apk/debug/infinikey-ime-v0.3.8-debug.apk`. Debug builds use
 Android's normal debug keystore. Release signing is supplied externally; no
 private signing configuration is required to clone and build this app.
+Emoji layouts are generated from the immutable `amio/emoji.json` revision
+`bc4173ee243dd98b6d7c71b375899591dc0f7a43`; checked-in layouts provide the
+offline fallback.
 The build script supplies Termux native aapt2; direct Gradle calls need
 `android.aapt2FromMavenOverride` set to the installed executable. Project build files contain no reference to a neighboring script.
 The existing permissions support voice input, vibration, overlays, settings and

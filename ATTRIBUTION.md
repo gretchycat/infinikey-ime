@@ -15,3 +15,7 @@ Mechanical keyboard switch audio samples used in Infinikey IME are sourced from 
 - **IBM Model M Buckling Spring** - Mechvibes / Vintage Keyboard Community
 
 Special thanks to the **Mechvibes** project and the mechanical keyboard community for making high-quality recorded switch sound samples available!
+
+## Emoji layout data
+
+Generated emoji layouts use [`amio/emoji.json`](https://github.com/amio/emoji.json), pinned to revision `bc4173ee243dd98b6d7c71b375899591dc0f7a43`. The upstream repository does not currently declare an SPDX license; review its redistribution terms before publishing regenerated layouts.

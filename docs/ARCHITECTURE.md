@@ -100,7 +100,7 @@ Infinikey IME utilizes two automated Python build pipeline scripts executed via 
 - **Script**: `scripts/generate_emoji_layouts.py`
 - **Gradle Task**: `generateEmojiLayouts` (runs during `preBuild`)
 - **Behavior**:
-  1. Downloads Unicode emoji database dataset from `amio/emoji.json` (with graceful offline fallback to local layout files).
+  1. Downloads the pinned `amio/emoji.json` revision `bc4173ee243dd98b6d7c71b375899591dc0f7a43` (with graceful offline fallback to local layout files).
   2. Consolidates skin tone variants (Fitzpatrick scale modifiers `0x1F3FB`–`0x1F3FF`) into the base emoji's `alternates` array for long-press popups.
   3. Formats category layouts (`emoji.json`, `emoji_body.json`, `emoji_animals.json`, etc.) with standard navigation headers and footers.
 
