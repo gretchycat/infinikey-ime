@@ -2219,12 +2219,8 @@ class KeyboardView @JvmOverloads constructor(
         when (actionToExecute) {
             is KeyAction.Macro -> {
                 val steps = com.infinikey_ime.util.MacroManager.getMacro(context, actionToExecute.id)
-                if (!steps.isNullOrEmpty()) {
-                    steps.forEach { stepAction ->
-                        executeAction(stepAction, sourceKey)
-                    }
-                } else {
-                    executeAction(KeyAction.SendText(actionToExecute.id), sourceKey)
+                steps.orEmpty().forEach { stepAction ->
+                    executeAction(stepAction, sourceKey)
                 }
             }
             is KeyAction.SendText -> onKeyActionListener?.invoke(actionToExecute)

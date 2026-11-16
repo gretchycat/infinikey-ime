@@ -882,8 +882,6 @@ class ProgrammerInputMethodService : InputMethodService() {
                         steps.forEach { step ->
                             handleKeyAction(step)
                         }
-                    } else {
-                        handleKeyAction(KeyAction.SendText(action.id))
                     }
                 }
             }
