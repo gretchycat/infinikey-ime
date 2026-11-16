@@ -14,6 +14,21 @@ GRADLE_PROPS="$ROOT_DIR/gradle.properties"
 
 cd "$ROOT_DIR"
 
+# Keep release builds on the same SDK/toolchain setup as build.sh. This is
+# needed on Termux because Gradle daemons may not inherit Android SDK env vars.
+. "$ROOT_DIR/scripts/android-build-env.sh"
+
+set -- --warning-mode=all
+if [ -n "$INFINI_ANDROID_SDK" ]; then
+  set -- "-Dandroid.home=$INFINI_ANDROID_SDK" "$@"
+fi
+if [ -n "$INFINI_AAPT2" ]; then
+  set -- "-Pandroid.aapt2FromMavenOverride=$INFINI_AAPT2" "$@"
+fi
+if [ -n "$INFINI_TARGET_ABI" ]; then
+  set -- "-PtargetAbi=$INFINI_TARGET_ABI" "$@"
+fi
+
 if [ ! -f "$GRADLE_PROPS" ]; then
   echo "Error: Cannot find $GRADLE_PROPS" >&2
   exit 1
@@ -51,8 +66,8 @@ if git rev-parse --verify origin/main >/dev/null 2>&1; then
 fi
 
 # 4. Build signed release APK
-echo "--> Building release APK with ./gradlew assembleRelease..."
-./gradlew assembleRelease
+echo "--> Building release APK with ./gradlew :app:assembleRelease..."
+./gradlew :app:assembleRelease "$@"
 
 APK_PATH=$(ls app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk 2>/dev/null | head -n 1)
 

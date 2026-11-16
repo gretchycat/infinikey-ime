@@ -23,5 +23,5 @@ fi
 if [ -n "$INFINI_TARGET_ABI" ]; then
     set -- "-PtargetAbi=$INFINI_TARGET_ABI" "$@"
 fi
-./gradlew :app:assembleDebug :app:testDebugUnitTest "$@"
+./gradlew --warning-mode=all :app:assembleDebug :app:testDebugUnitTest "$@"
 copy_debug_apks app/build/outputs/apk/debug
