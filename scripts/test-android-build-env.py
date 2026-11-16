@@ -91,12 +91,12 @@ class AndroidBuildEnvironmentTest(unittest.TestCase):
         (self.root / 'build.sh').chmod(0o755)
         (self.root / 'scripts/fetch-dependencies.py').write_text('pass\n')
         wrapper = self.root / 'gradlew'
-        wrapper.write_text('#!/usr/bin/env sh\nprintf "%s\\n" "$@"\n')
+        wrapper.write_text('#!/usr/bin/env sh\nmkdir -p app/build/outputs/apk/debug\n: > app/build/outputs/apk/debug/fake.apk\nprintf "%s\\n" "$@"\n')
         wrapper.chmod(0o755)
         args = ['-Pexample=value with spaces', '--max-workers=1']
         result = subprocess.run([str(self.root / 'build.sh'), *args], cwd=self.home, env=self.env, capture_output=True, text=True)
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertEqual(args, result.stdout.splitlines()[-2:])
+        self.assertEqual(args, result.stdout.splitlines()[-3:-1])
         self.assertIn('-Dandroid.home=' + str(self.home / 'android-sdk'), result.stdout.splitlines())
 
     def test_build_script_supplies_native_flags_before_user_overrides(self):
@@ -113,7 +113,7 @@ class AndroidBuildEnvironmentTest(unittest.TestCase):
         self.assertIn('-Pandroid.aapt2FromMavenOverride=' + str(binary), args)
         if platform.machine() in ('aarch64', 'arm64'):
             self.assertLess(args.index('-PtargetAbi=arm64-v8a'), args.index('-PtargetAbi=override'))
-        self.assertEqual('-PtargetAbi=override', args[-1])
+        self.assertEqual('-PtargetAbi=override', args[-2])
 
     def test_build_script_propagates_gradle_failure(self):
         (self.home / 'android-sdk/platforms').mkdir(parents=True)

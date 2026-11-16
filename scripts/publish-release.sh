@@ -65,7 +65,7 @@ if git rev-parse --verify origin/main >/dev/null 2>&1; then
   git rebase origin/main || git merge origin/main --no-edit || true
 fi
 
-# 4. Build signed release APK
+# 4. Build release APK
 echo "--> Building release APK with ./gradlew :app:assembleRelease..."
 ./gradlew :app:assembleRelease "$@"
 
