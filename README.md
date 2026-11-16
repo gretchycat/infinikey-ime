@@ -18,10 +18,28 @@ cd infinikey-ime
 ./build.sh --max-workers=1 --console=plain
 ```
 
-Gradle 9.7.1 and its checksum are pinned by the wrapper. The APK is
-`app/build/outputs/apk/debug/infinikey-ime-v0.3.8-debug.apk`. Debug builds use
-Android's normal debug keystore. Release signing is supplied externally; no
-private signing configuration is required to clone and build this app.
+Gradle 9.7.1 and its checksum are pinned by the wrapper. The debug APK is
+`app/build/outputs/apk/debug/infinikey-ime-v0.3.9-debug.apk` and uses Android's
+normal debug keystore. A plain `assembleRelease` build is unsigned unless release
+signing variables are set; this supports reproducible and F-Droid builds. The
+publish script requires a signed APK and verifies it before tagging or uploading.
+
+To publish an update for users of 0.3.8, configure the same keystore and alias
+used for that release. Set these variables in the build environment (the store
+file path may be absolute or relative to the repository root):
+
+- `INFINIKEY_RELEASE_STORE_FILE`
+- `INFINIKEY_RELEASE_STORE_PASSWORD`
+- `INFINIKEY_RELEASE_KEY_ALIAS`
+- `INFINIKEY_RELEASE_KEY_PASSWORD`
+
+For direct `:app:assembleRelease` builds, place the same four keys as
+`KEY=value` lines in an untracked repository-root `release-signing.properties`
+file; it is gitignored.
+The publisher accepts the four `INFINIKEY_RELEASE_*` environment variables,
+creates a private temporary properties file for Gradle, then removes it. Keep
+passwords out of version control and shell history. No signing credentials are
+required to clone and build the debug APK.
 Emoji layouts are generated from the immutable `amio/emoji.json` revision
 `bc4173ee243dd98b6d7c71b375899591dc0f7a43`; checked-in layouts provide the
 offline fallback.

@@ -18,6 +18,94 @@ cd "$ROOT_DIR"
 # needed on Termux because Gradle daemons may not inherit Android SDK env vars.
 . "$ROOT_DIR/scripts/android-build-env.sh"
 
+# Accept both plain environment names and Gradle's ORG_GRADLE_PROJECT_ spelling.
+INFINIKEY_RELEASE_STORE_FILE=${INFINIKEY_RELEASE_STORE_FILE:-${ORG_GRADLE_PROJECT_INFINIKEY_RELEASE_STORE_FILE:-}}
+INFINIKEY_RELEASE_STORE_PASSWORD=${INFINIKEY_RELEASE_STORE_PASSWORD:-${ORG_GRADLE_PROJECT_INFINIKEY_RELEASE_STORE_PASSWORD:-}}
+INFINIKEY_RELEASE_KEY_ALIAS=${INFINIKEY_RELEASE_KEY_ALIAS:-${ORG_GRADLE_PROJECT_INFINIKEY_RELEASE_KEY_ALIAS:-}}
+INFINIKEY_RELEASE_KEY_PASSWORD=${INFINIKEY_RELEASE_KEY_PASSWORD:-${ORG_GRADLE_PROJECT_INFINIKEY_RELEASE_KEY_PASSWORD:-}}
+
+# Publishing requires the same release key that users already have installed.
+# Gradle can build an unsigned release for reproducible/F-Droid builds, but this
+# script must never upload one that Android cannot install or upgrade.
+if [ -z "${INFINIKEY_RELEASE_STORE_FILE:-}" ] ||
+   [ -z "${INFINIKEY_RELEASE_STORE_PASSWORD:-}" ] ||
+   [ -z "${INFINIKEY_RELEASE_KEY_ALIAS:-}" ] ||
+   [ -z "${INFINIKEY_RELEASE_KEY_PASSWORD:-}" ]; then
+  echo "Error: Release signing is not configured. Set INFINIKEY_RELEASE_STORE_FILE, INFINIKEY_RELEASE_STORE_PASSWORD, INFINIKEY_RELEASE_KEY_ALIAS, and INFINIKEY_RELEASE_KEY_PASSWORD." >&2
+  exit 1
+fi
+
+case "$INFINIKEY_RELEASE_STORE_FILE" in
+  /*) RELEASE_KEYSTORE_PATH="$INFINIKEY_RELEASE_STORE_FILE" ;;
+  *) RELEASE_KEYSTORE_PATH="$ROOT_DIR/$INFINIKEY_RELEASE_STORE_FILE" ;;
+esac
+if [ ! -f "$RELEASE_KEYSTORE_PATH" ]; then
+  echo "Error: Release keystore does not exist: $RELEASE_KEYSTORE_PATH" >&2
+  exit 1
+fi
+
+# Pass signing values to Gradle through an ignored, short-lived properties file.
+# This also works with Termux daemons that cannot refresh their environment.
+SIGNING_PROPERTIES_FILE="$ROOT_DIR/build/release-signing.properties"
+mkdir -p "$ROOT_DIR/build"
+trap 'rm -f "$SIGNING_PROPERTIES_FILE"' EXIT
+SIGNING_OLD_UMASK=$(umask)
+umask 077
+INFINIKEY_RELEASE_STORE_FILE="$INFINIKEY_RELEASE_STORE_FILE" \
+INFINIKEY_RELEASE_STORE_PASSWORD="$INFINIKEY_RELEASE_STORE_PASSWORD" \
+INFINIKEY_RELEASE_KEY_ALIAS="$INFINIKEY_RELEASE_KEY_ALIAS" \
+INFINIKEY_RELEASE_KEY_PASSWORD="$INFINIKEY_RELEASE_KEY_PASSWORD" \
+python3 - "$SIGNING_PROPERTIES_FILE" <<'PY'
+import os
+import sys
+from pathlib import Path
+
+def escape(value):
+    escaped = []
+    for index, char in enumerate(value):
+        if char == "\\":
+            escaped.append("\\\\")
+        elif char == "\\t":
+            escaped.append("\\t")
+        elif char == "\\n":
+            escaped.append("\\n")
+        elif char == "\\r":
+            escaped.append("\\r")
+        elif char == "\\f":
+            escaped.append("\\f")
+        elif char in "=:#!" or (char == " " and index == 0):
+            escaped.append("\\" + char)
+        else:
+            escaped.append(char)
+    return "".join(escaped)
+keys = (
+    "INFINIKEY_RELEASE_STORE_FILE",
+    "INFINIKEY_RELEASE_STORE_PASSWORD",
+    "INFINIKEY_RELEASE_KEY_ALIAS",
+    "INFINIKEY_RELEASE_KEY_PASSWORD",
+)
+path = Path(sys.argv[1])
+path.write_text("".join(f"{key}={escape(os.environ[key])}\n" for key in keys), encoding="utf-8")
+PY
+umask "$SIGNING_OLD_UMASK"
+
+APKSIGNER=$(command -v apksigner || true)
+SDK_ROOT=${INFINI_ANDROID_SDK:-${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}}
+if [ -z "$SDK_ROOT" ] && [ -f "$ROOT_DIR/local.properties" ]; then
+  SDK_ROOT=$(sed -n -E 's/^[[:space:]]*sdk[.]dir[[:space:]]*[:=][[:space:]]*//p' "$ROOT_DIR/local.properties" | head -n 1 | sed 's/\\:/:/g')
+fi
+if [ -z "$APKSIGNER" ] && [ -n "$SDK_ROOT" ]; then
+  for infini_apksigner_candidate in "$SDK_ROOT"/build-tools/*/apksigner; do
+    if [ -x "$infini_apksigner_candidate" ]; then
+      APKSIGNER=$infini_apksigner_candidate
+    fi
+  done
+fi
+if [ -z "$APKSIGNER" ]; then
+  echo "Error: Could not find apksigner. Install Android SDK build-tools or add apksigner to PATH." >&2
+  exit 1
+fi
+
 set -- --warning-mode=all
 if [ -n "$INFINI_ANDROID_SDK" ]; then
   set -- "-Dandroid.home=$INFINI_ANDROID_SDK" "$@"
@@ -65,18 +153,24 @@ if git rev-parse --verify origin/main >/dev/null 2>&1; then
   git rebase origin/main || git merge origin/main --no-edit || true
 fi
 
-# 4. Build release APK
+# 4. Build release APK. Remove any stale unsigned artifact before Gradle runs.
+APK_PATH="$ROOT_DIR/app/build/outputs/apk/release/infinikey-ime-v${VERSION}-release.apk"
+rm -f "$APK_PATH"
 echo "--> Building release APK with ./gradlew :app:assembleRelease..."
 ./gradlew :app:assembleRelease "$@"
 
-APK_PATH=$(ls app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk 2>/dev/null | head -n 1)
-
-if [ -z "$APK_PATH" ] || [ ! -f "$APK_PATH" ]; then
-  echo "Error: Could not find generated release APK matching app/build/outputs/apk/release/infinikey-ime-v${VERSION}*.apk" >&2
+if [ ! -f "$APK_PATH" ]; then
+  echo "Error: Could not find generated release APK: $APK_PATH" >&2
   exit 1
 fi
 
-echo "--> Built APK successfully: $APK_PATH"
+echo "--> Verifying release APK signature..."
+if ! "$APKSIGNER" verify --verbose "$APK_PATH"; then
+  echo "Error: Release APK signature verification failed; refusing to tag or publish it." >&2
+  exit 1
+fi
+
+echo "--> Built and verified APK successfully: $APK_PATH"
 
 # 5. Tag current commit (force update local tag if it already exists)
 echo "--> Tagging $TAG_NAME..."

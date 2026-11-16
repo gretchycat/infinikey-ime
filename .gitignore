@@ -14,3 +14,5 @@ local.properties
 /com.infinikey_ime.yml
 
 
+
+/release-signing.properties
