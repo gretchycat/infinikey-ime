@@ -84,7 +84,7 @@ The inventory contains 9 applications (4 with standalone builds and 5 planned pl
 
 **State:** planned placeholder · **Build:** no build yet · **Versions:** no published release verified; not versioned yet
 
-**Purpose:** Planned Android audio file editor, with Audacity as a product reference. Placeholder only; no application source or standalone build is present. Future editing workflows and project state belong here.
+**Purpose:** Planned Android audio synthesis, instrument-creation, and sound-design environment. Placeholder only; no application source or standalone build is present. Future synthesis workflows and app-owned instrument/project state belong here; InfiniTrack owns composition and arrangement. Placeholder only; no application source or standalone build is present. Future editing workflows and project state belong here.
 
 **Pinned source dependency closure:** None declared
 

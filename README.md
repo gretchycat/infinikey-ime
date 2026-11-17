@@ -1,4 +1,7 @@
 # Infinikey IME
+Infinikey is an independent, customizable Android input method for mobile, developer, and terminal
+workflows. It shares InfiniForge branding but does not use Infinifolder's storage backend. See the
+[application scope and implementation status](docs/APPLICATION.md).
 
 ## Build script
 
@@ -47,6 +50,15 @@ The build script supplies Termux native aapt2; direct Gradle calls need
 `android.aapt2FromMavenOverride` set to the installed executable. Project build files contain no reference to a neighboring script.
 The existing permissions support voice input, vibration, overlays, settings and
 application-launch keys; the IME service remains guarded by BIND_INPUT_METHOD.
+
+## Relationship to other Infiniforge apps
+
+Infinikey shares the Infiniforge name and branding. It has no `libinfiniselect`
+dependency and does not use Infinifolder's storage provider or backend. Its
+`InfinikeyDocumentsProvider` exposes Infinikey-owned layout and theme files through
+Android's SAF; it is a separate provider and contract. The keyboard remains
+installable and usable without any other Infiniforge app. See the
+[developer architecture](docs/ARCHITECTURE.md).
 
 
 An open-source, layout-driven, programmable soft keyboard for Android designed for power users, software developers, terminal environments (Termux, SSH, X11, VNC, RDP), and modern mobile typing.
@@ -135,26 +147,7 @@ For detailed information, specifications, and guides, refer to the project docum
 
 ## Building & Deployment
 
-### Building with Gradle
-Assemble debug or release APKs:
-
-```bash
-./gradlew assembleDebug
-./gradlew assembleRelease
-```
-
-Generated APK output locations:
-- **Debug**: `app/build/outputs/apk/debug/infinikey-ime-v0.3.3-debug.apk`
-- **Release**: `app/build/outputs/apk/release/infinikey-ime-v0.3.3-release.apk`
-
-### Deployment with Fastlane
-Manage store metadata and release deployments:
-
-```bash
-fastlane validate_metadata  # Validate Play Store metadata
-fastlane upload_metadata    # Upload metadata only
-fastlane deploy             # Build release APK & deploy to production
-```
+Use `./build.sh` for the standalone debug build and test workflow described above. Gradle derives the APK version from this checkout's app metadata; avoid hard-coding an APK filename from an older release. For signed GitHub releases, use `scripts/publish-release.sh` and its signing requirements documented above. Fastlane lanes in `fastlane/Fastfile` validate Play metadata, upload metadata, or deploy a release to the configured production track.
 
 ---
 

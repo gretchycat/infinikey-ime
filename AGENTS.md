@@ -18,7 +18,7 @@ Infinikey is Infiniforge's Android keyboard input method. It is an independent a
 ## Ecosystem workflow for agents
 
 1. Read `docs/ECOSYSTEM.md` first to understand the component map and ownership boundaries.
-2. Before changing a public interface, read this repository's architecture and API documentation listed below and inspect its compatibility notes.
+2. Read `docs/APPLICATION.md` for this app's intended role and current status. Before changing a public interface, read the repository's architecture and API documentation listed below and inspect compatibility notes.
 3. Check the owning shared library repository before implementing behavior that may already exist elsewhere. Do not conclude a capability is unavailable just because its implementation is outside the current repository.
 4. Keep application responsibilities, shared library APIs, and other applications' private data/source separate.
 5. Before a cross-repository change, check the exact dependency pin and the relevant interoperability contract. Dependency versions and protocol versions are separate; do not infer protocol incompatibility from a library-version mismatch.
@@ -29,6 +29,7 @@ Infinikey is Infiniforge's Android keyboard input method. It is an independent a
 - `README.md` — project purpose, prerequisites, and standalone build instructions.
 - `AGENTS.md` — repository-specific development rules and this ecosystem workflow.
 - `docs/README.md` — local documentation index.
+- `docs/APPLICATION.md` — application purpose, responsibilities, implementation status, planned work, and known limits.
 - `docs/ECOSYSTEM.md` — generated ecosystem-wide inventory, boundaries, dependencies, versions, and protocols.
 - `docs/ARCHITECTURE.md` — public API and architecture documentation; read before changing interfaces or behavior.
 - `docs/LAYOUT_DESCRIPTOR_SPEC.md` — public API and architecture documentation; read before changing interfaces or behavior.
