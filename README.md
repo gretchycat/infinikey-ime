@@ -13,7 +13,7 @@ Python 3.12/NumPy 2.2.6), Android SDK platform 34 and build tools 34.0.0.
 Set `ANDROID_HOME` or `sdk.dir` in this checkout's untracked `local.properties`.
 
 ```sh
-git clone https://github.com/gretchycat/infinikey-ime.git
+git clone https://github.com/infiniforge/infinikey-ime.git
 cd infinikey-ime
 ./build.sh --max-workers=1 --console=plain
 ```

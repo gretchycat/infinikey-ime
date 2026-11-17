@@ -241,5 +241,5 @@ fi
 
 echo "=========================================="
 echo " Release $TAG_NAME published successfully!"
-echo " URL: https://github.com/gretchycat/infinikey-ime/releases/tag/$TAG_NAME"
+echo " URL: https://github.com/infiniforge/infinikey-ime/releases/tag/$TAG_NAME"
 echo "=========================================="
