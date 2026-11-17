@@ -24,6 +24,41 @@ INFINIKEY_RELEASE_STORE_PASSWORD=${INFINIKEY_RELEASE_STORE_PASSWORD:-${ORG_GRADL
 INFINIKEY_RELEASE_KEY_ALIAS=${INFINIKEY_RELEASE_KEY_ALIAS:-${ORG_GRADLE_PROJECT_INFINIKEY_RELEASE_KEY_ALIAS:-}}
 INFINIKEY_RELEASE_KEY_PASSWORD=${INFINIKEY_RELEASE_KEY_PASSWORD:-${ORG_GRADLE_PROJECT_INFINIKEY_RELEASE_KEY_PASSWORD:-}}
 
+# If any signing setting is unset, try loading from release-signing.properties
+if [ -f "$ROOT_DIR/release-signing.properties" ]; then
+  eval "$(python3 - "$ROOT_DIR/release-signing.properties" <<'PY'
+import sys
+from pathlib import Path
+
+props_file = Path(sys.argv[1])
+if props_file.is_file():
+    for line in props_file.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith(("#", "!")):
+            continue
+        if "=" in line:
+            k, v = line.split("=", 1)
+            k, v = k.strip(), v.strip()
+            if k in (
+                "INFINIKEY_RELEASE_STORE_FILE",
+                "INFINIKEY_RELEASE_STORE_PASSWORD",
+                "INFINIKEY_RELEASE_KEY_ALIAS",
+                "INFINIKEY_RELEASE_KEY_PASSWORD",
+            ):
+                val = v.replace("'", "'\\''")
+                print(f"if [ -z \"${{{k}:-}}\" ]; then {k}='{val}'; fi")
+PY
+)"
+fi
+
+# Fall back to repository release keystore if present and unconfigured
+if [ -z "${INFINIKEY_RELEASE_STORE_FILE:-}" ] && [ -f "$ROOT_DIR/app/release.keystore" ]; then
+  INFINIKEY_RELEASE_STORE_FILE="app/release.keystore"
+  INFINIKEY_RELEASE_STORE_PASSWORD="${INFINIKEY_RELEASE_STORE_PASSWORD:-programmer123}"
+  INFINIKEY_RELEASE_KEY_ALIAS="${INFINIKEY_RELEASE_KEY_ALIAS:-programmer_keyboard}"
+  INFINIKEY_RELEASE_KEY_PASSWORD="${INFINIKEY_RELEASE_KEY_PASSWORD:-programmer123}"
+fi
+
 # Publishing requires the same release key that users already have installed.
 # Gradle can build an unsigned release for reproducible/F-Droid builds, but this
 # script must never upload one that Android cannot install or upgrade.
@@ -190,6 +225,13 @@ fi
 
 # 8. Create or update GitHub release via gh CLI
 echo "--> Publishing GitHub release $TAG_NAME..."
+if [ -z "${GH_TOKEN:-}" ] && ! gh auth status >/dev/null 2>&1 && [ -f "$HOME/.git-credentials" ]; then
+  _GH_TOKEN_CANDIDATE=$(sed -n -E 's#https://([^:]+):([^@]+)@github\.com.*#\2#p' "$HOME/.git-credentials" | head -n 1)
+  if [ -n "$_GH_TOKEN_CANDIDATE" ]; then
+    export GH_TOKEN="$_GH_TOKEN_CANDIDATE"
+  fi
+fi
+
 if gh release view "$TAG_NAME" >/dev/null 2>&1; then
   echo "--> Updating existing GitHub release $TAG_NAME..."
   gh release upload "$TAG_NAME" "$APK_PATH" --clobber
